@@ -1,7 +1,5 @@
 *.pyc
 build
-dev.py
-testkey
 *.egg*
 dist
 docs/_*
