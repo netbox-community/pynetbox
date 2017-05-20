@@ -1,0 +1,69 @@
+{
+    "id": 1,
+    "name": "test1-edge1",
+    "display_name": "test1-edge1",
+    "device_type": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/device-types/1/",
+        "manufacturer": {
+            "id": 1,
+            "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+            "name": "Juniper",
+            "slug": "juniper"
+        },
+        "model": "MX960",
+        "slug": "mx960"
+    },
+    "device_role": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/device-roles/1/",
+        "name": "Router",
+        "slug": "router"
+    },
+    "tenant": null,
+    "platform": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/platforms/1/",
+        "name": "Juniper Junos",
+        "slug": "juniper-junos"
+    },
+    "serial": "5555555555",
+    "asset_tag": null,
+    "site": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/sites/1/",
+        "name": "TEST1",
+        "slug": "test1"
+    },
+    "rack": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/racks/1/",
+        "name": "A1R1",
+        "display_name": "A1R1 (T23A01)"
+    },
+    "position": 1,
+    "face": {
+        "value": 0,
+        "label": "Front"
+    },
+    "parent_device": null,
+    "status": {
+        "value": true,
+        "label": "Active"
+    },
+    "primary_ip": {
+        "id": 1,
+        "url": "http://localhost:8000/api/ipam/ip-addresses/1/",
+        "family": 4,
+        "address": "10.0.255.1/32"
+    },
+    "primary_ip4": {
+        "id": 1,
+        "url": "http://localhost:8000/api/ipam/ip-addresses/1/",
+        "family": 4,
+        "address": "10.0.255.1/32"
+    },
+    "primary_ip6": null,
+    "comments": "",
+    "custom_fields": {}
+}

@@ -1,0 +1,22 @@
+{
+    "count": 3,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "name": "Juniper",
+            "slug": "juniper"
+        },
+        {
+            "id": 2,
+            "name": "Opengear",
+            "slug": "opengear"
+        },
+        {
+            "id": 3,
+            "name": "ServerTech",
+            "slug": "servertech"
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "id": 1,
+    "device": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/devices/1/",
+        "name": "test1-edge1",
+        "display_name": "test1-edge1"
+    },
+    "name": "Console (RE0)",
+    "cs_port": {
+        "id": 27,
+        "device": {
+            "id": 9,
+            "url": "http://localhost:8000/api/dcim/devices/9/",
+            "name": "test1-oob1",
+            "display_name": "test1-oob1"
+        },
+        "name": "Port 3",
+        "connected_console": 1
+    },
+    "connection_status": true
+}

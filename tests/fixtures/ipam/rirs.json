@@ -1,0 +1,13 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "name": "RFC1918",
+            "slug": "rfc1918",
+            "is_private": false
+        }
+    ]
+}

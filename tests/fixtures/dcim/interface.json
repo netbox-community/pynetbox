@@ -1,0 +1,20 @@
+{
+    "id": 1,
+    "device": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/devices/1/",
+        "name": "test1-edge1",
+        "display_name": "test1-edge1"
+    },
+    "name": "fxp0 (RE0)",
+    "form_factor": {
+        "value": 1000,
+        "label": "1000BASE-T (1GE)"
+    },
+    "lag": null,
+    "mac_address": null,
+    "mgmt_only": true,
+    "description": "",
+    "connection": null,
+    "connected_interface": null
+}

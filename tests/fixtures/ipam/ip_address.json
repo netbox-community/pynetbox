@@ -1,0 +1,35 @@
+{
+    "id": 1,
+    "family": 4,
+    "address": "10.0.255.1/32",
+    "vrf": null,
+    "tenant": null,
+    "status": {
+        "value": 1,
+        "label": "Active"
+    },
+    "interface": {
+        "id": 3,
+        "device": {
+            "id": 1,
+            "url": "http://localhost:8000/api/dcim/devices/1/",
+            "name": "test1-edge1",
+            "display_name": "test1-edge1"
+        },
+        "name": "lo0",
+        "form_factor": {
+            "value": 0,
+            "label": "Virtual"
+        },
+        "lag": null,
+        "mac_address": null,
+        "mgmt_only": false,
+        "description": "",
+        "connection": null,
+        "connected_interface": null
+    },
+    "description": "",
+    "nat_inside": null,
+    "nat_outside": null,
+    "custom_fields": {}
+}

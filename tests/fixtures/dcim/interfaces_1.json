@@ -1,0 +1,1349 @@
+{
+    "count": 221,
+    "next": "http://localhost:8000/api/dcim/interfaces/?limit=50&offset=50",
+    "previous": null,
+    "results": [
+        {
+            "id": 189,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "et-0/0/0",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 16,
+                "url": "http://localhost:8000/api/dcim/interface-connections/16/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 37,
+                "url": "http://localhost:8000/api/dcim/interfaces/37/",
+                "device": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/devices/3/",
+                    "name": "test1-spine1",
+                    "display_name": "test1-spine1"
+                },
+                "name": "et-0/1/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 190,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "et-0/0/1",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 191,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "et-0/0/2",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 20,
+                "url": "http://localhost:8000/api/dcim/interface-connections/20/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 197,
+                "url": "http://localhost:8000/api/dcim/interfaces/197/",
+                "device": {
+                    "id": 8,
+                    "url": "http://localhost:8000/api/dcim/devices/8/",
+                    "name": "test1-core2",
+                    "display_name": "test1-core2"
+                },
+                "name": "et-0/0/2",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 192,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "et-0/1/0",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 17,
+                "url": "http://localhost:8000/api/dcim/interface-connections/17/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 175,
+                "url": "http://localhost:8000/api/dcim/interfaces/175/",
+                "device": {
+                    "id": 6,
+                    "url": "http://localhost:8000/api/dcim/devices/6/",
+                    "name": "test1-spine2",
+                    "display_name": "test1-spine2"
+                },
+                "name": "et-0/1/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 193,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "et-0/1/1",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 194,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "et-0/1/2",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 21,
+                "url": "http://localhost:8000/api/dcim/interface-connections/21/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 200,
+                "url": "http://localhost:8000/api/dcim/interfaces/200/",
+                "device": {
+                    "id": 8,
+                    "url": "http://localhost:8000/api/dcim/devices/8/",
+                    "name": "test1-core2",
+                    "display_name": "test1-core2"
+                },
+                "name": "et-0/1/2",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 10,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "fxp0 (RE0)",
+            "form_factor": {
+                "value": 1000,
+                "label": "1000BASE-T (1GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": true,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 11,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "fxp0 (RE1)",
+            "form_factor": {
+                "value": 1000,
+                "label": "1000BASE-T (1GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": true,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 12,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "lo0",
+            "form_factor": {
+                "value": 0,
+                "label": "Virtual"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 201,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "xe-0/0/0",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 202,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "xe-0/0/1",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 203,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "xe-0/0/2",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 204,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "xe-0/0/3",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 205,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "xe-0/0/4",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 25,
+                "url": "http://localhost:8000/api/dcim/interface-connections/25/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 217,
+                "url": "http://localhost:8000/api/dcim/interfaces/217/",
+                "device": {
+                    "id": 7,
+                    "url": "http://localhost:8000/api/dcim/devices/7/",
+                    "name": "test1-edge2",
+                    "display_name": "test1-edge2"
+                },
+                "name": "xe-0/0/4",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 206,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "xe-0/0/5",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 23,
+                "url": "http://localhost:8000/api/dcim/interface-connections/23/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/interfaces/8/",
+                "device": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/devices/1/",
+                    "name": "test1-edge1",
+                    "display_name": "test1-edge1"
+                },
+                "name": "xe-0/0/4",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 195,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "et-0/0/0",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 18,
+                "url": "http://localhost:8000/api/dcim/interface-connections/18/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 41,
+                "url": "http://localhost:8000/api/dcim/interfaces/41/",
+                "device": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/devices/3/",
+                    "name": "test1-spine1",
+                    "display_name": "test1-spine1"
+                },
+                "name": "et-0/2/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 196,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "et-0/0/1",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 197,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "et-0/0/2",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 20,
+                "url": "http://localhost:8000/api/dcim/interface-connections/20/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 191,
+                "url": "http://localhost:8000/api/dcim/interfaces/191/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "test1-core1",
+                    "display_name": "test1-core1"
+                },
+                "name": "et-0/0/2",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 198,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "et-0/1/0",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 19,
+                "url": "http://localhost:8000/api/dcim/interface-connections/19/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 179,
+                "url": "http://localhost:8000/api/dcim/interfaces/179/",
+                "device": {
+                    "id": 6,
+                    "url": "http://localhost:8000/api/dcim/devices/6/",
+                    "name": "test1-spine2",
+                    "display_name": "test1-spine2"
+                },
+                "name": "et-0/2/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 199,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "et-0/1/1",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 200,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "et-0/1/2",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 21,
+                "url": "http://localhost:8000/api/dcim/interface-connections/21/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 194,
+                "url": "http://localhost:8000/api/dcim/interfaces/194/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "test1-core1",
+                    "display_name": "test1-core1"
+                },
+                "name": "et-0/1/2",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 186,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "fxp0 (RE0)",
+            "form_factor": {
+                "value": 1000,
+                "label": "1000BASE-T (1GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": true,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 187,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "fxp0 (RE1)",
+            "form_factor": {
+                "value": 1000,
+                "label": "1000BASE-T (1GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": true,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 188,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "lo0",
+            "form_factor": {
+                "value": 0,
+                "label": "Virtual"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 207,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "xe-0/0/0",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 208,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "xe-0/0/1",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 209,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "xe-0/0/2",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 210,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "xe-0/0/3",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 211,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "xe-0/0/4",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 26,
+                "url": "http://localhost:8000/api/dcim/interface-connections/26/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 216,
+                "url": "http://localhost:8000/api/dcim/interfaces/216/",
+                "device": {
+                    "id": 7,
+                    "url": "http://localhost:8000/api/dcim/devices/7/",
+                    "name": "test1-edge2",
+                    "display_name": "test1-edge2"
+                },
+                "name": "xe-0/0/3",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 212,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "xe-0/0/5",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 24,
+                "url": "http://localhost:8000/api/dcim/interface-connections/24/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/interfaces/7/",
+                "device": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/devices/1/",
+                    "name": "test1-edge1",
+                    "display_name": "test1-edge1"
+                },
+                "name": "xe-0/0/3",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 1,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "fxp0 (RE0)",
+            "form_factor": {
+                "value": 1000,
+                "label": "1000BASE-T (1GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": true,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 2,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "fxp0 (RE1)",
+            "form_factor": {
+                "value": 800,
+                "label": "100BASE-TX (10/100ME)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": true,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 3,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "lo0",
+            "form_factor": {
+                "value": 0,
+                "label": "Virtual"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 4,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "xe-0/0/0",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "TEST",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 5,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "xe-0/0/1",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 6,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "xe-0/0/2",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 7,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "xe-0/0/3",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 24,
+                "url": "http://localhost:8000/api/dcim/interface-connections/24/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 212,
+                "url": "http://localhost:8000/api/dcim/interfaces/212/",
+                "device": {
+                    "id": 8,
+                    "url": "http://localhost:8000/api/dcim/devices/8/",
+                    "name": "test1-core2",
+                    "display_name": "test1-core2"
+                },
+                "name": "xe-0/0/5",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 8,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "xe-0/0/4",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 23,
+                "url": "http://localhost:8000/api/dcim/interface-connections/23/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 206,
+                "url": "http://localhost:8000/api/dcim/interfaces/206/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "test1-core1",
+                    "display_name": "test1-core1"
+                },
+                "name": "xe-0/0/5",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 9,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "xe-0/0/5",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 22,
+                "url": "http://localhost:8000/api/dcim/interface-connections/22/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 218,
+                "url": "http://localhost:8000/api/dcim/interfaces/218/",
+                "device": {
+                    "id": 7,
+                    "url": "http://localhost:8000/api/dcim/devices/7/",
+                    "name": "test1-edge2",
+                    "display_name": "test1-edge2"
+                },
+                "name": "xe-0/0/5",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 183,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "fxp0 (RE0)",
+            "form_factor": {
+                "value": 1000,
+                "label": "1000BASE-T (1GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": true,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 184,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "fxp0 (RE1)",
+            "form_factor": {
+                "value": 800,
+                "label": "100BASE-TX (10/100ME)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": true,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 185,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "lo0",
+            "form_factor": {
+                "value": 0,
+                "label": "Virtual"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 213,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "xe-0/0/0",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 214,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "xe-0/0/1",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 215,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "xe-0/0/2",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 216,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "xe-0/0/3",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 26,
+                "url": "http://localhost:8000/api/dcim/interface-connections/26/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 211,
+                "url": "http://localhost:8000/api/dcim/interfaces/211/",
+                "device": {
+                    "id": 8,
+                    "url": "http://localhost:8000/api/dcim/devices/8/",
+                    "name": "test1-core2",
+                    "display_name": "test1-core2"
+                },
+                "name": "xe-0/0/4",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 217,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "xe-0/0/4",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 25,
+                "url": "http://localhost:8000/api/dcim/interface-connections/25/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 205,
+                "url": "http://localhost:8000/api/dcim/interfaces/205/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "test1-core1",
+                    "display_name": "test1-core1"
+                },
+                "name": "xe-0/0/4",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 218,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "xe-0/0/5",
+            "form_factor": {
+                "value": 1200,
+                "label": "SFP+ (10GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 22,
+                "url": "http://localhost:8000/api/dcim/interface-connections/22/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 9,
+                "url": "http://localhost:8000/api/dcim/interfaces/9/",
+                "device": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/devices/1/",
+                    "name": "test1-edge1",
+                    "display_name": "test1-edge1"
+                },
+                "name": "xe-0/0/5",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        },
+        {
+            "id": 45,
+            "device": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/devices/4/",
+                "name": "test1-leaf1",
+                "display_name": "test1-leaf1"
+            },
+            "name": "em0",
+            "form_factor": {
+                "value": 1000,
+                "label": "1000BASE-T (1GE)"
+            },
+            "lag": null,
+            "mac_address": "FF:EE:DD:33:22:11",
+            "mgmt_only": true,
+            "description": "",
+            "connection": null,
+            "connected_interface": null
+        },
+        {
+            "id": 46,
+            "device": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/devices/4/",
+                "name": "test1-leaf1",
+                "display_name": "test1-leaf1"
+            },
+            "name": "et-0/0/48",
+            "form_factor": {
+                "value": 1400,
+                "label": "QSFP+ (40GE)"
+            },
+            "lag": null,
+            "mac_address": null,
+            "mgmt_only": false,
+            "description": "",
+            "connection": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/interface-connections/5/",
+                "connection_status": true
+            },
+            "connected_interface": {
+                "id": 14,
+                "url": "http://localhost:8000/api/dcim/interfaces/14/",
+                "device": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/devices/3/",
+                    "name": "test1-spine1",
+                    "display_name": "test1-spine1"
+                },
+                "name": "et-0/0/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            }
+        }
+    ]
+}

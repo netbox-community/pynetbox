@@ -1,0 +1,215 @@
+{
+    "count": 13,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 5,
+            "device_type": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-types/2/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "EX9214",
+                "slug": "ex9214"
+            },
+            "name": "PEM0"
+        },
+        {
+            "id": 6,
+            "device_type": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-types/2/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "EX9214",
+                "slug": "ex9214"
+            },
+            "name": "PEM1"
+        },
+        {
+            "id": 7,
+            "device_type": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-types/2/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "EX9214",
+                "slug": "ex9214"
+            },
+            "name": "PEM2"
+        },
+        {
+            "id": 8,
+            "device_type": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-types/2/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "EX9214",
+                "slug": "ex9214"
+            },
+            "name": "PEM3"
+        },
+        {
+            "id": 1,
+            "device_type": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/device-types/1/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "MX960",
+                "slug": "mx960"
+            },
+            "name": "PEM0"
+        },
+        {
+            "id": 2,
+            "device_type": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/device-types/1/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "MX960",
+                "slug": "mx960"
+            },
+            "name": "PEM1"
+        },
+        {
+            "id": 3,
+            "device_type": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/device-types/1/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "MX960",
+                "slug": "mx960"
+            },
+            "name": "PEM2"
+        },
+        {
+            "id": 4,
+            "device_type": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/device-types/1/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "MX960",
+                "slug": "mx960"
+            },
+            "name": "PEM3"
+        },
+        {
+            "id": 11,
+            "device_type": {
+                "id": 3,
+                "url": "http://localhost:8000/api/dcim/device-types/3/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-24Q",
+                "slug": "qfx5100-24q"
+            },
+            "name": "PSU0"
+        },
+        {
+            "id": 12,
+            "device_type": {
+                "id": 3,
+                "url": "http://localhost:8000/api/dcim/device-types/3/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-24Q",
+                "slug": "qfx5100-24q"
+            },
+            "name": "PSU1"
+        },
+        {
+            "id": 9,
+            "device_type": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/device-types/4/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-48S",
+                "slug": "qfx5100-48s"
+            },
+            "name": "PSU0"
+        },
+        {
+            "id": 13,
+            "device_type": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/device-types/4/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-48S",
+                "slug": "qfx5100-48s"
+            },
+            "name": "PSU1"
+        },
+        {
+            "id": 14,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "PSU"
+        }
+    ]
+}

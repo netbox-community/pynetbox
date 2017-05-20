@@ -1,0 +1,40 @@
+{
+    "count": 3,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "device": {
+                "id": 13,
+                "url": "http://localhost:8000/api/dcim/devices/13/",
+                "name": "test1-mothership",
+                "display_name": "test1-mothership"
+            },
+            "name": "thing-1",
+            "installed_device": null
+        },
+        {
+            "id": 2,
+            "device": {
+                "id": 13,
+                "url": "http://localhost:8000/api/dcim/devices/13/",
+                "name": "test1-mothership",
+                "display_name": "test1-mothership"
+            },
+            "name": "thing-2",
+            "installed_device": null
+        },
+        {
+            "id": 3,
+            "device": {
+                "id": 13,
+                "url": "http://localhost:8000/api/dcim/devices/13/",
+                "name": "test1-mothership",
+                "display_name": "test1-mothership"
+            },
+            "name": "thing-3",
+            "installed_device": null
+        }
+    ]
+}

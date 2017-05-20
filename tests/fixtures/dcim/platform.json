@@ -1,0 +1,6 @@
+{
+    "id": 1,
+    "name": "Juniper Junos",
+    "slug": "juniper-junos",
+    "rpc_client": "juniper-junos"
+}

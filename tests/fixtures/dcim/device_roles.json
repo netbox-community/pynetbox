@@ -1,0 +1,43 @@
+{
+    "count": 6,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 3,
+            "name": "Core Switch",
+            "slug": "core-switch",
+            "color": "red"
+        },
+        {
+            "id": 4,
+            "name": "Leaf Switch",
+            "slug": "leaf-switch",
+            "color": "teal"
+        },
+        {
+            "id": 5,
+            "name": "OOB Switch",
+            "slug": "oob-switch",
+            "color": "purple"
+        },
+        {
+            "id": 6,
+            "name": "PDU",
+            "slug": "pdu",
+            "color": "yellow"
+        },
+        {
+            "id": 1,
+            "name": "Router",
+            "slug": "router",
+            "color": "purple"
+        },
+        {
+            "id": 2,
+            "name": "Spine Switch",
+            "slug": "spine-switch",
+            "color": "green"
+        }
+    ]
+}

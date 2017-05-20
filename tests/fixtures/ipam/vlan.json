@@ -1,0 +1,26 @@
+{
+    "id": 1,
+    "site": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/sites/1/",
+        "name": "TEST1",
+        "slug": "test1"
+    },
+    "group": null,
+    "vid": 999,
+    "name": "TEST",
+    "tenant": null,
+    "status": {
+        "value": 1,
+        "label": "Active"
+    },
+    "role": {
+        "id": 1,
+        "url": "http://localhost:8000/api/ipam/roles/1/",
+        "name": "Lab Network",
+        "slug": "lab-network"
+    },
+    "description": "",
+    "display_name": "999 (TEST)",
+    "custom_fields": {}
+}

@@ -1,0 +1,16 @@
+{
+    "id": 1,
+    "device_type": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/device-types/1/",
+        "manufacturer": {
+            "id": 1,
+            "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+            "name": "Juniper",
+            "slug": "juniper"
+        },
+        "model": "MX960",
+        "slug": "mx960"
+    },
+    "name": "Console (RE0)"
+}

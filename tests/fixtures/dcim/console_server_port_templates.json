@@ -1,0 +1,807 @@
+{
+    "count": 50,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "device_type": {
+                "id": 3,
+                "url": "http://localhost:8000/api/dcim/device-types/3/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-24Q",
+                "slug": "qfx5100-24q"
+            },
+            "name": "Console"
+        },
+        {
+            "id": 3,
+            "device_type": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/device-types/4/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-48S",
+                "slug": "qfx5100-48s"
+            },
+            "name": "Console"
+        },
+        {
+            "id": 4,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 1"
+        },
+        {
+            "id": 13,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 10"
+        },
+        {
+            "id": 14,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 11"
+        },
+        {
+            "id": 15,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 12"
+        },
+        {
+            "id": 16,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 13"
+        },
+        {
+            "id": 17,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 14"
+        },
+        {
+            "id": 18,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 15"
+        },
+        {
+            "id": 19,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 16"
+        },
+        {
+            "id": 20,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 17"
+        },
+        {
+            "id": 21,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 18"
+        },
+        {
+            "id": 22,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 19"
+        },
+        {
+            "id": 5,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 2"
+        },
+        {
+            "id": 23,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 20"
+        },
+        {
+            "id": 24,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 21"
+        },
+        {
+            "id": 25,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 22"
+        },
+        {
+            "id": 26,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 23"
+        },
+        {
+            "id": 27,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 24"
+        },
+        {
+            "id": 28,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 25"
+        },
+        {
+            "id": 29,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 26"
+        },
+        {
+            "id": 30,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 27"
+        },
+        {
+            "id": 31,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 28"
+        },
+        {
+            "id": 32,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 29"
+        },
+        {
+            "id": 6,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 3"
+        },
+        {
+            "id": 33,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 30"
+        },
+        {
+            "id": 34,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 31"
+        },
+        {
+            "id": 35,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 32"
+        },
+        {
+            "id": 36,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 33"
+        },
+        {
+            "id": 37,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 34"
+        },
+        {
+            "id": 38,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 35"
+        },
+        {
+            "id": 39,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 36"
+        },
+        {
+            "id": 40,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 37"
+        },
+        {
+            "id": 41,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 38"
+        },
+        {
+            "id": 42,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 39"
+        },
+        {
+            "id": 7,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 4"
+        },
+        {
+            "id": 43,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 40"
+        },
+        {
+            "id": 44,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 41"
+        },
+        {
+            "id": 45,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 42"
+        },
+        {
+            "id": 46,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 43"
+        },
+        {
+            "id": 47,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 44"
+        },
+        {
+            "id": 48,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 45"
+        },
+        {
+            "id": 49,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 46"
+        },
+        {
+            "id": 50,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 47"
+        },
+        {
+            "id": 51,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 48"
+        },
+        {
+            "id": 8,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 5"
+        },
+        {
+            "id": 9,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 6"
+        },
+        {
+            "id": 10,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 7"
+        },
+        {
+            "id": 11,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 8"
+        },
+        {
+            "id": 12,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Port 9"
+        }
+    ]
+}

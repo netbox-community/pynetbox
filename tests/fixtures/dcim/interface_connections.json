@@ -1,0 +1,636 @@
+{
+    "count": 17,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 22,
+            "interface_a": {
+                "id": 9,
+                "url": "http://localhost:8000/api/dcim/interfaces/9/",
+                "device": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/devices/1/",
+                    "name": "test1-edge1",
+                    "display_name": "test1-edge1"
+                },
+                "name": "xe-0/0/5",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 218,
+                "url": "http://localhost:8000/api/dcim/interfaces/218/",
+                "device": {
+                    "id": 7,
+                    "url": "http://localhost:8000/api/dcim/devices/7/",
+                    "name": "test1-edge2",
+                    "display_name": "test1-edge2"
+                },
+                "name": "xe-0/0/5",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 23,
+            "interface_a": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/interfaces/8/",
+                "device": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/devices/1/",
+                    "name": "test1-edge1",
+                    "display_name": "test1-edge1"
+                },
+                "name": "xe-0/0/4",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 206,
+                "url": "http://localhost:8000/api/dcim/interfaces/206/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "test1-core1",
+                    "display_name": "test1-core1"
+                },
+                "name": "xe-0/0/5",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 24,
+            "interface_a": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/interfaces/7/",
+                "device": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/devices/1/",
+                    "name": "test1-edge1",
+                    "display_name": "test1-edge1"
+                },
+                "name": "xe-0/0/3",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 212,
+                "url": "http://localhost:8000/api/dcim/interfaces/212/",
+                "device": {
+                    "id": 8,
+                    "url": "http://localhost:8000/api/dcim/devices/8/",
+                    "name": "test1-core2",
+                    "display_name": "test1-core2"
+                },
+                "name": "xe-0/0/5",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 21,
+            "interface_a": {
+                "id": 194,
+                "url": "http://localhost:8000/api/dcim/interfaces/194/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "test1-core1",
+                    "display_name": "test1-core1"
+                },
+                "name": "et-0/1/2",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 200,
+                "url": "http://localhost:8000/api/dcim/interfaces/200/",
+                "device": {
+                    "id": 8,
+                    "url": "http://localhost:8000/api/dcim/devices/8/",
+                    "name": "test1-core2",
+                    "display_name": "test1-core2"
+                },
+                "name": "et-0/1/2",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 17,
+            "interface_a": {
+                "id": 192,
+                "url": "http://localhost:8000/api/dcim/interfaces/192/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "test1-core1",
+                    "display_name": "test1-core1"
+                },
+                "name": "et-0/1/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 175,
+                "url": "http://localhost:8000/api/dcim/interfaces/175/",
+                "device": {
+                    "id": 6,
+                    "url": "http://localhost:8000/api/dcim/devices/6/",
+                    "name": "test1-spine2",
+                    "display_name": "test1-spine2"
+                },
+                "name": "et-0/1/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 20,
+            "interface_a": {
+                "id": 191,
+                "url": "http://localhost:8000/api/dcim/interfaces/191/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "test1-core1",
+                    "display_name": "test1-core1"
+                },
+                "name": "et-0/0/2",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 197,
+                "url": "http://localhost:8000/api/dcim/interfaces/197/",
+                "device": {
+                    "id": 8,
+                    "url": "http://localhost:8000/api/dcim/devices/8/",
+                    "name": "test1-core2",
+                    "display_name": "test1-core2"
+                },
+                "name": "et-0/0/2",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 16,
+            "interface_a": {
+                "id": 189,
+                "url": "http://localhost:8000/api/dcim/interfaces/189/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "test1-core1",
+                    "display_name": "test1-core1"
+                },
+                "name": "et-0/0/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 37,
+                "url": "http://localhost:8000/api/dcim/interfaces/37/",
+                "device": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/devices/3/",
+                    "name": "test1-spine1",
+                    "display_name": "test1-spine1"
+                },
+                "name": "et-0/1/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 8,
+            "interface_a": {
+                "id": 92,
+                "url": "http://localhost:8000/api/dcim/interfaces/92/",
+                "device": {
+                    "id": 4,
+                    "url": "http://localhost:8000/api/dcim/devices/4/",
+                    "name": "test1-leaf1",
+                    "display_name": "test1-leaf1"
+                },
+                "name": "xe-0/0/47",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 145,
+                "url": "http://localhost:8000/api/dcim/interfaces/145/",
+                "device": {
+                    "id": 5,
+                    "url": "http://localhost:8000/api/dcim/devices/5/",
+                    "name": "test1-leaf2",
+                    "display_name": "test1-leaf2"
+                },
+                "name": "xe-0/0/47",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 7,
+            "interface_a": {
+                "id": 91,
+                "url": "http://localhost:8000/api/dcim/interfaces/91/",
+                "device": {
+                    "id": 4,
+                    "url": "http://localhost:8000/api/dcim/devices/4/",
+                    "name": "test1-leaf1",
+                    "display_name": "test1-leaf1"
+                },
+                "name": "xe-0/0/46",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 144,
+                "url": "http://localhost:8000/api/dcim/interfaces/144/",
+                "device": {
+                    "id": 5,
+                    "url": "http://localhost:8000/api/dcim/devices/5/",
+                    "name": "test1-leaf2",
+                    "display_name": "test1-leaf2"
+                },
+                "name": "xe-0/0/46",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 6,
+            "interface_a": {
+                "id": 47,
+                "url": "http://localhost:8000/api/dcim/interfaces/47/",
+                "device": {
+                    "id": 4,
+                    "url": "http://localhost:8000/api/dcim/devices/4/",
+                    "name": "test1-leaf1",
+                    "display_name": "test1-leaf1"
+                },
+                "name": "et-0/0/49",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 152,
+                "url": "http://localhost:8000/api/dcim/interfaces/152/",
+                "device": {
+                    "id": 6,
+                    "url": "http://localhost:8000/api/dcim/devices/6/",
+                    "name": "test1-spine2",
+                    "display_name": "test1-spine2"
+                },
+                "name": "et-0/0/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 5,
+            "interface_a": {
+                "id": 46,
+                "url": "http://localhost:8000/api/dcim/interfaces/46/",
+                "device": {
+                    "id": 4,
+                    "url": "http://localhost:8000/api/dcim/devices/4/",
+                    "name": "test1-leaf1",
+                    "display_name": "test1-leaf1"
+                },
+                "name": "et-0/0/48",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 14,
+                "url": "http://localhost:8000/api/dcim/interfaces/14/",
+                "device": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/devices/3/",
+                    "name": "test1-spine1",
+                    "display_name": "test1-spine1"
+                },
+                "name": "et-0/0/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 4,
+            "interface_a": {
+                "id": 100,
+                "url": "http://localhost:8000/api/dcim/interfaces/100/",
+                "device": {
+                    "id": 5,
+                    "url": "http://localhost:8000/api/dcim/devices/5/",
+                    "name": "test1-leaf2",
+                    "display_name": "test1-leaf2"
+                },
+                "name": "et-0/0/49",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 153,
+                "url": "http://localhost:8000/api/dcim/interfaces/153/",
+                "device": {
+                    "id": 6,
+                    "url": "http://localhost:8000/api/dcim/devices/6/",
+                    "name": "test1-spine2",
+                    "display_name": "test1-spine2"
+                },
+                "name": "et-0/0/1",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 3,
+            "interface_a": {
+                "id": 99,
+                "url": "http://localhost:8000/api/dcim/interfaces/99/",
+                "device": {
+                    "id": 5,
+                    "url": "http://localhost:8000/api/dcim/devices/5/",
+                    "name": "test1-leaf2",
+                    "display_name": "test1-leaf2"
+                },
+                "name": "et-0/0/48",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 15,
+                "url": "http://localhost:8000/api/dcim/interfaces/15/",
+                "device": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/devices/3/",
+                    "name": "test1-spine1",
+                    "display_name": "test1-spine1"
+                },
+                "name": "et-0/0/1",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 25,
+            "interface_a": {
+                "id": 217,
+                "url": "http://localhost:8000/api/dcim/interfaces/217/",
+                "device": {
+                    "id": 7,
+                    "url": "http://localhost:8000/api/dcim/devices/7/",
+                    "name": "test1-edge2",
+                    "display_name": "test1-edge2"
+                },
+                "name": "xe-0/0/4",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 205,
+                "url": "http://localhost:8000/api/dcim/interfaces/205/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "test1-core1",
+                    "display_name": "test1-core1"
+                },
+                "name": "xe-0/0/4",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 26,
+            "interface_a": {
+                "id": 216,
+                "url": "http://localhost:8000/api/dcim/interfaces/216/",
+                "device": {
+                    "id": 7,
+                    "url": "http://localhost:8000/api/dcim/devices/7/",
+                    "name": "test1-edge2",
+                    "display_name": "test1-edge2"
+                },
+                "name": "xe-0/0/3",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 211,
+                "url": "http://localhost:8000/api/dcim/interfaces/211/",
+                "device": {
+                    "id": 8,
+                    "url": "http://localhost:8000/api/dcim/devices/8/",
+                    "name": "test1-core2",
+                    "display_name": "test1-core2"
+                },
+                "name": "xe-0/0/4",
+                "form_factor": 1200,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 19,
+            "interface_a": {
+                "id": 198,
+                "url": "http://localhost:8000/api/dcim/interfaces/198/",
+                "device": {
+                    "id": 8,
+                    "url": "http://localhost:8000/api/dcim/devices/8/",
+                    "name": "test1-core2",
+                    "display_name": "test1-core2"
+                },
+                "name": "et-0/1/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 179,
+                "url": "http://localhost:8000/api/dcim/interfaces/179/",
+                "device": {
+                    "id": 6,
+                    "url": "http://localhost:8000/api/dcim/devices/6/",
+                    "name": "test1-spine2",
+                    "display_name": "test1-spine2"
+                },
+                "name": "et-0/2/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        },
+        {
+            "id": 18,
+            "interface_a": {
+                "id": 195,
+                "url": "http://localhost:8000/api/dcim/interfaces/195/",
+                "device": {
+                    "id": 8,
+                    "url": "http://localhost:8000/api/dcim/devices/8/",
+                    "name": "test1-core2",
+                    "display_name": "test1-core2"
+                },
+                "name": "et-0/0/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "interface_b": {
+                "id": 41,
+                "url": "http://localhost:8000/api/dcim/interfaces/41/",
+                "device": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/devices/3/",
+                    "name": "test1-spine1",
+                    "display_name": "test1-spine1"
+                },
+                "name": "et-0/2/0",
+                "form_factor": 1400,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": ""
+            },
+            "connection_status": {
+                "value": true,
+                "label": "Connected"
+            }
+        }
+    ]
+}

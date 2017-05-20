@@ -1,0 +1,55 @@
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "name": "A1R1",
+            "facility_id": "T23A01",
+            "display_name": "A1R1 (T23A01)",
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "group": null,
+            "tenant": null,
+            "role": null,
+            "type": null,
+            "width": {
+                "value": 19,
+                "label": "19 inches"
+            },
+            "u_height": 42,
+            "desc_units": false,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 2,
+            "name": "A1R2",
+            "facility_id": "T24A01",
+            "display_name": "A1R2 (T24A01)",
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "group": null,
+            "tenant": null,
+            "role": null,
+            "type": null,
+            "width": {
+                "value": 19,
+                "label": "19 inches"
+            },
+            "u_height": 42,
+            "desc_units": false,
+            "comments": "",
+            "custom_fields": {}
+        }
+    ]
+}

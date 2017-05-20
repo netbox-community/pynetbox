@@ -1,0 +1,22 @@
+{
+    "id": 1,
+    "device": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/devices/1/",
+        "name": "test1-edge1",
+        "display_name": "test1-edge1"
+    },
+    "name": "PEM0",
+    "power_outlet": {
+        "id": 25,
+        "device": {
+            "id": 11,
+            "url": "http://localhost:8000/api/dcim/devices/11/",
+            "name": "test1-pdu1",
+            "display_name": "test1-pdu1"
+        },
+        "name": "AA1",
+        "connected_port": 1
+    },
+    "connection_status": true
+}

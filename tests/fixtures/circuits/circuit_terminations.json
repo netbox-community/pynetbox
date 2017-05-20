@@ -1,0 +1,46 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "circuit": {
+                "id": 1,
+                "url": "http://localhost:8000/api/circuits/circuits/1/",
+                "cid": "123456"
+            },
+            "term_side": "A",
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "interface": {
+                "id": 4,
+                "device": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/devices/1/",
+                    "name": "test1-edge1",
+                    "display_name": "test1-edge1"
+                },
+                "name": "xe-0/0/0",
+                "form_factor": {
+                    "value": 1200,
+                    "label": "SFP+ (10GE)"
+                },
+                "lag": null,
+                "mac_address": null,
+                "mgmt_only": false,
+                "description": "TEST",
+                "connection": null,
+                "connected_interface": null
+            },
+            "port_speed": 1000000,
+            "upstream_speed": null,
+            "xconnect_id": "",
+            "pp_info": ""
+        }
+    ]
+}

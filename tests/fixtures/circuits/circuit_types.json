@@ -1,0 +1,12 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "name": "Transit",
+            "slug": "transit"
+        }
+    ]
+}

@@ -1,0 +1,14 @@
+{
+    "id": 1,
+    "family": 4,
+    "prefix": "10.0.0.0/8",
+    "rir": {
+        "id": 1,
+        "url": "http://localhost:8000/api/ipam/rirs/1/",
+        "name": "RFC1918",
+        "slug": "rfc1918"
+    },
+    "date_added": null,
+    "description": "",
+    "custom_fields": {}
+}

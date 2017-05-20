@@ -1,0 +1,29 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "cid": "123456",
+            "provider": {
+                "id": 1,
+                "url": "http://localhost:8000/api/circuits/providers/1/",
+                "name": "TEST",
+                "slug": "test"
+            },
+            "type": {
+                "id": 1,
+                "url": "http://localhost:8000/api/circuits/circuit-types/1/",
+                "name": "Transit",
+                "slug": "transit"
+            },
+            "tenant": null,
+            "install_date": null,
+            "commit_rate": null,
+            "description": "",
+            "comments": "",
+            "custom_fields": {}
+        }
+    ]
+}

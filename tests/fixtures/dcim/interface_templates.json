@@ -1,0 +1,49 @@
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 4,
+            "device_type": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-types/2/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "EX9214",
+                "slug": "ex9214"
+            },
+            "name": "fxp0 (RE0)",
+            "form_factor": {
+                "value": 1000,
+                "label": "1000BASE-T (1GE)"
+            },
+            "mgmt_only": true
+        },
+        {
+            "id": 5,
+            "device_type": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-types/2/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "EX9214",
+                "slug": "ex9214"
+            },
+            "name": "fxp0 (RE1)",
+            "form_factor": {
+                "value": 1000,
+                "label": "1000BASE-T (1GE)"
+            },
+            "mgmt_only": true
+        }
+    ]
+}

@@ -1,0 +1,119 @@
+{
+    "count": 7,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 3,
+            "device_type": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-types/2/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "EX9214",
+                "slug": "ex9214"
+            },
+            "name": "Console (RE0)"
+        },
+        {
+            "id": 4,
+            "device_type": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-types/2/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "EX9214",
+                "slug": "ex9214"
+            },
+            "name": "Console (RE1)"
+        },
+        {
+            "id": 1,
+            "device_type": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/device-types/1/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "MX960",
+                "slug": "mx960"
+            },
+            "name": "Console (RE0)"
+        },
+        {
+            "id": 2,
+            "device_type": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/device-types/1/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "MX960",
+                "slug": "mx960"
+            },
+            "name": "Console (RE1)"
+        },
+        {
+            "id": 5,
+            "device_type": {
+                "id": 3,
+                "url": "http://localhost:8000/api/dcim/device-types/3/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-24Q",
+                "slug": "qfx5100-24q"
+            },
+            "name": "Console"
+        },
+        {
+            "id": 6,
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "name": "Console"
+        },
+        {
+            "id": 7,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "Serial"
+        }
+    ]
+}

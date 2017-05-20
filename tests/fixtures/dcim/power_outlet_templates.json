@@ -1,0 +1,391 @@
+{
+    "count": 24,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 4,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AA1"
+        },
+        {
+            "id": 5,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AA2"
+        },
+        {
+            "id": 6,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AA3"
+        },
+        {
+            "id": 7,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AA4"
+        },
+        {
+            "id": 8,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AA5"
+        },
+        {
+            "id": 9,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AA6"
+        },
+        {
+            "id": 10,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AA7"
+        },
+        {
+            "id": 11,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AA8"
+        },
+        {
+            "id": 12,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AB1"
+        },
+        {
+            "id": 13,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AB2"
+        },
+        {
+            "id": 14,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AB3"
+        },
+        {
+            "id": 15,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AB4"
+        },
+        {
+            "id": 16,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AB5"
+        },
+        {
+            "id": 17,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AB6"
+        },
+        {
+            "id": 18,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AB7"
+        },
+        {
+            "id": 19,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AB8"
+        },
+        {
+            "id": 20,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AC1"
+        },
+        {
+            "id": 21,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AC2"
+        },
+        {
+            "id": 22,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AC3"
+        },
+        {
+            "id": 23,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AC4"
+        },
+        {
+            "id": 24,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AC5"
+        },
+        {
+            "id": 25,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AC6"
+        },
+        {
+            "id": 26,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AC7"
+        },
+        {
+            "id": 27,
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "name": "AC8"
+        }
+    ]
+}

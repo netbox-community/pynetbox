@@ -1,0 +1,14 @@
+{
+    "id": 1,
+    "name": "TEST Tenant 1",
+    "slug": "test-tenant-1",
+    "group": {
+        "id": 1,
+        "url": "http://localhost:8000/api/tenancy/tenant-groups/1/",
+        "name": "TEST Group",
+        "slug": "test-group"
+    },
+    "description": "",
+    "comments": "",
+    "custom_fields": {}
+}

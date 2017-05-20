@@ -1,0 +1,9 @@
+{
+    "id": 1,
+    "name": "TEST",
+    "rd": "65535:1",
+    "tenant": null,
+    "enforce_unique": true,
+    "description": "",
+    "custom_fields": {}
+}

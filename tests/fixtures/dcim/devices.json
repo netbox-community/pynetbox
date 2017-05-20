@@ -1,0 +1,680 @@
+{
+    "count": 11,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 2,
+            "name": "test1-core1",
+            "display_name": "test1-core1",
+            "device_type": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-types/2/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "EX9214",
+                "slug": "ex9214"
+            },
+            "device_role": {
+                "id": 3,
+                "url": "http://localhost:8000/api/dcim/device-roles/3/",
+                "name": "Core Switch",
+                "slug": "core-switch"
+            },
+            "tenant": null,
+            "platform": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/platforms/1/",
+                "name": "Juniper Junos",
+                "slug": "juniper-junos"
+            },
+            "serial": "",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/racks/1/",
+                "name": "A1R1",
+                "display_name": "A1R1 (T23A01)"
+            },
+            "position": 17,
+            "face": {
+                "value": 0,
+                "label": "Front"
+            },
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": {
+                "id": 5,
+                "url": "http://localhost:8000/api/ipam/ip-addresses/5/",
+                "family": 4,
+                "address": "10.0.254.1/24"
+            },
+            "primary_ip4": {
+                "id": 5,
+                "url": "http://localhost:8000/api/ipam/ip-addresses/5/",
+                "family": 4,
+                "address": "10.0.254.1/24"
+            },
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 8,
+            "name": "test1-core2",
+            "display_name": "test1-core2",
+            "device_type": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-types/2/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "EX9214",
+                "slug": "ex9214"
+            },
+            "device_role": {
+                "id": 3,
+                "url": "http://localhost:8000/api/dcim/device-roles/3/",
+                "name": "Core Switch",
+                "slug": "core-switch"
+            },
+            "tenant": null,
+            "platform": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/platforms/1/",
+                "name": "Juniper Junos",
+                "slug": "juniper-junos"
+            },
+            "serial": "67856734534",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/racks/2/",
+                "name": "A1R2",
+                "display_name": "A1R2 (T24A01)"
+            },
+            "position": 17,
+            "face": {
+                "value": 0,
+                "label": "Front"
+            },
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": {
+                "id": 19,
+                "url": "http://localhost:8000/api/ipam/ip-addresses/19/",
+                "family": 4,
+                "address": "10.0.254.2/32"
+            },
+            "primary_ip4": {
+                "id": 19,
+                "url": "http://localhost:8000/api/ipam/ip-addresses/19/",
+                "family": 4,
+                "address": "10.0.254.2/32"
+            },
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 1,
+            "name": "test1-edge1",
+            "display_name": "test1-edge1",
+            "device_type": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/device-types/1/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "MX960",
+                "slug": "mx960"
+            },
+            "device_role": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/device-roles/1/",
+                "name": "Router",
+                "slug": "router"
+            },
+            "tenant": null,
+            "platform": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/platforms/1/",
+                "name": "Juniper Junos",
+                "slug": "juniper-junos"
+            },
+            "serial": "5555555555",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/racks/1/",
+                "name": "A1R1",
+                "display_name": "A1R1 (T23A01)"
+            },
+            "position": 1,
+            "face": {
+                "value": 0,
+                "label": "Front"
+            },
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": {
+                "id": 1,
+                "url": "http://localhost:8000/api/ipam/ip-addresses/1/",
+                "family": 4,
+                "address": "10.0.255.1/32"
+            },
+            "primary_ip4": {
+                "id": 1,
+                "url": "http://localhost:8000/api/ipam/ip-addresses/1/",
+                "family": 4,
+                "address": "10.0.255.1/32"
+            },
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 7,
+            "name": "test1-edge2",
+            "display_name": "test1-edge2",
+            "device_type": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/device-types/1/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "MX960",
+                "slug": "mx960"
+            },
+            "device_role": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/device-roles/1/",
+                "name": "Router",
+                "slug": "router"
+            },
+            "tenant": null,
+            "platform": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/platforms/1/",
+                "name": "Juniper Junos",
+                "slug": "juniper-junos"
+            },
+            "serial": "7567356345",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/racks/2/",
+                "name": "A1R2",
+                "display_name": "A1R2 (T24A01)"
+            },
+            "position": 1,
+            "face": {
+                "value": 0,
+                "label": "Front"
+            },
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": {
+                "id": 3,
+                "url": "http://localhost:8000/api/ipam/ip-addresses/3/",
+                "family": 4,
+                "address": "10.0.255.2/32"
+            },
+            "primary_ip4": {
+                "id": 3,
+                "url": "http://localhost:8000/api/ipam/ip-addresses/3/",
+                "family": 4,
+                "address": "10.0.255.2/32"
+            },
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 4,
+            "name": "test1-leaf1",
+            "display_name": "test1-leaf1",
+            "device_type": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/device-types/4/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-48S",
+                "slug": "qfx5100-48s"
+            },
+            "device_role": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/device-roles/4/",
+                "name": "Leaf Switch",
+                "slug": "leaf-switch"
+            },
+            "tenant": null,
+            "platform": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/platforms/1/",
+                "name": "Juniper Junos",
+                "slug": "juniper-junos"
+            },
+            "serial": "",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/racks/1/",
+                "name": "A1R1",
+                "display_name": "A1R1 (T23A01)"
+            },
+            "position": 34,
+            "face": {
+                "value": 0,
+                "label": "Front"
+            },
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": null,
+            "primary_ip4": null,
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 5,
+            "name": "test1-leaf2",
+            "display_name": "test1-leaf2",
+            "device_type": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/device-types/4/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-48S",
+                "slug": "qfx5100-48s"
+            },
+            "device_role": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/device-roles/4/",
+                "name": "Leaf Switch",
+                "slug": "leaf-switch"
+            },
+            "tenant": null,
+            "platform": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/platforms/1/",
+                "name": "Juniper Junos",
+                "slug": "juniper-junos"
+            },
+            "serial": "9823478293748",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/racks/2/",
+                "name": "A1R2",
+                "display_name": "A1R2 (T24A01)"
+            },
+            "position": 34,
+            "face": {
+                "value": 0,
+                "label": "Front"
+            },
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": null,
+            "primary_ip4": null,
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 9,
+            "name": "test1-oob1",
+            "display_name": "test1-oob1",
+            "device_type": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-types/5/",
+                "manufacturer": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/2/",
+                    "name": "Opengear",
+                    "slug": "opengear"
+                },
+                "model": "CM4148",
+                "slug": "cm4148"
+            },
+            "device_role": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/device-roles/5/",
+                "name": "OOB Switch",
+                "slug": "oob-switch"
+            },
+            "tenant": null,
+            "platform": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/platforms/2/",
+                "name": "Opengear",
+                "slug": "opengear"
+            },
+            "serial": "98273942938",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/racks/1/",
+                "name": "A1R1",
+                "display_name": "A1R1 (T23A01)"
+            },
+            "position": 42,
+            "face": {
+                "value": 0,
+                "label": "Front"
+            },
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": null,
+            "primary_ip4": null,
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 11,
+            "name": "test1-pdu1",
+            "display_name": "test1-pdu1",
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "device_role": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-roles/6/",
+                "name": "PDU",
+                "slug": "pdu"
+            },
+            "tenant": null,
+            "platform": null,
+            "serial": "",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/racks/1/",
+                "name": "A1R1",
+                "display_name": "A1R1 (T23A01)"
+            },
+            "position": null,
+            "face": null,
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": null,
+            "primary_ip4": null,
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 12,
+            "name": "test1-pdu2",
+            "display_name": "test1-pdu2",
+            "device_type": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-types/6/",
+                "manufacturer": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/3/",
+                    "name": "ServerTech",
+                    "slug": "servertech"
+                },
+                "model": "CWG-24VYM415C9",
+                "slug": "cwg-24vym415c9"
+            },
+            "device_role": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/device-roles/6/",
+                "name": "PDU",
+                "slug": "pdu"
+            },
+            "tenant": null,
+            "platform": null,
+            "serial": "",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/racks/2/",
+                "name": "A1R2",
+                "display_name": "A1R2 (T24A01)"
+            },
+            "position": null,
+            "face": null,
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": null,
+            "primary_ip4": null,
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 3,
+            "name": "test1-spine1",
+            "display_name": "test1-spine1",
+            "device_type": {
+                "id": 3,
+                "url": "http://localhost:8000/api/dcim/device-types/3/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-24Q",
+                "slug": "qfx5100-24q"
+            },
+            "device_role": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-roles/2/",
+                "name": "Spine Switch",
+                "slug": "spine-switch"
+            },
+            "tenant": null,
+            "platform": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/platforms/1/",
+                "name": "Juniper Junos",
+                "slug": "juniper-junos"
+            },
+            "serial": "",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/racks/1/",
+                "name": "A1R1",
+                "display_name": "A1R1 (T23A01)"
+            },
+            "position": 33,
+            "face": {
+                "value": 0,
+                "label": "Front"
+            },
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": null,
+            "primary_ip4": null,
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 6,
+            "name": "test1-spine2",
+            "display_name": "test1-spine2",
+            "device_type": {
+                "id": 3,
+                "url": "http://localhost:8000/api/dcim/device-types/3/",
+                "manufacturer": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+                    "name": "Juniper",
+                    "slug": "juniper"
+                },
+                "model": "QFX5100-24Q",
+                "slug": "qfx5100-24q"
+            },
+            "device_role": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/device-roles/2/",
+                "name": "Spine Switch",
+                "slug": "spine-switch"
+            },
+            "tenant": null,
+            "platform": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/platforms/1/",
+                "name": "Juniper Junos",
+                "slug": "juniper-junos"
+            },
+            "serial": "45649818158",
+            "asset_tag": null,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "rack": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/racks/2/",
+                "name": "A1R2",
+                "display_name": "A1R2 (T24A01)"
+            },
+            "position": 33,
+            "face": {
+                "value": 0,
+                "label": "Front"
+            },
+            "parent_device": null,
+            "status": {
+                "value": true,
+                "label": "Active"
+            },
+            "primary_ip": null,
+            "primary_ip4": null,
+            "primary_ip6": null,
+            "comments": "",
+            "custom_fields": {}
+        }
+    ]
+}

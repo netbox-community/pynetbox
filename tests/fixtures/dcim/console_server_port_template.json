@@ -1,0 +1,16 @@
+{
+    "id": 1,
+    "device_type": {
+        "id": 3,
+        "url": "http://localhost:8000/api/dcim/device-types/3/",
+        "manufacturer": {
+            "id": 1,
+            "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+            "name": "Juniper",
+            "slug": "juniper"
+        },
+        "model": "QFX5100-24Q",
+        "slug": "qfx5100-24q"
+    },
+    "name": "Console"
+}

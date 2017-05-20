@@ -1,0 +1,535 @@
+{
+    "count": 48,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 25,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AA1",
+            "connected_port": 1
+        },
+        {
+            "id": 26,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AA2",
+            "connected_port": 5
+        },
+        {
+            "id": 27,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AA3",
+            "connected_port": 13
+        },
+        {
+            "id": 28,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AA4",
+            "connected_port": 9
+        },
+        {
+            "id": 29,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AA5",
+            "connected_port": 16
+        },
+        {
+            "id": 30,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AA6",
+            "connected_port": 20
+        },
+        {
+            "id": 31,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AA7",
+            "connected_port": 24
+        },
+        {
+            "id": 32,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AA8",
+            "connected_port": 12
+        },
+        {
+            "id": 33,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AB1",
+            "connected_port": null
+        },
+        {
+            "id": 34,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AB2",
+            "connected_port": null
+        },
+        {
+            "id": 35,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AB3",
+            "connected_port": null
+        },
+        {
+            "id": 36,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AB4",
+            "connected_port": null
+        },
+        {
+            "id": 37,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AB5",
+            "connected_port": null
+        },
+        {
+            "id": 38,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AB6",
+            "connected_port": null
+        },
+        {
+            "id": 39,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AB7",
+            "connected_port": null
+        },
+        {
+            "id": 40,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AB8",
+            "connected_port": null
+        },
+        {
+            "id": 41,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AC1",
+            "connected_port": null
+        },
+        {
+            "id": 42,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AC2",
+            "connected_port": null
+        },
+        {
+            "id": 43,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AC3",
+            "connected_port": null
+        },
+        {
+            "id": 44,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AC4",
+            "connected_port": null
+        },
+        {
+            "id": 45,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AC5",
+            "connected_port": null
+        },
+        {
+            "id": 46,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AC6",
+            "connected_port": null
+        },
+        {
+            "id": 47,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AC7",
+            "connected_port": null
+        },
+        {
+            "id": 48,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "AC8",
+            "connected_port": null
+        },
+        {
+            "id": 49,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AA1",
+            "connected_port": 2
+        },
+        {
+            "id": 50,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AA2",
+            "connected_port": 6
+        },
+        {
+            "id": 51,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AA3",
+            "connected_port": 14
+        },
+        {
+            "id": 52,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AA4",
+            "connected_port": 10
+        },
+        {
+            "id": 53,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AA5",
+            "connected_port": 15
+        },
+        {
+            "id": 54,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AA6",
+            "connected_port": 19
+        },
+        {
+            "id": 55,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AA7",
+            "connected_port": 23
+        },
+        {
+            "id": 56,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AA8",
+            "connected_port": 11
+        },
+        {
+            "id": 57,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AB1",
+            "connected_port": null
+        },
+        {
+            "id": 58,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AB2",
+            "connected_port": null
+        },
+        {
+            "id": 59,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AB3",
+            "connected_port": null
+        },
+        {
+            "id": 60,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AB4",
+            "connected_port": null
+        },
+        {
+            "id": 61,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AB5",
+            "connected_port": null
+        },
+        {
+            "id": 62,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AB6",
+            "connected_port": null
+        },
+        {
+            "id": 63,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AB7",
+            "connected_port": null
+        },
+        {
+            "id": 64,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AB8",
+            "connected_port": null
+        },
+        {
+            "id": 65,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AC1",
+            "connected_port": null
+        },
+        {
+            "id": 66,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AC2",
+            "connected_port": null
+        },
+        {
+            "id": 67,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AC3",
+            "connected_port": null
+        },
+        {
+            "id": 68,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AC4",
+            "connected_port": null
+        },
+        {
+            "id": 69,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AC5",
+            "connected_port": null
+        },
+        {
+            "id": 70,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AC6",
+            "connected_port": null
+        },
+        {
+            "id": 71,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AC7",
+            "connected_port": null
+        },
+        {
+            "id": 72,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "AC8",
+            "connected_port": null
+        }
+    ]
+}

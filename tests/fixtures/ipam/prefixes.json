@@ -1,0 +1,61 @@
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 2,
+            "family": 4,
+            "prefix": "10.0.255.0/24",
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "vrf": null,
+            "tenant": null,
+            "vlan": null,
+            "status": {
+                "value": 1,
+                "label": "Active"
+            },
+            "role": {
+                "id": 1,
+                "url": "http://localhost:8000/api/ipam/roles/1/",
+                "name": "Lab Network",
+                "slug": "lab-network"
+            },
+            "is_pool": false,
+            "description": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 1,
+            "family": 4,
+            "prefix": "10.1.1.0/24",
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "vrf": null,
+            "tenant": null,
+            "vlan": null,
+            "status": {
+                "value": 1,
+                "label": "Active"
+            },
+            "role": {
+                "id": 1,
+                "url": "http://localhost:8000/api/ipam/roles/1/",
+                "name": "Lab Network",
+                "slug": "lab-network"
+            },
+            "is_pool": false,
+            "description": "",
+            "custom_fields": {}
+        }
+    ]
+}

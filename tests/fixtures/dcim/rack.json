@@ -1,0 +1,29 @@
+{
+    "id": 1,
+    "name": "A1R1",
+    "facility_id": "T23A01",
+    "display_name": "A1R1 (T23A01)",
+    "site": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/sites/1/",
+        "name": "TEST1",
+        "slug": "test1"
+    },
+    "group": null,
+    "tenant": null,
+    "role": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/rack-roles/1/",
+        "name": "Compute",
+        "slug": "compute"
+    },
+    "type": null,
+    "width": {
+        "value": 19,
+        "label": "19 inches"
+    },
+    "u_height": 42,
+    "desc_units": false,
+    "comments": "",
+    "custom_fields": {}
+}

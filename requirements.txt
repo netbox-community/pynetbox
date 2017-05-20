@@ -1,0 +1,2 @@
+netaddr==0.7.18
+requests==2.10.0

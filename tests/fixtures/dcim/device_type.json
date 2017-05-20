@@ -1,0 +1,25 @@
+{
+    "id": 1,
+    "manufacturer": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+        "name": "Juniper",
+        "slug": "juniper"
+    },
+    "model": "MX960",
+    "slug": "mx960",
+    "part_number": "",
+    "u_height": 16,
+    "is_full_depth": true,
+    "interface_ordering": {
+        "value": 1,
+        "label": "Slot/position"
+    },
+    "is_console_server": false,
+    "is_pdu": false,
+    "is_network_device": true,
+    "subdevice_role": null,
+    "comments": "",
+    "custom_fields": {},
+    "instance_count": 2
+}

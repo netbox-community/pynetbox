@@ -1,0 +1,35 @@
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "name": "TEST Tenant 1",
+            "slug": "test-tenant-1",
+            "group": {
+                "id": 1,
+                "url": "http://localhost:8000/api/tenancy/tenant-groups/1/",
+                "name": "TEST Group",
+                "slug": "test-group"
+            },
+            "description": "",
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 2,
+            "name": "TEST Tenant 2",
+            "slug": "test-tenant-2",
+            "group": {
+                "id": 1,
+                "url": "http://localhost:8000/api/tenancy/tenant-groups/1/",
+                "name": "TEST Group",
+                "slug": "test-group"
+            },
+            "description": "",
+            "comments": "",
+            "custom_fields": {}
+        }
+    ]
+}

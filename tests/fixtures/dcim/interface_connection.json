@@ -1,0 +1,37 @@
+{
+    "id": 1,
+    "interface_a": {
+        "id": 99,
+        "url": "http://localhost:8000/api/dcim/interfaces/99/",
+        "device": {
+            "id": 5,
+            "url": "http://localhost:8000/api/dcim/devices/5/",
+            "name": "test1-leaf2",
+            "display_name": "test1-leaf2"
+        },
+        "name": "et-0/0/48",
+        "form_factor": 1400,
+        "mac_address": null,
+        "mgmt_only": false,
+        "description": ""
+    },
+    "interface_b": {
+        "id": 15,
+        "url": "http://localhost:8000/api/dcim/interfaces/15/",
+        "device": {
+            "id": 3,
+            "url": "http://localhost:8000/api/dcim/devices/3/",
+            "name": "test1-spine1",
+            "display_name": "test1-spine1"
+        },
+        "name": "et-0/0/1",
+        "form_factor": 1400,
+        "mac_address": null,
+        "mgmt_only": false,
+        "description": ""
+    },
+    "connection_status": {
+        "value": true,
+        "label": "Connected"
+    }
+}

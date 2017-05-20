@@ -1,0 +1,247 @@
+{
+    "count": 15,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 3,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "Console (RE0)",
+            "cs_port": {
+                "id": 5,
+                "device": {
+                    "id": 9,
+                    "url": "http://localhost:8000/api/dcim/devices/9/",
+                    "name": "test1-oob1",
+                    "display_name": "test1-oob1"
+                },
+                "name": "Port 1",
+                "connected_console": 3
+            },
+            "connection_status": true
+        },
+        {
+            "id": 4,
+            "device": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "Console (RE1)",
+            "cs_port": {
+                "id": 16,
+                "device": {
+                    "id": 9,
+                    "url": "http://localhost:8000/api/dcim/devices/9/",
+                    "name": "test1-oob1",
+                    "display_name": "test1-oob1"
+                },
+                "name": "Port 2",
+                "connected_console": 4
+            },
+            "connection_status": true
+        },
+        {
+            "id": 11,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "Console (RE0)",
+            "cs_port": null,
+            "connection_status": true
+        },
+        {
+            "id": 12,
+            "device": {
+                "id": 8,
+                "url": "http://localhost:8000/api/dcim/devices/8/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "Console (RE1)",
+            "cs_port": null,
+            "connection_status": true
+        },
+        {
+            "id": 1,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "Console (RE0)",
+            "cs_port": {
+                "id": 27,
+                "device": {
+                    "id": 9,
+                    "url": "http://localhost:8000/api/dcim/devices/9/",
+                    "name": "test1-oob1",
+                    "display_name": "test1-oob1"
+                },
+                "name": "Port 3",
+                "connected_console": 1
+            },
+            "connection_status": true
+        },
+        {
+            "id": 2,
+            "device": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "test1-edge1",
+                "display_name": "test1-edge1"
+            },
+            "name": "Console (RE1)",
+            "cs_port": {
+                "id": 38,
+                "device": {
+                    "id": 9,
+                    "url": "http://localhost:8000/api/dcim/devices/9/",
+                    "name": "test1-oob1",
+                    "display_name": "test1-oob1"
+                },
+                "name": "Port 4",
+                "connected_console": 2
+            },
+            "connection_status": true
+        },
+        {
+            "id": 9,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "Console (RE0)",
+            "cs_port": null,
+            "connection_status": true
+        },
+        {
+            "id": 10,
+            "device": {
+                "id": 7,
+                "url": "http://localhost:8000/api/dcim/devices/7/",
+                "name": "test1-edge2",
+                "display_name": "test1-edge2"
+            },
+            "name": "Console (RE1)",
+            "cs_port": null,
+            "connection_status": true
+        },
+        {
+            "id": 6,
+            "device": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/devices/4/",
+                "name": "test1-leaf1",
+                "display_name": "test1-leaf1"
+            },
+            "name": "Console",
+            "cs_port": {
+                "id": 48,
+                "device": {
+                    "id": 9,
+                    "url": "http://localhost:8000/api/dcim/devices/9/",
+                    "name": "test1-oob1",
+                    "display_name": "test1-oob1"
+                },
+                "name": "Port 5",
+                "connected_console": 6
+            },
+            "connection_status": true
+        },
+        {
+            "id": 7,
+            "device": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/devices/5/",
+                "name": "test1-leaf2",
+                "display_name": "test1-leaf2"
+            },
+            "name": "Console",
+            "cs_port": null,
+            "connection_status": true
+        },
+        {
+            "id": 13,
+            "device": {
+                "id": 9,
+                "url": "http://localhost:8000/api/dcim/devices/9/",
+                "name": "test1-oob1",
+                "display_name": "test1-oob1"
+            },
+            "name": "Console",
+            "cs_port": null,
+            "connection_status": true
+        },
+        {
+            "id": 15,
+            "device": {
+                "id": 11,
+                "url": "http://localhost:8000/api/dcim/devices/11/",
+                "name": "test1-pdu1",
+                "display_name": "test1-pdu1"
+            },
+            "name": "Serial",
+            "cs_port": null,
+            "connection_status": true
+        },
+        {
+            "id": 16,
+            "device": {
+                "id": 12,
+                "url": "http://localhost:8000/api/dcim/devices/12/",
+                "name": "test1-pdu2",
+                "display_name": "test1-pdu2"
+            },
+            "name": "Serial",
+            "cs_port": null,
+            "connection_status": true
+        },
+        {
+            "id": 5,
+            "device": {
+                "id": 3,
+                "url": "http://localhost:8000/api/dcim/devices/3/",
+                "name": "test1-spine1",
+                "display_name": "test1-spine1"
+            },
+            "name": "Console",
+            "cs_port": {
+                "id": 49,
+                "device": {
+                    "id": 9,
+                    "url": "http://localhost:8000/api/dcim/devices/9/",
+                    "name": "test1-oob1",
+                    "display_name": "test1-oob1"
+                },
+                "name": "Port 6",
+                "connected_console": 5
+            },
+            "connection_status": true
+        },
+        {
+            "id": 8,
+            "device": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/devices/6/",
+                "name": "test1-spine2",
+                "display_name": "test1-spine2"
+            },
+            "name": "Console",
+            "cs_port": null,
+            "connection_status": true
+        }
+    ]
+}

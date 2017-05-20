@@ -1,0 +1,22 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "rack": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/racks/2/",
+                "name": "A1R2",
+                "display_name": "A1R2 (T24A01)"
+            },
+            "units": [
+                42
+            ],
+            "created": "2017-03-22T04:10:47.307156Z",
+            "user": 1,
+            "description": "Test Reservation"
+        }
+    ]
+}
