@@ -106,7 +106,6 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
     def test_modify(self, mock):
         ret = nb.prefixes.get(1)
         ret.prefix = '10.1.2.0/24'
-        print(ret.serialize())
         ret_serialized = ret.serialize()
         self.assertTrue(ret_serialized)
         self.assertFalse(ret._compare())
@@ -117,6 +116,20 @@ class IPAddressTestCase(unittest.TestCase, GenericTest):
     name = 'ip_addresses'
     name_singular = 'ip_address'
     ip_obj_fields = ['address']
+
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        return_value=Response(fixture='ipam/ip_address.json')
+    )
+    def test_modify(self, mock):
+        ret = nb.prefixes.get(1)
+        ret.description = 'testing'
+        ret_serialized = ret.serialize()
+        self.assertTrue(ret_serialized)
+        self.assertFalse(ret._compare())
+        self.assertEqual(ret_serialized['address'], '10.0.255.1/32')
+        self.assertEqual(ret_serialized['description'], 'testing')
+        self.assertTrue(netaddr.IPNetwork(ret_serialized['address']))
 
 
 class RoleTestCase(unittest.TestCase, GenericTest):
