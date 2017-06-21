@@ -99,6 +99,19 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
     name_singular = 'prefix'
     ip_obj_fields = ['prefix']
 
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        return_value=Response(fixture='ipam/prefix.json')
+    )
+    def test_modify(self, mock):
+        ret = nb.prefixes.get(1)
+        ret.prefix = '10.1.2.0/24'
+        print(ret.serialize())
+        ret_serialized = ret.serialize()
+        self.assertTrue(ret_serialized)
+        self.assertFalse(ret._compare())
+        self.assertEqual(ret_serialized['prefix'], '10.1.2.0/24')
+
 
 class IPAddressTestCase(unittest.TestCase, GenericTest):
     name = 'ip_addresses'
