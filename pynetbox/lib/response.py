@@ -261,7 +261,7 @@ class IPRecord(Record):
         """
         for k, v in values.items():
             self._meta.append((k, v))
-            if isinstance(v, dict):
+            if isinstance(v, dict) and k != 'custom_fields':
                 lookup = getattr(self.__class__, k, None)
                 if lookup:
                     setattr(self, k, lookup(v, api_kwargs=self.api_kwargs))
