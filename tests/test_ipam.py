@@ -110,6 +110,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         self.assertTrue(ret_serialized)
         self.assertFalse(ret._compare())
         self.assertEqual(ret_serialized['prefix'], '10.1.2.0/24')
+        self.assertTrue(netaddr.IPNetwork(ret_serialized['prefix']))
 
 
 class IPAddressTestCase(unittest.TestCase, GenericTest):

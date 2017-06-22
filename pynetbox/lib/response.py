@@ -279,6 +279,31 @@ class IPRecord(Record):
                         pass
                 setattr(self, k, v)
 
+    def serialize(self):
+        """Serializes an IPRecord object
+
+        Pulls all the attributes in an object and creates a dict that
+        can be turned into the json that netbox is expecting. Also
+        accounts for IPNetwork objects present in IPRecord objects.
+
+        :returns: dict of values the NetBox API is expecting.
+        """
+        ret = {}
+        for i in dict(self):
+            current_val = getattr(self, i)
+            if i != 'custom_fields':
+                try:
+                    current_val = current_val.id
+                except AttributeError:
+                    type_filter = (int, basestring, type(None))
+                    if not isinstance(current_val, type_filter):
+                        if isinstance(current_val, netaddr.ip.IPNetwork):
+                            current_val = str(current_val)
+                        else:
+                            current_val = current_val.value
+            ret.update({i: current_val})
+        return ret
+
 
 class BoolRecord(Record):
     """Simple boolean record type to handle NetBox responses with fields
