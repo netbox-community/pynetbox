@@ -9,4 +9,4 @@ python:
   - "2.7"
 
 script:
-  - nosetests pynetbox
+  - nosetests digitalocean/pynetbox
