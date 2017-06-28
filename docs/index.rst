@@ -1,6 +1,3 @@
-Welcome to pynetbox's documentation!
-====================================
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
