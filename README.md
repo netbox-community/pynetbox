@@ -7,7 +7,7 @@ pynetbox will be hosted on PyPI. To install run `pip install pynetbox`.
 Alternatively, you can clone the repo and run `python setup.py install`.
 
 ## Quick Start
-The full pynetbox API will be documented at readthedocs.io, but the following should be enough to get started using it.
+The full pynetbox API is [documented](http://pynetbox.readthedocs.io/en/latest/) on Read the Docs, but the following should be enough to get started using it.
 
 To begin, import pynetbox and instantiate the API.
 
@@ -28,5 +28,3 @@ The pynetbox API is setup so that NetBox's apps are attributes of the `.api()` o
 nb.dcim.devices.all()
 [test1-leaf1, test1-leaf2]
 ```
-
-The full list of available actions will be documented on readthedocs.io.
