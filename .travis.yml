@@ -11,3 +11,13 @@ python:
 script:
   - nosetests
   - pep8 pynetbox
+
+deploy:
+  - provider: pypi
+    distributions: sdist
+    server: https://testpypi.python.org/pypi
+    user: $PYPI_USERNAME
+    password: $PYPI_PASSWORD
+    on:
+      branch: master
+      tags: false
