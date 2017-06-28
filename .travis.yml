@@ -1,0 +1,12 @@
+language: python
+
+install:
+  - pip install -r requirements.txt
+  - pip install pep8
+  - pip install nose
+
+python:
+  - "2.7"
+
+script:
+  - nosetests pynetbox
