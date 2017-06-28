@@ -1,13 +1,17 @@
 # Pynetbox
-Python library for [Netbox](https://github.com/digitalocean/netbox).
+Python API client library for [NetBox](https://github.com/digitalocean/netbox).
+
 
 ## Installation
-pynetbox will be hosted on PyPI. To install simply run `pip install pynetbox`.
+
+To install run `pip install pynetbox`.
 
 Alternatively, you can clone the repo and run `python setup.py install`.
 
+
 ## Quick Start
-The full pynetbox API will be documented at readthedocs.io, but the following should be enough to get started using it.
+
+The full pynetbox API is documented on [Read the Docs](http://pynetbox.readthedocs.io/en/latest/), but the following should be enough to get started using it.
 
 To begin, import pynetbox and instantiate the API.
 
@@ -19,14 +23,16 @@ nb = pynetbox.api(
     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
 )
 ```
-The first argument the .api() method takes is the NetBox URL. There are a handful of named arguments you can provide, but in most cases none are required to simply pull data from NetBox. In order to write, the `token` kwarg needs to be provided, and in order to decrypt information from the `secrets` endpoint; either the `private_key_file` or `private_key` kwarg needs to be provided.
 
-### Queries
-The pynetbox API is setup so that NetBox's endpoints are attributes of the `.api()` object. Each attribute representing an endpoint has a handful of verbs available to carry out actions on the endpoint. For example, in order to query all the objects in the devices endpoint you would do the following:
+The first argument the .api() method takes is the NetBox URL. There are a handful of named arguments you can provide, but in most cases none are required to simply pull data. In order to write, the `token` argument should to be provided. To decrypt information from the `secrets` endpoint either the `private_key_file` or `private_key` argument needs to be provided.
+
+
+## Queries
+
+The pynetbox API is setup so that NetBox's apps are attributes of the `.api()` object, and in turn those apps have attribute representing each endpoint. Each endpoint has a handful of verbs available to carry out actions on the endpoint. For example, in order to query all the objects in the devices endpoint you would do the following:
 
 ```
-nb.devices.all()
+nb.dcim.devices.all()
 [test1-leaf1, test1-leaf2]
 ```
 
-The full list of available actions will be documented on readthedocs.io.
