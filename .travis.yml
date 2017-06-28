@@ -15,7 +15,7 @@ script:
 deploy:
   - provider: pypi
     distributions: sdist
-    server: https://testpypi.python.org/pypi
+    server: https://test.python.org/pypi
     user: $PYPI_USERNAME
     password: $PYPI_PASSWORD
     on:

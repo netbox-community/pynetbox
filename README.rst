@@ -32,7 +32,7 @@ Queries
 -------
 The pynetbox API is setup so that NetBox's apps are attributes of the `.api()` object, and in turn those apps have attribute representing each endpoint. Each endpoint has a handful of verbs available to carry out actions on the endpoint. For example, in order to query all the objects in the devices endpoint you would do the following:
 
-```
-nb.dcim.devices.all()
-[test1-leaf1, test1-leaf2]
-```
+::
+
+	nb.dcim.devices.all()
+	[test1-leaf1, test1-leaf2]
