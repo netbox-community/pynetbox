@@ -20,4 +20,4 @@ deploy:
     password: $PYPI_PASSWORD
     on:
       branch: master
-      tags: false
+      tags: true
