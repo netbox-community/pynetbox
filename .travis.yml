@@ -15,6 +15,7 @@ script:
 deploy:
   - provider: pypi
     distributions: sdist
+    server: https://upload.pypi.org/legacy/
     user: $PYPI_USERNAME
     password: $PYPI_PASSWORD
     on:
