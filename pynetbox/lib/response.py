@@ -185,7 +185,7 @@ class Record(object):
         :returns: True if PUT request was successful.
         :example:
 
-        >>> x = nb.devices.get(name='test1-a3-tor1b')
+        >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
         >>> x.serial
         u''
         >>> x.serial = '1234'
@@ -213,7 +213,7 @@ class Record(object):
         :returns: True if DELETE operation was successful.
         :example:
 
-        >>> x = nb.devices.get(name='test1-a3-tor1b')
+        >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
         >>> x.delete()
         True
         >>>

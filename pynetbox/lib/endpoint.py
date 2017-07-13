@@ -92,7 +92,7 @@ class Endpoint(object):
 
         :Examples:
 
-        >>> nb.devices.all()
+        >>> nb.dcim.devices.all()
         [test1-a3-oobsw2, test1-a3-oobsw3, test1-a3-oobsw4]
         >>>
         """
@@ -129,7 +129,7 @@ class Endpoint(object):
 
         Referencing with a kwarg that only returns one value.
 
-        >>> nb.devices.get(name='test1-a3-tor1b')
+        >>> nb.dcim.devices.get(name='test1-a3-tor1b')
         test1-a3-tor1b
         >>>
 
@@ -197,15 +197,15 @@ class Endpoint(object):
 
         Chaining multiple named arguments.
 
-        >>> nb.devices.filter(role='leaf-switch', status=True)
+        >>> nb.dcim.devices.filter(role='leaf-switch', status=True)
         [test1-leaf2]
         >>>
 
         Passing a list as a named argument adds multiple filters of the
         same value.
 
-        >>> nb.devices.filter(role=['leaf-switch', 'spine-switch'])
-        [test1-a3-spine1, test1-a3-spine2, test1-a3-spine3]
+        >>> nb.dcim.devices.filter(role=['leaf-switch', 'spine-switch'])
+        [test1-a3-spine1, test1-a3-spine2, test1-a3-leaf1]
         >>>
         """
 
@@ -271,7 +271,7 @@ class Endpoint(object):
         Creating an object on the `devices` endpoint you can lookup a
         device_role's name with:
 
-        >>> netbox.devices.create(
+        >>> netbox.dcim.devices.create(
         ...    name='test',
         ...    device_role=1,
         ... )
