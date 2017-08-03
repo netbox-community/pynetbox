@@ -74,7 +74,7 @@ class Api(object):
     ...     private_key_file='/path/to/private-key.pem',
     ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
     ... )
-    >>> nb.dcim.device.all()
+    >>> nb.dcim.devices.all()
     """
 
     def __init__(self, url, token=None, private_key=None,
