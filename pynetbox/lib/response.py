@@ -68,7 +68,7 @@ class Record(object):
     def __iter__(self):
         for i in dict(self._meta).keys():
             cur_attr = getattr(self, i)
-            if isinstance(cur_attr, (int, basestring, type(None), list)):
+            if isinstance(cur_attr, (int, str, unicode, type(None), list)):
                 yield i, cur_attr
             else:
                 yield i, dict(cur_attr)
@@ -170,7 +170,7 @@ class Record(object):
                 try:
                     current_val = current_val.id
                 except AttributeError:
-                    type_filter = (int, basestring, type(None))
+                    type_filter = (int, str, unicode, type(None))
                     if not isinstance(current_val, type_filter):
                         current_val = current_val.value
             ret.update({i: current_val})
@@ -245,7 +245,7 @@ class IPRecord(Record):
     def __iter__(self):
         for i in dict(self._meta).keys():
             cur_attr = getattr(self, i)
-            if isinstance(cur_attr, (int, basestring, type(None))):
+            if isinstance(cur_attr, (int, str, unicode, type(None))):
                 yield i, cur_attr
             else:
                 if isinstance(cur_attr, netaddr.IPNetwork):
@@ -256,8 +256,8 @@ class IPRecord(Record):
     def _parse_values(self, values):
         """ Parses values init arg. for responses with IPs fields.
 
-        Similar parser as parent, but takes basestring fields and trys
-        converting them to IPNetwork objects.
+        Similar parser as parent, but takes str & unicode fields and
+        trys converting them to IPNetwork objects.
         """
         for k, v in values.items():
             self._meta.append((k, v))
@@ -272,7 +272,7 @@ class IPRecord(Record):
                         self.default_ret(v, api_kwargs=self.api_kwargs)
                     )
             else:
-                if isinstance(v, basestring):
+                if isinstance(v, (str, unicode)):
                     try:
                         v = netaddr.IPNetwork(v)
                     except netaddr.AddrFormatError:
@@ -295,7 +295,7 @@ class IPRecord(Record):
                 try:
                     current_val = current_val.id
                 except AttributeError:
-                    type_filter = (int, basestring, type(None))
+                    type_filter = (int, str, unicode, type(None))
                     if not isinstance(current_val, type_filter):
                         if isinstance(current_val, netaddr.ip.IPNetwork):
                             current_val = str(current_val)
