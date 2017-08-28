@@ -185,21 +185,26 @@ class Request(object):
             else:
                 raise RequestError(req)
 
-        req = make_request(self.url)
-        if req.get('results') is not None:
-            ret = req['results']
-            if req['next']:
-                next_url = "{}{}limit={}&offset={}".format(
-                    self.url,
-                    '&' if self.url[-1] != '/' else '?',
-                    req['count'],
-                    len(req['results'])
-                )
-                req = make_request(next_url)
-                ret.extend(req['results'])
-            return ret
-        else:
-            return req
+        def req_all(url):
+            req = make_request(url)
+            if req.get('results') is not None:
+                ret = req['results']
+                first_run = True
+                while req['next']:
+                    next_url = "{}{}limit={}&offset={}".format(
+                        self.url,
+                        '&' if self.url[-1] != '/' else '?',
+                        req['count'],
+                        len(req['results'])
+                    ) if first_run else req['next']
+                    req = make_request(next_url)
+                    first_run = False
+                    ret.extend(req['results'])
+                return ret
+            else:
+                return req
+
+        return req_all(self.url)
 
     def put(self, data):
         """Makes PUT request.
