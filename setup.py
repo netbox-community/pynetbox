@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='pynetbox',
-    version='2.0.4',
+    version='2.0.5',
     description='NetBox API client library',
     url='https://github.com/digitalocean/pynetbox',
     author='Zach Moody',
