@@ -55,6 +55,11 @@ class Api(object):
     Calling any of these attributes will return
     :py:class:`.App` which exposes endpoints as attributes.
 
+    .. note::  In order to call NetBox endpoints with dashes in their
+        names you should convert the dash to an underscore.
+        (E.g. querying the ip-addresses endpoint is done with
+        ``nb.ipam.ip_addresses.all()``.)
+
     :param str url: The base url to the instance of Netbox you
         wish to connect to.
     :param str token: Your netbox token.
@@ -75,6 +80,7 @@ class Api(object):
     ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
     ... )
     >>> nb.dcim.devices.all()
+
     """
 
     def __init__(self, url, token=None, private_key=None,
