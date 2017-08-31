@@ -33,6 +33,14 @@ class Endpoint(object):
         classes.
     :arg dict api_kwargs: Vars passed from Api() that contain
         variables that are set when Api is instantiated.
+
+    .. note::
+
+        In order to call NetBox endpoints with dashes in their
+        names you should convert the dash to an underscore.
+        (E.g. querying the ip-addresses endpoint is done with
+        ``nb.ipam.ip_addresses.all()``.)
+
     """
 
     def __init__(self, name, app, api_kwargs={}):
