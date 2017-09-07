@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from pynetbox.lib.response import Record, BoolRecord
+from pynetbox.lib.response import Record
 from pynetbox.ipam import IpAddresses
 
 
@@ -38,8 +38,6 @@ class Devices(Record):
                 return an initialized DeviceType object
     """
     has_details = True
-    status = BoolRecord
-    face = BoolRecord
     device_type = DeviceTypes
     primary_ip = IpAddresses
     primary_ip4 = IpAddresses
@@ -50,6 +48,16 @@ class InterfaceConnections(Record):
 
     def __str__(self):
         return self.interface_a.name
+
+
+class InterfaceConnection(Record):
+
+    def __str__(self):
+        return self.interface.name
+
+
+class Interfaces(Record):
+    interface_connection = InterfaceConnection
 
 
 class RackReservations(Record):

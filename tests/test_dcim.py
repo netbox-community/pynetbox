@@ -114,6 +114,30 @@ class GenericTest(object):
                 headers=AUTH_HEADERS
             )
 
+    def test_compare(self):
+        with patch(
+            'pynetbox.lib.query.requests.get',
+            return_value=Response(fixture='{}/{}.json'.format(
+                self.app,
+                self.name[:-1]
+            ))
+        ):
+            ret = getattr(nb, self.name).get(1)
+            self.assertTrue(ret)
+            self.assertTrue(ret._compare())
+
+    def test_serialize(self):
+        with patch(
+            'pynetbox.lib.query.requests.get',
+            return_value=Response(fixture='{}/{}.json'.format(
+                self.app,
+                self.name[:-1]
+            ))
+        ):
+            ret = getattr(nb, self.name).get(1)
+            self.assertTrue(ret)
+            self.assertTrue(ret.serialize())
+
 
 class DeviceTestCase(unittest.TestCase, GenericTest):
     name = 'devices'
@@ -207,13 +231,12 @@ class SiteTestCase(unittest.TestCase, GenericTest):
         return_value=Response(fixture='dcim/site.json')
     )
     def test_modify(self, mock):
-        '''Test modifying custom field.
+        '''Test modifying a custom field.
         '''
         ret = getattr(nb, self.name).get(1)
         ret.custom_fields['test_custom'] = "Testing"
-        ret_serialized = ret.serialize()
-        self.assertTrue(ret_serialized)
         self.assertFalse(ret._compare())
+        self.assertTrue(ret.serialize())
         self.assertEqual(
             ret.custom_fields['test_custom'], 'Testing'
         )
@@ -235,6 +258,34 @@ class SiteTestCase(unittest.TestCase, GenericTest):
 
 class InterfaceTestCase(unittest.TestCase, GenericTest):
     name = 'interfaces'
+
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        return_value=Response(fixture='dcim/interface.json')
+    )
+    def test_modify(self, mock):
+        ret = nb.interfaces.get(1)
+        ret.description = 'Testing'
+        ret_serialized = ret.serialize()
+        self.assertTrue(ret)
+        self.assertEqual(ret_serialized['description'], 'Testing')
+        self.assertEqual(ret_serialized['form_factor'], 1400)
+
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        return_value=Response(fixture='dcim/interface.json')
+    )
+    def test_modify_connected_iface(self, mock):
+        new_iface = dict(
+            status=True,
+            interface=2
+        )
+        ret = nb.interfaces.get(1)
+        ret.interface_connection = new_iface
+        self.assertEqual(
+            ret.serialize()['interface_connection'],
+            new_iface
+        )
 
     @patch(
         'pynetbox.lib.query.requests.get',
