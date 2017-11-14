@@ -15,7 +15,7 @@ api = pynetbox.api(
     version='2.0'
 )
 
-nb = api.tenancy
+nb = api.virtualization
 
 HEADERS = {
     'accept': 'application/json; version=2.0;'
@@ -25,7 +25,7 @@ HEADERS = {
 class GenericTest(object):
     name = None
     ret = pynetbox.lib.response.Record
-    app = 'tenancy'
+    app = 'virtualization'
 
     def test_get_all(self):
         with patch(
@@ -87,9 +87,21 @@ class GenericTest(object):
             )
 
 
-class TenantsTestCase(unittest.TestCase, GenericTest):
-    name = 'tenants'
+class ClusterTypesTestCase(unittest.TestCase, GenericTest):
+    name = 'cluster_types'
 
 
-class TenantGroupsTestCase(unittest.TestCase, GenericTest):
-    name = 'tenant_groups'
+class ClusterGroupsTestCase(unittest.TestCase, GenericTest):
+    name = 'cluster_groups'
+
+
+class ClustersTestCase(unittest.TestCase, GenericTest):
+    name = 'clusters'
+
+
+class VirtualMachinesTestCase(unittest.TestCase, GenericTest):
+    name = 'virtual_machines'
+
+
+class InterfacesTestCase(unittest.TestCase, GenericTest):
+    name = 'interfaces'

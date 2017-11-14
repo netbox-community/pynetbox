@@ -1,0 +1,30 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "name": "vm-test01",
+            "status": {
+                "value": 1,
+                "label": "Active"
+            },
+            "cluster": {
+                "id": 1,
+                "url": "http://localhost:8000/api/virtualization/clusters/1/",
+                "name": "vm-test-cluster"
+            },
+            "role": null,
+            "tenant": null,
+            "platform": null,
+            "primary_ip4": null,
+            "primary_ip6": null,
+            "vcpus": 2,
+            "memory": 1024,
+            "disk": 500,
+            "comments": "",
+            "custom_fields": {}
+        }
+    ]
+}

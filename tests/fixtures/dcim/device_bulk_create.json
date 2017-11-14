@@ -1,0 +1,40 @@
+[
+    {
+        "id": 1,
+        "name": "test1-core3",
+        "device_type": 1,
+        "device_role": 3,
+        "tenant": null,
+        "platform": null,
+        "serial": "",
+        "asset_tag": null,
+        "site": 1,
+        "rack": null,
+        "position": null,
+        "face": null,
+        "status": 1,
+        "primary_ip4": null,
+        "primary_ip6": null,
+        "cluster": null,
+        "comments": ""
+    },
+    {
+        "id": 2,
+        "name": "test1-core4",
+        "device_type": 1,
+        "device_role": 3,
+        "tenant": null,
+        "platform": null,
+        "serial": "",
+        "asset_tag": null,
+        "site": 1,
+        "rack": null,
+        "position": null,
+        "face": null,
+        "status": 1,
+        "primary_ip4": null,
+        "primary_ip6": null,
+        "cluster": null,
+        "comments": ""
+    }
+]

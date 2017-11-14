@@ -154,6 +154,14 @@ class Request(object):
         else:
             return self.base
 
+    def normalize_url(self, url):
+        """ Builds a url for POST actions.
+        """
+        if url[-1] != '/':
+            return "{}/".format(url)
+
+        return url
+
     def get(self):
         """Makes a GET request.
 
@@ -187,7 +195,7 @@ class Request(object):
 
         def req_all(url):
             req = make_request(url)
-            if req.get('results') is not None:
+            if isinstance(req, dict) and req.get('results') is not None:
                 ret = req['results']
                 first_run = True
                 while req['next']:
@@ -255,7 +263,7 @@ class Request(object):
                 {'X-Session-Key': self.session_key}
             )
         req = requests.post(
-            "{}/".format(self.url),
+            self.normalize_url(self.url),
             headers=headers,
             data=json.dumps(data)
         )

@@ -1,0 +1,13 @@
+{
+    "id": 223,
+    "name": "eth0",
+    "virtual_machine": {
+        "id": 1,
+        "url": "http://localhost:8000/api/virtualization/virtual-machines/1/",
+        "name": "vm-test01"
+    },
+    "enabled": true,
+    "mac_address": null,
+    "mtu": null,
+    "description": ""
+}

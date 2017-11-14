@@ -7,9 +7,10 @@ install:
 
 python:
   - "2.7"
+  - "3.6"
 
 script:
-  - nosetests
+  - python -m "nose"
   - pep8 pynetbox
 
 deploy:

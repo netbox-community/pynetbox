@@ -1,0 +1,11 @@
+{
+    "id": 1,
+    "address": "10.1.1.1/32",
+    "vrf": null,
+    "tenant": null,
+    "status": 1,
+    "role": null,
+    "interface": null,
+    "description": "",
+    "nat_inside": null
+}
