@@ -1,8 +1,12 @@
 from setuptools import setup
+from os.path import join, dirname
+
+with open(join(dirname(__file__), 'pynetbox/VERSION')) as f:
+    version = f.read().strip()
 
 setup(
     name='pynetbox',
-    version='3.0.0',
+    version=version,
     description='NetBox API client library',
     url='https://github.com/digitalocean/pynetbox',
     author='Zach Moody',
