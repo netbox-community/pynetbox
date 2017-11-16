@@ -1,0 +1,24 @@
+{
+    "id": 1,
+    "name": "vm-test-cluster",
+    "type": {
+        "id": 1,
+        "url": "http://localhost:8000/api/virtualization/cluster-types/1/",
+        "name": "vm-test-type",
+        "slug": "vm-test-type"
+    },
+    "group": {
+        "id": 1,
+        "url": "http://localhost:8000/api/virtualization/cluster-groups/1/",
+        "name": "vm-test-group",
+        "slug": "vm-test-group"
+    },
+    "site": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/sites/1/",
+        "name": "TEST1",
+        "slug": "test1"
+    },
+    "comments": "",
+    "custom_fields": {}
+}

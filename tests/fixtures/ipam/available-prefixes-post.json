@@ -1,0 +1,14 @@
+[
+    {
+        "id": 4,
+        "prefix": "10.1.1.0/30",
+        "site": null,
+        "vrf": null,
+        "tenant": null,
+        "vlan": null,
+        "status": 1,
+        "role": null,
+        "is_pool": false,
+        "description": ""
+    }
+]

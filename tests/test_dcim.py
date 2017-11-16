@@ -1,9 +1,13 @@
 import unittest
+import six
 
-from mock import patch
-from util import Response
+from .util import Response
 import pynetbox
-import netaddr
+
+if six.PY3:
+    from unittest.mock import patch
+else:
+    from mock import patch
 
 
 api = pynetbox.api(
@@ -202,6 +206,29 @@ class DeviceTestCase(unittest.TestCase, GenericTest):
         }
         ret = nb.devices.create(**data)
         self.assertTrue(ret)
+
+    @patch(
+        'pynetbox.lib.query.requests.post',
+        return_value=Response(fixture='dcim/device_bulk_create.json')
+    )
+    def test_create_device_bulk(self, mock):
+        data = [
+            {
+                'name': 'test-device',
+                'site': 1,
+                'device_type': 1,
+                'device_role': 1,
+            },
+            {
+                'name': 'test-device1',
+                'site': 1,
+                'device_type': 1,
+                'device_role': 1,
+            },
+        ]
+        ret = nb.devices.create(data)
+        self.assertTrue(ret)
+        self.assertTrue(len(ret), 2)
 
     @patch(
         'pynetbox.lib.query.requests.get',

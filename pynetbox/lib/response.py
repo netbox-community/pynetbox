@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import netaddr
+import six
 
 from pynetbox.lib.query import Request
 
@@ -294,7 +295,7 @@ class IPRecord(Record):
                         v = lookup(v, api_kwargs=self.api_kwargs)
                     else:
                         v = self.default_ret(v, api_kwargs=self.api_kwargs)
-                if isinstance(v, (str, unicode)):
+                if isinstance(v, six.string_types):
                     try:
                         v = netaddr.IPNetwork(v)
                     except netaddr.AddrFormatError:

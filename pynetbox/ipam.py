@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from pynetbox.lib.response import IPRecord
+from pynetbox.lib.endpoint import DetailEndpoint
 
 
 class IpAddresses(IPRecord):
@@ -26,6 +27,74 @@ class Prefixes(IPRecord):
 
     def __str__(self):
         return str(self.prefix)
+
+    @property
+    def available_ips(self):
+        """ Represents the ``available-ips`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing and creating IP addresses inside a prefix.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> prefix = nb.ipam.prefixes.get(24)
+        >>> prefix.available_ips.list()
+        [{u'vrf': None, u'family': 4, u'address': u'10.1.1.49/30'}...]
+
+        To create a single IP:
+
+        >>> prefix = nb.ipam.prefixes.get(24)
+        >>> prefix.available_ips.create()
+        {u'status': 1, u'description': u'', u'nat_inside': None...}
+
+
+        To create multiple IPs:
+
+        >>> prefix = nb.ipam.prefixes.get(24)
+        >>> create = prefix.available_ips.create([{} for i in range(2)])
+        >>> len(create)
+        2
+        """
+        return DetailEndpoint(
+            'available-ips',
+            parent_obj=self,
+        )
+
+    @property
+    def available_prefixes(self):
+        ''' Represents the ``available-prefixes`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing and creating prefixes inside a parent prefix.
+
+        Very similar to :py:meth:`~pynetbox.ipam.Prefixes.available_ips`
+        , except that dict (or list of dicts) passed to ``.create()``
+        needs to have a ``prefex_length`` key/value specifed.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> prefix.available_prefixes.list()
+        [{u'prefix': u'10.1.1.44/30', u'vrf': None, u'family': 4}]
+
+
+        Creating a single child prefix:
+
+        >>> prefix = nb.ipam.prefixes.get(1)
+        >>> new_prefix = prefix.available_prefixes.create(
+        ...    {'prefix_length': 29}
+        ...)
+        >>> new_prefix['prefix']
+        u'10.1.1.56/29'
+
+        '''
+        return DetailEndpoint(
+            'available-prefixes',
+            parent_obj=self,
+        )
 
 
 class Aggregates(IPRecord):

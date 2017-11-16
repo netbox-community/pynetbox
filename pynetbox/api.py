@@ -51,6 +51,7 @@ class Api(object):
         * secrets
         * tenancy
         * extras
+        * virtualization
 
     Calling any of these attributes will return
     :py:class:`.App` which exposes endpoints as attributes.
@@ -115,3 +116,4 @@ class Api(object):
         self.secrets = App('secrets', api_kwargs=self.api_kwargs)
         self.tenancy = App('tenancy', api_kwargs=self.api_kwargs)
         self.extras = App('extras', api_kwargs=self.api_kwargs)
+        self.virtualization = App('virtualization', api_kwargs=self.api_kwargs)

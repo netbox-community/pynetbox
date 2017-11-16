@@ -1,10 +1,16 @@
 import unittest
+import json
 
-from mock import patch
-from util import Response
 import netaddr
+import six
 
+from .util import Response
 import pynetbox
+
+if six.PY3:
+    from unittest.mock import patch
+else:
+    from mock import patch
 
 
 api = pynetbox.api(
@@ -16,6 +22,11 @@ nb = api.ipam
 
 HEADERS = {
     'accept': 'application/json; version=2.0;'
+}
+
+POST_HEADERS = {
+    'Content-Type': 'application/json; version=2.0;',
+    'authorization': 'Token None',
 }
 
 
@@ -111,6 +122,94 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         self.assertFalse(ret._compare())
         self.assertEqual(ret_serialized['prefix'], '10.1.2.0/24')
         self.assertTrue(netaddr.IPNetwork(ret_serialized['prefix']))
+
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        side_effect=[
+            Response(fixture='ipam/prefix.json'),
+            Response(fixture='ipam/available-ips.json'),
+        ]
+    )
+    def test_get_available_ips(self, mock):
+        pfx = nb.prefixes.get(1)
+        ret = pfx.available_ips.list()
+        mock.assert_called_with(
+            'http://localhost:8000/api/ipam/prefixes/1/available-ips/'.format(self.name),
+            headers=HEADERS
+        )
+        self.assertTrue(ret)
+        self.assertEqual(len(ret), 3)
+
+    @patch(
+        'pynetbox.lib.query.requests.post',
+        return_value=Response(fixture='ipam/available-ips-post.json')
+    )
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        return_value=Response(fixture='ipam/prefix.json'),
+    )
+    def test_create_available_ips(self, get, post):
+        expected_result = {
+            'status': 1,
+            'description': '',
+            'nat_inside': None,
+            'role': None,
+            'vrf': None,
+            'address':
+            '10.1.1.1/32',
+            'interface': None,
+            'id': 1,
+            'tenant': None
+        }
+        create_parms = dict(
+            status=2,
+        )
+        pfx = nb.prefixes.get(1)
+        ret = pfx.available_ips.create(create_parms)
+        post.assert_called_with(
+            'http://localhost:8000/api/ipam/prefixes/1/available-ips/'.format(self.name),
+            headers=POST_HEADERS,
+            data=json.dumps(create_parms),
+        )
+        self.assertTrue(ret)
+        self.assertEqual(ret, expected_result)
+
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        side_effect=[
+            Response(fixture='ipam/prefix.json'),
+            Response(fixture='ipam/available-prefixes.json'),
+        ]
+    )
+    def test_get_available_prefixes(self, mock):
+        pfx = nb.prefixes.get(1)
+        ret = pfx.available_prefixes.list()
+        mock.assert_called_with(
+            'http://localhost:8000/api/ipam/prefixes/1/available-prefixes/'.format(self.name),
+            headers=HEADERS
+        )
+        self.assertTrue(ret)
+
+    @patch(
+        'pynetbox.lib.query.requests.post',
+        return_value=Response(fixture='ipam/available-prefixes-post.json')
+    )
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        return_value=Response(fixture='ipam/prefix.json'),
+    )
+    def test_create_available_prefixes(self, get, post):
+        create_parms = dict(
+            prefix_length=30,
+        )
+        pfx = nb.prefixes.get(1)
+        ret = pfx.available_prefixes.create(create_parms)
+        post.assert_called_with(
+            'http://localhost:8000/api/ipam/prefixes/1/available-prefixes/'.format(self.name),
+            headers=POST_HEADERS,
+            data=json.dumps(create_parms),
+        )
+        self.assertTrue(ret)
 
 
 class IPAddressTestCase(unittest.TestCase, GenericTest):

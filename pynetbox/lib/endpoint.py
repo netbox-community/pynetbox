@@ -245,34 +245,25 @@ class Endpoint(object):
         CACHE[self.endpoint_name].extend(ret)
         return ret
 
-    def _create(self, data):
-        """Base create method
-
-        Used in .create() and .bulk_create()
-        """
-
-        req = Request(
-            base=self.url,
-            token=self.token,
-            session_key=self.session_key,
-            version=self.version,
-        )
-        post = req.post(data)
-        if post:
-            return post['id']
-        else:
-            return False
-
-    def create(self, **kwargs):
+    def create(self, *args, **kwargs):
         """Creates an object on an endpoint.
 
-        Allows for the creation of new objects on an endpoint.
-        Named arguments are converted to json properties.
+        Allows for the creation of new objects on an endpoint. Named
+        arguments are converted to json properties, and a single object
+        is created. NetBox's bulk creation capabilities can be used by
+        passing a list of dictionaries as the first argument.
 
+        .. note:
+
+            Any positional arguments will supercede named ones.
+
+        :arg list \*args: A list of dictionaries containing the
+            properties of the objects to be created.
         :arg str \**kwargs: key/value strings representing
             properties on a json object.
 
-        :returns: Integer of created object's id.
+        :returns: A response from NetBox as a dictionary or list of
+            dictionaries.
 
         :Examples:
 
@@ -284,14 +275,79 @@ class Endpoint(object):
         ...    device_role=1,
         ... )
         >>>
-        """
-        return self._create(kwargs)
 
-    def bulk_create(self, create_list):
-        """Bulk creation method.
+        Use bulk creation by passing a list of dictionaries:
 
-        Does the same as .create() only accepting a list of dictionaries
-        with the the same key/value pairs as kwargs.
+        >>> nb.dcim.devices.create([
+        ...     {
+        ...         "name": "test1-core3",
+        ...         "device_role": 3,
+        ...         "site": 1,
+        ...         "device_type": 1,
+        ...         "status": 1
+        ...     },
+        ...     {
+        ...         "name": "test1-core4",
+        ...         "device_role": 3,
+        ...         "site": 1,
+        ...         "device_type": 1,
+        ...         "status": 1
+        ...     }
+        ... ])
         """
-        for i in create_list:
-            self._create(i)
+
+        return Request(
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            version=self.version,
+        ).post(args[0] if len(args) > 0 else kwargs)
+
+
+class DetailEndpoint(object):
+    '''Enables read/write Operations on detail endpoints.
+
+    Endpoints like ``available-ips`` that are detail routes off
+    traditional endpoints are handled with this class.
+    '''
+
+    def __init__(self, name, parent_obj=None):
+        self.token = parent_obj.api_kwargs.get('token')
+        self.version = parent_obj.api_kwargs.get('version')
+        self.session_key = parent_obj.api_kwargs.get('session_key')
+        self.url = "{}/{}/{}/".format(
+            parent_obj.endpoint_meta.get('url'),
+            parent_obj.id,
+            name
+        )
+        self.request_kwargs = dict(
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            version=self.version,
+        )
+
+    def list(self):
+        """The view operation for a detail endpoint
+
+        Returns the response from NetBox for a detail endpoint.
+
+        :returns: A dictionary or list of dictionaries its retrieved
+            from NetBox.
+        """
+        return Request(**self.request_kwargs).get()
+
+    def create(self, data={}):
+        """The write operation for a detail endpoint.
+
+        Creates objects on a detail endpoint in NetBox.
+
+        :arg dict/list,optional data: A dictionary containing the
+            key/value pair of the items you're creating on the parent
+            object. Defaults to empty dict which will create a single
+            item with default values.
+
+        :returns: A dictionary or list of dictionaries its created in
+            NetBox.
+        """
+        return Request(**self.request_kwargs).post(data)
