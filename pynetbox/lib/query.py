@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import json
-import urllib
+from six.moves.urllib.parse import urlparse, urlencode
 
 import requests
 
@@ -105,7 +105,7 @@ class Request(object):
                 'authorization': 'Token {}'.format(self.token),
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            data=urllib.urlencode({
+            data=urlencode({
                 'private_key': self.private_key.strip('\n')
             })
         )
