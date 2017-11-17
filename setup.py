@@ -12,6 +12,7 @@ setup(
     author='Zach Moody',
     author_email='zmoody@do.co',
     license='Apache2',
+    include_package_data=True,
     packages=[
         'pynetbox',
         'pynetbox.lib'
