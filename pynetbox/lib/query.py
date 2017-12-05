@@ -241,6 +241,34 @@ class Request(object):
         else:
             raise RequestError(req)
 
+    def patch(self, data):
+        """Makes PATCH request. Nearly identical to PUT.
+
+        Makes a PATCH request to NetBox's API. Adds the session key to
+        headers if the `private_key` attribute was populated.
+
+        :param data: (dict) Contains a dict that will be turned into a
+            json object and sent to the API.
+        :raises: RequestError if req.ok returns false.
+        :returns: Dict containing the response from NetBox's API.
+        """
+        # TODO: DRY
+        headers = {
+            'Content-Type': 'application/json; version={};'.format(
+                self.version or self.get_version()
+            ),
+            'authorization': 'Token {}'.format(self.token),
+        }
+        if self.session_key:
+            headers.update(
+                {'X-Session-Key': self.session_key}
+            )
+        req = requests.patch(self.url, headers=headers, data=json.dumps(data))
+        if req.ok:
+            return json.loads(req.text)
+        else:
+            raise RequestError(req)
+
     def post(self, data):
         """Makes POST request.
 

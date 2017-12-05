@@ -174,6 +174,67 @@ class Endpoint(object):
 
         return self.return_obj(req.get(), **ret_kwargs)
 
+    def update(self, *args, **kwargs):
+        """Updates an object on an endpoint.
+
+        :arg int,optional key: id for the item to be
+            updated. Can
+
+        :arg str,optional \**kwargs: Accepts the same keyword args as
+            filter(). Any search argeter the endpoint accepts can
+            be added as a keyword arg.
+
+        :returns: A single updated object.
+
+        :raises ValueError: If ID is not passed as a poitional arg, a value in a dict or as a kwarg
+
+        :Examples:
+
+        Update a device, given a device with ID of "10"
+
+        If using positional args, ID must be first
+
+        >>> nb.dcim.devices.update(10, {'name': 'mydevice'})
+        mydevice
+        >>>
+
+        Using kwargs
+
+        >>> nb.devices.update(id=10, name='mydevice')
+        mydevice
+        >>>
+
+        Using a dict
+        >>> nb.devices.update({'id': 10, 'name': 'mydevice'})
+        mydevice
+        >>>
+        """
+        if len(args) > 0:
+            if isinstance(args[0], dict):
+                if 'id' in args[0]:
+                    key = args.pop('id')
+                else:
+                    key = None
+            else:
+                try:
+                    key = int(args[0])
+                except ValueError:
+                    key = None
+        elif 'id' in kwargs:
+            key = kwargs.pop('id')
+
+        if not key:
+            raise ValueError('No ID in provided args')
+
+        return Request(
+            key=key,
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            version=self.version,
+        ).patch(args[1] if len(args) > 0 else kwargs)
+
+
     def filter(self, *args, **kwargs):
         """Queries the 'ListView' of a given endpoint.
 
