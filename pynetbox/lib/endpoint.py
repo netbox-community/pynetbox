@@ -209,22 +209,28 @@ class Endpoint(object):
         mydevice
         >>>
         """
-        if len(args) > 0:
+        key = None
+        upd = None
+        if len(args) == 1:
             if isinstance(args[0], dict):
                 if 'id' in args[0]:
                     key = args[0].pop('id')
-                else:
-                    key = None
-            else:
-                try:
-                    key = int(args[0])
-                except ValueError:
-                    key = None
+                    upd = args[0]
+        elif len(args) > 1:
+            try:
+                key = int(args[0])
+                upd = args[1]
+            except ValueError:
+                key = None
         elif 'id' in kwargs:
             key = kwargs.pop('id')
+            upd = kwargs
 
         if not key:
             raise ValueError('No ID in provided args')
+
+        if not upd:
+            raise ValueError("No update data")
 
         return Request(
             key=key,
@@ -232,7 +238,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             version=self.version,
-        ).patch(args[1] if len(args) > 0 else kwargs)
+        ).patch(upd)
 
 
     def filter(self, *args, **kwargs):
