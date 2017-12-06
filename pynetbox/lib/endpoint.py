@@ -56,6 +56,7 @@ class Endpoint(object):
         self.token = api_kwargs.get('token')
         self.version = api_kwargs.get('version')
         self.session_key = api_kwargs.get('session_key')
+        self.ssl_verify = api_kwargs.get('ssl_verify')
         self.url = '{base_url}/{app}/{endpoint}'.format(
             base_url=self.base_url,
             app=app_name,
@@ -109,6 +110,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             version=self.version,
+            ssl_verify=self.ssl_verify,
         )
         ret_kwargs = dict(
             api_kwargs=self.api_kwargs,
@@ -165,7 +167,8 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            version=self.version
+            version=self.version,
+            ssl_verify=self.ssl_verify,
         )
         ret_kwargs = dict(
             api_kwargs=self.api_kwargs,
@@ -294,6 +297,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             version=self.version,
+            ssl_verify=self.ssl_verify,
         )
         ret_kwargs = dict(
             api_kwargs=self.api_kwargs,
@@ -362,6 +366,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             version=self.version,
+            ssl_verify=self.ssl_verify,
         ).post(args[0] if len(args) > 0 else kwargs)
 
 
@@ -376,6 +381,7 @@ class DetailEndpoint(object):
         self.token = parent_obj.api_kwargs.get('token')
         self.version = parent_obj.api_kwargs.get('version')
         self.session_key = parent_obj.api_kwargs.get('session_key')
+        self.ssl_verify = parent_obj.api_kwargs.get('ssl_verify')
         self.url = "{}/{}/{}/".format(
             parent_obj.endpoint_meta.get('url'),
             parent_obj.id,
@@ -386,6 +392,7 @@ class DetailEndpoint(object):
             token=self.token,
             session_key=self.session_key,
             version=self.version,
+            ssl_verify=self.ssl_verify,
         )
 
     def list(self):
