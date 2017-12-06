@@ -212,7 +212,7 @@ class Endpoint(object):
         if len(args) > 0:
             if isinstance(args[0], dict):
                 if 'id' in args[0]:
-                    key = args.pop('id')
+                    key = args[0].pop('id')
                 else:
                     key = None
             else:
