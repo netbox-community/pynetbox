@@ -241,6 +241,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             version=self.version,
+            ssl_verify=self.ssl_verify
         ).patch(upd)
 
 
