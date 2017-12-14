@@ -239,7 +239,10 @@ class Request(object):
             headers.update(
                 {'X-Session-Key': self.session_key}
             )
-        req = requests.put(self.url, headers=headers, data=json.dumps(data), verify=self.ssl_verify)
+        req = requests.put(self.url,
+                           headers=headers,
+                           data=json.dumps(data),
+                           verify=self.ssl_verify)
         if req.ok:
             return json.loads(req.text)
         else:
@@ -267,7 +270,10 @@ class Request(object):
             headers.update(
                 {'X-Session-Key': self.session_key}
             )
-        req = requests.patch(self.url, headers=headers, data=json.dumps(data), verify=self.ssl_verify)
+        req = requests.patch(self.url,
+                             headers=headers,
+                             data=json.dumps(data),
+                             verify=self.ssl_verify)
         if req.ok:
             return json.loads(req.text)
         else:

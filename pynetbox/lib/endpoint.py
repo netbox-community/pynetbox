@@ -189,7 +189,8 @@ class Endpoint(object):
 
         :returns: A single updated object.
 
-        :raises ValueError: If ID is not passed as a poitional arg, a value in a dict or as a kwarg
+        :raises ValueError: If ID is not passed as a poitional arg, a value
+            in a dict or as a kwarg
 
         :Examples:
 
@@ -243,7 +244,6 @@ class Endpoint(object):
             version=self.version,
             ssl_verify=self.ssl_verify
         ).patch(upd)
-
 
     def filter(self, *args, **kwargs):
         """Queries the 'ListView' of a given endpoint.
