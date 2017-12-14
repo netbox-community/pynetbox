@@ -212,13 +212,13 @@ class DeviceTestCase(unittest.TestCase, GenericTest):
             'id': 1,
             'name': 'test-device'
         }
-        ret_id_arg = nb.devices.update(1, **data)
+        ret_id_arg = nb.devices.update(1, data)
         self.assertTrue(ret_id_arg)
 
         ret_id_kwarg = nb.devices.update(id=1, name='test-device')
         self.assertTrue(ret_id_kwarg)
 
-        ret_id_in_dict = nb.devices.update(**data_with_id)
+        ret_id_in_dict = nb.devices.update(data_with_id)
         self.assertTrue(ret_id_in_dict)
 
     @patch(
