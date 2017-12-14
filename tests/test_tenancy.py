@@ -44,7 +44,8 @@ class GenericTest(object):
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=HEADERS
+                headers=HEADERS,
+                verify=True
             )
 
     def test_filter(self):
@@ -64,7 +65,8 @@ class GenericTest(object):
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=HEADERS
+                headers=HEADERS,
+                verify=True
             )
 
     def test_get(self):
@@ -83,7 +85,8 @@ class GenericTest(object):
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=HEADERS
+                headers=HEADERS,
+                verify=True
             )
 
 

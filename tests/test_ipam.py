@@ -54,7 +54,8 @@ class GenericTest(object):
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=HEADERS
+                headers=HEADERS,
+                verify=True
             )
 
     def test_filter(self):
@@ -74,7 +75,8 @@ class GenericTest(object):
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=HEADERS
+                headers=HEADERS,
+                verify=True
             )
 
     def test_get(self):
@@ -95,7 +97,8 @@ class GenericTest(object):
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=HEADERS
+                headers=HEADERS,
+                verify=True
             )
             if self.ip_obj_fields:
                 for field in self.ip_obj_fields:
@@ -135,7 +138,8 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         ret = pfx.available_ips.list()
         mock.assert_called_with(
             'http://localhost:8000/api/ipam/prefixes/1/available-ips/'.format(self.name),
-            headers=HEADERS
+            headers=HEADERS,
+            verify=True
         )
         self.assertTrue(ret)
         self.assertEqual(len(ret), 3)
@@ -170,6 +174,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
             'http://localhost:8000/api/ipam/prefixes/1/available-ips/'.format(self.name),
             headers=POST_HEADERS,
             data=json.dumps(create_parms),
+            verify=True
         )
         self.assertTrue(ret)
         self.assertEqual(ret, expected_result)
@@ -186,7 +191,8 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         ret = pfx.available_prefixes.list()
         mock.assert_called_with(
             'http://localhost:8000/api/ipam/prefixes/1/available-prefixes/'.format(self.name),
-            headers=HEADERS
+            headers=HEADERS,
+            verify=True
         )
         self.assertTrue(ret)
 
@@ -208,6 +214,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
             'http://localhost:8000/api/ipam/prefixes/1/available-prefixes/'.format(self.name),
             headers=POST_HEADERS,
             data=json.dumps(create_parms),
+            verify=True
         )
         self.assertTrue(ret)
 
