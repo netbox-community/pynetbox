@@ -304,3 +304,14 @@ class IPRecord(Record):
             else:
                 self._add_cache((k, v.copy()))
             setattr(self, k, v)
+
+
+class Choice(object):
+    """Specific object for the _choices endpoint
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.__contents = args[0]
+
+    def items(self):
+        return self.__contents

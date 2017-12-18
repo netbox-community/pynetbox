@@ -16,7 +16,7 @@ limitations under the License.
 from collections import defaultdict
 
 from pynetbox.lib.query import Request
-from pynetbox.lib.response import Record, IPRecord
+from pynetbox.lib.response import Record, IPRecord, Choice
 
 CACHE = defaultdict(list)
 
@@ -56,10 +56,14 @@ class Endpoint(object):
         self.token = api_kwargs.get('token')
         self.version = api_kwargs.get('version')
         self.session_key = api_kwargs.get('session_key')
+        if not name.startswith('_'):
+            endpoint = name.replace('_', '-')
+        else:
+            endpoint = name
         self.url = '{base_url}/{app}/{endpoint}'.format(
             base_url=self.base_url,
             app=app_name,
-            endpoint=name.replace('_', '-'),
+            endpoint=endpoint,
         )
         self.endpoint_name = name
         self.meta = dict(url=self.url)
@@ -80,7 +84,9 @@ class Endpoint(object):
         app_return_override = {
             'ipam': IPRecord,
         }
-        if app_module:
+        if name == "_choices":
+            ret = Choice
+        elif app_module:
             obj_name = name.title().replace('_', '')
             ret = getattr(
                 app_module,
