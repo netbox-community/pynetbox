@@ -143,7 +143,7 @@ class Endpoint(object):
 
         Referencing with an id.
 
-        >>> nb.devices.get(1)
+        >>> nb.dcim.devices.get(1)
         test1-edge1
         >>>
         """
@@ -193,13 +193,13 @@ class Endpoint(object):
 
         To return a list of objects matching a named argument filter.
 
-        >>> nb.devices.filter(role='leaf-switch')
+        >>> nb.dcim.devices.filter(role='leaf-switch')
         [test1-a3-tor1b, test1-a3-tor1c, test1-a3-tor1d, test1-a3-tor2a]
         >>>
 
         Using a freeform query along with a named argument.
 
-        >>> nb.devices.filter('a3', role='leaf-switch')
+        >>> nb.dcim.devices.filter('a3', role='leaf-switch')
         [test1-a3-tor1b, test1-a3-tor1c, test1-a3-tor1d, test1-a3-tor2a]
         >>>
 
