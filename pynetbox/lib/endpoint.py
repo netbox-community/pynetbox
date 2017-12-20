@@ -56,6 +56,7 @@ class Endpoint(object):
         self.token = api_kwargs.get('token')
         self.version = api_kwargs.get('version')
         self.session_key = api_kwargs.get('session_key')
+        self.ssl_verify = api_kwargs.get('ssl_verify')
         self.url = '{base_url}/{app}/{endpoint}'.format(
             base_url=self.base_url,
             app=app_name,
@@ -109,6 +110,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             version=self.version,
+            ssl_verify=self.ssl_verify,
         )
         ret_kwargs = dict(
             api_kwargs=self.api_kwargs,
@@ -165,7 +167,8 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            version=self.version
+            version=self.version,
+            ssl_verify=self.ssl_verify,
         )
         ret_kwargs = dict(
             api_kwargs=self.api_kwargs,
@@ -173,6 +176,74 @@ class Endpoint(object):
         )
 
         return self.return_obj(req.get(), **ret_kwargs)
+
+    def update(self, *args, **kwargs):
+        """Updates an object on an endpoint.
+
+        :arg int,optional key: id for the item to be
+            updated. Can
+
+        :arg str,optional \**kwargs: Accepts the same keyword args as
+            filter(). Any search argeter the endpoint accepts can
+            be added as a keyword arg.
+
+        :returns: A single updated object.
+
+        :raises ValueError: If ID is not passed as a poitional arg, a value
+            in a dict or as a kwarg
+
+        :Examples:
+
+        Update a device, given a device with ID of "10"
+
+        If using positional args, ID must be first
+
+        >>> nb.dcim.devices.update(10, {'name': 'mydevice'})
+        mydevice
+        >>>
+
+        Using kwargs
+
+        >>> nb.devices.update(id=10, name='mydevice')
+        mydevice
+        >>>
+
+        Using a dict
+        >>> nb.devices.update({'id': 10, 'name': 'mydevice'})
+        mydevice
+        >>>
+        """
+        key = None
+        upd = None
+        if len(args) == 1:
+            if isinstance(args[0], dict):
+                if 'id' in args[0]:
+                    key = args[0].pop('id')
+                    upd = args[0]
+        elif len(args) > 1:
+            try:
+                key = int(args[0])
+                upd = args[1]
+            except ValueError:
+                key = None
+        elif 'id' in kwargs:
+            key = kwargs.pop('id')
+            upd = kwargs
+
+        if not key:
+            raise ValueError('No ID in provided args')
+
+        if not upd:
+            raise ValueError("No update data")
+
+        return Request(
+            key=key,
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            version=self.version,
+            ssl_verify=self.ssl_verify
+        ).patch(upd)
 
     def filter(self, *args, **kwargs):
         """Queries the 'ListView' of a given endpoint.
@@ -233,6 +304,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             version=self.version,
+            ssl_verify=self.ssl_verify,
         )
         ret_kwargs = dict(
             api_kwargs=self.api_kwargs,
@@ -301,6 +373,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             version=self.version,
+            ssl_verify=self.ssl_verify,
         ).post(args[0] if len(args) > 0 else kwargs)
 
 
@@ -315,6 +388,7 @@ class DetailEndpoint(object):
         self.token = parent_obj.api_kwargs.get('token')
         self.version = parent_obj.api_kwargs.get('version')
         self.session_key = parent_obj.api_kwargs.get('session_key')
+        self.ssl_verify = parent_obj.api_kwargs.get('ssl_verify')
         self.url = "{}/{}/{}/".format(
             parent_obj.endpoint_meta.get('url'),
             parent_obj.id,
@@ -325,6 +399,7 @@ class DetailEndpoint(object):
             token=self.token,
             session_key=self.session_key,
             version=self.version,
+            ssl_verify=self.ssl_verify,
         )
 
     def list(self):

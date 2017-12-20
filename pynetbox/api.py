@@ -80,7 +80,7 @@ class Api(object):
     """
 
     def __init__(self, url, token=None, private_key=None,
-                 private_key_file=None, version=None):
+                 private_key_file=None, version=None, ssl_verify=True):
         if private_key and private_key_file:
             raise ValueError(
                 '"private_key" and "private_key_file" cannot be used together.'
@@ -92,6 +92,7 @@ class Api(object):
             "private_key": private_key,
             "private_key_file": private_key_file,
             "base_url": base_url,
+            "ssl_verify": ssl_verify,
         }
 
         if self.api_kwargs.get('private_key_file'):
@@ -99,13 +100,15 @@ class Api(object):
                 private_key = kf.read()
                 self.api_kwargs.update(private_key=private_key)
         if not version:
-            version = Request(base=base_url).get_version()
+            version = Request(base=base_url,
+                              ssl_verify=ssl_verify).get_version()
         self.api_kwargs.update(version=version)
 
         req = Request(
             base=base_url,
             token=token,
-            private_key=private_key
+            private_key=private_key,
+            ssl_verify=ssl_verify
         )
         if token and private_key:
             self.api_kwargs.update(session_key=req.get_session_key())

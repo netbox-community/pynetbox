@@ -171,7 +171,8 @@ class Record(object):
         if self.url:
             req = Request(
                 base=self.url,
-                version=self.api_kwargs.get('version')
+                version=self.api_kwargs.get('version'),
+                ssl_verify=self.api_kwargs.get('ssl_verify')
             )
             self._parse_values(req.get())
             self.has_details = True
@@ -228,7 +229,8 @@ class Record(object):
                     base=self.endpoint_meta.get('url'),
                     token=self.api_kwargs.get('token'),
                     session_key=self.api_kwargs.get('session_key'),
-                    version=self.api_kwargs.get('version')
+                    version=self.api_kwargs.get('version'),
+                    ssl_verify=self.api_kwargs.get('ssl_verify')
                 )
                 if req.put(self.serialize()):
                     return True
@@ -251,7 +253,8 @@ class Record(object):
             base=self.endpoint_meta.get('url'),
             token=self.api_kwargs.get('token'),
             session_key=self.api_kwargs.get('session_key'),
-            version=self.api_kwargs.get('version')
+            version=self.api_kwargs.get('version'),
+            ssl_verify=self.api_kwargs.get('ssl_verify')
         )
         if req.delete():
             return True
