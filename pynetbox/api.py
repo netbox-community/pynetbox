@@ -100,7 +100,8 @@ class Api(object):
                 private_key = kf.read()
                 self.api_kwargs.update(private_key=private_key)
         if not version:
-            version = Request(base=base_url, ssl_verify=ssl_verify).get_version()
+            version = Request(base=base_url,
+                              ssl_verify=ssl_verify).get_version()
         self.api_kwargs.update(version=version)
 
         req = Request(

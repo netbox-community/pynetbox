@@ -201,27 +201,6 @@ class DeviceTestCase(unittest.TestCase, GenericTest):
         self.assertEqual(ret_serialized['serial'], '123123123123')
 
     @patch(
-        'pynetbox.lib.query.requests.patch',
-        return_value=Response(fixture='dcim/device.json')
-    )
-    def test_update(self, mock):
-        data = {
-            'name': 'test-device'
-        }
-        data_with_id = {
-            'id': 1,
-            'name': 'test-device'
-        }
-        ret_id_arg = nb.devices.update(1, **data)
-        self.assertTrue(ret_id_arg)
-
-        ret_id_kwarg = nb.devices.update(id=1, name='test-device')
-        self.assertTrue(ret_id_kwarg)
-
-        ret_id_in_dict = nb.devices.update(**data_with_id)
-        self.assertTrue(ret_id_in_dict)
-
-    @patch(
         'pynetbox.lib.query.requests.post',
         return_value=Response(fixture='dcim/device.json')
     )
