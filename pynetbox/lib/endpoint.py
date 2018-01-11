@@ -56,7 +56,7 @@ class Endpoint(object):
         self.token = api_kwargs.get('token')
         self.version = api_kwargs.get('version')
         self.session_key = api_kwargs.get('session_key')
-        self.url = '{base_url}/{app}/{endpoint}'.format(
+        self.url = '{base_url}/{app}/{endpoint}/'.format(
             base_url=self.base_url,
             app=app_name,
             endpoint=name.replace('_', '-'),
@@ -105,7 +105,7 @@ class Endpoint(object):
         >>>
         """
         req = Request(
-            base='{}/'.format(self.url),
+            base=self.url,
             token=self.token,
             session_key=self.session_key,
             version=self.version,
