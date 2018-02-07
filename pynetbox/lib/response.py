@@ -171,6 +171,8 @@ class Record(object):
         if self.url:
             req = Request(
                 base=self.url,
+                token=self.api_kwargs.get('token'),
+                session_key=self.api_kwargs.get('session_key'),
                 version=self.api_kwargs.get('version')
             )
             self._parse_values(req.get())
