@@ -65,6 +65,7 @@ class RackReservations(Record):
     def __str__(self):
         return self.description
 
+      
 class VirtualChassis(Record):
 
     def __str__(self):
