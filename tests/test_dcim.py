@@ -426,4 +426,4 @@ class InterfaceConnectionsTestCase(unittest.TestCase, GenericTest):
 
 
 class VirtualChassisTestCase(unittest.TestCase, GenericTest):
-    name = 'virtual_chassis'
+    name = 'virtual_chassis_devices'
