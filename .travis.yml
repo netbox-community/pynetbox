@@ -13,12 +13,17 @@ script:
   - python -m "nose"
   - pep8 pynetbox
 
-deploy:
-  - provider: pypi
-    distributions: sdist
-    server: https://upload.pypi.org/legacy/
-    user: $PYPI_USERNAME
-    password: $PYPI_PASSWORD
-    on:
-      branch: master
-      tags: true
+jobs:
+  include:
+    - stage: pypi release
+      python: 2.7
+      script: echo "Deploying to PyPI..."
+      deploy:
+        - provider: pypi
+          distributions: sdist
+          server: https://upload.pypi.org/legacy/
+          user: $PYPI_USERNAME
+          password: $PYPI_PASSWORD
+          on:
+            branch: master
+            tags: true
