@@ -25,6 +25,18 @@ class RequestError(Exception):
     More detailed exception that returns the requests object. Along
     with some attributes with specific details from the requests
     object.
+
+    :Example:
+
+    >>> try:
+    ...   nb.dcim.devices.create({'name': 'destined-for-failure'})
+    ... except pynetbox.RequestError as e:
+    ...   print(e.error)
+    ...
+    {"device_role":["This field is required."]}
+
+
+
     """
     def __init__(self, message):
         req = message
