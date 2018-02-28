@@ -76,7 +76,7 @@ class Record(object):
             if self.has_details is False and k != 'keys':
                 if self.full_details():
                     ret = getattr(self, k, None)
-                    if ret:
+                    if ret or hasattr(self, k):
                         return ret
 
         raise AttributeError('object has no attribute "{}"'.format(k))
