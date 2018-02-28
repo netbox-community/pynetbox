@@ -1,0 +1,10 @@
+{
+    "id": 1,
+    "master": {
+        "id": 5654,
+        "url": "http://localhost:8000/api/dcim/devices/5654/",
+        "name": "01-0001-e214-as01 (SW1)",
+        "display_name": "01-0001-e214-as01 (SW1)"
+    },
+    "domain": "test-domain-1"
+}

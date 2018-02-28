@@ -1,0 +1,27 @@
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "master": {
+                "id": 5654,
+                "url": "http://localhost:8000/api/dcim/devices/5654/",
+                "name": "01-0001-e214-as01 (SW1)",
+                "display_name": "01-0001-e214-as01 (SW1)"
+            },
+            "domain": "test-domain-1"
+        },
+        {
+            "id": 2,
+            "master": {
+                "id": 5635,
+                "url": "http://localhost:8000/netbox/api/dcim/devices/5635/",
+                "name": "hercules.router.com (VSS-SW1)",
+                "display_name": "hercules.router.com (VSS-SW1)"
+            },
+            "domain": "test-domain-2"
+        }
+    ]
+}
