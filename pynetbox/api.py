@@ -80,7 +80,7 @@ class Api(object):
     ... )
     >>> nb.dcim.devices.all()
 
-    """
+    """  # noqa
 
     def __init__(self, url, token=None, private_key=None,
                  private_key_file=None, version=None, ssl_verify=True):
