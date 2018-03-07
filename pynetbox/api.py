@@ -56,6 +56,7 @@ class Api(object):
     Calling any of these attributes will return
     :py:class:`.App` which exposes endpoints as attributes.
 
+    :type ssl_verify: bool or str
     :param str url: The base url to the instance of Netbox you
         wish to connect to.
     :param str token: Your netbox token.
@@ -64,6 +65,8 @@ class Api(object):
     :param str,optional private_key: Your private key.
     :param str,optional version: Override the API version, otherwise
         it's dynamically discovered.
+    :param bool or str,optional ssl_verify: Specify SSL verification behavior
+        see: http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
     :raises ValueError: If *private_key* and *private_key_file* are both
         specified.
     :raises AttributeError: If app doesn't exist.
