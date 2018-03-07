@@ -431,3 +431,7 @@ class InterfaceConnectionsTestCase(unittest.TestCase, GenericTest):
 
 # class ConnectedDevicesTestCase(unittest.TestCase, GenericTest):
 #     name = 'connected_device'
+
+
+class VirtualChassisTestCase(unittest.TestCase, GenericTest):
+    name = 'virtual_chassis_devices'
