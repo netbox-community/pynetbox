@@ -173,7 +173,7 @@ class Record(object):
                 base=self.url,
                 token=self.api_kwargs.get('token'),
                 session_key=self.api_kwargs.get('session_key'),
-                version=self.api_kwargs.get('version')
+                version=self.api_kwargs.get('version'),
                 ssl_verify=self.api_kwargs.get('ssl_verify')
             )
             self._parse_values(req.get())
