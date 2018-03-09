@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from pynetbox.lib import Endpoint, Request
-from pynetbox import dcim, ipam
+from pynetbox import dcim, ipam, virtualization
 
 
 class App(object):
@@ -116,4 +116,4 @@ class Api(object):
         self.secrets = App('secrets', api_kwargs=self.api_kwargs)
         self.tenancy = App('tenancy', api_kwargs=self.api_kwargs)
         self.extras = App('extras', api_kwargs=self.api_kwargs)
-        self.virtualization = App('virtualization', api_kwargs=self.api_kwargs)
+        self.virtualization = App(virtualization, api_kwargs=self.api_kwargs)
