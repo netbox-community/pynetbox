@@ -249,6 +249,23 @@ class DeviceTestCase(unittest.TestCase, GenericTest):
             self.ret
         ))
 
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        side_effect=[
+            Response(fixture='dcim/device.json'),
+            Response(fixture='dcim/napalm.json'),
+        ]
+    )
+    def test_get_napalm(self, mock):
+        test = nb.devices.get(1)
+        ret = test.napalm.list(method='get_facts')
+        mock.assert_called_with(
+            'http://localhost:8000/api/dcim/devices/1/napalm/?method=get_facts',
+            headers=HEADERS
+        )
+        self.assertTrue(ret)
+        self.assertTrue(ret['get_facts'])
+
 
 class SiteTestCase(unittest.TestCase, GenericTest):
     name = 'sites'

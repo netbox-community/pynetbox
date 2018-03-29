@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from pynetbox.lib.response import Record
+from pynetbox.lib.endpoint import RODetailEndpoint
 from pynetbox.ipam import IpAddresses
 
 
@@ -42,6 +43,27 @@ class Devices(Record):
     primary_ip = IpAddresses
     primary_ip4 = IpAddresses
     primary_ip6 = IpAddresses
+
+    @property
+    def napalm(self):
+        """ Represents the ``napalm`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing response from the napalm endpoint.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> device = nb.ipam.devices.get(123)
+        >>> device.napalm.list(method='get_facts')
+        {"get_facts": {"interface_list": ["ge-0/0/0"]}}
+
+        """
+        return RODetailEndpoint(
+            'napalm',
+            parent_obj=self,
+        )
 
 
 class InterfaceConnections(Record):

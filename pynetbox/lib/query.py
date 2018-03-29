@@ -19,6 +19,18 @@ from six.moves.urllib.parse import urlencode
 import requests
 
 
+def url_param_builder(param_dict):
+    '''Builds url parameters
+
+    Creates URL paramters (e.g. '.../?xyz=r21&abc=123') from a dict
+    passed in param_dict
+    '''
+    param_list = []
+    for key, val in param_dict.items():
+        param_list.append('{}={}'.format(key, val))
+    return '?{}'.format('&'.join(param_list))
+
+
 class RequestError(Exception):
     """Basic Request Exception
 

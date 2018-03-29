@@ -1,0 +1,14 @@
+{
+    "get_facts": {
+        "interface_list": [
+            "xe-0/0/0"
+        ],
+        "serial_number": "ABC!@#",
+        "vendor": "PacketPusher",
+        "os_version": "1.1",
+        "hostname": "test-1",
+        "model": "UnobtaniumX",
+        "fqdn": "None",
+        "uptime": 2
+    }
+}
