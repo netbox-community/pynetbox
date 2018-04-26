@@ -10,5 +10,6 @@ class TestQuery(unittest.TestCase):
         test_params = OrderedDict([
             ('abc', '123'),
             ('xyz', '321'),
+            ('enc', '#12'),
         ])
-        self.assertEqual(url_param_builder(test_params), '?abc=123&xyz=321')
+        self.assertEqual(url_param_builder(test_params), '?abc=123&xyz=321&enc=%2312')
