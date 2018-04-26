@@ -25,10 +25,7 @@ def url_param_builder(param_dict):
     Creates URL paramters (e.g. '.../?xyz=r21&abc=123') from a dict
     passed in param_dict
     '''
-    param_list = []
-    for key, val in param_dict.items():
-        param_list.append('{}={}'.format(key, val))
-    return '?{}'.format('&'.join(param_list))
+    return '?{}'.format(urlencode(param_dict))
 
 
 class RequestError(Exception):
@@ -150,9 +147,9 @@ class Request(object):
             for k, v in input.items():
                 if isinstance(v, list):
                     for i in v:
-                        yield "{}={}".format(k, i)
+                        yield urlencode({k: i})
                 else:
-                    yield "{}={}".format(k, v)
+                    yield urlencode({k: v})
 
         if self.key:
             return '{}/{key}/'.format(
