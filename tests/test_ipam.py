@@ -1,7 +1,7 @@
 import unittest
 import json
 
-import netaddr
+import ipaddress
 import six
 
 from .util import Response
@@ -100,9 +100,9 @@ class GenericTest(object):
             if self.ip_obj_fields:
                 for field in self.ip_obj_fields:
                     self.assertTrue(
-                        isinstance(getattr(ret, field), netaddr.IPNetwork)
+                        isinstance(getattr(ret, field), ipaddress._IPAddressBase)
                     )
-                    self.assertTrue(netaddr.IPNetwork(dict(ret)[field]))
+                    self.assertTrue(ipaddress.ip_interface(dict(ret)[field]))
 
 
 class PrefixTestCase(unittest.TestCase, GenericTest):
@@ -116,12 +116,12 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
     )
     def test_modify(self, mock):
         ret = nb.prefixes.get(1)
-        ret.prefix = '10.1.2.0/24'
+        ret.prefix = u'10.1.2.0/24'
         ret_serialized = ret.serialize()
         self.assertTrue(ret_serialized)
         self.assertFalse(ret._compare())
         self.assertEqual(ret_serialized['prefix'], '10.1.2.0/24')
-        self.assertTrue(netaddr.IPNetwork(ret_serialized['prefix']))
+        self.assertTrue(ipaddress.ip_interface(ret_serialized['prefix']))
 
     @patch(
         'pynetbox.lib.query.requests.get',
@@ -229,7 +229,7 @@ class IPAddressTestCase(unittest.TestCase, GenericTest):
         self.assertFalse(ret._compare())
         self.assertEqual(ret_serialized['address'], '10.0.255.1/32')
         self.assertEqual(ret_serialized['description'], 'testing')
-        self.assertTrue(netaddr.IPNetwork(ret_serialized['address']))
+        self.assertTrue(ipaddress.ip_interface(ret_serialized['address']))
 
 
 class RoleTestCase(unittest.TestCase, GenericTest):
