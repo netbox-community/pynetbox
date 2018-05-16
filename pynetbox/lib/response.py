@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import netaddr
 import six
+import ipaddress
 
 from pynetbox.lib.query import Request
 
@@ -200,8 +200,8 @@ class Record(object):
             if isinstance(current_val, Record):
                 current_val = getattr(current_val, 'serialize')(nested=True)
 
-            if isinstance(current_val, netaddr.ip.IPNetwork):
-                current_val = str(current_val)
+            if isinstance(current_val, ipaddress._IPAddressBase):
+                current_val = current_val.exploded
 
             ret.update({i: current_val})
         return ret
@@ -265,7 +265,7 @@ class IPRecord(Record):
     """IP-specific Record for IPAM responses.
 
     Extends ``Record`` objects to handle replacing ip4/6 strings with
-    instances of ``netaddr.IPNetworks`` instead.
+    instances of ``ipaddress.IPv*Networks`` instead.
     """
 
     def __init__(self, *args, **kwargs):
@@ -278,8 +278,8 @@ class IPRecord(Record):
             if isinstance(cur_attr, Record):
                 yield i, dict(cur_attr)
             else:
-                if isinstance(cur_attr, netaddr.IPNetwork):
-                    yield i, str(cur_attr)
+                if isinstance(cur_attr, ipaddress._IPAddressBase):
+                    yield i, cur_attr.exploded
                 else:
                     yield i, cur_attr
 
@@ -299,8 +299,8 @@ class IPRecord(Record):
                         v = self.default_ret(v, api_kwargs=self.api_kwargs)
                 if isinstance(v, six.string_types):
                     try:
-                        v = netaddr.IPNetwork(v)
-                    except netaddr.AddrFormatError:
+                        v = ipaddress.ip_interface(v)
+                    except ValueError:
                         pass
                 self._add_cache((k, v))
             else:
