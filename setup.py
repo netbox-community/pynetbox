@@ -1,18 +1,14 @@
 from setuptools import setup
-from os.path import join, dirname
-
-with open(join(dirname(__file__), 'pynetbox/VERSION')) as f:
-    version = f.read().strip()
 
 setup(
     name='pynetbox',
-    version=version,
     description='NetBox API client library',
     url='https://github.com/digitalocean/pynetbox',
     author='Zach Moody',
     author_email='zmoody@do.co',
     license='Apache2',
     include_package_data=True,
+    use_scm_version=True,
     packages=[
         'pynetbox',
         'pynetbox.lib'
@@ -20,7 +16,8 @@ setup(
     install_requires=[
         'netaddr==0.*',
         'requests==2.*',
-        'six==1.*'
+        'six==1.*',
+        'setuptools-scm==2.*'
     ],
     zip_safe=False,
     keywords=['netbox'],

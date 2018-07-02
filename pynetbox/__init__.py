@@ -1,6 +1,6 @@
+from setuptools_scm import get_version
 from pynetbox.api import Api as api
 from pynetbox.lib import RequestError
-from os.path import join, dirname
 
-with open(join(dirname(__file__), 'VERSION')) as f:
-    __version__ = f.read().strip()
+
+__version__ = get_version(root='..', relative_to=__file__)

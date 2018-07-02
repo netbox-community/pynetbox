@@ -1,17 +1,17 @@
 language: python
 
 install:
-  - pip install -r requirements.txt
-  - pip install pep8
-  - pip install nose
+  - pip install .
+  - pip install pycodestyle
 
 python:
   - "2.7"
   - "3.6"
 
 script:
-  - python -m "nose"
-  - pep8 pynetbox
+  - python -m unittest discover
+  - pycodestyle pynetbox
+  - pycodestyle --ignore=E501 tests
 
 jobs:
   include:
