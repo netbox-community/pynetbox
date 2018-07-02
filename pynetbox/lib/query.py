@@ -76,7 +76,8 @@ class Request(object):
     """
 
     def __init__(self, base=None, filters=None, key=None, token=None,
-                 private_key=None, version=None, session_key=None):
+                 private_key=None, version=None, session_key=None,
+                 ssl_verify=True):
         """
         Instantiates a new Request object
 
@@ -97,6 +98,7 @@ class Request(object):
         self.private_key = private_key
         self.version = version
         self.session_key = session_key
+        self.ssl_verify = ssl_verify
 
     def get_version(self):
         """Query the netbox API for its API-Version.
@@ -106,7 +108,8 @@ class Request(object):
         :returns: String containing version.
         """
         ret = requests.get(
-            "{}/".format(self.base)
+            "{}/".format(self.base),
+            verify=self.ssl_verify
         ).headers.get('API-Version', '1.0')
         setattr(self, 'version', ret)
         return ret
@@ -128,7 +131,8 @@ class Request(object):
             },
             data=urlencode({
                 'private_key': self.private_key.strip('\n')
-            })
+            }),
+            verify=self.ssl_verify
         )
         if req.ok:
             return json.loads(req.text)['session_key']
@@ -208,7 +212,7 @@ class Request(object):
 
         def make_request(url):
 
-            req = requests.get(url, headers=headers)
+            req = requests.get(url, headers=headers, verify=self.ssl_verify)
             if req.ok:
                 return json.loads(req.text)
             else:
@@ -256,7 +260,10 @@ class Request(object):
             headers.update(
                 {'X-Session-Key': self.session_key}
             )
-        req = requests.put(self.url, headers=headers, data=json.dumps(data))
+        req = requests.put(self.url,
+                           headers=headers,
+                           data=json.dumps(data),
+                           verify=self.ssl_verify)
         if req.ok:
             return json.loads(req.text)
         else:
@@ -286,7 +293,8 @@ class Request(object):
         req = requests.post(
             self.normalize_url(self.url),
             headers=headers,
-            data=json.dumps(data)
+            data=json.dumps(data),
+            verify=self.ssl_verify
         )
         if req.ok:
             return json.loads(req.text)
@@ -314,6 +322,7 @@ class Request(object):
         req = requests.delete(
             "{}".format(self.url),
             headers=headers,
+            verify=self.ssl_verify
         )
         if req.ok:
             return True

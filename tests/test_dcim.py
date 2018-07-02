@@ -49,7 +49,8 @@ class GenericTest(object):
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=HEADERS
+                headers=HEADERS,
+                verify=True
             )
 
     def test_filter(self):
@@ -69,7 +70,8 @@ class GenericTest(object):
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=HEADERS
+                headers=HEADERS,
+                verify=True
             )
 
     def test_get(self):
@@ -90,7 +92,8 @@ class GenericTest(object):
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=HEADERS
+                headers=HEADERS,
+                verify=True
             )
 
     def test_delete(self):
@@ -108,14 +111,16 @@ class GenericTest(object):
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=HEADERS
+                headers=HEADERS,
+                verify=True
             )
             delete.assert_called_with(
                 'http://localhost:8000/api/{}/{}/1/'.format(
                     self.app,
                     self.name.replace('_', '-')
                 ),
-                headers=AUTH_HEADERS
+                headers=AUTH_HEADERS,
+                verify=True
             )
 
     def test_compare(self):
@@ -161,7 +166,8 @@ class DeviceTestCase(unittest.TestCase, GenericTest):
                 self.app,
                 self.name.replace('_', '-')
             ),
-            headers=HEADERS
+            headers=HEADERS,
+            verify=True
         )
 
     @patch(
@@ -178,7 +184,8 @@ class DeviceTestCase(unittest.TestCase, GenericTest):
                 self.app,
                 self.name.replace('_', '-')
             ),
-            headers=HEADERS
+            headers=HEADERS,
+            verify=True
         )
 
     @patch(
@@ -346,7 +353,8 @@ class InterfaceTestCase(unittest.TestCase, GenericTest):
         self.assertEqual(len(ret), 71)
         mock.assert_called_with(
             'http://localhost:8000/api/dcim/interfaces/?limit=221&offset=50'.format(self.name),
-            headers=HEADERS
+            headers=HEADERS,
+            verify=True
         )
 
 
