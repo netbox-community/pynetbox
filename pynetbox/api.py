@@ -80,8 +80,8 @@ class Api(object):
     ... )
     >>> nb.dcim.devices.all()
 
-    .. _requests: http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification  # noqa
-    """
+    .. _requests: http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
+    """  # noqa
 
     def __init__(self, url, token=None, private_key=None,
                  private_key_file=None, version=None, ssl_verify=True):
