@@ -66,7 +66,7 @@ class Api(object):
     :param str,optional version: Override the API version, otherwise
         it's dynamically discovered.
     :param bool or str,optional ssl_verify: Specify SSL verification behavior
-        see: http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
+        see: requests_.
     :raises ValueError: If *private_key* and *private_key_file* are both
         specified.
     :raises AttributeError: If app doesn't exist.
@@ -80,7 +80,8 @@ class Api(object):
     ... )
     >>> nb.dcim.devices.all()
 
-    """  # noqa
+    .. _requests: http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
+    """
 
     def __init__(self, url, token=None, private_key=None,
                  private_key_file=None, version=None, ssl_verify=True):

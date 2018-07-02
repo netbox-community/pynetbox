@@ -268,7 +268,8 @@ class DeviceTestCase(unittest.TestCase, GenericTest):
         ret = test.napalm.list(method='get_facts')
         mock.assert_called_with(
             'http://localhost:8000/api/dcim/devices/1/napalm/?method=get_facts',
-            headers=HEADERS
+            headers=HEADERS,
+            verify=True,
         )
         self.assertTrue(ret)
         self.assertTrue(ret['get_facts'])

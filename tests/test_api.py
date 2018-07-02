@@ -27,6 +27,7 @@ endpoints = {
     'circuits': 'circuits',
 }
 
+
 class ApiTestCase(unittest.TestCase):
 
     @patch(
@@ -75,5 +76,3 @@ class ApiArgumentsTestCase(unittest.TestCase):
     def test_ssl_verify_string(self):
         kwargs = dict(def_kwargs, **{'ssl_verify': '/path/to/bundle'})
         self.common_arguments(kwargs, 'ssl_verify', '/path/to/bundle')
-
-
