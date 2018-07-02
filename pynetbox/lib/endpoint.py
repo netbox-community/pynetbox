@@ -122,7 +122,7 @@ class Endpoint(object):
         ]
 
     def get(self, *args, **kwargs):
-        """Queries the DetailsView of a given endpoint.
+        r"""Queries the DetailsView of a given endpoint.
 
         :arg int,optional key: id for the item to be
             retrieved.
@@ -178,7 +178,7 @@ class Endpoint(object):
         return self.return_obj(req.get(), **ret_kwargs)
 
     def filter(self, *args, **kwargs):
-        """Queries the 'ListView' of a given endpoint.
+        r"""Queries the 'ListView' of a given endpoint.
 
         Takes named arguments that match the usable filters on a
         given endpoint. If an argument is passed then it's used as a
@@ -250,7 +250,7 @@ class Endpoint(object):
         return ret
 
     def create(self, *args, **kwargs):
-        """Creates an object on an endpoint.
+        r"""Creates an object on an endpoint.
 
         Allows for the creation of new objects on an endpoint. Named
         arguments are converted to json properties, and a single object
@@ -335,7 +335,7 @@ class DetailEndpoint(object):
         )
 
     def list(self, **kwargs):
-        """The view operation for a detail endpoint
+        r"""The view operation for a detail endpoint
 
         Returns the response from NetBox for a detail endpoint.
 
