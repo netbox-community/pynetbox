@@ -18,9 +18,9 @@ setup(
         'pynetbox.lib'
     ],
     install_requires=[
-        'netaddr==0.7.18',
-        'requests==2.10.0',
-        'six==1.11.0'
+        'netaddr==0.*',
+        'requests==2.*',
+        'six==1.*'
     ],
     zip_safe=False,
     keywords=['netbox'],
