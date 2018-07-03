@@ -41,6 +41,18 @@ class ApiTestCase(unittest.TestCase):
         )
         self.assertTrue(api)
 
+    @patch(
+        'pynetbox.lib.query.requests.post',
+        return_value=Response(fixture='api/get_session_key.json')
+    )
+    def test_sanitize_url(self, mock):
+        api = pynetbox.api(
+            'http://localhost:8000/',
+            **def_kwargs
+        )
+        self.assertTrue(api)
+        self.assertEqual(api.api_kwargs['base_url'], 'http://localhost:8000/api')
+
 
 class ApiArgumentsTestCase(unittest.TestCase):
 
