@@ -1,6 +1,9 @@
-from setuptools_scm import get_version
+from pkg_resources import get_distribution, DistributionNotFound
+
 from pynetbox.api import Api as api
 from pynetbox.lib import RequestError
 
-
-__version__ = get_version(root='..', relative_to=__file__)
+try:
+    __version__ = get_distribution(__name__).version
+except DistributionNotFound:
+    pass
