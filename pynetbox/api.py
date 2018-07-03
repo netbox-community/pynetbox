@@ -89,7 +89,7 @@ class Api(object):
             raise ValueError(
                 '"private_key" and "private_key_file" cannot be used together.'
             )
-        base_url = "{}/api".format(url)
+        base_url = "{}/api".format(url if url[-1] != '/' else url[:-1])
 
         self.api_kwargs = {
             "token": token,
