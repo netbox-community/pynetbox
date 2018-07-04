@@ -17,7 +17,6 @@ setup(
         'netaddr==0.*',
         'requests==2.*',
         'six==1.*',
-        'setuptools-scm==2.*'
     ],
     zip_safe=False,
     keywords=['netbox'],
