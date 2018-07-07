@@ -282,7 +282,7 @@ class SiteTestCase(unittest.TestCase, GenericTest):
         'pynetbox.lib.query.requests.get',
         return_value=Response(fixture='dcim/site.json')
     )
-    def test_modify(self, mock):
+    def test_modify_custom(self, mock):
         '''Test modifying a custom field.
         '''
         ret = getattr(nb, self.name).get(1)
@@ -291,6 +291,23 @@ class SiteTestCase(unittest.TestCase, GenericTest):
         self.assertTrue(ret.serialize())
         self.assertEqual(
             ret.custom_fields['test_custom'], 'Testing'
+        )
+
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        return_value=Response(fixture='dcim/site.json')
+    )
+    def test_custom_selection_serializer(self, _):
+        '''Test that serializer with custom selection fields.
+        '''
+        ret = getattr(nb, self.name).get(1)
+        ret.custom_fields['test_custom'] = "Testing"
+        test = ret.serialize()
+        from pprint import pprint
+        pprint(test)
+        self.assertEqual(
+            test['custom_fields']['test_selection'],
+            2
         )
 
     @patch(
