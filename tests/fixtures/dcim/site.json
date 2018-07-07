@@ -13,7 +13,11 @@
     "contact_email": "",
     "comments": "",
     "custom_fields": {
-        "test_custom": "Hello"
+        "test_custom": "Hello",
+        "test_selection": {
+            "value": 2,
+            "label": "second"
+        }
     },
     "count_prefixes": 2,
     "count_vlans": 1,
