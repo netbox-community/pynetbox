@@ -298,7 +298,7 @@ class SiteTestCase(unittest.TestCase, GenericTest):
         return_value=Response(fixture='dcim/site.json')
     )
     def test_custom_selection_serializer(self, _):
-        '''Test that serializer with custom selection fields.
+        '''Tests serializer with custom selection fields.
         '''
         ret = getattr(nb, self.name).get(1)
         ret.custom_fields['test_custom'] = "Testing"

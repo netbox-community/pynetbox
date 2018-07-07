@@ -19,9 +19,9 @@ import six
 from pynetbox.lib.query import Request
 
 
-def _get_return(lookup, return_fields=['id', 'value', 'nested_return']):
+def get_return(lookup, return_fields=None):
 
-    for i in return_fields:
+    for i in return_fields or ['id', 'value', 'nested_return']:
         if isinstance(lookup, dict) and lookup.get(i):
             return lookup[i]
         else:
@@ -31,6 +31,13 @@ def _get_return(lookup, return_fields=['id', 'value', 'nested_return']):
         return str(lookup)
     else:
         return lookup
+
+
+def flatten_custom(custom_dict):
+    return {
+        k: v if not isinstance(v, dict) else v['value']
+        for k, v in custom_dict.items()
+    }
 
 
 class Record(object):
@@ -114,7 +121,7 @@ class Record(object):
             self._full_cache.append((key, dict(value)))
         else:
             self._full_cache.append((key, value))
-        self._index_cache.append((key, _get_return(value)))
+        self._index_cache.append((key, get_return(value)))
 
     def _parse_values(self, values):
         """ Parses values init arg.
@@ -148,12 +155,11 @@ class Record(object):
         init_vals = dict(self._index_cache)
         for i in dict(self):
             current_val = init_vals.get(i)
-            if i != 'custom_fields':
-                if isinstance(current_val, dict):
-                    init_dict.update({i: _get_return(current_val)})
-                else:
-                    init_dict.update({i: _get_return(current_val)})
-            init_dict.update({i: current_val})
+            if i == 'custom_fields':
+                init_dict[i] = flatten_custom(current_val)
+            else:
+                init_dict[i] = get_return(current_val)
+
         if init_dict == self.serialize():
             return True
         return False
@@ -193,18 +199,24 @@ class Record(object):
         :returns: dict of values the NetBox API is expecting.
         """
         if nested:
-            return _get_return(self)
+            return get_return(self)
 
         ret = {}
         for i in dict(self):
             current_val = getattr(self, i)
-            if isinstance(current_val, Record):
-                current_val = getattr(current_val, 'serialize')(nested=True)
+            if i == 'custom_fields':
+                ret[i] = flatten_custom(current_val)
+            else:
+                if isinstance(current_val, Record):
+                    current_val = getattr(
+                        current_val,
+                        'serialize'
+                    )(nested=True)
 
-            if isinstance(current_val, netaddr.ip.IPNetwork):
-                current_val = str(current_val)
+                if isinstance(current_val, netaddr.ip.IPNetwork):
+                    current_val = str(current_val)
 
-            ret.update({i: current_val})
+                ret[i] = current_val
         return ret
 
     def save(self):
