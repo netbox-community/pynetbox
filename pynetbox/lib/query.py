@@ -135,7 +135,7 @@ class Request(object):
             verify=self.ssl_verify
         )
         if req.ok:
-            return json.loads(req.text)['session_key']
+            return req.json()['session_key']
         else:
             raise RequestError(req)
 
@@ -214,7 +214,7 @@ class Request(object):
 
             req = requests.get(url, headers=headers, verify=self.ssl_verify)
             if req.ok:
-                return json.loads(req.text)
+                return req.json()
             else:
                 raise RequestError(req)
 
@@ -265,7 +265,7 @@ class Request(object):
                            data=json.dumps(data),
                            verify=self.ssl_verify)
         if req.ok:
-            return json.loads(req.text)
+            return req.json()
         else:
             raise RequestError(req)
 
@@ -297,7 +297,7 @@ class Request(object):
             verify=self.ssl_verify
         )
         if req.ok:
-            return json.loads(req.text)
+            return req.json()
         else:
             raise RequestError(req)
 
