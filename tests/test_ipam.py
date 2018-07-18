@@ -127,6 +127,19 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         self.assertTrue(netaddr.IPNetwork(ret_serialized['prefix']))
 
     @patch(
+        'pynetbox.lib.query.requests.put',
+        return_value=Response(fixture='ipam/prefix.json')
+    )
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        return_value=Response(fixture='ipam/prefix.json')
+    )
+    def test_idempotence(self, *_):
+        ret = nb.prefixes.get(1)
+        test = ret.save()
+        self.assertFalse(test)
+
+    @patch(
         'pynetbox.lib.query.requests.get',
         side_effect=[
             Response(fixture='ipam/prefix.json'),
