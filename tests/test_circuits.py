@@ -92,6 +92,14 @@ class GenericTest(object):
 class CircuitsTestCase(unittest.TestCase, GenericTest):
     name = 'circuits'
 
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        return_value=Response(fixture='circuits/circuit.json')
+    )
+    def test_repr(self, _):
+        test = nb.circuits.get(1)
+        self.assertEqual(str(test), '123456')
+
 
 class ProviderTestCase(unittest.TestCase, GenericTest):
     name = 'providers'
