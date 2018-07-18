@@ -20,6 +20,22 @@ from pynetbox.lib.query import Request
 
 
 def get_return(lookup, return_fields=None):
+    '''Returns simple representations for items passed to lookup.
+
+    Used to return a "simple" representation of objects and collections
+    sent to it via lookup. If lookup is an IPNetwork object immediately
+    return the string representation. Otherwise, we look to see if
+    lookup is a "choices" field (dict with only 'id' and 'value')
+    or a nested_return. Finally, we check if it's a Record, if
+    so simply return a string. Order is important due to nested_return
+    being self-referential.
+
+    :arg list,optional return_fields: A list of fields to reference when
+        calling values on lookup.
+    '''
+
+    if isinstance(lookup, netaddr.IPNetwork):
+        return str(lookup)
 
     for i in return_fields or ['id', 'value', 'nested_return']:
         if isinstance(lookup, dict) and lookup.get(i):
@@ -27,6 +43,7 @@ def get_return(lookup, return_fields=None):
         else:
             if hasattr(lookup, i):
                 return getattr(lookup, i)
+
     if isinstance(lookup, Record):
         return str(lookup)
     else:
