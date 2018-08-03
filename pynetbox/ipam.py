@@ -71,7 +71,7 @@ class Prefixes(IPRecord):
 
         Very similar to :py:meth:`~pynetbox.ipam.Prefixes.available_ips`
         , except that dict (or list of dicts) passed to ``.create()``
-        needs to have a ``prefex_length`` key/value specifed.
+        needs to have a ``prefix_length`` key/value specifed.
 
         :returns: :py:class:`.DetailEndpoint`
 
