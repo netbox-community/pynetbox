@@ -20,3 +20,9 @@ class Circuits(Record):
 
     def __str__(self):
         return self.cid
+
+
+class CircuitTerminations(Record):
+
+    def __str__(self):
+        return self.circuit.cid

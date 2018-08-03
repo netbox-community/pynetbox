@@ -111,3 +111,11 @@ class CircuitTypeTestCase(unittest.TestCase, GenericTest):
 
 class CircuitTerminationsTestCase(unittest.TestCase, GenericTest):
     name = 'circuit_terminations'
+
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        return_value=Response(fixture='circuits/circuit_termination.json')
+    )
+    def test_repr(self, _):
+        test = nb.circuit_terminations.get(1)
+        self.assertEqual(str(test), '123456')
