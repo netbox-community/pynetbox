@@ -332,7 +332,7 @@ class IPRecord(Record):
                 if isinstance(v, six.string_types):
                     try:
                         v = netaddr.IPNetwork(v)
-                    except netaddr.AddrFormatError:
+                    except (netaddr.AddrFormatError, ValueError):
                         pass
                 self._add_cache((k, v))
             else:
