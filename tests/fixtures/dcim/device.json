@@ -65,5 +65,8 @@
     },
     "primary_ip6": null,
     "comments": "",
-    "custom_fields": {}
+    "custom_fields": {},
+    "config_context": {
+        "test_key": "test_val"
+    }
 }
