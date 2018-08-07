@@ -18,6 +18,10 @@ import six
 
 from pynetbox.lib.query import Request
 
+# List of fields that contain a dict but are not to be converted into
+# Record objects.
+JSON_FIELDS = ('custom_fields', 'data', 'config_context')
+
 
 def get_return(lookup, return_fields=None):
     '''Returns simple representations for items passed to lookup.
@@ -147,7 +151,8 @@ class Record(object):
         values within.
         """
         for k, v in values.items():
-            if k != 'custom_fields':
+
+            if k not in JSON_FIELDS:
                 if isinstance(v, dict):
                     lookup = getattr(self.__class__, k, None)
                     if lookup:
