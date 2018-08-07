@@ -161,6 +161,8 @@ class DeviceTestCase(unittest.TestCase, GenericTest):
         self.assertTrue(isinstance(ret, self.ret))
         self.assertTrue(isinstance(ret.primary_ip, pynetbox.ipam.IpAddresses))
         self.assertTrue(isinstance(ret.primary_ip4, pynetbox.ipam.IpAddresses))
+        self.assertTrue(isinstance(ret.config_context, dict))
+        self.assertTrue(isinstance(ret.custom_fields, dict))
         mock.assert_called_with(
             'http://localhost:8000/api/{}/{}/1/'.format(
                 self.app,
