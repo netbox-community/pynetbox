@@ -37,6 +37,27 @@ class App(object):
             app=self.app
         )
 
+    def special_endpoint(self, **kwargs):
+        """Return special endpoint
+
+        Some resources like /dcim/racks/{id}/units/ cannot be accessed
+        otherwise
+
+        :returns: Endpoint
+        :example:
+
+        >>> x = nb.dcim.racks.get(site_id=1, name='A01')
+        >>> endpoint_name = "racks/{id}/units/".format(id=x.id)
+        >>> u_list = nb.dcim.special_endpoint(name=endpoint_name).all()
+        >>> print(u_list[0:5])
+        [U47, U46, U45, U44, U43]
+        >>> for u in u_list:
+        >>>     print(u.device)
+        """
+        return Endpoint(api_kwargs=self.api_kwargs,
+                        app=self.app,
+                        **kwargs)
+
 
 class Api(object):
     """ The API object is the point of entry to pynetbox.
