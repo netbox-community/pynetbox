@@ -99,7 +99,8 @@ class Request(object):
         self.version = version
         self.session_key = session_key
         self.ssl_verify = ssl_verify
-        self.requests = requests.Session() if requests_session is None else requests_session
+        self.requests = requests.Session() if requests_session is None \
+                                           else requests_session
 
     def get_version(self):
         """Query the netbox API for its API-Version.
@@ -213,7 +214,8 @@ class Request(object):
 
         def make_request(url):
 
-            req = self.requests.get(url, headers=headers, verify=self.ssl_verify)
+            req = self.requests.get(url, headers=headers,
+                                    verify=self.ssl_verify)
             if req.ok:
                 return req.json()
             else:
@@ -262,9 +264,9 @@ class Request(object):
                 {'X-Session-Key': self.session_key}
             )
         req = self.requests.put(self.url,
-                           headers=headers,
-                           data=json.dumps(data),
-                           verify=self.ssl_verify)
+                                headers=headers,
+                                data=json.dumps(data),
+                                verify=self.ssl_verify)
         if req.ok:
             return req.json()
         else:

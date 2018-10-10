@@ -116,7 +116,7 @@ class Api(object):
             token=token,
             private_key=private_key,
             ssl_verify=ssl_verify,
-            requests_session = requests_session
+            requests_session=requests_session
         )
         if token and private_key:
             self.api_kwargs.update(session_key=req.get_session_key())
