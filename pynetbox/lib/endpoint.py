@@ -18,8 +18,6 @@ from collections import defaultdict
 from pynetbox.lib.query import Request, url_param_builder
 from pynetbox.lib.response import Record, IPRecord
 
-CACHE = defaultdict(list)
-
 
 class Endpoint(object):
     """Represent actions available on endpoints in the Netbox API.
@@ -220,15 +218,8 @@ class Endpoint(object):
         >>>
         """
 
-        cache = kwargs.pop('cache', False)
-
         if len(args) > 0:
             kwargs.update({'q': args[0]})
-
-        if cache:
-            ret = CACHE.get(self.endpoint_name)
-            if ret:
-                return ret
 
         req = Request(
             filters=kwargs,
@@ -246,7 +237,6 @@ class Endpoint(object):
             self.return_obj(i, **ret_kwargs)
             for i in req.get()
         ]
-        CACHE[self.endpoint_name].extend(ret)
         return ret
 
     def create(self, *args, **kwargs):
