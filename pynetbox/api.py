@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from requests import Session
 from pynetbox.lib import Endpoint, Request
 from pynetbox import dcim, ipam, virtualization, circuits
 
@@ -90,6 +91,7 @@ class Api(object):
                 '"private_key" and "private_key_file" cannot be used together.'
             )
         base_url = "{}/api".format(url if url[-1] != '/' else url[:-1])
+        requests_session = Session()
 
         self.api_kwargs = {
             "token": token,
@@ -97,6 +99,7 @@ class Api(object):
             "private_key_file": private_key_file,
             "base_url": base_url,
             "ssl_verify": ssl_verify,
+            "requests_session": requests_session,
         }
 
         if self.api_kwargs.get('private_key_file'):
@@ -112,7 +115,8 @@ class Api(object):
             base=base_url,
             token=token,
             private_key=private_key,
-            ssl_verify=ssl_verify
+            ssl_verify=ssl_verify,
+            requests_session = requests_session
         )
         if token and private_key:
             self.api_kwargs.update(session_key=req.get_session_key())

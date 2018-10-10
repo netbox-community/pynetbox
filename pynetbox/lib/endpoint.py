@@ -55,6 +55,7 @@ class Endpoint(object):
         self.version = api_kwargs.get('version')
         self.session_key = api_kwargs.get('session_key')
         self.ssl_verify = api_kwargs.get('ssl_verify')
+        self.requests_session = api_kwargs.get('requests_session')
         self.url = '{base_url}/{app}/{endpoint}'.format(
             base_url=self.base_url,
             app=app_name,
@@ -109,6 +110,7 @@ class Endpoint(object):
             session_key=self.session_key,
             version=self.version,
             ssl_verify=self.ssl_verify,
+            requests_session=self.requests_session,
         )
         ret_kwargs = dict(
             api_kwargs=self.api_kwargs,
@@ -167,6 +169,7 @@ class Endpoint(object):
             session_key=self.session_key,
             version=self.version,
             ssl_verify=self.ssl_verify,
+            requests_session=self.requests_session,
         )
         ret_kwargs = dict(
             api_kwargs=self.api_kwargs,
@@ -228,6 +231,7 @@ class Endpoint(object):
             session_key=self.session_key,
             version=self.version,
             ssl_verify=self.ssl_verify,
+            requests_session=self.requests_session,
         )
         ret_kwargs = dict(
             api_kwargs=self.api_kwargs,
@@ -296,6 +300,7 @@ class Endpoint(object):
             session_key=self.session_key,
             version=self.version,
             ssl_verify=self.ssl_verify,
+            requests_session=self.requests_session,
         ).post(args[0] if len(args) > 0 else kwargs)
 
 
@@ -311,6 +316,7 @@ class DetailEndpoint(object):
         self.version = parent_obj.api_kwargs.get('version')
         self.session_key = parent_obj.api_kwargs.get('session_key')
         self.ssl_verify = parent_obj.api_kwargs.get('ssl_verify')
+        self.requests_session = parent_obj.api_kwargs.get('requests_session')
         self.url = "{}/{}/{}/".format(
             parent_obj.endpoint_meta.get('url'),
             parent_obj.id,
@@ -322,6 +328,7 @@ class DetailEndpoint(object):
             session_key=self.session_key,
             version=self.version,
             ssl_verify=self.ssl_verify,
+            requests_session=self.requests_session,
         )
 
     def list(self, **kwargs):
