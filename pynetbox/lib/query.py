@@ -47,6 +47,7 @@ class RequestError(Exception):
 
 
     """
+
     def __init__(self, message):
         req = message
         message = "The request failed with code {} {}".format(
@@ -100,7 +101,7 @@ class Request(object):
         self.session_key = session_key
         self.ssl_verify = ssl_verify
         self.requests = requests.Session() if requests_session is None \
-                                           else requests_session
+            else requests_session
 
     def get_version(self):
         """Query the netbox API for its API-Version.
@@ -149,6 +150,7 @@ class Request(object):
 
         :Returns: String of URL.
         """
+
         def construct_url(input):
             for k, v in input.items():
                 if isinstance(v, list):
