@@ -126,7 +126,7 @@ class Endpoint(object):
             retrieved.
 
         :arg str,optional \**kwargs: Accepts the same keyword args as
-            filter(). Any search argeter the endpoint accepts can
+            filter(). Any search argument the endpoint accepts can
             be added as a keyword arg.
 
         :returns: A single instantiated objects.
@@ -180,13 +180,12 @@ class Endpoint(object):
 
         Takes named arguments that match the usable filters on a
         given endpoint. If an argument is passed then it's used as a
-        freeform search argeter if the endpoint supports it.
+        freeform search argument if the endpoint supports it.
 
         :arg str,optional \*args: Freeform search string that's
             accepted on given endpoint.
-        :arg str,optional \**kwargs: Any search argeter the
+        :arg str,optional \**kwargs: Any search argument the
             endpoint accepts can be added as a keyword arg.
-            *(Note: Cache is a reserved kwarg.)*
 
         :Returns: A list of instantiated objects.
 
