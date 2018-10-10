@@ -77,7 +77,7 @@ class Request(object):
 
     def __init__(self, base=None, filters=None, key=None, token=None,
                  private_key=None, version=None, session_key=None,
-                 ssl_verify=True):
+                 ssl_verify=True, requests_session=None):
         """
         Instantiates a new Request object
 
@@ -99,6 +99,7 @@ class Request(object):
         self.version = version
         self.session_key = session_key
         self.ssl_verify = ssl_verify
+        self.requests = requests.Session() if requests_session is None else requests_session
 
     def get_version(self):
         """Query the netbox API for its API-Version.
@@ -107,7 +108,7 @@ class Request(object):
 
         :returns: String containing version.
         """
-        ret = requests.get(
+        ret = self.requests.get(
             "{}/".format(self.base),
             verify=self.ssl_verify
         ).headers.get('API-Version', '1.0')
@@ -122,7 +123,7 @@ class Request(object):
 
         :Returns: String containing session key.
         """
-        req = requests.post(
+        req = self.requests.post(
             '{}/secrets/get-session-key/?preserve_key=True'.format(self.base),
             headers={
                 'accept': 'application/json',
@@ -212,7 +213,7 @@ class Request(object):
 
         def make_request(url):
 
-            req = requests.get(url, headers=headers, verify=self.ssl_verify)
+            req = self.requests.get(url, headers=headers, verify=self.ssl_verify)
             if req.ok:
                 return req.json()
             else:
@@ -260,7 +261,7 @@ class Request(object):
             headers.update(
                 {'X-Session-Key': self.session_key}
             )
-        req = requests.put(self.url,
+        req = self.requests.put(self.url,
                            headers=headers,
                            data=json.dumps(data),
                            verify=self.ssl_verify)
@@ -290,7 +291,7 @@ class Request(object):
             headers.update(
                 {'X-Session-Key': self.session_key}
             )
-        req = requests.post(
+        req = self.requests.post(
             self.normalize_url(self.url),
             headers=headers,
             data=json.dumps(data),
@@ -319,7 +320,7 @@ class Request(object):
             ),
             'authorization': 'Token {}'.format(self.token),
         }
-        req = requests.delete(
+        req = self.requests.delete(
             "{}".format(self.url),
             headers=headers,
             verify=self.ssl_verify
