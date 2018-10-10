@@ -39,7 +39,7 @@ class GenericTest(object):
 
     def test_get_all(self):
         with patch(
-            'pynetbox.lib.query.requests.get',
+            'pynetbox.lib.query.requests.Session.get',
             return_value=Response(fixture='{}/{}.json'.format(
                 self.app,
                 self.name
@@ -60,7 +60,7 @@ class GenericTest(object):
 
     def test_filter(self):
         with patch(
-            'pynetbox.lib.query.requests.get',
+            'pynetbox.lib.query.requests.Session.get',
             return_value=Response(fixture='{}/{}.json'.format(
                 self.app,
                 self.name
@@ -81,7 +81,7 @@ class GenericTest(object):
 
     def test_get(self):
         with patch(
-            'pynetbox.lib.query.requests.get',
+            'pynetbox.lib.query.requests.Session.get',
             return_value=Response(fixture='{}/{}.json'.format(
                 self.app,
                 self.name_singular or self.name[:-1]
@@ -114,7 +114,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
     ip_obj_fields = ['prefix']
 
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.lib.query.requests.Session.get',
         return_value=Response(fixture='ipam/prefix.json')
     )
     def test_modify(self, mock):
@@ -127,11 +127,11 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         self.assertTrue(netaddr.IPNetwork(ret_serialized['prefix']))
 
     @patch(
-        'pynetbox.lib.query.requests.put',
+        'pynetbox.lib.query.requests.Session.put',
         return_value=Response(fixture='ipam/prefix.json')
     )
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.lib.query.requests.Session.get',
         return_value=Response(fixture='ipam/prefix.json')
     )
     def test_idempotence(self, *_):
@@ -140,7 +140,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         self.assertFalse(test)
 
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.lib.query.requests.Session.get',
         side_effect=[
             Response(fixture='ipam/prefix.json'),
             Response(fixture='ipam/available-ips.json'),
@@ -158,11 +158,11 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         self.assertEqual(len(ret), 3)
 
     @patch(
-        'pynetbox.lib.query.requests.post',
+        'pynetbox.lib.query.requests.Session.post',
         return_value=Response(fixture='ipam/available-ips-post.json')
     )
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.lib.query.requests.Session.get',
         return_value=Response(fixture='ipam/prefix.json'),
     )
     def test_create_available_ips(self, get, post):
@@ -193,7 +193,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         self.assertEqual(ret, expected_result)
 
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.lib.query.requests.Session.get',
         side_effect=[
             Response(fixture='ipam/prefix.json'),
             Response(fixture='ipam/available-prefixes.json'),
@@ -210,11 +210,11 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         self.assertTrue(ret)
 
     @patch(
-        'pynetbox.lib.query.requests.post',
+        'pynetbox.lib.query.requests.Session.post',
         return_value=Response(fixture='ipam/available-prefixes-post.json')
     )
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.lib.query.requests.Session.get',
         return_value=Response(fixture='ipam/prefix.json'),
     )
     def test_create_available_prefixes(self, get, post):
@@ -238,7 +238,7 @@ class IPAddressTestCase(unittest.TestCase, GenericTest):
     ip_obj_fields = ['address']
 
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.lib.query.requests.Session.get',
         return_value=Response(fixture='ipam/ip_address.json')
     )
     def test_modify(self, mock):

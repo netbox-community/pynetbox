@@ -28,7 +28,7 @@ class GenericTest(object):
 
     def test_get_all(self):
         with patch(
-            'pynetbox.lib.query.requests.get',
+            'pynetbox.lib.query.requests.Session.get',
             return_value=Response(fixture='{}/{}.json'.format(
                 self.app,
                 self.name
@@ -49,7 +49,7 @@ class GenericTest(object):
 
     def test_filter(self):
         with patch(
-            'pynetbox.lib.query.requests.get',
+            'pynetbox.lib.query.requests.Session.get',
             return_value=Response(fixture='{}/{}.json'.format(
                 self.app,
                 self.name
@@ -70,7 +70,7 @@ class GenericTest(object):
 
     def test_get(self):
         with patch(
-            'pynetbox.lib.query.requests.get',
+            'pynetbox.lib.query.requests.Session.get',
             return_value=Response(fixture='{}/{}.json'.format(
                 self.app,
                 self.name[:-1]
@@ -93,7 +93,7 @@ class CircuitsTestCase(unittest.TestCase, GenericTest):
     name = 'circuits'
 
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.lib.query.requests.Session.get',
         return_value=Response(fixture='circuits/circuit.json')
     )
     def test_repr(self, _):
@@ -113,7 +113,7 @@ class CircuitTerminationsTestCase(unittest.TestCase, GenericTest):
     name = 'circuit_terminations'
 
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.lib.query.requests.Session.get',
         return_value=Response(fixture='circuits/circuit_termination.json')
     )
     def test_repr(self, _):
