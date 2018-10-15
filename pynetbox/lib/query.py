@@ -17,7 +17,8 @@ import json
 from six.moves.urllib.parse import urlencode
 
 import requests
-
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def url_param_builder(param_dict):
     '''Builds url parameters
