@@ -20,7 +20,7 @@ from pynetbox.lib.query import Request
 
 # List of fields that contain a dict but are not to be converted into
 # Record objects.
-JSON_FIELDS = ('custom_fields', 'data', 'config_context')
+JSON_FIELDS = ('custom_fields', 'data', 'config_context', 'local_context_data')
 
 
 def get_return(lookup, return_fields=None):
@@ -161,7 +161,7 @@ class Record(object):
                         v = self.default_ret(v, api_kwargs=self.api_kwargs)
                 self._add_cache((k, v))
             else:
-                self._add_cache((k, v.copy()))
+                self._add_cache((k, v))
             setattr(self, k, v)
 
     def _compare(self):
