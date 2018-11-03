@@ -16,7 +16,7 @@ limitations under the License.
 from collections import defaultdict
 
 from pynetbox.lib.query import Request, url_param_builder
-from pynetbox.lib.response import Record, IPRecord
+from pynetbox.lib.response import Record
 
 
 class Endpoint(object):
@@ -76,15 +76,12 @@ class Endpoint(object):
 
         :Returns: Record (obj)
         """
-        app_return_override = {
-            'ipam': IPRecord,
-        }
         if app_module:
             obj_name = name.title().replace('_', '')
             ret = getattr(
                 app_module,
                 obj_name,
-                app_return_override.get(app_name, Record)
+                Record
             )
         else:
             ret = Record

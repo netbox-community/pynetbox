@@ -305,8 +305,6 @@ class SiteTestCase(unittest.TestCase, GenericTest):
         ret = getattr(nb, self.name).get(1)
         ret.custom_fields['test_custom'] = "Testing"
         test = ret.serialize()
-        from pprint import pprint
-        pprint(test)
         self.assertEqual(
             test['custom_fields']['test_selection'],
             2

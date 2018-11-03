@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import netaddr
 import six
 
 from pynetbox.lib.query import Request
@@ -37,9 +36,6 @@ def get_return(lookup, return_fields=None):
     :arg list,optional return_fields: A list of fields to reference when
         calling values on lookup.
     '''
-
-    if isinstance(lookup, netaddr.IPNetwork):
-        return str(lookup)
 
     for i in return_fields or ['id', 'value', 'nested_return']:
         if isinstance(lookup, dict) and lookup.get(i):
@@ -251,9 +247,6 @@ class Record(object):
                         'serialize'
                     )(nested=True)
 
-                if isinstance(current_val, netaddr.ip.IPNetwork):
-                    current_val = str(current_val)
-
                 if isinstance(current_val, list):
                     current_val = [
                         v.id if isinstance(v, Record) else v
@@ -317,64 +310,3 @@ class Record(object):
             return True
         else:
             return False
-
-
-class IPRecord(Record):
-    """IP-specific Record for IPAM responses.
-
-    Extends ``Record`` objects to handle replacing ip4/6 strings with
-    instances of ``netaddr.IPNetworks`` instead.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(IPRecord, self).__init__(*args, **kwargs)
-        self.default_ret = IPRecord
-
-    def __iter__(self):
-        for i in dict(self._full_cache).keys():
-            cur_attr = getattr(self, i)
-            if isinstance(cur_attr, Record):
-                yield i, dict(cur_attr)
-            else:
-                if isinstance(cur_attr, netaddr.IPNetwork):
-                    yield i, str(cur_attr)
-                else:
-                    yield i, cur_attr
-
-    def _parse_values(self, values):
-        """ Parses values init arg. for responses with IPs fields.
-
-        Similar parser as parent, but takes str & unicode fields and
-        trys converting them to IPNetwork objects.
-        """
-
-        def list_parser(list_item):
-            if isinstance(list_item, dict):
-                return self.default_ret(list_item, api_kwargs=self.api_kwargs)
-            return list_item
-
-        for k, v in values.items():
-
-            if k not in JSON_FIELDS:
-                if isinstance(v, dict):
-                    lookup = getattr(self.__class__, k, None)
-                    if lookup:
-                        v = lookup(v, api_kwargs=self.api_kwargs)
-                    else:
-                        v = self.default_ret(v, api_kwargs=self.api_kwargs)
-                    self._add_cache((k, v))
-
-                elif isinstance(v, list):
-                    v = [list_parser(i) for i in v]
-                    to_cache = list(v)
-                    self._add_cache((k, to_cache))
-
-                if isinstance(v, six.string_types):
-                    try:
-                        v = netaddr.IPNetwork(v)
-                        self._add_cache((k, v))
-                    except (netaddr.AddrFormatError, ValueError):
-                        self._add_cache((k, v))
-            else:
-                self._add_cache((k, v.copy()))
-            setattr(self, k, v)

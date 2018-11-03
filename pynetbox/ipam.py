@@ -13,17 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from pynetbox.lib.response import IPRecord
+from pynetbox.lib.response import Record
 from pynetbox.lib.endpoint import DetailEndpoint
 
 
-class IpAddresses(IPRecord):
+class IpAddresses(Record):
 
     def __str__(self):
         return str(self.address)
 
 
-class Prefixes(IPRecord):
+class Prefixes(Record):
 
     def __str__(self):
         return str(self.prefix)
@@ -91,7 +91,7 @@ class Prefixes(IPRecord):
         return DetailEndpoint(self, 'available-prefixes')
 
 
-class Aggregates(IPRecord):
+class Aggregates(Record):
 
     def __str__(self):
         return str(self.prefix)

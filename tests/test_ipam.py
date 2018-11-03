@@ -1,7 +1,6 @@
 import unittest
 import json
 
-import netaddr
 import six
 
 from .util import Response
@@ -33,9 +32,8 @@ POST_HEADERS = {
 class GenericTest(object):
     name = None
     name_singular = None
-    ret = pynetbox.lib.response.IPRecord
+    ret = pynetbox.lib.response.Record
     app = 'ipam'
-    ip_obj_fields = {}
 
     def test_get_all(self):
         with patch(
@@ -100,18 +98,11 @@ class GenericTest(object):
                 headers=HEADERS,
                 verify=True
             )
-            if self.ip_obj_fields:
-                for field in self.ip_obj_fields:
-                    self.assertTrue(
-                        isinstance(getattr(ret, field), netaddr.IPNetwork)
-                    )
-                    self.assertTrue(netaddr.IPNetwork(dict(ret)[field]))
 
 
 class PrefixTestCase(unittest.TestCase, GenericTest):
     name = 'prefixes'
     name_singular = 'prefix'
-    ip_obj_fields = ['prefix']
 
     @patch(
         'pynetbox.lib.query.requests.get',
@@ -124,7 +115,6 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         self.assertTrue(ret_serialized)
         self.assertFalse(ret._compare())
         self.assertEqual(ret_serialized['prefix'], '10.1.2.0/24')
-        self.assertTrue(netaddr.IPNetwork(ret_serialized['prefix']))
 
     @patch(
         'pynetbox.lib.query.requests.put',
@@ -235,7 +225,6 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
 class IPAddressTestCase(unittest.TestCase, GenericTest):
     name = 'ip_addresses'
     name_singular = 'ip_address'
-    ip_obj_fields = ['address']
 
     @patch(
         'pynetbox.lib.query.requests.get',
@@ -249,7 +238,6 @@ class IPAddressTestCase(unittest.TestCase, GenericTest):
         self.assertFalse(ret._compare())
         self.assertEqual(ret_serialized['address'], '10.0.255.1/32')
         self.assertEqual(ret_serialized['description'], 'testing')
-        self.assertTrue(netaddr.IPNetwork(ret_serialized['address']))
 
 
 class RoleTestCase(unittest.TestCase, GenericTest):
@@ -262,7 +250,6 @@ class RIRTestCase(unittest.TestCase, GenericTest):
 
 class AggregatesTestCase(unittest.TestCase, GenericTest):
     name = 'aggregates'
-    ip_obj_fields = ['prefix']
 
 
 class VlanTestCase(unittest.TestCase, GenericTest):
