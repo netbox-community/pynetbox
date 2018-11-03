@@ -158,7 +158,10 @@ class Endpoint(object):
             if len(filter_lookup) == 0:
                 return None
             else:
-                raise ValueError('get() returned more than one result.')
+                raise ValueError(
+                    'get() returned more than one result.'
+                    'Perhaps use filter() or all() instead.'
+                )
 
         req = Request(
             key=key,
@@ -217,8 +220,13 @@ class Endpoint(object):
         >>>
         """
 
-        if len(args) > 0:
+        if args:
             kwargs.update({'q': args[0]})
+
+        if not kwargs:
+            raise ValueError(
+                'filter must be passed kwargs. Perhaps use all().'
+            )
 
         req = Request(
             filters=kwargs,
