@@ -3,8 +3,8 @@ import json
 
 import six
 
-from .util import Response
 import pynetbox
+from .util import Response
 
 if six.PY3:
     from unittest.mock import patch
@@ -29,78 +29,79 @@ POST_HEADERS = {
 }
 
 
-class GenericTest(object):
-    name = None
-    name_singular = None
-    ret = pynetbox.lib.response.Record
-    app = 'ipam'
+class Generic(object):
+    class Tests(unittest.TestCase):
+        name = ''
+        name_singular = None
+        ret = pynetbox.lib.response.Record
+        app = 'ipam'
 
-    def test_get_all(self):
-        with patch(
-            'pynetbox.lib.query.requests.get',
-            return_value=Response(fixture='{}/{}.json'.format(
-                self.app,
-                self.name
-            ))
-        ) as mock:
-            ret = getattr(nb, self.name).all()
-            self.assertTrue(ret)
-            self.assertTrue(isinstance(ret, list))
-            self.assertTrue(isinstance(ret[0], self.ret))
-            mock.assert_called_with(
-                'http://localhost:8000/api/{}/{}/'.format(
+        def test_get_all(self):
+            with patch(
+                'pynetbox.lib.query.requests.get',
+                return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
-                    self.name.replace('_', '-')
-                ),
-                headers=HEADERS,
-                verify=True
-            )
+                    self.name
+                ))
+            ) as mock:
+                ret = getattr(nb, self.name).all()
+                self.assertTrue(ret)
+                self.assertTrue(isinstance(ret, list))
+                self.assertTrue(isinstance(ret[0], self.ret))
+                mock.assert_called_with(
+                    'http://localhost:8000/api/{}/{}/'.format(
+                        self.app,
+                        self.name.replace('_', '-')
+                    ),
+                    headers=HEADERS,
+                    verify=True
+                )
 
-    def test_filter(self):
-        with patch(
-            'pynetbox.lib.query.requests.get',
-            return_value=Response(fixture='{}/{}.json'.format(
-                self.app,
-                self.name
-            ))
-        ) as mock:
-            ret = getattr(nb, self.name).filter(pk=1)
-            self.assertTrue(ret)
-            self.assertTrue(isinstance(ret, list))
-            self.assertTrue(isinstance(ret[0], self.ret))
-            mock.assert_called_with(
-                'http://localhost:8000/api/{}/{}/?pk=1'.format(
+        def test_filter(self):
+            with patch(
+                'pynetbox.lib.query.requests.get',
+                return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
-                    self.name.replace('_', '-')
-                ),
-                headers=HEADERS,
-                verify=True
-            )
+                    self.name
+                ))
+            ) as mock:
+                ret = getattr(nb, self.name).filter(pk=1)
+                self.assertTrue(ret)
+                self.assertTrue(isinstance(ret, list))
+                self.assertTrue(isinstance(ret[0], self.ret))
+                mock.assert_called_with(
+                    'http://localhost:8000/api/{}/{}/?pk=1'.format(
+                        self.app,
+                        self.name.replace('_', '-')
+                    ),
+                    headers=HEADERS,
+                    verify=True
+                )
 
-    def test_get(self):
-        with patch(
-            'pynetbox.lib.query.requests.get',
-            return_value=Response(fixture='{}/{}.json'.format(
-                self.app,
-                self.name_singular or self.name[:-1]
-            ))
-        ) as mock:
-            ret = getattr(nb, self.name).get(1)
-            self.assertTrue(ret)
-            self.assertTrue(isinstance(ret, self.ret))
-            self.assertTrue(isinstance(dict(ret), dict))
-            self.assertTrue(isinstance(str(ret), str))
-            mock.assert_called_with(
-                'http://localhost:8000/api/{}/{}/1/'.format(
+        def test_get(self):
+            with patch(
+                'pynetbox.lib.query.requests.get',
+                return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
-                    self.name.replace('_', '-')
-                ),
-                headers=HEADERS,
-                verify=True
-            )
+                    self.name_singular or self.name[:-1]
+                ))
+            ) as mock:
+                ret = getattr(nb, self.name).get(1)
+                self.assertTrue(ret)
+                self.assertTrue(isinstance(ret, self.ret))
+                self.assertTrue(isinstance(dict(ret), dict))
+                self.assertTrue(isinstance(str(ret), str))
+                mock.assert_called_with(
+                    'http://localhost:8000/api/{}/{}/1/'.format(
+                        self.app,
+                        self.name.replace('_', '-')
+                    ),
+                    headers=HEADERS,
+                    verify=True
+                )
 
 
-class PrefixTestCase(unittest.TestCase, GenericTest):
+class PrefixTestCase(Generic.Tests):
     name = 'prefixes'
     name_singular = 'prefix'
 
@@ -108,7 +109,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         'pynetbox.lib.query.requests.get',
         return_value=Response(fixture='ipam/prefix.json')
     )
-    def test_modify(self, mock):
+    def test_modify(self, *_):
         ret = nb.prefixes.get(1)
         ret.prefix = '10.1.2.0/24'
         ret_serialized = ret.serialize()
@@ -140,7 +141,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         pfx = nb.prefixes.get(1)
         ret = pfx.available_ips.list()
         mock.assert_called_with(
-            'http://localhost:8000/api/ipam/prefixes/1/available-ips/'.format(self.name),
+            'http://localhost:8000/api/ipam/prefixes/1/available-ips/',
             headers=HEADERS,
             verify=True
         )
@@ -155,7 +156,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         'pynetbox.lib.query.requests.get',
         return_value=Response(fixture='ipam/prefix.json'),
     )
-    def test_create_available_ips(self, get, post):
+    def test_create_available_ips(self, _, post):
         expected_result = {
             'status': 1,
             'description': '',
@@ -174,7 +175,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         pfx = nb.prefixes.get(1)
         ret = pfx.available_ips.create(create_parms)
         post.assert_called_with(
-            'http://localhost:8000/api/ipam/prefixes/1/available-ips/'.format(self.name),
+            'http://localhost:8000/api/ipam/prefixes/1/available-ips/',
             headers=POST_HEADERS,
             data=json.dumps(create_parms),
             verify=True
@@ -193,7 +194,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         pfx = nb.prefixes.get(1)
         ret = pfx.available_prefixes.list()
         mock.assert_called_with(
-            'http://localhost:8000/api/ipam/prefixes/1/available-prefixes/'.format(self.name),
+            'http://localhost:8000/api/ipam/prefixes/1/available-prefixes/',
             headers=HEADERS,
             verify=True
         )
@@ -207,14 +208,14 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         'pynetbox.lib.query.requests.get',
         return_value=Response(fixture='ipam/prefix.json'),
     )
-    def test_create_available_prefixes(self, get, post):
+    def test_create_available_prefixes(self, _, post):
         create_parms = dict(
             prefix_length=30,
         )
         pfx = nb.prefixes.get(1)
         ret = pfx.available_prefixes.create(create_parms)
         post.assert_called_with(
-            'http://localhost:8000/api/ipam/prefixes/1/available-prefixes/'.format(self.name),
+            'http://localhost:8000/api/ipam/prefixes/1/available-prefixes/',
             headers=POST_HEADERS,
             data=json.dumps(create_parms),
             verify=True
@@ -222,7 +223,7 @@ class PrefixTestCase(unittest.TestCase, GenericTest):
         self.assertTrue(ret)
 
 
-class IPAddressTestCase(unittest.TestCase, GenericTest):
+class IPAddressTestCase(Generic.Tests):
     name = 'ip_addresses'
     name_singular = 'ip_address'
 
@@ -230,7 +231,7 @@ class IPAddressTestCase(unittest.TestCase, GenericTest):
         'pynetbox.lib.query.requests.get',
         return_value=Response(fixture='ipam/ip_address.json')
     )
-    def test_modify(self, mock):
+    def test_modify(self, *_):
         ret = nb.prefixes.get(1)
         ret.description = 'testing'
         ret_serialized = ret.serialize()
@@ -240,29 +241,29 @@ class IPAddressTestCase(unittest.TestCase, GenericTest):
         self.assertEqual(ret_serialized['description'], 'testing')
 
 
-class RoleTestCase(unittest.TestCase, GenericTest):
+class RoleTestCase(Generic.Tests):
     name = 'roles'
 
 
-class RIRTestCase(unittest.TestCase, GenericTest):
+class RIRTestCase(Generic.Tests):
     name = 'rirs'
 
 
-class AggregatesTestCase(unittest.TestCase, GenericTest):
+class AggregatesTestCase(Generic.Tests):
     name = 'aggregates'
 
 
-class VlanTestCase(unittest.TestCase, GenericTest):
+class VlanTestCase(Generic.Tests):
     name = 'vlans'
 
 
-class VlanGroupsTestCase(unittest.TestCase, GenericTest):
+class VlanGroupsTestCase(Generic.Tests):
     name = 'vlan_groups'
 
 
-class VRFTestCase(unittest.TestCase, GenericTest):
+class VRFTestCase(Generic.Tests):
     name = 'vrfs'
 
 
-# class ServicesTestCase(unittest.TestCase, GenericTest):
+# class ServicesTestCase(Generic.Tests):
 #     name = 'services'

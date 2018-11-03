@@ -1,8 +1,8 @@
 import unittest
 import six
 
-from .util import Response
 import pynetbox
+from .util import Response
 
 if six.PY3:
     from unittest.mock import patch
@@ -34,7 +34,7 @@ class ApiTestCase(unittest.TestCase):
         'pynetbox.lib.query.requests.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
-    def test_get(self, mock):
+    def test_get(self, *_):
         api = pynetbox.api(
             host,
             **def_kwargs
@@ -45,7 +45,7 @@ class ApiTestCase(unittest.TestCase):
         'pynetbox.lib.query.requests.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
-    def test_sanitize_url(self, mock):
+    def test_sanitize_url(self, *_):
         api = pynetbox.api(
             'http://localhost:8000/',
             **def_kwargs
@@ -60,7 +60,7 @@ class ApiArgumentsTestCase(unittest.TestCase):
         'pynetbox.lib.query.requests.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
-    def common_arguments(self, kwargs, arg, expect, mock):
+    def common_arguments(self, kwargs, arg, expect, *_):
         '''
         Ensures the api and endpoint instances have ssl_verify set
         as expected
