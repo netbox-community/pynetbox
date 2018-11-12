@@ -1,0 +1,476 @@
+{
+    "device:face": [
+        {
+            "label": "Front",
+            "value": 0
+        },
+        {
+            "label": "Rear",
+            "value": 1
+        }
+    ],
+    "device:status": [
+        {
+            "label": "Active",
+            "value": 1
+        },
+        {
+            "label": "Offline",
+            "value": 0
+        },
+        {
+            "label": "Planned",
+            "value": 2
+        },
+        {
+            "label": "Staged",
+            "value": 3
+        },
+        {
+            "label": "Failed",
+            "value": 4
+        },
+        {
+            "label": "Inventory",
+            "value": 5
+        }
+    ],
+    "console-port:connection_status": [
+        {
+            "label": "Planned",
+            "value": false
+        },
+        {
+            "label": "Connected",
+            "value": true
+        }
+    ],
+    "interface:form_factor": [
+        {
+            "label": "Virtual",
+            "value": 0
+        },
+        {
+            "label": "Link Aggregation Group (LAG)",
+            "value": 200
+        },
+        {
+            "label": "100BASE-TX (10/100ME)",
+            "value": 800
+        },
+        {
+            "label": "1000BASE-T (1GE)",
+            "value": 1000
+        },
+        {
+            "label": "10GBASE-T (10GE)",
+            "value": 1150
+        },
+        {
+            "label": "10GBASE-CX4 (10GE)",
+            "value": 1170
+        },
+        {
+            "label": "GBIC (1GE)",
+            "value": 1050
+        },
+        {
+            "label": "SFP (1GE)",
+            "value": 1100
+        },
+        {
+            "label": "SFP+ (10GE)",
+            "value": 1200
+        },
+        {
+            "label": "XFP (10GE)",
+            "value": 1300
+        },
+        {
+            "label": "XENPAK (10GE)",
+            "value": 1310
+        },
+        {
+            "label": "X2 (10GE)",
+            "value": 1320
+        },
+        {
+            "label": "SFP28 (25GE)",
+            "value": 1350
+        },
+        {
+            "label": "QSFP+ (40GE)",
+            "value": 1400
+        },
+        {
+            "label": "CFP (100GE)",
+            "value": 1500
+        },
+        {
+            "label": "CFP2 (100GE)",
+            "value": 1510
+        },
+        {
+            "label": "CFP4 (100GE)",
+            "value": 1520
+        },
+        {
+            "label": "Cisco CPAK (100GE)",
+            "value": 1550
+        },
+        {
+            "label": "QSFP28 (100GE)",
+            "value": 1600
+        },
+        {
+            "label": "IEEE 802.11a",
+            "value": 2600
+        },
+        {
+            "label": "IEEE 802.11b/g",
+            "value": 2610
+        },
+        {
+            "label": "IEEE 802.11n",
+            "value": 2620
+        },
+        {
+            "label": "IEEE 802.11ac",
+            "value": 2630
+        },
+        {
+            "label": "IEEE 802.11ad",
+            "value": 2640
+        },
+        {
+            "label": "SFP (1GFC)",
+            "value": 3010
+        },
+        {
+            "label": "SFP (2GFC)",
+            "value": 3020
+        },
+        {
+            "label": "SFP (4GFC)",
+            "value": 3040
+        },
+        {
+            "label": "SFP+ (8GFC)",
+            "value": 3080
+        },
+        {
+            "label": "SFP+ (16GFC)",
+            "value": 3160
+        },
+        {
+            "label": "T1 (1.544 Mbps)",
+            "value": 4000
+        },
+        {
+            "label": "E1 (2.048 Mbps)",
+            "value": 4010
+        },
+        {
+            "label": "T3 (45 Mbps)",
+            "value": 4040
+        },
+        {
+            "label": "E3 (34 Mbps)",
+            "value": 4050
+        },
+        {
+            "label": "Cisco StackWise",
+            "value": 5000
+        },
+        {
+            "label": "Cisco StackWise Plus",
+            "value": 5050
+        },
+        {
+            "label": "Cisco FlexStack",
+            "value": 5100
+        },
+        {
+            "label": "Cisco FlexStack Plus",
+            "value": 5150
+        },
+        {
+            "label": "Juniper VCP",
+            "value": 5200
+        },
+        {
+            "label": "Extreme SummitStack",
+            "value": 5300
+        },
+        {
+            "label": "Extreme SummitStack-128",
+            "value": 5310
+        },
+        {
+            "label": "Extreme SummitStack-256",
+            "value": 5320
+        },
+        {
+            "label": "Extreme SummitStack-512",
+            "value": 5330
+        },
+        {
+            "label": "Other",
+            "value": 32767
+        }
+    ],
+    "interface:mode": [
+        {
+            "label": "Access",
+            "value": 100
+        },
+        {
+            "label": "Tagged",
+            "value": 200
+        },
+        {
+            "label": "Tagged All",
+            "value": 300
+        }
+    ],
+    "interface-connection:connection_status": [
+        {
+            "label": "Planned",
+            "value": false
+        },
+        {
+            "label": "Connected",
+            "value": true
+        }
+    ],
+    "interface-template:form_factor": [
+        {
+            "label": "Virtual",
+            "value": 0
+        },
+        {
+            "label": "Link Aggregation Group (LAG)",
+            "value": 200
+        },
+        {
+            "label": "100BASE-TX (10/100ME)",
+            "value": 800
+        },
+        {
+            "label": "1000BASE-T (1GE)",
+            "value": 1000
+        },
+        {
+            "label": "10GBASE-T (10GE)",
+            "value": 1150
+        },
+        {
+            "label": "10GBASE-CX4 (10GE)",
+            "value": 1170
+        },
+        {
+            "label": "GBIC (1GE)",
+            "value": 1050
+        },
+        {
+            "label": "SFP (1GE)",
+            "value": 1100
+        },
+        {
+            "label": "SFP+ (10GE)",
+            "value": 1200
+        },
+        {
+            "label": "XFP (10GE)",
+            "value": 1300
+        },
+        {
+            "label": "XENPAK (10GE)",
+            "value": 1310
+        },
+        {
+            "label": "X2 (10GE)",
+            "value": 1320
+        },
+        {
+            "label": "SFP28 (25GE)",
+            "value": 1350
+        },
+        {
+            "label": "QSFP+ (40GE)",
+            "value": 1400
+        },
+        {
+            "label": "CFP (100GE)",
+            "value": 1500
+        },
+        {
+            "label": "CFP2 (100GE)",
+            "value": 1510
+        },
+        {
+            "label": "CFP4 (100GE)",
+            "value": 1520
+        },
+        {
+            "label": "Cisco CPAK (100GE)",
+            "value": 1550
+        },
+        {
+            "label": "QSFP28 (100GE)",
+            "value": 1600
+        },
+        {
+            "label": "IEEE 802.11a",
+            "value": 2600
+        },
+        {
+            "label": "IEEE 802.11b/g",
+            "value": 2610
+        },
+        {
+            "label": "IEEE 802.11n",
+            "value": 2620
+        },
+        {
+            "label": "IEEE 802.11ac",
+            "value": 2630
+        },
+        {
+            "label": "IEEE 802.11ad",
+            "value": 2640
+        },
+        {
+            "label": "SFP (1GFC)",
+            "value": 3010
+        },
+        {
+            "label": "SFP (2GFC)",
+            "value": 3020
+        },
+        {
+            "label": "SFP (4GFC)",
+            "value": 3040
+        },
+        {
+            "label": "SFP+ (8GFC)",
+            "value": 3080
+        },
+        {
+            "label": "SFP+ (16GFC)",
+            "value": 3160
+        },
+        {
+            "label": "T1 (1.544 Mbps)",
+            "value": 4000
+        },
+        {
+            "label": "E1 (2.048 Mbps)",
+            "value": 4010
+        },
+        {
+            "label": "T3 (45 Mbps)",
+            "value": 4040
+        },
+        {
+            "label": "E3 (34 Mbps)",
+            "value": 4050
+        },
+        {
+            "label": "Cisco StackWise",
+            "value": 5000
+        },
+        {
+            "label": "Cisco StackWise Plus",
+            "value": 5050
+        },
+        {
+            "label": "Cisco FlexStack",
+            "value": 5100
+        },
+        {
+            "label": "Cisco FlexStack Plus",
+            "value": 5150
+        },
+        {
+            "label": "Juniper VCP",
+            "value": 5200
+        },
+        {
+            "label": "Extreme SummitStack",
+            "value": 5300
+        },
+        {
+            "label": "Extreme SummitStack-128",
+            "value": 5310
+        },
+        {
+            "label": "Extreme SummitStack-256",
+            "value": 5320
+        },
+        {
+            "label": "Extreme SummitStack-512",
+            "value": 5330
+        },
+        {
+            "label": "Other",
+            "value": 32767
+        }
+    ],
+    "power-port:connection_status": [
+        {
+            "label": "Planned",
+            "value": false
+        },
+        {
+            "label": "Connected",
+            "value": true
+        }
+    ],
+    "rack:type": [
+        {
+            "label": "2-post frame",
+            "value": 100
+        },
+        {
+            "label": "4-post frame",
+            "value": 200
+        },
+        {
+            "label": "4-post cabinet",
+            "value": 300
+        },
+        {
+            "label": "Wall-mounted frame",
+            "value": 1000
+        },
+        {
+            "label": "Wall-mounted cabinet",
+            "value": 1100
+        }
+    ],
+    "rack:width": [
+        {
+            "label": "19 inches",
+            "value": 19
+        },
+        {
+            "label": "23 inches",
+            "value": 23
+        }
+    ],
+    "site:status": [
+        {
+            "label": "Active",
+            "value": 1
+        },
+        {
+            "label": "Planned",
+            "value": 2
+        },
+        {
+            "label": "Retired",
+            "value": 4
+        }
+    ]
+}

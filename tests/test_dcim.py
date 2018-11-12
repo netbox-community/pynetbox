@@ -491,3 +491,27 @@ class InterfaceConnectionsTestCase(Generic.Tests):
 
 class VirtualChassisTestCase(Generic.Tests):
     name = 'virtual_chassis_devices'
+
+
+class Choices(unittest.TestCase):
+
+    def test_get(self):
+        with patch(
+            'pynetbox.lib.query.requests.get',
+            return_value=Response(fixture='{}/{}.json'.format(
+                'dcim',
+                'choices'
+            ))
+        ) as mock:
+            ret = nb.choices()
+            # from pprint import pprint
+            # pprint(ret)
+            self.assertTrue(ret)
+            # self.assertTrue(isinstance(ret, self.ret))
+            # self.assertTrue(isinstance(str(ret), str))
+            # self.assertTrue(isinstance(dict(ret), dict))
+            mock.assert_called_with(
+                'http://localhost:8000/api/dcim/_choices/',
+                headers=HEADERS,
+                verify=True
+            )

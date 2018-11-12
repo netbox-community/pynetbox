@@ -13,8 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from collections import defaultdict
-
 from pynetbox.lib.query import Request, url_param_builder
 from pynetbox.lib.response import Record
 
@@ -41,14 +39,8 @@ class Endpoint(object):
 
     """
 
-    def __init__(self, name, app, api_kwargs={}):
-        self.app = app
-        app_module = app
-        if isinstance(app, str):
-            app_name = app_module
-        else:
-            app_name = app_module.__name__.split('.')[-1]
-        self.return_obj = self._lookup_ret_obj(name, app_module, app_name)
+    def __init__(self, name, app, api_kwargs):
+        self.return_obj = self._lookup_ret_obj(name, app)
         self.api_kwargs = api_kwargs
         self.base_url = api_kwargs.get('base_url')
         self.token = api_kwargs.get('token')
@@ -57,13 +49,13 @@ class Endpoint(object):
         self.ssl_verify = api_kwargs.get('ssl_verify')
         self.url = '{base_url}/{app}/{endpoint}'.format(
             base_url=self.base_url,
-            app=app_name,
+            app=app.name,
             endpoint=name.replace('_', '-'),
         )
         self.endpoint_name = name
         self.meta = dict(url=self.url)
 
-    def _lookup_ret_obj(self, name, app_module, app_name):
+    def _lookup_ret_obj(self, name, app):
         """Loads unique Response objects.
 
         This method loads a unique response object for an endpoint if
@@ -76,16 +68,23 @@ class Endpoint(object):
 
         :Returns: Record (obj)
         """
-        if app_module:
+        if app.module:
             obj_name = name.title().replace('_', '')
             ret = getattr(
-                app_module,
+                app.module,
                 obj_name,
                 Record
             )
         else:
             ret = Record
         return ret
+
+    def _response_loader(self, values):
+        return self.return_obj(
+            values,
+            api_kwargs=self.api_kwargs,
+            endpoint_meta=self.meta,
+        )
 
     def all(self):
         """Queries the 'ListView' of a given endpoint.
@@ -107,12 +106,9 @@ class Endpoint(object):
             version=self.version,
             ssl_verify=self.ssl_verify,
         )
-        ret_kwargs = dict(
-            api_kwargs=self.api_kwargs,
-            endpoint_meta=self.meta,
-        )
+
         return [
-            self.return_obj(i, **ret_kwargs)
+            self._response_loader(i)
             for i in req.get()
         ]
 
@@ -168,12 +164,8 @@ class Endpoint(object):
             version=self.version,
             ssl_verify=self.ssl_verify,
         )
-        ret_kwargs = dict(
-            api_kwargs=self.api_kwargs,
-            endpoint_meta=self.meta,
-        )
 
-        return self.return_obj(req.get(), **ret_kwargs)
+        return self._response_loader(req.get())
 
     def filter(self, *args, **kwargs):
         r"""Queries the 'ListView' of a given endpoint.
@@ -233,12 +225,9 @@ class Endpoint(object):
             version=self.version,
             ssl_verify=self.ssl_verify,
         )
-        ret_kwargs = dict(
-            api_kwargs=self.api_kwargs,
-            endpoint_meta=self.meta,
-        )
+
         ret = [
-            self.return_obj(i, **ret_kwargs)
+            self._response_loader(i)
             for i in req.get()
         ]
         return ret
@@ -294,13 +283,18 @@ class Endpoint(object):
         ... ])
         """
 
-        return Request(
+        req = Request(
             base=self.url,
             token=self.token,
             session_key=self.session_key,
             version=self.version,
             ssl_verify=self.ssl_verify,
-        ).post(args[0] if len(args) > 0 else kwargs)
+        ).post(args[0] if args else kwargs)
+
+        if isinstance(req, list):
+            return [self._response_loader(i) for i in req]
+
+        return self._response_loader(req)
 
 
 class DetailEndpoint(object):

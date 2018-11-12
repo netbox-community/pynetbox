@@ -27,15 +27,36 @@ class App(object):
         if requested endpoint doesn't exist.
     """
     def __init__(self, app, api_kwargs=None):
-        self.app = app
+        self.module = app
         self.api_kwargs = api_kwargs
+        self._choices = None
+
+        if isinstance(app, str):
+            self.name = app
+        else:
+            self.name = app.__name__.split('.')[-1]
 
     def __getattr__(self, name):
         return Endpoint(
             name,
             api_kwargs=self.api_kwargs,
-            app=self.app
+            app=self
         )
+
+    def choices(self):
+        if self._choices:
+            return self._choices
+
+        self._choices = Request(
+            base='{}/{}/_choices/'.format(
+                self.api_kwargs['base_url'],
+                self.name
+            ),
+            version=self.api_kwargs['version'],
+            ssl_verify=self.api_kwargs['ssl_verify'],
+        ).get()
+
+        return self._choices
 
 
 class Api(object):
