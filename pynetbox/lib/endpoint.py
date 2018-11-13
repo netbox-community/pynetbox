@@ -152,8 +152,9 @@ class Endpoint(object):
                 return None
             else:
                 raise ValueError(
-                    'get() returned more than one result.'
-                    'Perhaps use filter() or all() instead.'
+                    'get() returned more than one result. '
+                    'Check that the kwarg(s) passed are valid for this '
+                    'endpoint or use filter() or all() instead.'
                 )
 
         req = Request(
@@ -214,7 +215,7 @@ class Endpoint(object):
 
         if not kwargs:
             raise ValueError(
-                'filter must be passed kwargs. Perhaps use all().'
+                'filter must be passed kwargs. Perhaps use all() instead.'
             )
 
         req = Request(
