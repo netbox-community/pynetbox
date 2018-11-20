@@ -37,3 +37,15 @@ class RecordTestCase(unittest.TestCase):
         test_obj = Record(test_values)
         test = test_obj.serialize()
         self.assertEqual(test['units'], [12])
+
+    def test_serialize_tag_set(self):
+        test_values = {
+            'id': 123,
+            'tags': [
+                'foo',
+                'bar',
+                'foo',
+            ]
+        }
+        test = Record(test_values).serialize()
+        self.assertEqual(len(test['tags']), 2)

@@ -238,6 +238,8 @@ class Record(object):
             current_val = getattr(self, i)
             if i == 'custom_fields':
                 ret[i] = flatten_custom(current_val)
+            elif i == 'tags':
+                ret[i] = list(set(current_val))
             else:
                 if isinstance(current_val, Record):
                     current_val = getattr(
