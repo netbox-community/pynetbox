@@ -381,6 +381,26 @@ class InterfaceTestCase(unittest.TestCase, GenericTest):
 class RackTestCase(unittest.TestCase, GenericTest):
     name = 'racks'
 
+    @patch(
+        'pynetbox.lib.query.requests.get',
+        side_effect=[
+            Response(fixture='dcim/rack.json'),
+            Response(fixture='dcim/rack_u.json'),
+        ]
+    )
+    def test_get_units(self, mock):
+        test = nb.racks.get(1)
+        ret = test.units.list()
+        mock.assert_called_with(
+            'http://localhost:8000/api/dcim/racks/1/units/',
+            headers=HEADERS,
+            verify=True,
+        )
+        self.assertTrue(ret)
+        self.assertTrue(
+            isinstance(ret[0].device, pynetbox.dcim.Devices)
+        )
+
 
 class RackRoleTestCase(unittest.TestCase, GenericTest):
     name = 'rack_roles'

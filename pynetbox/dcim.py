@@ -60,10 +60,7 @@ class Devices(Record):
         {"get_facts": {"interface_list": ["ge-0/0/0"]}}
 
         """
-        return RODetailEndpoint(
-            'napalm',
-            parent_obj=self,
-        )
+        return RODetailEndpoint(self, 'napalm')
 
 
 class InterfaceConnections(Record):
@@ -92,3 +89,29 @@ class VirtualChassis(Record):
 
     def __str__(self):
         return self.master.display_name
+
+
+class RUs(Record):
+
+    device = Devices
+
+
+class Racks(Record):
+
+    @property
+    def units(self):
+        """ Represents the ``units`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing response from the units endpoint.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> rack = nb.dcim.racks.get(123)
+        >>> rack.units.list()
+        {"get_facts": {"interface_list": ["ge-0/0/0"]}}
+
+        """
+        return RODetailEndpoint(self, 'units', custom_return=RUs)
