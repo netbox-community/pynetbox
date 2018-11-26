@@ -150,6 +150,12 @@ class Record(object):
         Parses values dict at init and sets object attributes with the
         values within.
         """
+
+        def list_parser(list_item):
+            if isinstance(list_item, dict):
+                return self.default_ret(list_item, api_kwargs=self.api_kwargs)
+            return list_item
+
         for k, v in values.items():
 
             if k not in JSON_FIELDS:
@@ -159,6 +165,10 @@ class Record(object):
                         v = lookup(v, api_kwargs=self.api_kwargs)
                     else:
                         v = self.default_ret(v, api_kwargs=self.api_kwargs)
+
+                if isinstance(v, list):
+                    v = [list_parser(i) for i in v]
+
                 self._add_cache((k, v))
             else:
                 self._add_cache((k, v.copy()))
@@ -238,6 +248,11 @@ class Record(object):
                 if isinstance(current_val, netaddr.ip.IPNetwork):
                     current_val = str(current_val)
 
+                if isinstance(current_val, list):
+                    current_val = [
+                        v.id if isinstance(v, Record) else v
+                        for v in current_val
+                    ]
                 ret[i] = current_val
         return ret
 
