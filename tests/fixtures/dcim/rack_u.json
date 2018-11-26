@@ -1,0 +1,35 @@
+{
+    "count": 3,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 48,
+            "name": "U1",
+            "face": 0,
+            "device": {
+                "id": 130,
+                "url": "http://localhost:8000/api/dcim/devices/1/",
+                "name": "tst-device1",
+                "display_name": "tst-device1"
+            }
+        },
+        {
+            "id": 47,
+            "name": "U2",
+            "face": 0,
+            "device": null
+        },
+        {
+            "id": 46,
+            "name": "U3",
+            "face": 0,
+            "device": {
+                "id": 1859,
+                "url": "http://localhost:8000/api/dcim/devices/2/",
+                "name": "tst-device2",
+                "display_name": "tst-device2"
+            }
+        }
+    ]
+}

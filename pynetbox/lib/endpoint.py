@@ -305,11 +305,9 @@ class DetailEndpoint(object):
     traditional endpoints are handled with this class.
     '''
 
-    def __init__(self, name, parent_obj=None):
-        self.token = parent_obj.api_kwargs.get('token')
-        self.version = parent_obj.api_kwargs.get('version')
-        self.session_key = parent_obj.api_kwargs.get('session_key')
-        self.ssl_verify = parent_obj.api_kwargs.get('ssl_verify')
+    def __init__(self, parent_obj, name, custom_return=None):
+        self.parent_obj = parent_obj
+        self.custom_return = custom_return
         self.url = "{}/{}/{}/".format(
             parent_obj.endpoint_meta.get('url'),
             parent_obj.id,
@@ -317,10 +315,10 @@ class DetailEndpoint(object):
         )
         self.request_kwargs = dict(
             base=self.url,
-            token=self.token,
-            session_key=self.session_key,
-            version=self.version,
-            ssl_verify=self.ssl_verify,
+            token=parent_obj.api_kwargs.get('token'),
+            session_key=parent_obj.api_kwargs.get('session_key'),
+            version=parent_obj.api_kwargs.get('version'),
+            ssl_verify=parent_obj.api_kwargs.get('ssl_verify'),
         )
 
     def list(self, **kwargs):
@@ -333,16 +331,32 @@ class DetailEndpoint(object):
             E.g. ``.list(method='get_facts')`` would be converted to
             ``.../?method=get_facts``.
 
-        :returns: A dictionary or list of dictionaries its retrieved
-            from NetBox.
+        :returns: A dictionary or list of dictionaries retrieved from
+            NetBox.
         """
         if kwargs:
             self.request_kwargs['base'] = '{}{}'.format(
                 self.url,
                 url_param_builder(kwargs)
             )
+        req = Request(**self.request_kwargs).get()
 
-        return Request(**self.request_kwargs).get()
+        if self.custom_return:
+            if isinstance(req, list):
+                return [
+                    self.custom_return(
+                        i,
+                        api_kwargs=self.parent_obj.api_kwargs,
+                        endpoint_meta=self.parent_obj.endpoint_meta
+                    )
+                    for i in req
+                ]
+            return self.custom_return(
+                req,
+                api_kwargs=self.parent_obj.api_kwargs,
+                endpoint_meta=self.parent_obj.endpoint_meta
+            )
+        return req
 
     def create(self, data={}):
         """The write operation for a detail endpoint.

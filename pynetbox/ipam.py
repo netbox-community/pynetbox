@@ -57,10 +57,7 @@ class Prefixes(IPRecord):
         >>> len(create)
         2
         """
-        return DetailEndpoint(
-            'available-ips',
-            parent_obj=self,
-        )
+        return DetailEndpoint(self, 'available-ips')
 
     @property
     def available_prefixes(self):
@@ -91,10 +88,7 @@ class Prefixes(IPRecord):
         u'10.1.1.56/29'
 
         '''
-        return DetailEndpoint(
-            'available-prefixes',
-            parent_obj=self,
-        )
+        return DetailEndpoint(self, 'available-prefixes')
 
 
 class Aggregates(IPRecord):
