@@ -44,6 +44,10 @@ class App(object):
         )
 
     def choices(self):
+        """ Returns _choices response from App
+
+        :Returns: Raw response from NetBox's _choices endpoint.
+        """
         if self._choices:
             return self._choices
 
