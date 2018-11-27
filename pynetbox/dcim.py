@@ -16,6 +16,7 @@ limitations under the License.
 from pynetbox.lib.response import Record
 from pynetbox.lib.endpoint import RODetailEndpoint
 from pynetbox.ipam import IpAddresses
+from pynetbox.circuits import Circuits
 
 
 class DeviceTypes(Record):
@@ -120,3 +121,28 @@ class Racks(Record):
 
         """
         return RODetailEndpoint(self, 'units', custom_return=RUs)
+
+
+class Termination(Record):
+
+    def __str__(self):
+        # hacky check to see if we're a circuit termination to
+        # avoid another call to NetBox because of a non-existent attr
+        # in self.name
+        if 'circuit' in str(self.url):
+            return self.circuit.cid
+
+        return self.name
+
+    device = Devices
+    circuit = Circuits
+
+
+class Cables(Record):
+    def __str__(self):
+        return "{} <> {}".format(
+            self.termination_a,
+            self.termination_b,
+        )
+    termination_a = Termination
+    termination_b = Termination

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from pynetbox.lib.query import Request
+from pynetbox.lib.util import HashableDict
 
 # List of fields that contain a dict but are not to be converted into
 # Record objects.
@@ -49,10 +50,10 @@ def get_return(lookup, return_fields=None):
 
 
 def flatten_custom(custom_dict):
-    return {
+    return HashableDict({
         k: v if not isinstance(v, dict) else v['value']
         for k, v in custom_dict.items()
-    }
+    })
 
 
 class Record(object):
@@ -181,16 +182,20 @@ class Record(object):
             Boolean value, True indicates current instance has the same
             attributes as the ones passed to `values`.
         """
-        init_dict = {}
-        init_vals = dict(self._index_cache)
-        for i in dict(self):
-            current_val = init_vals.get(i)
-            if i == 'custom_fields':
-                init_dict[i] = flatten_custom(current_val)
-            else:
-                init_dict[i] = get_return(current_val)
+        # init_dict = {}
+        # init_vals = dict(self._index_cache)
+        # for i in dict(self):
+        #     current_val = init_vals.get(i)
+        #     if i == 'custom_fields':
+        #         init_dict[i] = flatten_custom(current_val)
+        #     else:
+        #         init_dict[i] = get_return(current_val)
 
-        if init_dict == self.serialize():
+        # if init_dict == self.serialize():
+        #     return True
+        # return False
+
+        if self.serialize(init=True) == self.serialize():
             return True
         return False
 
@@ -216,7 +221,7 @@ class Record(object):
             return True
         return False
 
-    def serialize(self, nested=False):
+    def serialize(self, nested=False, init=False):
         """Serializes an object
 
         Pulls all the attributes in an object and creates a dict that
@@ -230,9 +235,12 @@ class Record(object):
         if nested:
             return get_return(self)
 
+        if init:
+            init_vals = dict(self._index_cache)
+
         ret = {}
         for i in dict(self):
-            current_val = getattr(self, i)
+            current_val = getattr(self, i) if not init else init_vals.get(i)
             if i == 'custom_fields':
                 ret[i] = flatten_custom(current_val)
             elif i == 'tags':
@@ -251,6 +259,19 @@ class Record(object):
                     ]
                 ret[i] = current_val
         return ret
+
+    def _init_diff(self):
+        current = {
+            k: v if not isinstance(v, list) else "".join(v)
+            for k, v in self.serialize().items()
+        }
+        init = {
+            k: v if not isinstance(v, list) else "".join(v)
+            for k, v in self.serialize(init=True).items()
+        }
+        print(self.serialize())
+        print(self.serialize(init=True))
+        print(set(current.items()) ^ set(init.items()))
 
     def save(self):
         """Saves changes to an existing object.

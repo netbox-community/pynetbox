@@ -49,3 +49,23 @@ class RecordTestCase(unittest.TestCase):
         }
         test = Record(test_values).serialize()
         self.assertEqual(len(test['tags']), 2)
+
+    def test_init_diff(self):
+        test_values = {
+            'id': 123,
+            'custom_fields': {
+                'foo': 'bar'
+            },
+            'string_field': 'foobar',
+            'int_field': 1,
+            'tags': [
+                'foo',
+                'bar',
+            ]
+        }
+        test = Record(test_values)
+        print(test._index_cache)
+        test.tags.append('baz')
+        print(test._index_cache)
+        print(test.tags)
+        # self.assertEqual(len(test['tags']), 2)

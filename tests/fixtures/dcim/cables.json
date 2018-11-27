@@ -1,0 +1,127 @@
+{
+    "count": 3,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "termination_a_type": "dcim.consoleport",
+            "termination_a_id": 1,
+            "termination_a": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/console-ports/1/",
+                "device": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/devices/1/",
+                    "name": "tst1-test1",
+                    "display_name": "tst1-test1"
+                },
+                "name": "Console",
+                "cable": 1
+            },
+            "termination_b_type": "dcim.consoleserverport",
+            "termination_b_id": 2,
+            "termination_b": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/console-server-ports/2/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "tst1-test2",
+                    "display_name": "tst1-test2"
+                },
+                "name": "Port 10",
+                "cable": 1
+            },
+            "type": null,
+            "status": {
+                "value": true,
+                "label": "Connected"
+            },
+            "label": "",
+            "color": "",
+            "length": null,
+            "length_unit": null
+        },
+        {
+            "id": 2,
+            "termination_a_type": "dcim.consoleport",
+            "termination_a_id": 3,
+            "termination_a": {
+                "id": 3,
+                "url": "http://localhost:8000/api/dcim/console-ports/3/",
+                "device": {
+                    "id": 3,
+                    "url": "http://localhost:8000/api/dcim/devices/3/",
+                    "name": "tst1-test3",
+                    "display_name": "tst1-test3"
+                },
+                "name": "Console",
+                "cable": 2
+            },
+            "termination_b_type": "dcim.consoleserverport",
+            "termination_b_id": 4,
+            "termination_b": {
+                "id": 4,
+                "url": "http://localhost:8000/api/dcim/console-server-ports/4/",
+                "device": {
+                    "id": 4,
+                    "url": "http://localhost:8000/api/dcim/devices/4/",
+                    "name": "tst1-test4",
+                    "display_name": "tst1-test4"
+                },
+                "name": "Port 11",
+                "cable": 2
+            },
+            "type": null,
+            "status": {
+                "value": true,
+                "label": "Connected"
+            },
+            "label": "",
+            "color": "",
+            "length": null,
+            "length_unit": null
+        },
+        {
+            "id": 3,
+            "termination_a_type": "dcim.consoleport",
+            "termination_a_id": 5,
+            "termination_a": {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/console-ports/5/",
+                "device": {
+                    "id": 5,
+                    "url": "http://localhost:8000/api/dcim/devices/5/",
+                    "name": "tst1-test5",
+                    "display_name": "tst1-test5"
+                },
+                "name": "Console",
+                "cable": 3
+            },
+            "termination_b_type": "dcim.consoleserverport",
+            "termination_b_id": 6,
+            "termination_b": {
+                "id": 6,
+                "url": "http://localhost:8000/api/dcim/console-server-ports/6/",
+                "device": {
+                    "id": 6,
+                    "url": "http://localhost:8000/api/dcim/devices/6/",
+                    "name": "tst1-test6",
+                    "display_name": "tst1-test6"
+                },
+                "name": "Port 1",
+                "cable": 3
+            },
+            "type": null,
+            "status": {
+                "value": true,
+                "label": "Connected"
+            },
+            "label": "",
+            "color": "",
+            "length": null,
+            "length_unit": null
+        }
+    ]
+}

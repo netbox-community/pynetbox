@@ -282,8 +282,7 @@ class Request(object):
     def delete(self):
         """Makes DELETE request.
 
-        Makes a DELETE request to NetBox's API. Adds the session key to
-        headers if the `private_key` attribute was populated.
+        Makes a DELETE request to NetBox's API.
 
         Returns:
             True if successful.
@@ -302,5 +301,34 @@ class Request(object):
         )
         if req.ok:
             return True
+        else:
+            raise RequestError(req)
+
+    def patch(self, data):
+        """Makes PATCH request.
+
+        Makes a PATCH request to NetBox's API.
+
+        :param data: (dict) Contains a dict that will be turned into a
+            json object and sent to the API.
+        :raises: RequestError if req.ok returns false.
+        :returns: Dict containing the response from NetBox's API.
+        """
+        headers = {
+            'Content-Type': 'application/json;',
+            'authorization': 'Token {}'.format(self.token),
+        }
+        if self.session_key:
+            headers.update(
+                {'X-Session-Key': self.session_key}
+            )
+        req = requests.patch(
+            self.url,
+            headers=headers,
+            data=json.dumps(data),
+            verify=self.ssl_verify
+        )
+        if req.ok:
+            return req.json()
         else:
             raise RequestError(req)

@@ -487,14 +487,70 @@ class Choices(unittest.TestCase):
             ))
         ) as mock:
             ret = nb.choices()
-            # from pprint import pprint
-            # pprint(ret)
             self.assertTrue(ret)
-            # self.assertTrue(isinstance(ret, self.ret))
-            # self.assertTrue(isinstance(str(ret), str))
-            # self.assertTrue(isinstance(dict(ret), dict))
             mock.assert_called_with(
                 'http://localhost:8000/api/dcim/_choices/',
+                headers=HEADERS,
+                verify=True
+            )
+
+
+class CablesTestCase(Generic.Tests):
+    name = 'cables'
+
+    def test_get_circuit(self):
+        response_obj = Response(content={
+            "id": 1,
+            "termination_a_type": "circuits.circuittermination",
+            "termination_a_id": 1,
+            "termination_a": {
+                "id": 1,
+                "url": "http://localhost:8000/api/circuits/circuit-terminations/1/",
+                "circuit": {
+                    "id": 346,
+                    "url": "http://localhost:8000/api/circuits/circuits/1/",
+                    "cid": "TEST123321"
+                },
+                "term_side": "A",
+            },
+            "termination_b_type": "dcim.interface",
+            "termination_b_id": 2,
+            "termination_b": {
+                "id": 2,
+                "url": "http://localhost:8000/api/dcim/interfaces/2/",
+                "device": {
+                    "id": 2,
+                    "url": "http://localhost:8000/api/dcim/devices/2/",
+                    "name": "tst1-test2",
+                    "display_name": "tst1-test2"
+                },
+                "name": "xe-0/0/0",
+                "cable": 1
+            },
+            "type": None,
+            "status": {
+                "value": True,
+                "label": "Connected"
+            },
+            "label": "",
+            "color": "",
+            "length": None,
+            "length_unit": None
+        })
+        with patch(
+            'pynetbox.lib.query.requests.get',
+            return_value=response_obj
+        ) as mock:
+            ret = getattr(nb, self.name).get(1)
+            self.assertTrue(ret)
+            self.assertTrue(isinstance(ret, self.ret))
+            self.assertTrue(isinstance(str(ret), str))
+            self.assertTrue(isinstance(dict(ret), dict))
+            mock.assert_called_with(
+                'http://localhost:8000/api/{}/{}/1/'.format(
+                    self.app,
+                    self.name.replace('_', '-')
+                ),
                 headers=HEADERS,
                 verify=True
             )

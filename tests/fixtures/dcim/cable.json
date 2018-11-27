@@ -1,0 +1,40 @@
+{
+    "id": 1,
+    "termination_a_type": "dcim.consoleport",
+    "termination_a_id": 1,
+    "termination_a": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/console-ports/1/",
+        "device": {
+            "id": 1,
+            "url": "http://localhost:8000/api/dcim/devices/1/",
+            "name": "tst1-test1",
+            "display_name": "tst1-test1"
+        },
+        "name": "Console",
+        "cable": 1
+    },
+    "termination_b_type": "dcim.consoleserverport",
+    "termination_b_id": 2,
+    "termination_b": {
+        "id": 2,
+        "url": "http://localhost:8000/api/dcim/console-server-ports/2/",
+        "device": {
+            "id": 2,
+            "url": "http://localhost:8000/api/dcim/devices/2/",
+            "name": "tst1-test2",
+            "display_name": "tst1-test2"
+        },
+        "name": "Port 10",
+        "cable": 1
+    },
+    "type": null,
+    "status": {
+        "value": true,
+        "label": "Connected"
+    },
+    "label": "",
+    "color": "",
+    "length": null,
+    "length_unit": null
+}
