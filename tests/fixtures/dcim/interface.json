@@ -22,29 +22,25 @@
     "mgmt_only": false,
     "description": "",
     "is_connected": true,
-    "interface_connection": {
-        "interface": {
-            "id": 37,
-            "url": "http://localhost:8000/api/dcim/interfaces/37/",
-            "device": {
-                "id": 3,
-                "url": "http://localhost:8000/api/dcim/devices/3/",
-                "name": "test1-spine1",
-                "display_name": "test1-spine1"
-            },
-            "name": "et-0/1/0",
-            "form_factor": {
-                "value": 1400,
-                "label": "QSFP+ (40GE)"
-            },
-            "enabled": true,
-            "lag": null,
-            "mtu": null,
-            "mac_address": null,
-            "mgmt_only": false,
-            "description": ""
+    "connected_endpoint": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/interfaces/1/",
+        "device": {
+            "id": 1,
+            "url": "http://localhost:8000/api/dcim/devices/1/",
+            "name": "tst-endpoint",
+            "display_name": "tst-endpoint"
         },
-        "status": true
+        "name": "eth0",
+        "cable": 1
     },
-    "circuit_termination": null
+    "connection_status": {
+        "value": true,
+        "label": "Connected"
+    },
+    "cable": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/cables/1/",
+        "label": ""
+    }
 }

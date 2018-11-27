@@ -342,22 +342,6 @@ class InterfaceTestCase(Generic.Tests):
 
     @patch(
         'pynetbox.lib.query.requests.get',
-        return_value=Response(fixture='dcim/interface.json')
-    )
-    def test_modify_connected_iface(self, *_):
-        new_iface = dict(
-            status=True,
-            interface=2
-        )
-        ret = nb.interfaces.get(1)
-        ret.interface_connection = new_iface
-        self.assertEqual(
-            ret.serialize()['interface_connection'],
-            new_iface
-        )
-
-    @patch(
-        'pynetbox.lib.query.requests.get',
         side_effect=[
             Response(fixture='dcim/{}.json'.format(name + '_1')),
             Response(fixture='dcim/{}.json'.format(name + '_2')),

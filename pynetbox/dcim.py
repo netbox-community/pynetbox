@@ -75,8 +75,13 @@ class InterfaceConnection(Record):
         return self.interface.name
 
 
+class ConnectedEndpoint(Record):
+    device = Devices
+
+
 class Interfaces(Record):
     interface_connection = InterfaceConnection
+    connected_endpoint = ConnectedEndpoint
 
 
 class RackReservations(Record):
