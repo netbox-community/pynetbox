@@ -14,17 +14,16 @@ else:
 
 api = pynetbox.api(
     "http://localhost:8000",
-    version='2.0'
 )
 
 nb = api.ipam
 
 HEADERS = {
-    'accept': 'application/json; version=2.0;'
+    'accept': 'application/json;'
 }
 
 POST_HEADERS = {
-    'Content-Type': 'application/json; version=2.0;',
+    'Content-Type': 'application/json;',
     'authorization': 'Token None',
 }
 

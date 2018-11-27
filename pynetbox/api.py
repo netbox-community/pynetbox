@@ -56,7 +56,6 @@ class App(object):
                 self.api_kwargs['base_url'],
                 self.name
             ),
-            version=self.api_kwargs['version'],
             ssl_verify=self.api_kwargs['ssl_verify'],
         ).get()
 
@@ -109,7 +108,7 @@ class Api(object):
     """  # noqa
 
     def __init__(self, url, token=None, private_key=None,
-                 private_key_file=None, version=None, ssl_verify=True):
+                 private_key_file=None, ssl_verify=True):
         if private_key and private_key_file:
             raise ValueError(
                 '"private_key" and "private_key_file" cannot be used together.'
@@ -128,10 +127,6 @@ class Api(object):
             with open(self.api_kwargs.get('private_key_file'), 'r') as kf:
                 private_key = kf.read()
                 self.api_kwargs.update(private_key=private_key)
-        if not version:
-            version = Request(base=base_url,
-                              ssl_verify=ssl_verify).get_version()
-        self.api_kwargs.update(version=version)
 
         req = Request(
             base=base_url,

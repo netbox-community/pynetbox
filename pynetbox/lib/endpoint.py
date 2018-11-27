@@ -103,7 +103,6 @@ class Endpoint(object):
             base='{}/'.format(self.url),
             token=self.token,
             session_key=self.session_key,
-            version=self.version,
             ssl_verify=self.ssl_verify,
         )
 
@@ -162,7 +161,6 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            version=self.version,
             ssl_verify=self.ssl_verify,
         )
 
@@ -223,7 +221,6 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            version=self.version,
             ssl_verify=self.ssl_verify,
         )
 
@@ -288,7 +285,6 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            version=self.version,
             ssl_verify=self.ssl_verify,
         ).post(args[0] if args else kwargs)
 
@@ -317,7 +313,6 @@ class DetailEndpoint(object):
             base=self.url,
             token=parent_obj.api_kwargs.get('token'),
             session_key=parent_obj.api_kwargs.get('session_key'),
-            version=parent_obj.api_kwargs.get('version'),
             ssl_verify=parent_obj.api_kwargs.get('ssl_verify'),
         )
 

@@ -14,7 +14,6 @@ host = "http://localhost:8000"
 def_kwargs = {
     'token': 'abc123',
     'private_key_file': 'tests/fixtures/api/get_session_key.json',
-    'version': '2.0'
 }
 
 # Keys are app names, values are arbitrarily selected endpoints

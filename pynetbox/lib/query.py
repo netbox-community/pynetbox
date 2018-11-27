@@ -76,8 +76,7 @@ class Request(object):
     """
 
     def __init__(self, base=None, filters=None, key=None, token=None,
-                 private_key=None, version=None, session_key=None,
-                 ssl_verify=True):
+                 private_key=None, session_key=None, ssl_verify=True):
         """
         Instantiates a new Request object
 
@@ -96,23 +95,8 @@ class Request(object):
         self.key = key
         self.token = token
         self.private_key = private_key
-        self.version = version
         self.session_key = session_key
         self.ssl_verify = ssl_verify
-
-    def get_version(self):
-        """Query the netbox API for its API-Version.
-
-        Queries the API root for the *API-Verion* header.
-
-        :returns: String containing version.
-        """
-        ret = requests.get(
-            "{}/".format(self.base),
-            verify=self.ssl_verify
-        ).headers.get('API-Version', '1.0')
-        setattr(self, 'version', ret)
-        return ret
 
     def get_session_key(self):
         """Requests session key
@@ -199,9 +183,7 @@ class Request(object):
             endpoint.
         """
         headers = {
-            'accept': 'application/json; version={};'.format(
-                self.version or self.get_version()
-            )
+            'accept': 'application/json;'
         }
         if self.token:
             headers.update(authorization='Token {}'.format(self.token))
@@ -251,9 +233,7 @@ class Request(object):
         :returns: Dict containing the response from NetBox's API.
         """
         headers = {
-            'Content-Type': 'application/json; version={};'.format(
-                self.version or self.get_version()
-            ),
+            'Content-Type': 'application/json;',
             'authorization': 'Token {}'.format(self.token),
         }
         if self.session_key:
@@ -281,9 +261,7 @@ class Request(object):
         :Returns: Dict containing the response from NetBox's API.
         """
         headers = {
-            'Content-Type': 'application/json; version={};'.format(
-                self.version or self.get_version()
-            ),
+            'Content-Type': 'application/json;',
             'authorization': 'Token {}'.format(self.token),
         }
         if self.session_key:
@@ -314,9 +292,7 @@ class Request(object):
             RequestError if req.ok doesn't return True.
         """
         headers = {
-            'accept': 'application/json; version={};'.format(
-                self.version or self.get_version()
-            ),
+            'accept': 'application/json;',
             'authorization': 'Token {}'.format(self.token),
         }
         req = requests.delete(
