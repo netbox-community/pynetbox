@@ -336,6 +336,7 @@ class InterfaceTestCase(Generic.Tests):
         ret = nb.interfaces.get(1)
         ret.description = 'Testing'
         ret_serialized = ret.serialize()
+        print(ret_serialized)
         self.assertTrue(ret)
         self.assertEqual(ret_serialized['description'], 'Testing')
         self.assertEqual(ret_serialized['form_factor'], 1400)

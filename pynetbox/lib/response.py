@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from pynetbox.lib.query import Request
-from pynetbox.lib.util import HashableDict
+from pynetbox.lib.util import Hashabledict
 
 # List of fields that contain a dict but are not to be converted into
 # Record objects.
@@ -50,10 +50,10 @@ def get_return(lookup, return_fields=None):
 
 
 def flatten_custom(custom_dict):
-    return HashableDict({
+    return {
         k: v if not isinstance(v, dict) else v['value']
         for k, v in custom_dict.items()
-    })
+    }
 
 
 class Record(object):
@@ -182,18 +182,6 @@ class Record(object):
             Boolean value, True indicates current instance has the same
             attributes as the ones passed to `values`.
         """
-        # init_dict = {}
-        # init_vals = dict(self._index_cache)
-        # for i in dict(self):
-        #     current_val = init_vals.get(i)
-        #     if i == 'custom_fields':
-        #         init_dict[i] = flatten_custom(current_val)
-        #     else:
-        #         init_dict[i] = get_return(current_val)
-
-        # if init_dict == self.serialize():
-        #     return True
-        # return False
 
         if self.serialize(init=True) == self.serialize():
             return True
@@ -260,18 +248,27 @@ class Record(object):
                 ret[i] = current_val
         return ret
 
-    def _init_diff(self):
-        current = {
-            k: v if not isinstance(v, list) else "".join(v)
+    def _diff(self):
+
+        def fmt_dict(k, v):
+            if isinstance(v, dict):
+                return k, Hashabledict(v)
+            if isinstance(v, list):
+                return k, "".join(v)
+            return k, v
+
+        current = Hashabledict({
+            fmt_dict(k, v)
             for k, v in self.serialize().items()
-        }
-        init = {
-            k: v if not isinstance(v, list) else "".join(v)
+        })
+        init = Hashabledict({
+            fmt_dict(k, v)
             for k, v in self.serialize(init=True).items()
-        }
-        print(self.serialize())
-        print(self.serialize(init=True))
-        print(set(current.items()) ^ set(init.items()))
+        })
+        return set([
+            i[0]
+            for i in set(current.items()) ^ set(init.items())
+        ])
 
     def save(self):
         """Saves changes to an existing object.
@@ -279,7 +276,7 @@ class Record(object):
         Runs self.serialize() and checks that it doesn't match
         self._compare(). If not create a Request object and run .put()
 
-        :returns: True if PUT request was successful.
+        :returns: True if PATCH request was successful.
         :example:
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
@@ -291,7 +288,9 @@ class Record(object):
         >>>
         """
         if self.id:
-            if not self._compare():
+            diff = self._diff()
+            if diff:
+                serialized = self.serialize()
                 req = Request(
                     key=self.id,
                     base=self.endpoint_meta.get('url'),
@@ -299,10 +298,10 @@ class Record(object):
                     session_key=self.api_kwargs.get('session_key'),
                     ssl_verify=self.api_kwargs.get('ssl_verify')
                 )
-                if req.put(self.serialize()):
+                if req.patch({i: serialized[i] for i in diff}):
                     return True
-            else:
-                return False
+
+        return False
 
     def delete(self):
         """Deletes an existing object.
