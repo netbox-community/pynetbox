@@ -74,9 +74,9 @@ class Record(object):
     """
 
     url = None
-    has_details = False
 
     def __init__(self, values, api_kwargs={}, endpoint_meta={}):
+        self.has_details = False
         self._full_cache = []
         self._index_cache = []
         self.api_kwargs = api_kwargs
