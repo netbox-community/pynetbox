@@ -75,10 +75,10 @@ class Record(object):
 
     url = None
 
-    def __init__(self, values, api_kwargs={}, endpoint_meta={}):
+    def __init__(self, values, api_kwargs=None, endpoint_meta=None):
         self.has_details = False
         self._full_cache = []
-        self._index_cache = []
+        self._init_cache = []
         self.api_kwargs = api_kwargs
         self.endpoint_meta = endpoint_meta
         self.default_ret = Record
@@ -105,7 +105,7 @@ class Record(object):
         raise AttributeError('object has no attribute "{}"'.format(k))
 
     def __iter__(self):
-        for i in dict(self._full_cache).keys():
+        for i in dict(self._init_cache):
             cur_attr = getattr(self, i)
             if isinstance(cur_attr, Record):
                 yield i, dict(cur_attr)
@@ -133,11 +133,7 @@ class Record(object):
 
     def _add_cache(self, item):
         key, value = item
-        if isinstance(value, Record):
-            self._full_cache.append((key, dict(value)))
-        else:
-            self._full_cache.append((key, value))
-        self._index_cache.append((key, get_return(value)))
+        self._init_cache.append((key, get_return(value)))
 
     def _parse_values(self, values):
         """ Parses values init arg.
@@ -224,7 +220,7 @@ class Record(object):
             return get_return(self)
 
         if init:
-            init_vals = dict(self._index_cache)
+            init_vals = dict(self._init_cache)
 
         ret = {}
         for i in dict(self):
@@ -345,7 +341,4 @@ class Record(object):
             session_key=self.api_kwargs.get('session_key'),
             ssl_verify=self.api_kwargs.get('ssl_verify')
         )
-        if req.delete():
-            return True
-        else:
-            return False
+        return True if req.delete() else False
