@@ -165,11 +165,15 @@ class Record(object):
                         v = lookup(v, api_kwargs=self.api_kwargs)
                     else:
                         v = self.default_ret(v, api_kwargs=self.api_kwargs)
+                    self._add_cache((k, v))
 
-                if isinstance(v, list):
+                elif isinstance(v, list):
                     v = [list_parser(i) for i in v]
+                    to_cache = list(v)
+                    self._add_cache((k, to_cache))
 
-                self._add_cache((k, v))
+                else:
+                    self._add_cache((k, v))
             else:
                 self._add_cache((k, v.copy()))
             setattr(self, k, v)
