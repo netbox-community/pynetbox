@@ -303,6 +303,30 @@ class Record(object):
 
         return False
 
+    def update(self, data):
+        """Update an object with a dictionary.
+
+        Accepts a dict and uses it to update the record and call save().
+        For nested and choice fields you'd pass an int the same as
+        if you were modifying the attribute and calling save().
+
+        :arg dict data: Dictionary containing the k/v to update the
+            record object with.
+        :returns: The return from save().
+        :example:
+
+        >>> x = nb.dcim.devices.update({
+        ...         'name': 'test1-a3-tor1b',
+        ...         'serial': 123543,
+        ...     })
+        True
+        >>>
+        """
+
+        for k, v in data.items():
+            setattr(self, k, v)
+        return self.save()
+
     def delete(self):
         """Deletes an existing object.
 
