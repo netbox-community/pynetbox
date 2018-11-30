@@ -347,20 +347,34 @@ class IPRecord(Record):
         Similar parser as parent, but takes str & unicode fields and
         trys converting them to IPNetwork objects.
         """
+
+        def list_parser(list_item):
+            if isinstance(list_item, dict):
+                return self.default_ret(list_item, api_kwargs=self.api_kwargs)
+            return list_item
+
         for k, v in values.items():
-            if k != 'custom_fields':
+
+            if k not in JSON_FIELDS:
                 if isinstance(v, dict):
                     lookup = getattr(self.__class__, k, None)
                     if lookup:
                         v = lookup(v, api_kwargs=self.api_kwargs)
                     else:
                         v = self.default_ret(v, api_kwargs=self.api_kwargs)
+                    self._add_cache((k, v))
+
+                elif isinstance(v, list):
+                    v = [list_parser(i) for i in v]
+                    to_cache = list(v)
+                    self._add_cache((k, to_cache))
+
                 if isinstance(v, six.string_types):
                     try:
                         v = netaddr.IPNetwork(v)
+                        self._add_cache((k, v))
                     except (netaddr.AddrFormatError, ValueError):
-                        pass
-                self._add_cache((k, v))
+                        self._add_cache((k, v))
             else:
                 self._add_cache((k, v.copy()))
             setattr(self, k, v)
