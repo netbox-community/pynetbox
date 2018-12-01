@@ -138,8 +138,8 @@ class Request(object):
         :Returns: String of URL.
         """
 
-        def construct_url(input):
-            for k, v in input.items():
+        def construct_url(params):
+            for k, v in params.items():
                 if isinstance(v, list):
                     for i in v:
                         yield urlencode({k: i})
