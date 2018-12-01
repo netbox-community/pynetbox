@@ -1,4 +1,4 @@
-'''
+"""
 (c) 2017 DigitalOcean
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 from pynetbox.lib.query import Request, url_param_builder
 from pynetbox.lib.response import Record
 
@@ -46,10 +46,10 @@ class Endpoint(object):
         self.token = api.token
         self.session_key = api.session_key
         self.ssl_verify = api.ssl_verify
-        self.url = '{base_url}/{app}/{endpoint}'.format(
+        self.url = "{base_url}/{app}/{endpoint}".format(
             base_url=self.base_url,
             app=app.name,
-            endpoint=name.replace('_', '-'),
+            endpoint=name.replace("_", "-"),
         )
 
     def _lookup_ret_obj(self, name, model):
@@ -66,12 +66,8 @@ class Endpoint(object):
         :Returns: Record (obj)
         """
         if model:
-            name = name.title().replace('_', '')
-            ret = getattr(
-                model,
-                name,
-                Record
-            )
+            name = name.title().replace("_", "")
+            ret = getattr(model, name, Record)
         else:
             ret = Record
         return ret
@@ -93,16 +89,13 @@ class Endpoint(object):
         >>>
         """
         req = Request(
-            base='{}/'.format(self.url),
+            base="{}/".format(self.url),
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
         )
 
-        return [
-            self._response_loader(i)
-            for i in req.get()
-        ]
+        return [self._response_loader(i) for i in req.get()]
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
@@ -144,9 +137,9 @@ class Endpoint(object):
                 return None
             else:
                 raise ValueError(
-                    'get() returned more than one result. '
-                    'Check that the kwarg(s) passed are valid for this '
-                    'endpoint or use filter() or all() instead.'
+                    "get() returned more than one result. "
+                    "Check that the kwarg(s) passed are valid for this "
+                    "endpoint or use filter() or all() instead."
                 )
 
         req = Request(
@@ -202,11 +195,11 @@ class Endpoint(object):
         """
 
         if args:
-            kwargs.update({'q': args[0]})
+            kwargs.update({"q": args[0]})
 
         if not kwargs:
             raise ValueError(
-                'filter must be passed kwargs. Perhaps use all() instead.'
+                "filter must be passed kwargs. Perhaps use all() instead."
             )
 
         req = Request(
@@ -217,10 +210,7 @@ class Endpoint(object):
             ssl_verify=self.ssl_verify,
         )
 
-        ret = [
-            self._response_loader(i)
-            for i in req.get()
-        ]
+        ret = [self._response_loader(i) for i in req.get()]
         return ret
 
     def create(self, *args, **kwargs):
@@ -288,19 +278,17 @@ class Endpoint(object):
 
 
 class DetailEndpoint(object):
-    '''Enables read/write Operations on detail endpoints.
+    """Enables read/write Operations on detail endpoints.
 
     Endpoints like ``available-ips`` that are detail routes off
     traditional endpoints are handled with this class.
-    '''
+    """
 
     def __init__(self, parent_obj, name, custom_return=None):
         self.parent_obj = parent_obj
         self.custom_return = custom_return
         self.url = "{}/{}/{}/".format(
-            parent_obj.endpoint.url,
-            parent_obj.id,
-            name
+            parent_obj.endpoint.url, parent_obj.id, name
         )
         self.request_kwargs = dict(
             base=self.url,
@@ -323,9 +311,8 @@ class DetailEndpoint(object):
             NetBox.
         """
         if kwargs:
-            self.request_kwargs['base'] = '{}{}'.format(
-                self.url,
-                url_param_builder(kwargs)
+            self.request_kwargs["base"] = "{}{}".format(
+                self.url, url_param_builder(kwargs)
             )
         req = Request(**self.request_kwargs).get()
 
@@ -359,8 +346,7 @@ class DetailEndpoint(object):
 
 
 class RODetailEndpoint(DetailEndpoint):
-
     def create(self, data):
         raise NotImplementedError(
-            'Writes are not supported for this endpoint.'
+            "Writes are not supported for this endpoint."
         )

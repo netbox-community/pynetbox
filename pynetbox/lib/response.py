@@ -1,4 +1,4 @@
-'''
+"""
 (c) 2017 DigitalOcean
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,17 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 from pynetbox.lib.query import Request
 from pynetbox.lib.util import Hashabledict
 
 # List of fields that contain a dict but are not to be converted into
 # Record objects.
-JSON_FIELDS = ('custom_fields', 'data', 'config_context')
+JSON_FIELDS = ("custom_fields", "data", "config_context")
 
 
 def get_return(lookup, return_fields=None):
-    '''Returns simple representations for items passed to lookup.
+    """Returns simple representations for items passed to lookup.
 
     Used to return a "simple" representation of objects and collections
     sent to it via lookup. If lookup is an IPNetwork object immediately
@@ -34,9 +34,9 @@ def get_return(lookup, return_fields=None):
 
     :arg list,optional return_fields: A list of fields to reference when
         calling values on lookup.
-    '''
+    """
 
-    for i in return_fields or ['id', 'value', 'nested_return']:
+    for i in return_fields or ["id", "value", "nested_return"]:
         if isinstance(lookup, dict) and lookup.get(i):
             return lookup[i]
         else:
@@ -51,7 +51,7 @@ def get_return(lookup, return_fields=None):
 
 def flatten_custom(custom_dict):
     return {
-        k: v if not isinstance(v, dict) else v['value']
+        k: v if not isinstance(v, dict) else v["value"]
         for k, v in custom_dict.items()
     }
 
@@ -96,7 +96,7 @@ class Record(object):
         excluded because casting to dict() calls this attr.
         """
         if self.url:
-            if self.has_details is False and k != 'keys':
+            if self.has_details is False and k != "keys":
                 if self.full_details():
                     ret = getattr(self, k, None)
                     if ret or hasattr(self, k):
@@ -117,9 +117,7 @@ class Record(object):
 
     def __str__(self):
         return (
-            getattr(self, 'name', None) or
-            getattr(self, 'label', None) or
-            ''
+            getattr(self, "name", None) or getattr(self, "label", None) or ""
         )
 
     def __repr__(self):
@@ -198,7 +196,7 @@ class Record(object):
                 base=self.url,
                 token=self.api.token,
                 session_key=self.api.session_key,
-                ssl_verify=self.api.ssl_verify
+                ssl_verify=self.api.ssl_verify,
             )
             self._parse_values(req.get())
             self.has_details = True
@@ -225,16 +223,15 @@ class Record(object):
         ret = {}
         for i in dict(self):
             current_val = getattr(self, i) if not init else init_vals.get(i)
-            if i == 'custom_fields':
+            if i == "custom_fields":
                 ret[i] = flatten_custom(current_val)
-            elif i == 'tags':
+            elif i == "tags":
                 ret[i] = list(set(current_val))
             else:
                 if isinstance(current_val, Record):
-                    current_val = getattr(
-                        current_val,
-                        'serialize'
-                    )(nested=True)
+                    current_val = getattr(current_val, "serialize")(
+                        nested=True
+                    )
 
                 if isinstance(current_val, list):
                     current_val = [
@@ -245,7 +242,6 @@ class Record(object):
         return ret
 
     def _diff(self):
-
         def fmt_dict(k, v):
             if isinstance(v, dict):
                 return k, Hashabledict(v)
@@ -253,18 +249,13 @@ class Record(object):
                 return k, "".join(v)
             return k, v
 
-        current = Hashabledict({
-            fmt_dict(k, v)
-            for k, v in self.serialize().items()
-        })
-        init = Hashabledict({
-            fmt_dict(k, v)
-            for k, v in self.serialize(init=True).items()
-        })
-        return set([
-            i[0]
-            for i in set(current.items()) ^ set(init.items())
-        ])
+        current = Hashabledict(
+            {fmt_dict(k, v) for k, v in self.serialize().items()}
+        )
+        init = Hashabledict(
+            {fmt_dict(k, v) for k, v in self.serialize(init=True).items()}
+        )
+        return set([i[0] for i in set(current.items()) ^ set(init.items())])
 
     def save(self):
         """Saves changes to an existing object.
@@ -292,7 +283,7 @@ class Record(object):
                     base=self.endpoint.url,
                     token=self.api.token,
                     session_key=self.api.session_key,
-                    ssl_verify=self.api.ssl_verify
+                    ssl_verify=self.api.ssl_verify,
                 )
                 if req.patch({i: serialized[i] for i in diff}):
                     return True
@@ -339,6 +330,6 @@ class Record(object):
             base=self.endpoint.url,
             token=self.api.token,
             session_key=self.api.session_key,
-            ssl_verify=self.api.ssl_verify
+            ssl_verify=self.api.ssl_verify,
         )
         return True if req.delete() else False
