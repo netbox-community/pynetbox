@@ -342,7 +342,7 @@ class DetailEndpoint(object):
             )
         return req
 
-    def create(self, data={}):
+    def create(self, data):
         """The write operation for a detail endpoint.
 
         Creates objects on a detail endpoint in NetBox.
@@ -360,7 +360,7 @@ class DetailEndpoint(object):
 
 class RODetailEndpoint(DetailEndpoint):
 
-    def create(self, data={}):
+    def create(self, data):
         raise NotImplementedError(
             'Writes are not supported for this endpoint.'
         )
