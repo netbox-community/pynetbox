@@ -25,7 +25,7 @@ class RecordTestCase(unittest.TestCase):
                 }
             ],
         }
-        test_obj = Record(test_values)
+        test_obj = Record(test_values, None, None)
         test = test_obj.serialize()
         self.assertEqual(test['tagged_vlans'], [1, 2])
 
@@ -34,7 +34,7 @@ class RecordTestCase(unittest.TestCase):
             'id': 123,
             'units': [12],
         }
-        test_obj = Record(test_values)
+        test_obj = Record(test_values, None, None)
         test = test_obj.serialize()
         self.assertEqual(test['units'], [12])
 
@@ -47,7 +47,7 @@ class RecordTestCase(unittest.TestCase):
                 'foo',
             ],
         }
-        test = Record(test_values).serialize()
+        test = Record(test_values, None, None).serialize()
         self.assertEqual(len(test['tags']), 2)
 
     def test_diff(self):
@@ -67,7 +67,7 @@ class RecordTestCase(unittest.TestCase):
                 'bar',
             ]
         }
-        test = Record(test_values)
+        test = Record(test_values, None, None)
         test.tags.append('baz')
         test.nested_dict = 1
         test.string_field = 'foobaz'

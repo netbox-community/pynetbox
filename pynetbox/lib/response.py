@@ -69,18 +69,18 @@ class Record(object):
         is set containing `value`.
 
         :arg dict values: The response from the netbox api.
-        :arg dict api_kwargs: Contains the arguments passed to Api()
+        :arg dict api: Contains the arguments passed to Api()
             when it was instantiated.
     """
 
     url = None
 
-    def __init__(self, values, api_kwargs=None, endpoint_meta=None):
+    def __init__(self, values, api, endpoint):
         self.has_details = False
         self._full_cache = []
         self._init_cache = []
-        self.api_kwargs = api_kwargs
-        self.endpoint_meta = endpoint_meta
+        self.api = api
+        self.endpoint = endpoint
         self.default_ret = Record
 
         if values:
@@ -144,7 +144,7 @@ class Record(object):
 
         def list_parser(list_item):
             if isinstance(list_item, dict):
-                return self.default_ret(list_item, api_kwargs=self.api_kwargs)
+                return self.default_ret(list_item, self.api, self.endpoint)
             return list_item
 
         for k, v in values.items():
@@ -153,9 +153,9 @@ class Record(object):
                 if isinstance(v, dict):
                     lookup = getattr(self.__class__, k, None)
                     if lookup:
-                        v = lookup(v, api_kwargs=self.api_kwargs)
+                        v = lookup(v, self.api, self.endpoint)
                     else:
-                        v = self.default_ret(v, api_kwargs=self.api_kwargs)
+                        v = self.default_ret(v, self.api, self.endpoint)
                     self._add_cache((k, v))
 
                 elif isinstance(v, list):
@@ -196,9 +196,9 @@ class Record(object):
         if self.url:
             req = Request(
                 base=self.url,
-                token=self.api_kwargs.get('token'),
-                session_key=self.api_kwargs.get('session_key'),
-                ssl_verify=self.api_kwargs.get('ssl_verify')
+                token=self.api.token,
+                session_key=self.api.session_key,
+                ssl_verify=self.api.ssl_verify
             )
             self._parse_values(req.get())
             self.has_details = True
@@ -289,10 +289,10 @@ class Record(object):
                 serialized = self.serialize()
                 req = Request(
                     key=self.id,
-                    base=self.endpoint_meta.get('url'),
-                    token=self.api_kwargs.get('token'),
-                    session_key=self.api_kwargs.get('session_key'),
-                    ssl_verify=self.api_kwargs.get('ssl_verify')
+                    base=self.endpoint.url,
+                    token=self.api.token,
+                    session_key=self.api.session_key,
+                    ssl_verify=self.api.ssl_verify
                 )
                 if req.patch({i: serialized[i] for i in diff}):
                     return True
@@ -336,9 +336,9 @@ class Record(object):
         """
         req = Request(
             key=self.id,
-            base=self.endpoint_meta.get('url'),
-            token=self.api_kwargs.get('token'),
-            session_key=self.api_kwargs.get('session_key'),
-            ssl_verify=self.api_kwargs.get('ssl_verify')
+            base=self.endpoint.url,
+            token=self.api.token,
+            session_key=self.api.session_key,
+            ssl_verify=self.api.ssl_verify
         )
         return True if req.delete() else False

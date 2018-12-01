@@ -39,40 +39,37 @@ class Endpoint(object):
 
     """
 
-    def __init__(self, name, app, api_kwargs):
-        self.return_obj = self._lookup_ret_obj(name, app)
-        self.api_kwargs = api_kwargs
-        self.base_url = api_kwargs.get('base_url')
-        self.token = api_kwargs.get('token')
-        self.version = api_kwargs.get('version')
-        self.session_key = api_kwargs.get('session_key')
-        self.ssl_verify = api_kwargs.get('ssl_verify')
+    def __init__(self, api, app, name, model=None):
+        self.return_obj = self._lookup_ret_obj(name, model)
+        self.api = api
+        self.base_url = api.base_url
+        self.token = api.token
+        self.session_key = api.session_key
+        self.ssl_verify = api.ssl_verify
         self.url = '{base_url}/{app}/{endpoint}'.format(
             base_url=self.base_url,
             app=app.name,
             endpoint=name.replace('_', '-'),
         )
-        self.endpoint_name = name
-        self.meta = dict(url=self.url)
 
-    def _lookup_ret_obj(self, name, app):
+    def _lookup_ret_obj(self, name, model):
         """Loads unique Response objects.
 
         This method loads a unique response object for an endpoint if
         it exists. Otherwise return a generic `Record` object.
 
         :arg str name: Endpoint name.
-        :arg str/obj app_module: The application module that
+        :arg str/obj app_model: The application model that
             contains unique Record objects.
         :arg str app_name: App name.
 
         :Returns: Record (obj)
         """
-        if app.module:
-            obj_name = name.title().replace('_', '')
+        if model:
+            name = name.title().replace('_', '')
             ret = getattr(
-                app.module,
-                obj_name,
+                model,
+                name,
                 Record
             )
         else:
@@ -80,11 +77,7 @@ class Endpoint(object):
         return ret
 
     def _response_loader(self, values):
-        return self.return_obj(
-            values,
-            api_kwargs=self.api_kwargs,
-            endpoint_meta=self.meta,
-        )
+        return self.return_obj(values, self.api, self)
 
     def all(self):
         """Queries the 'ListView' of a given endpoint.
@@ -305,15 +298,15 @@ class DetailEndpoint(object):
         self.parent_obj = parent_obj
         self.custom_return = custom_return
         self.url = "{}/{}/{}/".format(
-            parent_obj.endpoint_meta.get('url'),
+            parent_obj.endpoint.url,
             parent_obj.id,
             name
         )
         self.request_kwargs = dict(
             base=self.url,
-            token=parent_obj.api_kwargs.get('token'),
-            session_key=parent_obj.api_kwargs.get('session_key'),
-            ssl_verify=parent_obj.api_kwargs.get('ssl_verify'),
+            token=parent_obj.api.token,
+            session_key=parent_obj.api.session_key,
+            ssl_verify=parent_obj.api.ssl_verify,
         )
 
     def list(self, **kwargs):
@@ -340,16 +333,12 @@ class DetailEndpoint(object):
             if isinstance(req, list):
                 return [
                     self.custom_return(
-                        i,
-                        api_kwargs=self.parent_obj.api_kwargs,
-                        endpoint_meta=self.parent_obj.endpoint_meta
+                        i, self.parent_obj.api, self.parent_obj.endpoint
                     )
                     for i in req
                 ]
             return self.custom_return(
-                req,
-                api_kwargs=self.parent_obj.api_kwargs,
-                endpoint_meta=self.parent_obj.endpoint_meta
+                req, self.parent_obj.api, self.parent_obj.endpoint
             )
         return req
 

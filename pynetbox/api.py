@@ -1,4 +1,4 @@
-'''
+"""
 (c) 2017 DigitalOcean
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 from pynetbox.lib import Endpoint, Request
 from pynetbox import dcim, ipam, virtualization, circuits
 
@@ -26,22 +26,15 @@ class App(object):
     :raises: :py:class:`.RequestError`
         if requested endpoint doesn't exist.
     """
-    def __init__(self, app, api_kwargs=None):
-        self.module = app
-        self.api_kwargs = api_kwargs
+
+    def __init__(self, api, name, model=None):
+        self.api = api
+        self.name = name
+        self.model = model
         self._choices = None
 
-        if isinstance(app, str):
-            self.name = app
-        else:
-            self.name = app.__name__.split('.')[-1]
-
     def __getattr__(self, name):
-        return Endpoint(
-            name,
-            api_kwargs=self.api_kwargs,
-            app=self
-        )
+        return Endpoint(self.api, self, name, model=self.model)
 
     def choices(self):
         """ Returns _choices response from App
@@ -52,11 +45,8 @@ class App(object):
             return self._choices
 
         self._choices = Request(
-            base='{}/{}/_choices/'.format(
-                self.api_kwargs['base_url'],
-                self.name
-            ),
-            ssl_verify=self.api_kwargs['ssl_verify'],
+            base="{}/{}/_choices/".format(self.api.base_url, self.name),
+            ssl_verify=self.api.ssl_verify,
         ).get()
 
         return self._choices
@@ -107,40 +97,44 @@ class Api(object):
     .. _requests: http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
     """  # noqa
 
-    def __init__(self, url, token=None, private_key=None,
-                 private_key_file=None, ssl_verify=True):
+    def __init__(
+        self,
+        url,
+        token=None,
+        private_key=None,
+        private_key_file=None,
+        ssl_verify=True,
+    ):
         if private_key and private_key_file:
             raise ValueError(
                 '"private_key" and "private_key_file" cannot be used together.'
             )
-        base_url = "{}/api".format(url if url[-1] != '/' else url[:-1])
+        base_url = "{}/api".format(url if url[-1] != "/" else url[:-1])
+        self.token = token
+        self.private_key = private_key
+        self.private_key_file = private_key_file
+        self.base_url = base_url
+        self.ssl_verify = ssl_verify
+        self.session_key = None
 
-        self.api_kwargs = {
-            "token": token,
-            "private_key": private_key,
-            "private_key_file": private_key_file,
-            "base_url": base_url,
-            "ssl_verify": ssl_verify,
-        }
-
-        if self.api_kwargs.get('private_key_file'):
-            with open(self.api_kwargs.get('private_key_file'), 'r') as kf:
+        if self.private_key_file:
+            with open(self.private_key_file, "r") as kf:
                 private_key = kf.read()
-                self.api_kwargs.update(private_key=private_key)
+                self.private_key = private_key
 
         req = Request(
             base=base_url,
             token=token,
             private_key=private_key,
-            ssl_verify=ssl_verify
+            ssl_verify=ssl_verify,
         )
-        if token and private_key:
-            self.api_kwargs.update(session_key=req.get_session_key())
+        if self.token and self.private_key:
+            self.session_key = req.get_session_key()
 
-        self.dcim = App(dcim, api_kwargs=self.api_kwargs)
-        self.ipam = App(ipam, api_kwargs=self.api_kwargs)
-        self.circuits = App(circuits, api_kwargs=self.api_kwargs)
-        self.secrets = App('secrets', api_kwargs=self.api_kwargs)
-        self.tenancy = App('tenancy', api_kwargs=self.api_kwargs)
-        self.extras = App('extras', api_kwargs=self.api_kwargs)
-        self.virtualization = App(virtualization, api_kwargs=self.api_kwargs)
+        self.dcim = App(self, "dcim", model=dcim)
+        self.ipam = App(self, "ipam", model=ipam)
+        self.circuits = App(self, "circuits", model=circuits)
+        self.secrets = App(self, "secrets", model=None)
+        self.tenancy = App(self, "tenancy", model=None)
+        self.extras = App(self, "extras", model=None)
+        self.virtualization = App(self, "virtualization", model=virtualization)

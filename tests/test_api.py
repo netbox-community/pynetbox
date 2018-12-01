@@ -50,7 +50,7 @@ class ApiTestCase(unittest.TestCase):
             **def_kwargs
         )
         self.assertTrue(api)
-        self.assertEqual(api.api_kwargs['base_url'], 'http://localhost:8000/api')
+        self.assertEqual(api.base_url, 'http://localhost:8000/api')
 
 
 class ApiArgumentsTestCase(unittest.TestCase):
@@ -68,7 +68,7 @@ class ApiArgumentsTestCase(unittest.TestCase):
             host,
             **kwargs
         )
-        self.assertIs(api.api_kwargs.get(arg, "fail"), expect)
+        self.assertIs(getattr(api, arg, "fail"), expect)
         for app, endpoint in endpoints.items():
             ep = getattr(getattr(api, app), endpoint)
             self.assertIs(getattr(ep, arg), expect)
