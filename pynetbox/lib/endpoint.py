@@ -131,16 +131,15 @@ class Endpoint(object):
             key = None
         if not key:
             filter_lookup = self.filter(**kwargs)
-            if len(filter_lookup) == 1:
-                return filter_lookup[0]
-            if len(filter_lookup) == 0:
-                return None
-            else:
-                raise ValueError(
-                    "get() returned more than one result. "
-                    "Check that the kwarg(s) passed are valid for this "
-                    "endpoint or use filter() or all() instead."
-                )
+            if filter_lookup:
+                if len(filter_lookup) > 1:
+                    raise ValueError(
+                        "get() returned more than one result. "
+                        "Check that the kwarg(s) passed are valid for this "
+                        "endpoint or use filter() or all() instead."
+                    )
+                else:
+                    return filter_lookup[0]
 
         req = Request(
             key=key,
