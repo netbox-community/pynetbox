@@ -59,18 +59,92 @@ def flatten_custom(custom_dict):
 class Record(object):
     """Create python objects from netbox API responses.
 
-        Iterates over `values` and checks if the `key` is defined as a
-        a class attribute point to another Record object. If so, it
-        then takes `value` and instantiates the referenced object
-        creating a nested object of whatever type is requested in the
-        class attribute.
+    Creates an object from a NetBox response passed as `values`.
+    Nested dicts that represent other endpoints are also turned
+    into Record objects. All fields are then assigned to the
+    object's attributes. If a missing attr is requested
+    (e.g. requesting a field that's only present on a full response on
+    a Record made from a nested response) the pynetbox will make a
+    request for the full object and return the requsted value.
 
-        If `key` doesn't match a class attribute an instance attribute
-        is set containing `value`.
+    :examples:
 
-        :arg dict values: The response from the netbox api.
-        :arg dict api: Contains the arguments passed to Api()
-            when it was instantiated.
+    Default representation of the object is usually its name
+
+    >>> x = nb.dcim.devices.get(1)
+    >>> x
+    test1-switch1
+    >>>
+
+    Querying a string field.
+
+    >>> x = nb.dcim.devices.get(1)
+    >>> x.serial
+    'ABC123'
+    >>>
+
+    Querying a field on a nested object.
+
+    >>> x = nb.dcim.devices.get(1)
+    >>> x.device_type.model
+    'QFX5100-24Q'
+    >>>
+
+    Casting the object as a dictionary.
+
+    >>> from pprint import pprint
+    >>> pprint(dict(x))
+    {'asset_tag': None,
+     'cluster': None,
+     'comments': '',
+     'config_context': {},
+     'created': '2018-04-01',
+     'custom_fields': {},
+     'device_role': {'id': 1,
+                     'name': 'Test Switch',
+                     'slug': 'test-switch',
+                     'url': 'http://localhost:8000/api/dcim/device-roles/1/'},
+     'device_type': {...},
+     'display_name': 'test1-switch1',
+     'face': {'label': 'Rear', 'value': 1},
+     'id': 1,
+     'name': 'test1-switch1',
+     'parent_device': None,
+     'platform': {...},
+     'position': 1,
+     'primary_ip': {'address': '192.0.2.1/24',
+                    'family': 4,
+                    'id': 1,
+                    'url': 'http://localhost:8000/api/ipam/ip-addresses/1/'},
+     'primary_ip4': {...},
+     'primary_ip6': None,
+     'rack': {'display_name': 'Test Rack',
+              'id': 1,
+              'name': 'Test Rack',
+              'url': 'http://localhost:8000/api/dcim/racks/1/'},
+     'serial': 'ABC123',
+     'site': {'id': 1,
+              'name': 'TEST',
+              'slug': 'TEST',
+              'url': 'http://localhost:8000/api/dcim/sites/1/'},
+     'status': {'label': 'Active', 'value': 1},
+     'tags': [],
+     'tenant': None,
+     'vc_position': None,
+     'vc_priority': None,
+     'virtual_chassis': None}
+     >>>
+
+     Iterating over a Record object.
+
+    >>> for i in x:
+    ...  print(i)
+    ...
+    ('id', 1)
+    ('name', 'test1-switch1')
+    ('display_name', 'test1-switch1')
+    >>>
+
     """
 
     url = None
@@ -209,10 +283,16 @@ class Record(object):
         Pulls all the attributes in an object and creates a dict that
         can be turned into the json that netbox is expecting.
 
-        If an attribute's value is a ``Record`` or ``IPRecord`` type
-        it's replaced with the ``id`` field of that object.
+        If an attribute's value is a ``Record`` type it's replaced with
+        the ``id`` field of that object.
 
-        :returns: dict of values the NetBox API is expecting.
+        .. note::
+
+            Using this to get a dictionary representation of the record
+            is discouraged. It's probably better to cast to dict()
+            instead. See Record docstring for example.
+
+        :returns: dict.
         """
         if nested:
             return get_return(self)
@@ -299,15 +379,16 @@ class Record(object):
 
         :arg dict data: Dictionary containing the k/v to update the
             record object with.
-        :returns: The return from save().
+        :returns: True if PATCH request was successful.
         :example:
 
-        >>> x = nb.dcim.devices.update({
-        ...         'name': 'test1-a3-tor1b',
-        ...         'serial': 123543,
-        ...     })
+        >>> x = nb.dcim.devices.get(1)
+        >>> x.update({
+        ...   "name": "test-switch2",
+        ...   "serial": "ABC321",
+        ... })
         True
-        >>>
+
         """
 
         for k, v in data.items():

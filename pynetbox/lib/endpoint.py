@@ -24,11 +24,10 @@ class Endpoint(object):
     url to make queries to and the proper Response object to return
     results in.
 
+    :arg obj api: Takes :py:class:`.Api` created at instantiation.
+    :arg obj app: Takes :py:class:`.App`.
     :arg str name: Name of endpoint passed to App().
-    :arg obj app: Application object containing any endpoint-specific
-        classes.
-    :arg dict api_kwargs: Vars passed from Api() that contain
-        variables that are set when Api is instantiated.
+    :arg obj,optional model: Custom model for given app.
 
     .. note::
 
@@ -59,9 +58,8 @@ class Endpoint(object):
         it exists. Otherwise return a generic `Record` object.
 
         :arg str name: Endpoint name.
-        :arg str/obj app_model: The application model that
+        :arg obj model: The application model that
             contains unique Record objects.
-        :arg str app_name: App name.
 
         :Returns: Record (obj)
         """
@@ -80,7 +78,7 @@ class Endpoint(object):
 
         Returns all objects from an endpoint.
 
-        :Returns: List of instantiated objects.
+        :Returns: List of :py:class:`.Record` objects.
 
         :Examples:
 
@@ -107,7 +105,7 @@ class Endpoint(object):
             filter(). Any search argument the endpoint accepts can
             be added as a keyword arg.
 
-        :returns: A single instantiated objects.
+        :returns: A single :py:class:`.Record` object.
 
         :raises ValueError: if kwarg search return more than one value.
 
@@ -164,7 +162,7 @@ class Endpoint(object):
         :arg str,optional \**kwargs: Any search argument the
             endpoint accepts can be added as a keyword arg.
 
-        :Returns: A list of instantiated objects.
+        :Returns: A list of :py:class:`.Record` objects.
 
         :Examples:
 
@@ -230,8 +228,8 @@ class Endpoint(object):
         :arg str \**kwargs: key/value strings representing
             properties on a json object.
 
-        :returns: A response from NetBox as a dictionary or list of
-            dictionaries.
+        :returns: A list or single :py:class:`.Record` object depending
+            on whether a bulk creation was requested.
 
         :Examples:
 
