@@ -40,9 +40,10 @@ class RequestError(Exception):
     >>> try:
     ...   nb.dcim.devices.create({'name': 'destined-for-failure'})
     ... except pynetbox.RequestError as e:
-    ...   print(e.error)
+    ...   print(e.url)
     ...
-    {"device_role":["This field is required."]}
+    http://localhost:8000/api/dcim/devices/
+
 
 
 
@@ -50,9 +51,14 @@ class RequestError(Exception):
 
     def __init__(self, message):
         req = message
-        message = "The request failed with code {} {}".format(
-            req.status_code, req.reason
-        )
+        if req.text:
+            message = "The request failed with code {} {}: {}".format(
+                req.status_code, req.reason, req.text
+            )
+        else:
+            message = "The request failed with code {} {}".format(
+                req.status_code, req.reason
+            )
         super(RequestError, self).__init__(message)
         self.req = req
         self.request_body = req.request.body
