@@ -140,6 +140,7 @@ class Endpoint(object):
                     )
                 else:
                     return filter_lookup[0]
+            return filter_lookup
 
         req = Request(
             key=key,
