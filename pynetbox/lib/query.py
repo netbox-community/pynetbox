@@ -31,34 +31,43 @@ def url_param_builder(param_dict):
 class RequestError(Exception):
     """Basic Request Exception
 
-    More detailed exception that returns the requests object. Along
-    with some attributes with specific details from the requests
-    object.
+    More detailed exception that returns the original requests object
+    for inspection. Along with some attributes with specific details
+    from the requests object. If return is json we decode and add it
+    to the message.
 
     :Example:
 
     >>> try:
-    ...   nb.dcim.devices.create({'name': 'destined-for-failure'})
+    ...   nb.dcim.devices.create(name=destined-for-failure)
     ... except pynetbox.RequestError as e:
-    ...   print(e.url)
-    ...
-    http://localhost:8000/api/dcim/devices/
-
-
-
+    ...   print(e.error)
 
     """
 
     def __init__(self, message):
         req = message
-        if req.text:
-            message = "The request failed with code {} {}: {}".format(
-                req.status_code, req.reason, req.text
+
+        if req.status_code == 404:
+            message = (
+                "The requested url: {} could not be found.".format(
+                    req.url
+                )
             )
         else:
-            message = "The request failed with code {} {}".format(
-                req.status_code, req.reason
-            )
+            try:
+                message = "The request failed with code {} {}: {}".format(
+                    req.status_code, req.reason, req.json()
+                )
+            except ValueError:
+                message = (
+                    "The request failed with code {} {} but more specific "
+                    "details were not returned in json. Check the NetBox Logs "
+                    "or investigate this exception's error attribute.".format(
+                        req.status_code, req.reason
+                    )
+                )
+
         super(RequestError, self).__init__(message)
         self.req = req
         self.request_body = req.request.body
