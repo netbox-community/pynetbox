@@ -39,7 +39,7 @@ class RequestError(Exception):
     :Example:
 
     >>> try:
-    ...   nb.dcim.devices.create(name=destined-for-failure)
+    ...   nb.dcim.devices.create(name="destined-for-failure")
     ... except pynetbox.RequestError as e:
     ...   print(e.error)
 
