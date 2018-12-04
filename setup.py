@@ -15,7 +15,7 @@ setup(
         'pynetbox.lib'
     ],
     install_requires=[
-        'requests==2.*',
+        'requests>=2.20.0,<3.0',
         'six==1.*',
     ],
     zip_safe=False,
