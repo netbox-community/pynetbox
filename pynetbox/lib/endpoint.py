@@ -16,6 +16,8 @@ limitations under the License.
 from pynetbox.lib.query import Request, url_param_builder
 from pynetbox.lib.response import Record
 
+RESERVED_KWARGS = ("id", "pk", "limit", "offset")
+
 
 class Endpoint(object):
     """Represent actions available on endpoints in the Netbox API.
@@ -123,10 +125,12 @@ class Endpoint(object):
         test1-edge1
         >>>
         """
+
         try:
             key = args[0]
         except IndexError:
             key = None
+
         if not key:
             filter_lookup = self.filter(**kwargs)
             if filter_lookup:
@@ -198,6 +202,11 @@ class Endpoint(object):
         if not kwargs:
             raise ValueError(
                 "filter must be passed kwargs. Perhaps use all() instead."
+            )
+        if any(i in RESERVED_KWARGS for i in kwargs):
+            raise ValueError(
+                "A reserved {} kwarg was passed. Please remove it "
+                "try again.".format(RESERVED_KWARGS)
             )
 
         req = Request(

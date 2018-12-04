@@ -7,6 +7,7 @@ v4.0.0 (TBD)
 * [#109](https://github.com/digitalocean/pynetbox/issues/109) - Clean up tests a bit.
 * Added cable endpoint support coming in NetBox 2.5.
 * Added some detail to the ValueError raised when `.get()` returns more than one object.
+* Added reserved kwargs to `.get()` and `.filter()` ("id", "pk", "limit", "offset").
 * Made RequestError more verbose when the NetBox API returns a json response. Also added more details when a 404 is returned (e.g. misspelled endpoints). 
 
 ## API Changes

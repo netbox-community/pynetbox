@@ -49,10 +49,8 @@ class RequestError(Exception):
         req = message
 
         if req.status_code == 404:
-            message = (
-                "The requested url: {} could not be found.".format(
-                    req.url
-                )
+            message = "The requested url: {} could not be found.".format(
+                req.url
             )
         else:
             try:
