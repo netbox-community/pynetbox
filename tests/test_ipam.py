@@ -64,12 +64,12 @@ class Generic(object):
                     self.name
                 ))
             ) as mock:
-                ret = getattr(nb, self.name).filter(pk=1)
+                ret = getattr(nb, self.name).filter(name='test')
                 self.assertTrue(ret)
                 self.assertTrue(isinstance(ret, list))
                 self.assertTrue(isinstance(ret[0], self.ret))
                 mock.assert_called_with(
-                    'http://localhost:8000/api/{}/{}/?pk=1'.format(
+                    'http://localhost:8000/api/{}/{}/?name=test'.format(
                         self.app,
                         self.name.replace('_', '-')
                     ),

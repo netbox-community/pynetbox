@@ -36,6 +36,5 @@ class EndPointTestCase(unittest.TestCase):
         api = Mock(base_url="http://localhost:8000/api")
         app = Mock(name="test")
         test_obj = Endpoint(api, app, "test")
-        test_obj.filter(id=1)
         with self.assertRaises(ValueError) as _:
             test_obj.filter(id=1)
