@@ -78,8 +78,6 @@ class Api(object):
     :param str,optional private_key_file: The path to your private
         key file.
     :param str,optional private_key: Your private key.
-    :param str,optional version: Override the API version, otherwise
-        it's dynamically discovered.
     :param bool/str,optional ssl_verify: Specify SSL verification behavior
         see: requests_.
     :raises ValueError: If *private_key* and *private_key_file* are both

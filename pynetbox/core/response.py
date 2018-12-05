@@ -340,8 +340,8 @@ class Record(object):
     def save(self):
         """Saves changes to an existing object.
 
-        Runs self.serialize() and checks that it doesn't match
-        self._compare(). If not create a Request object and run .put()
+        Takes a diff between the objects current state and its state at init
+        and sends them as a dictionary to Request.patch().
 
         :returns: True if PATCH request was successful.
         :example:
