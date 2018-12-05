@@ -1,4 +1,4 @@
-'''
+"""
 (c) 2017 DigitalOcean
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,17 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
-from pynetbox.lib.response import IPRecord
-from pynetbox.lib.endpoint import DetailEndpoint
+"""
+from pynetbox.core.response import Record
+from pynetbox.core.endpoint import DetailEndpoint
 
 
-class IpAddresses(IPRecord):
-
+class IpAddresses(Record):
     def __str__(self):
         return str(self.address)
 
 
-class Prefixes(IPRecord):
-
+class Prefixes(Record):
     def __str__(self):
         return str(self.prefix)
 
@@ -57,11 +55,11 @@ class Prefixes(IPRecord):
         >>> len(create)
         2
         """
-        return DetailEndpoint(self, 'available-ips')
+        return DetailEndpoint(self, "available-ips")
 
     @property
     def available_prefixes(self):
-        ''' Represents the ``available-prefixes`` detail endpoint.
+        """ Represents the ``available-prefixes`` detail endpoint.
 
         Returns a DetailEndpoint object that is the interface for
         viewing and creating prefixes inside a parent prefix.
@@ -87,11 +85,10 @@ class Prefixes(IPRecord):
         >>> new_prefix['prefix']
         u'10.1.1.56/29'
 
-        '''
-        return DetailEndpoint(self, 'available-prefixes')
+        """
+        return DetailEndpoint(self, "available-prefixes")
 
 
-class Aggregates(IPRecord):
-
+class Aggregates(Record):
     def __str__(self):
         return str(self.prefix)

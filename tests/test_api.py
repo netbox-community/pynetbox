@@ -1,8 +1,8 @@
 import unittest
 import six
 
-from .util import Response
 import pynetbox
+from .util import Response
 
 if six.PY3:
     from unittest.mock import patch
@@ -14,7 +14,6 @@ host = "http://localhost:8000"
 def_kwargs = {
     'token': 'abc123',
     'private_key_file': 'tests/fixtures/api/get_session_key.json',
-    'version': '2.0'
 }
 
 # Keys are app names, values are arbitrarily selected endpoints
@@ -31,10 +30,10 @@ endpoints = {
 class ApiTestCase(unittest.TestCase):
 
     @patch(
-        'pynetbox.lib.query.requests.post',
+        'pynetbox.core.query.requests.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
-    def test_get(self, mock):
+    def test_get(self, *_):
         api = pynetbox.api(
             host,
             **def_kwargs
@@ -42,25 +41,25 @@ class ApiTestCase(unittest.TestCase):
         self.assertTrue(api)
 
     @patch(
-        'pynetbox.lib.query.requests.post',
+        'pynetbox.core.query.requests.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
-    def test_sanitize_url(self, mock):
+    def test_sanitize_url(self, *_):
         api = pynetbox.api(
             'http://localhost:8000/',
             **def_kwargs
         )
         self.assertTrue(api)
-        self.assertEqual(api.api_kwargs['base_url'], 'http://localhost:8000/api')
+        self.assertEqual(api.base_url, 'http://localhost:8000/api')
 
 
 class ApiArgumentsTestCase(unittest.TestCase):
 
     @patch(
-        'pynetbox.lib.query.requests.post',
+        'pynetbox.core.query.requests.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
-    def common_arguments(self, kwargs, arg, expect, mock):
+    def common_arguments(self, kwargs, arg, expect, *_):
         '''
         Ensures the api and endpoint instances have ssl_verify set
         as expected
@@ -69,7 +68,7 @@ class ApiArgumentsTestCase(unittest.TestCase):
             host,
             **kwargs
         )
-        self.assertIs(api.api_kwargs.get(arg, "fail"), expect)
+        self.assertIs(getattr(api, arg, "fail"), expect)
         for app, endpoint in endpoints.items():
             ep = getattr(getattr(api, app), endpoint)
             self.assertIs(getattr(ep, arg), expect)

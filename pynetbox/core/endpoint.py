@@ -1,4 +1,4 @@
-'''
+"""
 (c) 2017 DigitalOcean
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
-from collections import defaultdict
+"""
+from pynetbox.core.query import Request, url_param_builder
+from pynetbox.core.response import Record
 
-from pynetbox.lib.query import Request, url_param_builder
-from pynetbox.lib.response import Record, IPRecord
+RESERVED_KWARGS = ("id", "pk", "limit", "offset")
 
 
 class Endpoint(object):
@@ -26,11 +26,10 @@ class Endpoint(object):
     url to make queries to and the proper Response object to return
     results in.
 
+    :arg obj api: Takes :py:class:`.Api` created at instantiation.
+    :arg obj app: Takes :py:class:`.App`.
     :arg str name: Name of endpoint passed to App().
-    :arg obj app: Application object containing any endpoint-specific
-        classes.
-    :arg dict api_kwargs: Vars passed from Api() that contain
-        variables that are set when Api is instantiated.
+    :arg obj,optional model: Custom model for given app.
 
     .. note::
 
@@ -41,61 +40,47 @@ class Endpoint(object):
 
     """
 
-    def __init__(self, name, app, api_kwargs={}):
-        self.app = app
-        app_module = app
-        if isinstance(app, str):
-            app_name = app_module
-        else:
-            app_name = app_module.__name__.split('.')[-1]
-        self.return_obj = self._lookup_ret_obj(name, app_module, app_name)
-        self.api_kwargs = api_kwargs
-        self.base_url = api_kwargs.get('base_url')
-        self.token = api_kwargs.get('token')
-        self.version = api_kwargs.get('version')
-        self.session_key = api_kwargs.get('session_key')
-        self.ssl_verify = api_kwargs.get('ssl_verify')
-        self.url = '{base_url}/{app}/{endpoint}'.format(
+    def __init__(self, api, app, name, model=None):
+        self.return_obj = self._lookup_ret_obj(name, model)
+        self.api = api
+        self.base_url = api.base_url
+        self.token = api.token
+        self.session_key = api.session_key
+        self.ssl_verify = api.ssl_verify
+        self.url = "{base_url}/{app}/{endpoint}".format(
             base_url=self.base_url,
-            app=app_name,
-            endpoint=name.replace('_', '-'),
+            app=app.name,
+            endpoint=name.replace("_", "-"),
         )
-        self.endpoint_name = name
-        self.meta = dict(url=self.url)
 
-    def _lookup_ret_obj(self, name, app_module, app_name):
+    def _lookup_ret_obj(self, name, model):
         """Loads unique Response objects.
 
         This method loads a unique response object for an endpoint if
         it exists. Otherwise return a generic `Record` object.
 
         :arg str name: Endpoint name.
-        :arg str/obj app_module: The application module that
+        :arg obj model: The application model that
             contains unique Record objects.
-        :arg str app_name: App name.
 
         :Returns: Record (obj)
         """
-        app_return_override = {
-            'ipam': IPRecord,
-        }
-        if app_module:
-            obj_name = name.title().replace('_', '')
-            ret = getattr(
-                app_module,
-                obj_name,
-                app_return_override.get(app_name, Record)
-            )
+        if model:
+            name = name.title().replace("_", "")
+            ret = getattr(model, name, Record)
         else:
             ret = Record
         return ret
+
+    def _response_loader(self, values):
+        return self.return_obj(values, self.api, self)
 
     def all(self):
         """Queries the 'ListView' of a given endpoint.
 
         Returns all objects from an endpoint.
 
-        :Returns: List of instantiated objects.
+        :Returns: List of :py:class:`.Record` objects.
 
         :Examples:
 
@@ -104,20 +89,13 @@ class Endpoint(object):
         >>>
         """
         req = Request(
-            base='{}/'.format(self.url),
+            base="{}/".format(self.url),
             token=self.token,
             session_key=self.session_key,
-            version=self.version,
             ssl_verify=self.ssl_verify,
         )
-        ret_kwargs = dict(
-            api_kwargs=self.api_kwargs,
-            endpoint_meta=self.meta,
-        )
-        return [
-            self.return_obj(i, **ret_kwargs)
-            for i in req.get()
-        ]
+
+        return [self._response_loader(i) for i in req.get()]
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
@@ -129,7 +107,7 @@ class Endpoint(object):
             filter(). Any search argument the endpoint accepts can
             be added as a keyword arg.
 
-        :returns: A single instantiated objects.
+        :returns: A single :py:class:`.Record` object.
 
         :raises ValueError: if kwarg search return more than one value.
 
@@ -147,33 +125,34 @@ class Endpoint(object):
         test1-edge1
         >>>
         """
+
         try:
             key = args[0]
         except IndexError:
             key = None
+
         if not key:
             filter_lookup = self.filter(**kwargs)
-            if len(filter_lookup) == 1:
-                return filter_lookup[0]
-            if len(filter_lookup) == 0:
-                return None
-            else:
-                raise ValueError('get() returned more than one result.')
+            if filter_lookup:
+                if len(filter_lookup) > 1:
+                    raise ValueError(
+                        "get() returned more than one result. "
+                        "Check that the kwarg(s) passed are valid for this "
+                        "endpoint or use filter() or all() instead."
+                    )
+                else:
+                    return filter_lookup[0]
+            return filter_lookup
 
         req = Request(
             key=key,
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            version=self.version,
             ssl_verify=self.ssl_verify,
         )
-        ret_kwargs = dict(
-            api_kwargs=self.api_kwargs,
-            endpoint_meta=self.meta,
-        )
 
-        return self.return_obj(req.get(), **ret_kwargs)
+        return self._response_loader(req.get())
 
     def filter(self, *args, **kwargs):
         r"""Queries the 'ListView' of a given endpoint.
@@ -187,7 +166,7 @@ class Endpoint(object):
         :arg str,optional \**kwargs: Any search argument the
             endpoint accepts can be added as a keyword arg.
 
-        :Returns: A list of instantiated objects.
+        :Returns: A list of :py:class:`.Record` objects.
 
         :Examples:
 
@@ -217,25 +196,28 @@ class Endpoint(object):
         >>>
         """
 
-        if len(args) > 0:
-            kwargs.update({'q': args[0]})
+        if args:
+            kwargs.update({"q": args[0]})
+
+        if not kwargs:
+            raise ValueError(
+                "filter must be passed kwargs. Perhaps use all() instead."
+            )
+        if any(i in RESERVED_KWARGS for i in kwargs):
+            raise ValueError(
+                "A reserved {} kwarg was passed. Please remove it "
+                "try again.".format(RESERVED_KWARGS)
+            )
 
         req = Request(
             filters=kwargs,
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            version=self.version,
             ssl_verify=self.ssl_verify,
         )
-        ret_kwargs = dict(
-            api_kwargs=self.api_kwargs,
-            endpoint_meta=self.meta,
-        )
-        ret = [
-            self.return_obj(i, **ret_kwargs)
-            for i in req.get()
-        ]
+
+        ret = [self._response_loader(i) for i in req.get()]
         return ret
 
     def create(self, *args, **kwargs):
@@ -255,8 +237,8 @@ class Endpoint(object):
         :arg str \**kwargs: key/value strings representing
             properties on a json object.
 
-        :returns: A response from NetBox as a dictionary or list of
-            dictionaries.
+        :returns: A list or single :py:class:`.Record` object depending
+            on whether a bulk creation was requested.
 
         :Examples:
 
@@ -289,36 +271,37 @@ class Endpoint(object):
         ... ])
         """
 
-        return Request(
+        req = Request(
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            version=self.version,
             ssl_verify=self.ssl_verify,
-        ).post(args[0] if len(args) > 0 else kwargs)
+        ).post(args[0] if args else kwargs)
+
+        if isinstance(req, list):
+            return [self._response_loader(i) for i in req]
+
+        return self._response_loader(req)
 
 
 class DetailEndpoint(object):
-    '''Enables read/write Operations on detail endpoints.
+    """Enables read/write Operations on detail endpoints.
 
     Endpoints like ``available-ips`` that are detail routes off
     traditional endpoints are handled with this class.
-    '''
+    """
 
     def __init__(self, parent_obj, name, custom_return=None):
         self.parent_obj = parent_obj
         self.custom_return = custom_return
         self.url = "{}/{}/{}/".format(
-            parent_obj.endpoint_meta.get('url'),
-            parent_obj.id,
-            name
+            parent_obj.endpoint.url, parent_obj.id, name
         )
         self.request_kwargs = dict(
             base=self.url,
-            token=parent_obj.api_kwargs.get('token'),
-            session_key=parent_obj.api_kwargs.get('session_key'),
-            version=parent_obj.api_kwargs.get('version'),
-            ssl_verify=parent_obj.api_kwargs.get('ssl_verify'),
+            token=parent_obj.api.token,
+            session_key=parent_obj.api.session_key,
+            ssl_verify=parent_obj.api.ssl_verify,
         )
 
     def list(self, **kwargs):
@@ -335,9 +318,8 @@ class DetailEndpoint(object):
             NetBox.
         """
         if kwargs:
-            self.request_kwargs['base'] = '{}{}'.format(
-                self.url,
-                url_param_builder(kwargs)
+            self.request_kwargs["base"] = "{}{}".format(
+                self.url, url_param_builder(kwargs)
             )
         req = Request(**self.request_kwargs).get()
 
@@ -345,20 +327,16 @@ class DetailEndpoint(object):
             if isinstance(req, list):
                 return [
                     self.custom_return(
-                        i,
-                        api_kwargs=self.parent_obj.api_kwargs,
-                        endpoint_meta=self.parent_obj.endpoint_meta
+                        i, self.parent_obj.api, self.parent_obj.endpoint
                     )
                     for i in req
                 ]
             return self.custom_return(
-                req,
-                api_kwargs=self.parent_obj.api_kwargs,
-                endpoint_meta=self.parent_obj.endpoint_meta
+                req, self.parent_obj.api, self.parent_obj.endpoint
             )
         return req
 
-    def create(self, data={}):
+    def create(self, data):
         """The write operation for a detail endpoint.
 
         Creates objects on a detail endpoint in NetBox.
@@ -375,8 +353,7 @@ class DetailEndpoint(object):
 
 
 class RODetailEndpoint(DetailEndpoint):
-
-    def create(self, data={}):
+    def create(self, data):
         raise NotImplementedError(
-            'Writes are not supported for this endpoint.'
+            "Writes are not supported for this endpoint."
         )

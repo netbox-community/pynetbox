@@ -11,89 +11,89 @@ else:
 
 api = pynetbox.api(
     "http://localhost:8000",
-    version='2.0'
 )
 
 nb = api.circuits
 
 HEADERS = {
-    'accept': 'application/json; version=2.0;'
+    'accept': 'application/json;'
 }
 
 
-class GenericTest(object):
-    name = None
-    ret = pynetbox.lib.response.Record
-    app = 'circuits'
+class Generic(object):
+    class Tests(unittest.TestCase):
+        name = ''
+        ret = pynetbox.core.response.Record
+        app = 'circuits'
 
-    def test_get_all(self):
-        with patch(
-            'pynetbox.lib.query.requests.get',
-            return_value=Response(fixture='{}/{}.json'.format(
-                self.app,
-                self.name
-            ))
-        ) as mock:
-            ret = getattr(nb, self.name).all()
-            self.assertTrue(ret)
-            self.assertTrue(isinstance(ret, list))
-            self.assertTrue(isinstance(ret[0], self.ret))
-            mock.assert_called_with(
-                'http://localhost:8000/api/{}/{}/'.format(
+        def test_get_all(self):
+            with patch(
+                'pynetbox.core.query.requests.get',
+                return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
-                    self.name.replace('_', '-')
-                ),
-                headers=HEADERS,
-                verify=True
-            )
+                    self.name
+                ))
+            ) as mock:
+                ret = getattr(nb, self.name).all()
+                self.assertTrue(ret)
+                self.assertTrue(isinstance(ret, list))
+                self.assertTrue(isinstance(ret[0], self.ret))
+                mock.assert_called_with(
+                    'http://localhost:8000/api/{}/{}/'.format(
+                        self.app,
+                        self.name.replace('_', '-')
+                    ),
+                    headers=HEADERS,
+                    verify=True
+                )
 
-    def test_filter(self):
-        with patch(
-            'pynetbox.lib.query.requests.get',
-            return_value=Response(fixture='{}/{}.json'.format(
-                self.app,
-                self.name
-            ))
-        ) as mock:
-            ret = getattr(nb, self.name).filter(pk=1)
-            self.assertTrue(ret)
-            self.assertTrue(isinstance(ret, list))
-            self.assertTrue(isinstance(ret[0], self.ret))
-            mock.assert_called_with(
-                'http://localhost:8000/api/{}/{}/?pk=1'.format(
+        def test_filter(self):
+            with patch(
+                'pynetbox.core.query.requests.get',
+                return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
-                    self.name.replace('_', '-')
-                ),
-                headers=HEADERS,
-                verify=True
-            )
+                    self.name
+                ))
+            ) as mock:
+                ret = getattr(nb, self.name).filter(name='test')
+                self.assertTrue(ret)
+                self.assertTrue(isinstance(ret, list))
+                self.assertTrue(isinstance(ret[0], self.ret))
+                mock.assert_called_with(
+                    'http://localhost:8000/api/{}/{}/?name=test'.format(
+                        self.app,
+                        self.name.replace('_', '-')
+                    ),
+                    headers=HEADERS,
+                    verify=True
+                )
 
-    def test_get(self):
-        with patch(
-            'pynetbox.lib.query.requests.get',
-            return_value=Response(fixture='{}/{}.json'.format(
-                self.app,
-                self.name[:-1]
-            ))
-        ) as mock:
-            ret = getattr(nb, self.name).get(1)
-            self.assertTrue(ret)
-            self.assertTrue(isinstance(ret, self.ret))
-            mock.assert_called_with(
-                'http://localhost:8000/api/{}/{}/1/'.format(
+        def test_get(self):
+            with patch(
+                'pynetbox.core.query.requests.get',
+                return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
-                    self.name.replace('_', '-')
-                ),
-                headers=HEADERS,
-                verify=True
-            )
+                    self.name[:-1]
+                ))
+            ) as mock:
+                ret = getattr(nb, self.name).get(1)
+                self.assertTrue(ret)
+                self.assertTrue(isinstance(ret, self.ret))
+                mock.assert_called_with(
+                    'http://localhost:8000/api/{}/{}/1/'.format(
+                        self.app,
+                        self.name.replace('_', '-')
+                    ),
+                    headers=HEADERS,
+                    verify=True
+                )
 
 
-class CircuitsTestCase(unittest.TestCase, GenericTest):
+class CircuitsTestCase(Generic.Tests):
     name = 'circuits'
 
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.core.query.requests.get',
         return_value=Response(fixture='circuits/circuit.json')
     )
     def test_repr(self, _):
@@ -101,19 +101,19 @@ class CircuitsTestCase(unittest.TestCase, GenericTest):
         self.assertEqual(str(test), '123456')
 
 
-class ProviderTestCase(unittest.TestCase, GenericTest):
+class ProviderTestCase(Generic.Tests):
     name = 'providers'
 
 
-class CircuitTypeTestCase(unittest.TestCase, GenericTest):
+class CircuitTypeTestCase(Generic.Tests):
     name = 'circuit_types'
 
 
-class CircuitTerminationsTestCase(unittest.TestCase, GenericTest):
+class CircuitTerminationsTestCase(Generic.Tests):
     name = 'circuit_terminations'
 
     @patch(
-        'pynetbox.lib.query.requests.get',
+        'pynetbox.core.query.requests.get',
         return_value=Response(fixture='circuits/circuit_termination.json')
     )
     def test_repr(self, _):

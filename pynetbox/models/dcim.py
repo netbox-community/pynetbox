@@ -1,4 +1,4 @@
-'''
+"""
 (c) 2017 DigitalOcean
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
-from pynetbox.lib.response import Record
-from pynetbox.lib.endpoint import RODetailEndpoint
-from pynetbox.ipam import IpAddresses
+"""
+from pynetbox.core.response import Record
+from pynetbox.core.endpoint import RODetailEndpoint
+from pynetbox.models.ipam import IpAddresses
+from pynetbox.models.circuits import Circuits
 
 
 class DeviceTypes(Record):
-
     def __str__(self):
         return self.model
 
@@ -38,6 +38,7 @@ class Devices(Record):
                 `device_type` field's value from the API response and
                 return an initialized DeviceType object
     """
+
     has_details = True
     device_type = DeviceTypes
     primary_ip = IpAddresses
@@ -60,33 +61,34 @@ class Devices(Record):
         {"get_facts": {"interface_list": ["ge-0/0/0"]}}
 
         """
-        return RODetailEndpoint(self, 'napalm')
+        return RODetailEndpoint(self, "napalm")
 
 
 class InterfaceConnections(Record):
-
     def __str__(self):
         return self.interface_a.name
 
 
 class InterfaceConnection(Record):
-
     def __str__(self):
         return self.interface.name
 
 
+class ConnectedEndpoint(Record):
+    device = Devices
+
+
 class Interfaces(Record):
     interface_connection = InterfaceConnection
+    connected_endpoint = ConnectedEndpoint
 
 
 class RackReservations(Record):
-
     def __str__(self):
         return self.description
 
 
 class VirtualChassis(Record):
-
     def __str__(self):
         return self.master.display_name
 
@@ -97,7 +99,6 @@ class RUs(Record):
 
 
 class Racks(Record):
-
     @property
     def units(self):
         """ Represents the ``units`` detail endpoint.
@@ -114,4 +115,26 @@ class Racks(Record):
         {"get_facts": {"interface_list": ["ge-0/0/0"]}}
 
         """
-        return RODetailEndpoint(self, 'units', custom_return=RUs)
+        return RODetailEndpoint(self, "units", custom_return=RUs)
+
+
+class Termination(Record):
+    def __str__(self):
+        # hacky check to see if we're a circuit termination to
+        # avoid another call to NetBox because of a non-existent attr
+        # in self.name
+        if "circuit" in str(self.url):
+            return self.circuit.cid
+
+        return self.name
+
+    device = Devices
+    circuit = Circuits
+
+
+class Cables(Record):
+    def __str__(self):
+        return "{} <> {}".format(self.termination_a, self.termination_b)
+
+    termination_a = Termination
+    termination_b = Termination
