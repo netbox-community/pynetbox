@@ -2,7 +2,7 @@ import unittest
 
 import six
 
-from pynetbox.lib.endpoint import Endpoint
+from pynetbox.core.endpoint import Endpoint
 
 if six.PY3:
     from unittest.mock import patch, Mock
@@ -14,7 +14,7 @@ class EndPointTestCase(unittest.TestCase):
 
     def test_filter(self):
         with patch(
-            "pynetbox.lib.query.Request.get", return_value=Mock()
+            "pynetbox.core.query.Request.get", return_value=Mock()
         ) as mock:
             api = Mock(base_url="http://localhost:8000/api")
             app = Mock(name="test")

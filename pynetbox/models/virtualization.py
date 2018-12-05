@@ -13,14 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.lib.response import Record
+from pynetbox.core.response import Record
+from pynetbox.models.ipam import IpAddresses
 
 
-class Circuits(Record):
-    def __str__(self):
-        return self.cid
+class VirtualMachines(Record):
 
-
-class CircuitTerminations(Record):
-    def __str__(self):
-        return self.circuit.cid
+    primary_ip = IpAddresses
+    primary_ip4 = IpAddresses
+    primary_ip6 = IpAddresses

@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.lib.query import Request, url_param_builder
-from pynetbox.lib.response import Record
+from pynetbox.core.query import Request, url_param_builder
+from pynetbox.core.response import Record
 
 RESERVED_KWARGS = ("id", "pk", "limit", "offset")
 

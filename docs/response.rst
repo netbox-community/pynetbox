@@ -1,5 +1,5 @@
 Response
 ========
 
-.. autoclass:: pynetbox.lib.response.Record
+.. autoclass:: pynetbox.core.response.Record
   :members:

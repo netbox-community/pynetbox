@@ -1,8 +1,8 @@
 Endpoint
 ========
 
-.. autoclass:: pynetbox.lib.endpoint.Endpoint
+.. autoclass:: pynetbox.core.endpoint.Endpoint
   :members:
 
-.. autoclass:: pynetbox.lib.endpoint.DetailEndpoint
+.. autoclass:: pynetbox.core.endpoint.DetailEndpoint
   :members:

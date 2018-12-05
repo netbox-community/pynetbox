@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.lib.response import Record
-from pynetbox.lib.endpoint import RODetailEndpoint
-from pynetbox.ipam import IpAddresses
-from pynetbox.circuits import Circuits
+from pynetbox.core.response import Record
+from pynetbox.core.endpoint import RODetailEndpoint
+from pynetbox.models.ipam import IpAddresses
+from pynetbox.models.circuits import Circuits
 
 
 class DeviceTypes(Record):

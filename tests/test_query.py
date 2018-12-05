@@ -1,7 +1,7 @@
 import unittest
 from collections import OrderedDict
 
-from pynetbox.lib.query import url_param_builder
+from pynetbox.core.query import url_param_builder
 
 
 class TestQuery(unittest.TestCase):

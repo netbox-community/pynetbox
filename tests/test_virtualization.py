@@ -24,12 +24,12 @@ HEADERS = {
 class Generic(object):
     class Tests(unittest.TestCase):
         name = ''
-        ret = pynetbox.lib.response.Record
+        ret = pynetbox.core.response.Record
         app = 'virtualization'
 
         def test_get_all(self):
             with patch(
-                'pynetbox.lib.query.requests.get',
+                'pynetbox.core.query.requests.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name
@@ -50,7 +50,7 @@ class Generic(object):
 
         def test_filter(self):
             with patch(
-                'pynetbox.lib.query.requests.get',
+                'pynetbox.core.query.requests.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name
@@ -71,7 +71,7 @@ class Generic(object):
 
         def test_get(self):
             with patch(
-                'pynetbox.lib.query.requests.get',
+                'pynetbox.core.query.requests.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name[:-1]

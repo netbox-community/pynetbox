@@ -1,5 +1,5 @@
 Request
 ========
 
-.. autoclass:: pynetbox.lib.query.RequestError
+.. autoclass:: pynetbox.core.query.RequestError
   :members:

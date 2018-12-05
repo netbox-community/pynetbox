@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.lib.query import Request
-from pynetbox.lib.util import Hashabledict
+from pynetbox.core.query import Request
+from pynetbox.core.util import Hashabledict
 
 # List of fields that contain a dict but are not to be converted into
 # Record objects.

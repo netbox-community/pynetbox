@@ -1,6 +1,6 @@
 import unittest
 
-from pynetbox.lib.response import Record
+from pynetbox.core.response import Record
 
 
 class RecordTestCase(unittest.TestCase):
