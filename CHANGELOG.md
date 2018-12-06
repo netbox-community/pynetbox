@@ -1,3 +1,9 @@
+v4.0.1 (2018-12-06)
+
+## Bug Fixes
+* [#122](https://github.com/digitalocean/pynetbox/issues/122) - Adds missing authentication credentials for `.choices()`.
+
+
 ---
 
 v4.0.0 (2018-12-04)
