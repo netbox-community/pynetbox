@@ -47,6 +47,8 @@ class App(object):
 
         self._choices = Request(
             base="{}/{}/_choices/".format(self.api.base_url, self.name),
+            token=self.api.token,
+            private_key=self.api.private_key,
             ssl_verify=self.api.ssl_verify,
         ).get()
 
