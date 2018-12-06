@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import requests
+
 from pynetbox.core.endpoint import Endpoint
 from pynetbox.core.query import Request
 from pynetbox.models import dcim, ipam, virtualization, circuits
@@ -48,6 +50,7 @@ class App(object):
         self._choices = Request(
             base="{}/{}/_choices/".format(self.api.base_url, self.name),
             ssl_verify=self.api.ssl_verify,
+            http_session=self.api.http_session,
         ).get()
 
         return self._choices
@@ -115,6 +118,7 @@ class Api(object):
         self.base_url = base_url
         self.ssl_verify = ssl_verify
         self.session_key = None
+        self.http_session = requests.Session()
 
         if self.private_key_file:
             with open(self.private_key_file, "r") as kf:
@@ -126,6 +130,7 @@ class Api(object):
             token=token,
             private_key=private_key,
             ssl_verify=ssl_verify,
+            http_session = self.http_session
         )
         if self.token and self.private_key:
             self.session_key = req.get_session_key()
