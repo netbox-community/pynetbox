@@ -326,7 +326,7 @@ class Record(object):
             if isinstance(v, dict):
                 return k, Hashabledict(v)
             if isinstance(v, list):
-                return k, "".join(v)
+                return k, "".join(map(str, v))
             return k, v
 
         current = Hashabledict(
