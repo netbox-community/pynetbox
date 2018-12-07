@@ -77,3 +77,56 @@ class RecordTestCase(unittest.TestCase):
         test.nested_dict = 1
         test.string_field = 'foobaz'
         self.assertEqual(test._diff(), {'tags', 'nested_dict', 'string_field'})
+
+    def test_dict(self):
+        test_values = {
+            'id': 123,
+            'custom_fields': {
+                'foo': 'bar'
+            },
+            'string_field': 'foobar',
+            'int_field': 1,
+            "nested_dict": {
+                "id": 222,
+                "name": 'bar',
+            },
+            'tags': [
+                'foo',
+                'bar',
+            ],
+            'int_list': [
+                123,
+                321,
+                231,
+            ],
+            'record_list': [
+                {
+                    'id': 123,
+                    'name': 'Test',
+                    'str_attr': 'foo',
+                    'int_attr': 123,
+                    'custom_fields': {
+                        'foo': 'bar'
+                    },
+                    'tags': [
+                        'foo',
+                        'bar',
+                    ],
+                },
+                {
+                    'id': 321,
+                    'name': 'Test 1',
+                    'str_attr': 'bar',
+                    'int_attr': 321,
+                    'custom_fields': {
+                        'foo': 'bar'
+                    },
+                    'tags': [
+                        'foo',
+                        'bar',
+                    ],
+                },
+            ]
+        }
+        test = Record(test_values, None, None)
+        self.assertEqual(dict(test), test_values)

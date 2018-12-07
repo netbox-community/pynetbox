@@ -183,6 +183,10 @@ class Record(object):
             cur_attr = getattr(self, i)
             if isinstance(cur_attr, Record):
                 yield i, dict(cur_attr)
+            elif isinstance(cur_attr, list) and isinstance(
+                cur_attr[0], Record
+            ):
+                yield i, [dict(x) for x in cur_attr]
             else:
                 yield i, cur_attr
 
