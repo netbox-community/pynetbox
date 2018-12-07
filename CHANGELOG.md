@@ -1,3 +1,10 @@
+v4.0.2 (2018-12-06)
+
+## Bug Fixes
+* [#126](https://github.com/digitalocean/pynetbox/issues/126) - Fixes TypeError when calling save on interfaces Record with tagged_vlans.
+
+---
+
 v4.0.1 (2018-12-06)
 
 ## Bug Fixes
