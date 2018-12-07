@@ -65,7 +65,12 @@ class RecordTestCase(unittest.TestCase):
             'tags': [
                 'foo',
                 'bar',
-            ]
+            ],
+            'int_list': [
+                123,
+                321,
+                231,
+            ],
         }
         test = Record(test_values, None, None)
         test.tags.append('baz')
