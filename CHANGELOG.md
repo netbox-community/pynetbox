@@ -1,3 +1,11 @@
+
+v4.0.3 (2018-12-07)
+
+## Bug Fixes
+* [#127](https://github.com/digitalocean/pynetbox/issues/127) - Fixes `__iter__` method on Record object so that it properly return lists record objects. Like tagged_vlans on for Interfaces.
+
+---
+
 v4.0.2 (2018-12-06)
 
 ## Bug Fixes
