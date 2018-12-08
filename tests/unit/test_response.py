@@ -99,6 +99,7 @@ class RecordTestCase(unittest.TestCase):
                 321,
                 231,
             ],
+            'empty_list': [],
             'record_list': [
                 {
                     'id': 123,
