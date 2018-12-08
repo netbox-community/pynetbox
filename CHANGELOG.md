@@ -1,4 +1,10 @@
 
+v4.0.4 (2018-12-07)
+
+## Bug Fixes
+* Fixes IndexError introduced by fix for #127 when field is empty list.
+
+---
 v4.0.3 (2018-12-07)
 
 ## Bug Fixes
