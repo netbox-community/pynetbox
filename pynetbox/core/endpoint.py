@@ -107,7 +107,7 @@ class Endpoint(object):
             filter(). Any search argument the endpoint accepts can
             be added as a keyword arg.
 
-        :returns: A single :py:class:`.Record` object.
+        :returns: A single :py:class:`.Record` object or None
 
         :raises ValueError: if kwarg search return more than one value.
 
@@ -142,7 +142,7 @@ class Endpoint(object):
                     )
                 else:
                     return filter_lookup[0]
-            return filter_lookup
+            return None
 
         req = Request(
             key=key,
