@@ -1,4 +1,11 @@
 
+v4.0.5 (2018-12-14)
+
+## Bug Fixes
+* [#132](https://github.com/digitalocean/pynetbox/pull/132) - Fixes list comparison issue in `Record._diff`. 
+* [#134](https://github.com/digitalocean/pynetbox/issues/134) - Returns None from Endpoint.get() when no items are found instead of empty list from `.filter()`.
+
+---
 v4.0.4 (2018-12-07)
 
 ## Bug Fixes
