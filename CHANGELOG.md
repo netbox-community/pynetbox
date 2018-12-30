@@ -1,4 +1,11 @@
 
+v4.0.6 (2018-12-29)
+
+## Bug Fixes
+* [#137](https://github.com/digitalocean/pynetbox/issues/137) - Fixes behavior where appending an existing VLAN object id to tagged_vlans would cause .save() to still trigger a PATCH operation.
+
+---
+
 v4.0.5 (2018-12-14)
 
 ## Bug Fixes
