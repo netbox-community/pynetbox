@@ -20,6 +20,9 @@ from pynetbox.core.util import Hashabledict
 # Record objects.
 JSON_FIELDS = ("custom_fields", "data", "config_context")
 
+# List of fields that are lists but should be treated as sets.
+LIST_AS_SET = ("tags", "tagged_vlans")
+
 
 def get_return(lookup, return_fields=None):
     """Returns simple representations for items passed to lookup.
@@ -309,8 +312,6 @@ class Record(object):
             current_val = getattr(self, i) if not init else init_vals.get(i)
             if i == "custom_fields":
                 ret[i] = flatten_custom(current_val)
-            elif i == "tags":
-                ret[i] = list(set(current_val))
             else:
                 if isinstance(current_val, Record):
                     current_val = getattr(current_val, "serialize")(
@@ -322,6 +323,8 @@ class Record(object):
                         v.id if isinstance(v, Record) else v
                         for v in current_val
                     ]
+                    if i in LIST_AS_SET:
+                        current_val = list(set(current_val))
                 ret[i] = current_val
         return ret
 
