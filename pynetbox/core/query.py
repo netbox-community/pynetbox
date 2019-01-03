@@ -90,6 +90,7 @@ class Request(object):
 
     def __init__(
         self,
+        api=None,
         base=None,
         filters=None,
         key=None,
@@ -111,6 +112,7 @@ class Request(object):
             private_key (string, optional): The user's private key as a
                 string.
         """
+        self.api = api
         self.base = base
         self.filters = filters
         self.key = key
@@ -127,7 +129,7 @@ class Request(object):
 
         :Returns: String containing session key.
         """
-        req = requests.post(
+        req = self.api.session.post(
             "{}/secrets/get-session-key/?preserve_key=True".format(self.base),
             headers={
                 "accept": "application/json",
@@ -206,8 +208,11 @@ class Request(object):
             headers.update({"X-Session-Key": self.session_key})
 
         def make_request(url):
-
-            req = requests.get(url, headers=headers, verify=self.ssl_verify)
+            req = self.api.session.get(
+                url,
+                headers=headers,
+                verify=self.ssl_verify,
+            )
             if req.ok:
                 return req.json()
             else:
@@ -255,7 +260,7 @@ class Request(object):
         }
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
-        req = requests.put(
+        req = self.api.session.put(
             self.url,
             headers=headers,
             data=json.dumps(data),
@@ -283,7 +288,7 @@ class Request(object):
         }
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
-        req = requests.post(
+        req = self.api.session.post(
             self.normalize_url(self.url),
             headers=headers,
             data=json.dumps(data),
@@ -309,7 +314,7 @@ class Request(object):
             "accept": "application/json;",
             "authorization": "Token {}".format(self.token),
         }
-        req = requests.delete(
+        req = self.api.session.delete(
             "{}".format(self.url), headers=headers, verify=self.ssl_verify
         )
         if req.ok:
@@ -333,7 +338,7 @@ class Request(object):
         }
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
-        req = requests.patch(
+        req = self.api.session.patch(
             self.url,
             headers=headers,
             data=json.dumps(data),

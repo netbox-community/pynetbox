@@ -89,6 +89,7 @@ class Endpoint(object):
         >>>
         """
         req = Request(
+            api=self.api,
             base="{}/".format(self.url),
             token=self.token,
             session_key=self.session_key,
@@ -145,6 +146,7 @@ class Endpoint(object):
             return None
 
         req = Request(
+            api=self.api,
             key=key,
             base=self.url,
             token=self.token,
@@ -210,6 +212,7 @@ class Endpoint(object):
             )
 
         req = Request(
+            api=self.api,
             filters=kwargs,
             base=self.url,
             token=self.token,
@@ -272,6 +275,7 @@ class Endpoint(object):
         """
 
         req = Request(
+            api=self.api,
             base=self.url,
             token=self.token,
             session_key=self.session_key,

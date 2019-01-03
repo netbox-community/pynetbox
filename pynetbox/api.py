@@ -46,6 +46,7 @@ class App(object):
             return self._choices
 
         self._choices = Request(
+            api=self.api,
             base="{}/{}/_choices/".format(self.api.base_url, self.name),
             token=self.api.token,
             private_key=self.api.private_key,
@@ -118,12 +119,15 @@ class Api(object):
         self.ssl_verify = ssl_verify
         self.session_key = None
 
+        self.session = requests.Session()
+
         if self.private_key_file:
             with open(self.private_key_file, "r") as kf:
                 private_key = kf.read()
                 self.private_key = private_key
 
         req = Request(
+            api=self,
             base=base_url,
             token=token,
             private_key=private_key,

@@ -274,6 +274,7 @@ class Record(object):
         """
         if self.url:
             req = Request(
+                api=self.api,
                 base=self.url,
                 token=self.api.token,
                 session_key=self.api.session_key,
@@ -366,6 +367,7 @@ class Record(object):
             if diff:
                 serialized = self.serialize()
                 req = Request(
+                    api=self.api,
                     key=self.id,
                     base=self.endpoint.url,
                     token=self.api.token,
@@ -414,6 +416,7 @@ class Record(object):
         >>>
         """
         req = Request(
+            api=self.api,
             key=self.id,
             base=self.endpoint.url,
             token=self.api.token,
