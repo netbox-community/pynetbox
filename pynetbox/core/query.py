@@ -16,8 +16,6 @@ limitations under the License.
 import json
 from six.moves.urllib.parse import urlencode
 
-import requests
-
 
 def url_param_builder(param_dict):
     """Builds url parameters

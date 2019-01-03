@@ -17,6 +17,8 @@ from pynetbox.core.endpoint import Endpoint
 from pynetbox.core.query import Request
 from pynetbox.models import dcim, ipam, virtualization, circuits
 
+import requests
+
 
 class App(object):
     """ Represents apps in NetBox.
