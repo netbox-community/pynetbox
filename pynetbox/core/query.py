@@ -209,7 +209,8 @@ class Request(object):
 
         def make_request(url):
 
-            req = self.http_session.get(url, headers=headers, verify=self.ssl_verify)
+            req = self.http_session.get(url, headers=headers,
+                                        verify=self.ssl_verify)
             if req.ok:
                 return req.json()
             else:

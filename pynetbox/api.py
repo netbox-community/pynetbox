@@ -132,7 +132,7 @@ class Api(object):
             token=token,
             private_key=private_key,
             ssl_verify=ssl_verify,
-            http_session = self.http_session
+            http_session=self.http_session
         )
         if self.token and self.private_key:
             self.session_key = req.get_session_key()
