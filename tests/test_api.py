@@ -30,7 +30,7 @@ endpoints = {
 class ApiTestCase(unittest.TestCase):
 
     @patch(
-        'pynetbox.core.query.requests.post',
+        'pynetbox.core.query.requests.sessions.Session.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
     def test_get(self, *_):
@@ -41,7 +41,7 @@ class ApiTestCase(unittest.TestCase):
         self.assertTrue(api)
 
     @patch(
-        'pynetbox.core.query.requests.post',
+        'pynetbox.core.query.requests.sessions.Session.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
     def test_sanitize_url(self, *_):
@@ -56,7 +56,7 @@ class ApiTestCase(unittest.TestCase):
 class ApiArgumentsTestCase(unittest.TestCase):
 
     @patch(
-        'pynetbox.core.query.requests.post',
+        'pynetbox.core.query.requests.sessions.Session.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
     def common_arguments(self, kwargs, arg, expect, *_):
