@@ -306,6 +306,7 @@ class DetailEndpoint(object):
             token=parent_obj.api.token,
             session_key=parent_obj.api.session_key,
             ssl_verify=parent_obj.api.ssl_verify,
+            http_session=parent_obj.api.http_session,
         )
 
     def list(self, **kwargs):
