@@ -94,8 +94,8 @@ class Endpoint(object):
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
         )
-
-        return [self._response_loader(i) for i in req.get()]
+        for i in req.get():
+          yield self._response_loader(i)
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
