@@ -95,7 +95,7 @@ class Endpoint(object):
             ssl_verify=self.ssl_verify,
         )
         for i in req.get():
-          yield self._response_loader(i)
+            yield self._response_loader(i)
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
