@@ -47,6 +47,7 @@ class Endpoint(object):
         self.token = api.token
         self.session_key = api.session_key
         self.ssl_verify = api.ssl_verify
+        self.additional_headers = api.additional_headers
         self.url = "{base_url}/{app}/{endpoint}".format(
             base_url=self.base_url,
             app=app.name,
@@ -93,6 +94,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            additional_headers=self.additional_headers,
         )
 
         return [self._response_loader(i) for i in req.get()]
@@ -150,6 +152,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            additional_headers=self.additional_headers,
         )
 
         return self._response_loader(req.get())
@@ -215,6 +218,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            additional_headers=self.additional_headers,
         )
 
         ret = [self._response_loader(i) for i in req.get()]
@@ -276,6 +280,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            additional_headers=self.additional_headers,
         ).post(args[0] if args else kwargs)
 
         if isinstance(req, list):
@@ -302,6 +307,7 @@ class DetailEndpoint(object):
             token=parent_obj.api.token,
             session_key=parent_obj.api.session_key,
             ssl_verify=parent_obj.api.ssl_verify,
+            additional_headers=parent_obj.api.additional_headers,
         )
 
     def list(self, **kwargs):

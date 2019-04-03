@@ -278,6 +278,7 @@ class Record(object):
                 token=self.api.token,
                 session_key=self.api.session_key,
                 ssl_verify=self.api.ssl_verify,
+                additional_headers=self.api.additional_headers,
             )
             self._parse_values(req.get())
             self.has_details = True
@@ -371,6 +372,7 @@ class Record(object):
                     token=self.api.token,
                     session_key=self.api.session_key,
                     ssl_verify=self.api.ssl_verify,
+                    additional_headers=self.api.additional_headers,
                 )
                 if req.patch({i: serialized[i] for i in diff}):
                     return True
@@ -419,5 +421,6 @@ class Record(object):
             token=self.api.token,
             session_key=self.api.session_key,
             ssl_verify=self.api.ssl_verify,
+            additional_headers=self.api.additional_headers,
         )
         return True if req.delete() else False

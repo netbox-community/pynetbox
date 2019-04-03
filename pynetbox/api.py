@@ -50,6 +50,7 @@ class App(object):
             token=self.api.token,
             private_key=self.api.private_key,
             ssl_verify=self.api.ssl_verify,
+            additional_headers=self.api.additional_headers,
         ).get()
 
         return self._choices
@@ -82,6 +83,7 @@ class Api(object):
     :param str,optional private_key: Your private key.
     :param bool/str,optional ssl_verify: Specify SSL verification behavior
         see: requests_.
+    :param dict,optional additional_headers: Additional headers
     :raises ValueError: If *private_key* and *private_key_file* are both
         specified.
     :raises AttributeError: If app doesn't exist.
@@ -105,6 +107,7 @@ class Api(object):
         private_key=None,
         private_key_file=None,
         ssl_verify=True,
+        additional_headers=None,
     ):
         if private_key and private_key_file:
             raise ValueError(
@@ -117,6 +120,7 @@ class Api(object):
         self.base_url = base_url
         self.ssl_verify = ssl_verify
         self.session_key = None
+        self.additional_headers = additional_headers
 
         if self.private_key_file:
             with open(self.private_key_file, "r") as kf:
@@ -128,6 +132,7 @@ class Api(object):
             token=token,
             private_key=private_key,
             ssl_verify=ssl_verify,
+            additional_headers=additional_headers,
         )
         if self.token and self.private_key:
             self.session_key = req.get_session_key()

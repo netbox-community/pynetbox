@@ -97,6 +97,7 @@ class Request(object):
         private_key=None,
         session_key=None,
         ssl_verify=True,
+        additional_headers=None,
     ):
         """
         Instantiates a new Request object
@@ -118,6 +119,7 @@ class Request(object):
         self.private_key = private_key
         self.session_key = session_key
         self.ssl_verify = ssl_verify
+        self.additional_headers = additional_headers
 
     def get_session_key(self):
         """Requests session key
@@ -127,13 +129,18 @@ class Request(object):
 
         :Returns: String containing session key.
         """
+        headers={
+            "accept": "application/json",
+            "authorization": "Token {}".format(self.token),
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        if self.additional_headers:
+            x = headers.copy()
+            x.update(self.additional_headers)
+            headers = x
         req = requests.post(
             "{}/secrets/get-session-key/?preserve_key=True".format(self.base),
-            headers={
-                "accept": "application/json",
-                "authorization": "Token {}".format(self.token),
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
+            headers=headers,
             data=urlencode({"private_key": self.private_key.strip("\n")}),
             verify=self.ssl_verify,
         )
@@ -204,6 +211,10 @@ class Request(object):
             headers.update(authorization="Token {}".format(self.token))
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
+        if self.additional_headers:
+            x = headers.copy()
+            x.update(self.additional_headers)
+            headers = x
 
         def make_request(url):
 
@@ -255,6 +266,10 @@ class Request(object):
         }
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
+        if self.additional_headers:
+            x = headers.copy()
+            x.update(self.additional_headers)
+            headers = x
         req = requests.put(
             self.url,
             headers=headers,
@@ -283,6 +298,10 @@ class Request(object):
         }
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
+        if self.additional_headers:
+            x = headers.copy()
+            x.update(self.additional_headers)
+            headers = x
         req = requests.post(
             self.normalize_url(self.url),
             headers=headers,
@@ -309,6 +328,10 @@ class Request(object):
             "accept": "application/json;",
             "authorization": "Token {}".format(self.token),
         }
+        if self.additional_headers:
+            x = headers.copy()
+            x.update(self.additional_headers)
+            headers = x
         req = requests.delete(
             "{}".format(self.url), headers=headers, verify=self.ssl_verify
         )
@@ -333,6 +356,10 @@ class Request(object):
         }
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
+        if self.additional_headers:
+            x = headers.copy()
+            x.update(self.additional_headers)
+            headers = x
         req = requests.patch(
             self.url,
             headers=headers,
