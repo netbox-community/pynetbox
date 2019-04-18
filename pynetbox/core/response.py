@@ -232,12 +232,17 @@ class Record(object):
             if k not in JSON_FIELDS:
                 if isinstance(v, dict):
                     lookup = getattr(self.__class__, k, None)
-                    new_app = v["url"].replace(self.api.base_url + "/", "").split("/")[0]
-                    new_endpoint = pynetbox.core.endpoint.Endpoint(self.api, getattr(self.api, new_app), "devices", model=None)
+                    k_endpoint = self.endpoint
+                    if "url" in v:
+                        k_path_list = v["url"].replace(self.api.base_url + "/", "").split("/")
+                        if len(k_path_list) > 1:
+                            k_app = k_path_list[0]
+                            k_name = k_path_list[1]
+                            k_endpoint = pynetbox.core.endpoint.Endpoint(self.api, getattr(self.api, k_app), k_name, model=None)
                     if lookup:
-                        v = lookup(v, self.api, new_endpoint) #self.endpoint)
+                        v = lookup(v, self.api, k_endpoint)
                     else:
-                        v = self.default_ret(v, self.api, new_endpoint)#self.endpoint)
+                        v = self.default_ret(v, self.api, k_endpoint)
                     self._add_cache((k, v))
 
                 elif isinstance(v, list):
