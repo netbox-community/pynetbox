@@ -236,7 +236,7 @@ class Record(object):
                     if "url" in v:
                         print(k, v, self.api.base_url)
                         k_path_list = v["url"].split("/")
-                        if "api" in k_path_list
+                        if "api" in k_path_list:
                             offset = k_path_list.index("api")
                             if len(k_path_list[:offset]) > 0 and k_path_list[:offset][0] == "api":
                                 # domain name is "api"
