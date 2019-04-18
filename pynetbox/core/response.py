@@ -249,10 +249,6 @@ class Record(object):
                                         Endpoint(self.api, getattr(self.api,
                                                                    k_app),
                                                  k_name, model=None)
-                                if k_endpoint is not None and \
-                                   self.endpoint is not None \
-                                   and k_endpoint.url != self.endpoint.url:
-                                    print(self.endpoint.url, k_endpoint.url)
                     if lookup:
                         v = lookup(v, self.api, k_endpoint)
                     else:
