@@ -245,9 +245,10 @@ class Record(object):
                                 k_app = k_path_list[:offset][0]
                                 k_name = k_path_list[:offset][1]
                                 if hasattr(self.api, k_app):
-                                    k_endpoint = pynetbox.core.endpoint.Endpoint(
-                                        self.api, getattr(self.api, k_app),
-                                        k_name, model=None)
+                                    k_endpoint = pynetbox.core.endpoint.\
+                                        Endpoint(self.api, getattr(self.api,
+                                                                   k_app),
+                                                 k_name, model=None)
                                 if k_endpoint is not None and \
                                    self.endpoint is not None \
                                    and k_endpoint.url != self.endpoint.url:
