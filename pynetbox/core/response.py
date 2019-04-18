@@ -228,7 +228,6 @@ class Record(object):
             return list_item
 
         for k, v in values.items():
-
             if k not in JSON_FIELDS:
                 if isinstance(v, dict):
                     lookup = getattr(self.__class__, k, None)
@@ -236,14 +235,14 @@ class Record(object):
                     if "url" in v:
                         k_path_list = v["url"].split("/")
                         if "api" in k_path_list:
-                            offset = k_path_list.index("api")
-                            if len(k_path_list[:offset]) > 0 \
-                               and k_path_list[:offset][0] == "api":
+                            offset = k_path_list.index("api") + 1
+                            if len(k_path_list[offset:]) > 0 \
+                               and k_path_list[offset:][0] == "api":
                                 # domain name is "api"
                                 offset = offset + 1
-                            if len(k_path_list[:offset]) > 1:
-                                k_app = k_path_list[:offset][0]
-                                k_name = k_path_list[:offset][1]
+                            if len(k_path_list[offset:]) > 1:
+                                k_app = k_path_list[offset:][0]
+                                k_name = k_path_list[offset:][1]
                                 if hasattr(self.api, k_app):
                                     k_endpoint = pynetbox.core.endpoint.\
                                         Endpoint(self.api, getattr(self.api,
