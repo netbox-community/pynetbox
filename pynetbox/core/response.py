@@ -15,6 +15,7 @@ limitations under the License.
 """
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
+import pynetbox.core.endpoint
 
 # List of fields that contain a dict but are not to be converted into
 # Record objects.
@@ -231,10 +232,12 @@ class Record(object):
             if k not in JSON_FIELDS:
                 if isinstance(v, dict):
                     lookup = getattr(self.__class__, k, None)
+                    new_app = v["url"].replace(self.api.base_url + "/", "").split("/")[0]
+                    new_endpoint = pynetbox.core.endpoint.Endpoint(self.api, getattr(self.api, new_app), "devices", model=None)
                     if lookup:
-                        v = lookup(v, self.api, self.endpoint)
+                        v = lookup(v, self.api, new_endpoint) #self.endpoint)
                     else:
-                        v = self.default_ret(v, self.api, self.endpoint)
+                        v = self.default_ret(v, self.api, new_endpoint)#self.endpoint)
                     self._add_cache((k, v))
 
                 elif isinstance(v, list):
