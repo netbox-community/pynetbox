@@ -234,10 +234,14 @@ class Record(object):
                     lookup = getattr(self.__class__, k, None)
                     k_endpoint = self.endpoint
                     if "url" in v:
-                        k_path_list = v["url"].replace(self.api.base_url + "/", "").split("/")
-                        if len(k_path_list) > 1:
-                            k_app = k_path_list[0]
-                            k_name = k_path_list[1]
+                        k_path_list = v["url"].split("/")
+                        offset = k_path_list.index("api")
+                        if len(k_path_list[:offset]) > 0 and k_path_list[:offset][0] == "api":
+                            # domain name is "api"
+                            offset = offset + 1
+                        if len(k_path_list[:offset]) > 1:
+                            k_app = k_path_list[:offset][0]
+                            k_name = k_path_list[:offset][1]
                             k_endpoint = pynetbox.core.endpoint.Endpoint(self.api, getattr(self.api, k_app), k_name, model=None)
                     if lookup:
                         v = lookup(v, self.api, k_endpoint)
