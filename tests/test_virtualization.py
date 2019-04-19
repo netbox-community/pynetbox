@@ -29,7 +29,7 @@ class Generic(object):
 
         def test_get_all(self):
             with patch(
-                'pynetbox.core.query.requests.get',
+                'pynetbox.core.query.requests.sessions.Session.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name
@@ -50,7 +50,7 @@ class Generic(object):
 
         def test_filter(self):
             with patch(
-                'pynetbox.core.query.requests.get',
+                'pynetbox.core.query.requests.sessions.Session.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name
@@ -71,7 +71,7 @@ class Generic(object):
 
         def test_get(self):
             with patch(
-                'pynetbox.core.query.requests.get',
+                'pynetbox.core.query.requests.sessions.Session.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name[:-1]
