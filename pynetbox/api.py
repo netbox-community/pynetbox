@@ -32,7 +32,7 @@ class App(object):
         self.name = name
         self._choices = None
         self._setmodel()
-    
+
     models = {
         "dcim": dcim,
         "ipam": ipam,
@@ -50,7 +50,7 @@ class App(object):
             '_choices': self._choices
         }
 
-    def __setstate__(self,d):
+    def __setstate__(self, d):
         self.__dict__.update(d)
         self._setmodel()
 
