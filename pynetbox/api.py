@@ -33,13 +33,12 @@ class App(object):
         self._choices = None
         self._setmodel()
     
-		models = {
+    models = {
         "dcim": dcim,
         "ipam": ipam,
         "circuits": circuits,
         "virtualization": virtualization
     }
-
 
     def _setmodel(self):
         self.model = App.models[self.name] if self.name in App.models else None
