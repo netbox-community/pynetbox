@@ -29,12 +29,32 @@ class App(object):
     :raises: :py:class:`.RequestError`
         if requested endpoint doesn't exist.
     """
-
-    def __init__(self, api, name, model=None):
+    def __init__(self, api, name):
         self.api = api
         self.name = name
-        self.model = model
         self._choices = None
+        self._setmodel()
+
+    models = {
+        "dcim": dcim,
+        "ipam": ipam,
+        "circuits": circuits,
+        "virtualization": virtualization
+    }
+
+    def _setmodel(self):
+        self.model = App.models[self.name] if self.name in App.models else None
+
+    def __getstate__(self):
+        return {
+            'api': self.api,
+            'name': self.name,
+            '_choices': self._choices
+        }
+
+    def __setstate__(self, d):
+        self.__dict__.update(d)
+        self._setmodel()
 
     def __getattr__(self, name):
         return Endpoint(self.api, self, name, model=self.model)
@@ -137,10 +157,10 @@ class Api(object):
         if self.token and self.private_key:
             self.session_key = req.get_session_key()
 
-        self.dcim = App(self, "dcim", model=dcim)
-        self.ipam = App(self, "ipam", model=ipam)
-        self.circuits = App(self, "circuits", model=circuits)
-        self.secrets = App(self, "secrets", model=None)
-        self.tenancy = App(self, "tenancy", model=None)
-        self.extras = App(self, "extras", model=None)
-        self.virtualization = App(self, "virtualization", model=virtualization)
+        self.dcim = App(self, "dcim")
+        self.ipam = App(self, "ipam")
+        self.circuits = App(self, "circuits")
+        self.secrets = App(self, "secrets")
+        self.tenancy = App(self, "tenancy")
+        self.extras = App(self, "extras")
+        self.virtualization = App(self, "virtualization")

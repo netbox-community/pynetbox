@@ -73,6 +73,25 @@ class RequestError(Exception):
         self.error = req.text
 
 
+class AllocationError(Exception):
+    """Allocation Exception
+
+    Used with available-ips/available-prefixes when there is no
+    room for allocation and NetBox returns 204 No Content.
+    """
+
+    def __init__(self, message):
+        req = message
+
+        message = "The requested allocation could not be fulfilled."
+
+        super(AllocationError, self).__init__(message)
+        self.req = req
+        self.request_body = req.request.body
+        self.url = req.url
+        self.error = message
+
+
 class Request(object):
     """Creates requests to the Netbox API
 
@@ -292,7 +311,9 @@ class Request(object):
             data=json.dumps(data),
             verify=self.ssl_verify,
         )
-        if req.ok:
+        if req.status_code == 204:
+            raise AllocationError(req)
+        elif req.ok:
             return req.json()
         else:
             raise RequestError(req)

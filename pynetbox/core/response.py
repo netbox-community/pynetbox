@@ -224,7 +224,25 @@ class Record(object):
 
         def list_parser(list_item):
             if isinstance(list_item, dict):
-                return self.default_ret(list_item, self.api, self.endpoint)
+                k_endpoint = None
+                if "url" in list_item:
+                    if "url" in list_item:
+                        k_path_list = list_item["url"].split("/")
+                        if "api" in k_path_list:
+                            offset = k_path_list.index("api") + 1
+                            if len(k_path_list[offset:]) > 0 \
+                               and k_path_list[offset:][0] == "api":
+                                # domain name is "api"
+                                offset = offset + 1
+                            if len(k_path_list[offset:]) > 1:
+                                k_app = k_path_list[offset:][0]
+                                k_name = k_path_list[offset:][1]
+                                if hasattr(self.api, k_app):
+                                    k_endpoint = pynetbox.core.endpoint.\
+                                        Endpoint(self.api, getattr(self.api,
+                                                                   k_app),
+                                                 k_name, model=None)
+                return self.default_ret(list_item, self.api, k_endpoint)
             return list_item
 
         for k, v in values.items():
