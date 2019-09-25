@@ -294,6 +294,9 @@ class Request(object):
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.
         :raises: RequestError if req.ok returns false.
+        :raises: AllocationError if req.status_code is 204 (No Content)
+            as with available-ips and available-prefixes when there is
+            no room for the requested allocation.
         :Returns: Dict containing the response from NetBox's API.
         """
         headers = {
