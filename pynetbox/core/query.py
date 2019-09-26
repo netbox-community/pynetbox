@@ -92,6 +92,26 @@ class AllocationError(Exception):
         self.error = message
 
 
+class ContentError(Exception):
+    """Content Exception
+
+    If the API URL does not point to a valid NetBox API, the server may
+    return a valid response code, but the content is not json. This
+    exception is raised in those cases.
+    """
+
+    def __init__(self, message):
+        req = message
+
+        message = "The server returned invalid (non-json) data. Maybe not NetBox?"
+
+        super(ContentError, self).__init__(message)
+        self.req = req
+        self.request_body = req.request.body
+        self.url = req.url
+        self.error = message
+
+
 class Request(object):
     """Creates requests to the Netbox API
 
@@ -157,7 +177,10 @@ class Request(object):
             verify=self.ssl_verify,
         )
         if req.ok:
-            return req.json()["session_key"]
+            try:
+                return req.json()["session_key"]
+            except json.JSONDecodeError:
+                raise ContentError(req)
         else:
             raise RequestError(req)
 
@@ -214,6 +237,7 @@ class Request(object):
         any paginated results.
 
         :raises: RequestError if req.ok returns false.
+        :raises: ContentError if response is not json.
 
         :Returns: List of `Response` objects returned from the
             endpoint.
@@ -228,7 +252,10 @@ class Request(object):
 
             req = requests.get(url, headers=headers, verify=self.ssl_verify)
             if req.ok:
-                return req.json()
+                try:
+                    return req.json()
+                except json.JSONDecodeError:
+                    raise ContentError(req)
             else:
                 raise RequestError(req)
 
@@ -266,6 +293,7 @@ class Request(object):
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.
         :raises: RequestError if req.ok returns false.
+        :raises: ContentError if response is not json.
         :returns: Dict containing the response from NetBox's API.
         """
         headers = {
@@ -281,7 +309,10 @@ class Request(object):
             verify=self.ssl_verify,
         )
         if req.ok:
-            return req.json()
+            try:
+                return req.json()
+            except json.JSONDecodeError:
+                raise ContentError(req)
         else:
             raise RequestError(req)
 
@@ -297,6 +328,7 @@ class Request(object):
         :raises: AllocationError if req.status_code is 204 (No Content)
             as with available-ips and available-prefixes when there is
             no room for the requested allocation.
+        :raises: ContentError if response is not json.
         :Returns: Dict containing the response from NetBox's API.
         """
         headers = {
@@ -314,7 +346,10 @@ class Request(object):
         if req.status_code == 204:
             raise AllocationError(req)
         elif req.ok:
-            return req.json()
+            try:
+                return req.json()
+            except json.JSONDecodeError:
+                raise ContentError(req)
         else:
             raise RequestError(req)
 
@@ -349,6 +384,7 @@ class Request(object):
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.
         :raises: RequestError if req.ok returns false.
+        :raises: ContentError if response is not json.
         :returns: Dict containing the response from NetBox's API.
         """
         headers = {
@@ -364,6 +400,9 @@ class Request(object):
             verify=self.ssl_verify,
         )
         if req.ok:
-            return req.json()
+            try:
+                return req.json()
+            except json.JSONDecodeError:
+                raise ContentError(req)
         else:
             raise RequestError(req)

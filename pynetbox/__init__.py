@@ -1,6 +1,7 @@
 from pkg_resources import get_distribution, DistributionNotFound
 
 from pynetbox.core.query import RequestError, AllocationError
+from pynetbox.core.query import ContentError
 from pynetbox.api import Api as api
 
 try:
