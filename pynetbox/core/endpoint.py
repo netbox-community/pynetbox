@@ -75,7 +75,7 @@ class Endpoint(object):
     def _response_loader(self, values):
         return self.return_obj(values, self.api, self)
 
-    def all(self):
+    def all(self, progress:bool = False, count_only:bool = False):
         """Queries the 'ListView' of a given endpoint.
 
         Returns all objects from an endpoint.
@@ -88,14 +88,40 @@ class Endpoint(object):
         [test1-a3-oobsw2, test1-a3-oobsw3, test1-a3-oobsw4]
         >>>
         """
+        
         req = Request(
             base="{}/".format(self.url),
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            progress = progress
         )
 
         return [self._response_loader(i) for i in req.get()]
+
+    def all_count(self):
+        """Queries the 'ListView' of a given endpoint.
+
+        Returns all objects from an endpoint.
+
+        :Returns: Int count of :py:class:`.Record` objects.
+
+        :Examples:
+
+        >>> nb.dcim.devices.all()
+        25
+        >>>
+        """
+        
+        req = Request(
+            base="{}/".format(self.url),
+            token=self.token,
+            session_key=self.session_key,
+            ssl_verify=self.ssl_verify,
+            count_only = True
+        )
+
+        return req.get()
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
@@ -208,6 +234,8 @@ class Endpoint(object):
                 "A reserved {} kwarg was passed. Please remove it "
                 "try again.".format(RESERVED_KWARGS)
             )
+        if 'progress' not in kwargs:
+            kwargs['progress'] = False
 
         req = Request(
             filters=kwargs,
@@ -215,9 +243,76 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            progress = kwargs['progress']
         )
 
         ret = [self._response_loader(i) for i in req.get()]
+        return ret
+
+    def filter_count(self, *args, **kwargs):
+        r"""Queries the 'ListView' of a given endpoint.
+
+        Takes named arguments that match the usable filters on a
+        given endpoint. If an argument is passed then it's used as a
+        freeform search argument if the endpoint supports it.
+
+        :arg str,optional \*args: Freeform search string that's
+            accepted on given endpoint.
+        :arg str,optional \**kwargs: Any search argument the
+            endpoint accepts can be added as a keyword arg.
+
+        :Returns: An int of the number of results for the filter.
+
+        :Examples:
+
+        To return a list of objects matching a named argument filter.
+
+        >>> nb.dcim.devices.filter(role='leaf-switch')
+        15
+        >>>
+
+        Using a freeform query along with a named argument.
+
+        >>> nb.dcim.devices.filter('a3', role='leaf-switch')
+        3
+        >>>
+
+        Chaining multiple named arguments.
+
+        >>> nb.dcim.devices.filter(role='leaf-switch', status=True)
+        1
+        >>>
+
+        Passing a list as a named argument adds multiple filters of the
+        same value.
+
+        >>> nb.dcim.devices.filter(role=['leaf-switch', 'spine-switch'])
+        4
+        >>>
+        """
+
+        if args:
+            kwargs.update({"q": args[0]})
+
+        if not kwargs:
+            raise ValueError(
+                "filter must be passed kwargs. Perhaps use all() instead."
+            )
+        if any(i in RESERVED_KWARGS for i in kwargs):
+            raise ValueError(
+                "A reserved {} kwarg was passed. Please remove it "
+                "try again.".format(RESERVED_KWARGS)
+            )
+        req = Request(
+            filters=kwargs,
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            ssl_verify=self.ssl_verify,
+            count_only = True,
+        )
+
+        ret = req.get()
         return ret
 
     def create(self, *args, **kwargs):
