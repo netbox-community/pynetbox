@@ -255,7 +255,6 @@ class Request(object):
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
 
-
         def make_request(url):
 
             req = requests.get(url, headers=headers, verify=self.ssl_verify)
@@ -278,7 +277,6 @@ class Request(object):
             else:
                 return req
 
-        
         def req_all(url):
             total_count = get_count(self.url)
             if self.count_only:
@@ -287,15 +285,16 @@ class Request(object):
                 if self.progress:
                     from tqdm import tqdm
                     progress_bar = tqdm(
-                        unit = "results",
-                        total = total_count,
-                        desc = "Progress: "
+                        unit="results",
+                        total=total_count,
+                        desc="Progress: "
                         )
             req = make_request(url)
             if isinstance(req, dict) and req.get("results") is not None:
                 ret = req["results"]
                 first_run = True
-                if self.progress: progress_bar.update(len(req["results"]))
+                if self.progress:
+                    progress_bar.update(len(req["results"]))
                 while req["next"]:
                     next_url = (
                         "{}{}limit={}&offset={}".format(
@@ -310,8 +309,10 @@ class Request(object):
                     req = make_request(next_url)
                     first_run = False
                     ret.extend(req["results"])
-                    if self.progress: progress_bar.update(len(req["results"]))
-                if self.progress: progress_bar.close()
+                    if self.progress:
+                        progress_bar.update(len(req["results"]))
+                if self.progress:
+                    progress_bar.close()
                 return ret
             else:
                 return req
