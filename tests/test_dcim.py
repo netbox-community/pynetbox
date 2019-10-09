@@ -66,7 +66,7 @@ class Generic(object):
                 self.assertTrue(isinstance(ret, list))
                 self.assertTrue(isinstance(ret[0], self.ret))
                 mock.assert_called_with(
-                    'http://localhost:8000/api/{}/{}/?name=test'.format(
+                    'http://localhost:8000/api/{}/{}/?name=test&progress=False'.format(
                         self.app,
                         self.name.replace('_', '-')
                     ),
@@ -182,7 +182,7 @@ class DeviceTestCase(Generic.Tests):
         self.assertTrue(isinstance(ret, list))
         self.assertTrue(isinstance(ret[0], self.ret))
         mock.assert_called_with(
-            'http://localhost:8000/api/{}/{}/?role=test&role=test1&site=TEST%231'.format(
+            'http://localhost:8000/api/{}/{}/?role=test&role=test1&site=TEST%231&progress=False'.format(
                 self.app,
                 self.name.replace('_', '-')
             ),
@@ -352,9 +352,9 @@ class InterfaceTestCase(Generic.Tests):
         self.assertTrue(ret)
         self.assertTrue(isinstance(ret, list))
         self.assertTrue(isinstance(ret[0], self.ret))
-        self.assertEqual(len(ret), 71)
+        self.assertEqual(len(ret), 21)
         mock.assert_called_with(
-            'http://localhost:8000/api/dcim/interfaces/?limit=221&offset=50',
+            'http://localhost:8000/api/dcim/interfaces/',
             headers=HEADERS,
             verify=True
         )
