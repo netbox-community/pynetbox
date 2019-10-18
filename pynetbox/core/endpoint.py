@@ -289,7 +289,7 @@ class Endpoint(object):
 
         :Returns: Dict containing the available choices.
 
-        :Example:
+        :Examples:
 
         >>> from pprint import pprint
         >>> pprint(netbox.ipam.ip_addresses.choices())
