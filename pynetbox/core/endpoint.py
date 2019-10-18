@@ -310,14 +310,21 @@ class Endpoint(object):
         if self._choices:
             return self._choices
 
-        resp = Request(
+        req = Request(
             base=self.url,
             token=self.api.token,
             private_key=self.api.private_key,
             ssl_verify=self.api.ssl_verify,
         ).options()
+        try:
+            post_data = req['actions']['POST']
+        except KeyError:
+            raise ValueError(
+                "Unexpected format in the OPTIONS response at {}".format(
+                    self.url
+                )
+            )
         self._choices = {}
-        post_data = resp['actions']['POST']
         for prop in post_data:
             if 'choices' in post_data[prop]:
                 self._choices[prop] = post_data[prop]['choices']
