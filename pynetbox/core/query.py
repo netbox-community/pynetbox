@@ -426,7 +426,11 @@ class Request(object):
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
 
-        req = requests.options(self.url, headers=headers, verify=self.ssl_verify)
+        req = requests.options(
+            self.url,
+            headers=headers,
+            verify=self.ssl_verify,
+        )
         if req.ok:
             try:
                 return req.json()
