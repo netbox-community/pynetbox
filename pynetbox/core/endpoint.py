@@ -52,6 +52,7 @@ class Endpoint(object):
             app=app.name,
             endpoint=name.replace("_", "-"),
         )
+        self._choices = None
 
     def _lookup_ret_obj(self, name, model):
         """Loads unique Response objects.
@@ -282,6 +283,46 @@ class Endpoint(object):
             return [self._response_loader(i) for i in req]
 
         return self._response_loader(req)
+
+    def choices(self):
+        """ Returns all choices from the endpoint.
+
+        :Returns: Dict containing the available choices.
+
+        :Example:
+
+        >>> from pprint import pprint
+        >>> pprint(netbox.ipam.ip_addresses.choices())
+        {'role': [{'display_name': 'Secondary', 'value': 20},
+                  {'display_name': 'VIP', 'value': 40},
+                  {'display_name': 'VRRP', 'value': 41},
+                  {'display_name': 'Loopback', 'value': 10},
+                  {'display_name': 'GLBP', 'value': 43},
+                  {'display_name': 'CARP', 'value': 44},
+                  {'display_name': 'HSRP', 'value': 42},
+                  {'display_name': 'Anycast', 'value': 30}],
+         'status': [{'display_name': 'Active', 'value': 1},
+                    {'display_name': 'Reserved', 'value': 2},
+                    {'display_name': 'Deprecated', 'value': 3},
+                    {'display_name': 'DHCP', 'value': 5}]}
+        >>>
+        """
+        if self._choices:
+            return self._choices
+
+        resp = Request(
+            base=self.url,
+            token=self.api.token,
+            private_key=self.api.private_key,
+            ssl_verify=self.api.ssl_verify,
+        ).options()
+        self._choices = {}
+        post_data = resp['actions']['POST']
+        for prop in post_data:
+            if 'choices' in post_data[prop]:
+                self._choices[prop] = post_data[prop]['choices']
+
+        return self._choices
 
 
 class DetailEndpoint(object):
