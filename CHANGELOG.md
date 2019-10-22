@@ -1,4 +1,19 @@
 
+v4.0.8 (2019-09-27)
+
+* [#165](https://github.com/digitalocean/pynetbox/issues/165) - Returns ContentError when 2XX response but not JSON.
+
+---
+
+v4.0.7 (2019-09-13)
+
+## Bug Fixes
+
+* [#156](https://github.com/digitalocean/pynetbox/issues/156) - Returns AllocationError when NetBox responds with a 204 to Allocation requests (Thanks @markkuleinio).
+* [#152](https://github.com/digitalocean/pynetbox/issues/152) - Makes App object pickleable (Thanks @xtelinco and @kartiksubbarao for testing).
+
+---
+
 v4.0.6 (2018-12-29)
 
 ## Bug Fixes
