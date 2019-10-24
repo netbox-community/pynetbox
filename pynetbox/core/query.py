@@ -115,6 +115,26 @@ class ContentError(Exception):
         self.error = message
 
 
+class TimeoutError(Exception):
+    """Timeout Exception
+
+    Request timed out.
+    """
+
+    def __init__(self, message):
+        req = message
+
+        message = (
+            "The server did not respond in time."
+        )
+
+        super(TimeoutError, self).__init__(message)
+        self.req = req
+        self.request_body = req.request.body
+        self.url = req.url
+        self.error = message
+
+
 class Request(object):
     """Creates requests to the Netbox API
 
@@ -140,6 +160,7 @@ class Request(object):
         private_key=None,
         session_key=None,
         ssl_verify=True,
+        timeout=None,
     ):
         """
         Instantiates a new Request object
@@ -153,6 +174,7 @@ class Request(object):
             key (int, optional): database id of the item being queried.
             private_key (string, optional): The user's private key as a
                 string.
+            timeout (float, optional): request timeout in seconds
         """
         self.base = self.normalize_url(base)
         self.filters = filters
@@ -161,6 +183,7 @@ class Request(object):
         self.private_key = private_key
         self.session_key = session_key
         self.ssl_verify = ssl_verify
+        self.timeout = timeout
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
 
@@ -177,11 +200,15 @@ class Request(object):
         headers = {
             "Content-Type": "application/json;",
         }
-        req = requests.get(
-            self.normalize_url(self.base),
-            headers=headers,
-            verify=self.ssl_verify,
-        )
+        try:
+            req = requests.get(
+                self.normalize_url(self.base),
+                headers=headers,
+                verify=self.ssl_verify,
+                timeout=self.timeout,
+            )
+        except requests.exceptions.Timeout:
+            raise TimeoutError(req)
         if req.ok:
             return req.headers.get("API-Version", "")
         else:
@@ -195,16 +222,21 @@ class Request(object):
 
         :Returns: String containing session key.
         """
-        req = self.http_session.post(
-            "{}secrets/get-session-key/?preserve_key=True".format(self.base),
-            headers={
-                "accept": "application/json",
-                "authorization": "Token {}".format(self.token),
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            data=urlencode({"private_key": self.private_key.strip("\n")}),
-            verify=self.ssl_verify,
-        )
+        try:
+            req = self.http_session.post(
+                "{}secrets/get-session-key/?preserve_key=True".format(
+                    self.base),
+                headers={
+                    "accept": "application/json",
+                    "authorization": "Token {}".format(self.token),
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                data=urlencode({"private_key": self.private_key.strip("\n")}),
+                verify=self.ssl_verify,
+                timeout=self.timeout,
+            )
+        except requests.exceptions.Timeout:
+            raise TimeoutError(req)
         if req.ok:
             try:
                 return req.json()["session_key"]
@@ -240,10 +272,13 @@ class Request(object):
         if add_params:
             params.update(add_params)
 
-        req = getattr(self.http_session, verb)(
-            url_override or self.url, headers=headers, verify=self.ssl_verify,
-            params=params, json=data
-        )
+        try:
+            req = getattr(self.http_session, verb)(
+                url_override or self.url, headers=headers, verify=self.ssl_verify,
+                params=params, json=data, timeout=self.timeout
+            )
+        except requests.exceptions.Timeout:
+            raise TimeoutError(req)
 
         if req.status_code == 204 and verb == "post":
             raise AllocationError(req)
