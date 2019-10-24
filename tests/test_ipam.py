@@ -57,7 +57,8 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
 
         def test_filter(self):
@@ -80,7 +81,8 @@ class Generic(object):
                     params={"name": "test"},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
 
         def test_get(self):
@@ -104,7 +106,8 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
 
 
@@ -152,7 +155,8 @@ class PrefixTestCase(Generic.Tests):
             params={},
             json=None,
             headers=HEADERS,
-            verify=True
+            verify=True,
+            timeout=None,
         )
         self.assertTrue(ret)
         self.assertEqual(len(ret), 3)
@@ -188,7 +192,8 @@ class PrefixTestCase(Generic.Tests):
             params={},
             headers=POST_HEADERS,
             json=create_parms,
-            verify=True
+            verify=True,
+            timeout=None,
         )
         self.assertTrue(ret)
         self.assertEqual(ret, expected_result)
@@ -208,7 +213,8 @@ class PrefixTestCase(Generic.Tests):
             params={},
             json=None,
             headers=HEADERS,
-            verify=True
+            verify=True,
+            timeout=None,
         )
         self.assertTrue(ret)
 
@@ -231,7 +237,8 @@ class PrefixTestCase(Generic.Tests):
             params={},
             headers=POST_HEADERS,
             json=create_parms,
-            verify=True
+            verify=True,
+            timeout=None,
         )
         self.assertTrue(ret)
 

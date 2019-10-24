@@ -47,7 +47,8 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
 
         def test_filter(self):
@@ -70,7 +71,8 @@ class Generic(object):
                     params={"name": "test"},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
 
         def test_get(self):
@@ -92,7 +94,8 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
 
 

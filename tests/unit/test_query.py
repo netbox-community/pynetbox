@@ -28,6 +28,7 @@ class RequestTestCase(unittest.TestCase):
             params={"q": "abcd", "limit": 1},
             headers={"accept": "application/json;"},
             verify=True,
+            timeout=None,
         )
         test_obj.http_session.get.ok = True
         test = test_obj.get_count()
@@ -38,6 +39,7 @@ class RequestTestCase(unittest.TestCase):
             headers={"accept": "application/json;"},
             json=None,
             verify=True,
+            timeout=None,
         )
 
     def test_get_count_no_filters(self):
@@ -60,4 +62,5 @@ class RequestTestCase(unittest.TestCase):
             headers={"accept": "application/json;"},
             json=None,
             verify=True,
+            timeout=None,
         )

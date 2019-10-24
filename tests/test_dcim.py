@@ -49,7 +49,8 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
 
         def test_filter(self):
@@ -72,7 +73,8 @@ class Generic(object):
                     params={"name": "test"},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
 
         def test_get(self):
@@ -96,7 +98,8 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
 
         def test_delete(self):
@@ -117,7 +120,8 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
                 delete.assert_called_with(
                     'http://localhost:8000/api/{}/{}/1/'.format(
@@ -127,7 +131,8 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
+                    verify=True,
+                    timeout=None,
                 )
 
         def test_compare(self):
@@ -179,7 +184,8 @@ class DeviceTestCase(Generic.Tests):
             params={},
             json=None,
             headers=HEADERS,
-            verify=True
+            verify=True,
+            timeout=None,
         )
 
     @patch(
@@ -199,7 +205,8 @@ class DeviceTestCase(Generic.Tests):
             params={'role': ['test', 'test1'], 'site': 'TEST#1'},
             json=None,
             headers=HEADERS,
-            verify=True
+            verify=True,
+            timeout=None,
         )
 
     @patch(
@@ -286,6 +293,7 @@ class DeviceTestCase(Generic.Tests):
             json=None,
             headers=HEADERS,
             verify=True,
+            timeout=None,
         )
         self.assertTrue(ret)
         self.assertTrue(ret['get_facts'])
@@ -372,7 +380,8 @@ class InterfaceTestCase(Generic.Tests):
             params={"limit": 221, "offset": 50},
             json=None,
             headers=HEADERS,
-            verify=True
+            verify=True,
+            timeout=None,
         )
 
 
@@ -395,6 +404,7 @@ class RackTestCase(Generic.Tests):
             json=None,
             headers=HEADERS,
             verify=True,
+            timeout=None,
         )
         self.assertTrue(ret)
         self.assertTrue(
@@ -511,7 +521,8 @@ class Choices(unittest.TestCase):
                 params={},
                 json=None,
                 headers=HEADERS,
-                verify=True
+                verify=True,
+                timeout=None,
             )
 
 
@@ -574,5 +585,6 @@ class CablesTestCase(Generic.Tests):
                 headers=HEADERS,
                 params={},
                 json=None,
-                verify=True
+                verify=True,
+                timeout=None,
             )
