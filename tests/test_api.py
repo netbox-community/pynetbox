@@ -87,3 +87,32 @@ class ApiArgumentsTestCase(unittest.TestCase):
     def test_ssl_verify_string(self):
         kwargs = dict(def_kwargs, **{'ssl_verify': '/path/to/bundle'})
         self.common_arguments(kwargs, 'ssl_verify', '/path/to/bundle')
+
+
+class ApiVersionTestCase(unittest.TestCase):
+
+    class ResponseHeadersWithVersion:
+        headers = {"API-Version": "Mocked Version"}
+
+    @patch(
+        'requests.get',
+        return_value=ResponseHeadersWithVersion()
+    )
+    def test_api_version(self, *_):
+        api = pynetbox.api(
+            host,
+        )
+        self.assertEqual(api.api_version(), "Mocked Version")
+
+    class ResponseHeadersWithoutVersion:
+        headers = {}
+
+    @patch(
+        'requests.get',
+        return_value=ResponseHeadersWithoutVersion()
+    )
+    def test_api_version_not_found(self, *_):
+        api = pynetbox.api(
+            host,
+        )
+        self.assertEqual(api.api_version(), "")
