@@ -435,3 +435,32 @@ class Request(object):
                 raise ContentError(req)
         else:
             raise RequestError(req)
+
+    def options(self):
+        """Makes an OPTIONS request.
+
+        Makes an OPTIONS request to NetBox's API.
+
+        :raises: RequestError if req.ok returns false.
+        :raises: ContentError if response is not json.
+
+        :returns: Dict containing the response from NetBox's API.
+        """
+        headers = {"accept": "application/json;"}
+        if self.token:
+            headers.update(authorization="Token {}".format(self.token))
+        if self.session_key:
+            headers.update({"X-Session-Key": self.session_key})
+
+        req = requests.options(
+            self.url,
+            headers=headers,
+            verify=self.ssl_verify,
+        )
+        if req.ok:
+            try:
+                return req.json()
+            except json.JSONDecodeError:
+                raise ContentError(req)
+        else:
+            raise RequestError(req)
