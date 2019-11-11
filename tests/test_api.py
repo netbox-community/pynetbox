@@ -103,7 +103,7 @@ class ApiVersionTestCase(unittest.TestCase):
         api = pynetbox.api(
             host,
         )
-        self.assertEqual(api.version(), "1.999")
+        self.assertEqual(api.version, "1.999")
 
     class ResponseHeadersWithoutVersion:
         headers = {}
@@ -117,4 +117,4 @@ class ApiVersionTestCase(unittest.TestCase):
         api = pynetbox.api(
             host,
         )
-        self.assertEqual(api.version(), "")
+        self.assertEqual(api.version, "")
