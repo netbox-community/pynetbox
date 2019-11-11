@@ -139,6 +139,7 @@ class Request(object):
         private_key=None,
         session_key=None,
         ssl_verify=True,
+        http_session=None,
     ):
         """
         Instantiates a new Request object
@@ -160,6 +161,7 @@ class Request(object):
         self.private_key = private_key
         self.session_key = session_key
         self.ssl_verify = ssl_verify
+        self.http_session = http_session
 
     def get_version(self):
         """ Gets the API version of NetBox.
@@ -192,7 +194,7 @@ class Request(object):
 
         :Returns: String containing session key.
         """
-        req = requests.post(
+        req = self.http_session.post(
             "{}/secrets/get-session-key/?preserve_key=True".format(self.base),
             headers={
                 "accept": "application/json",
@@ -276,7 +278,8 @@ class Request(object):
 
         def make_request(url):
 
-            req = requests.get(url, headers=headers, verify=self.ssl_verify)
+            req = self.http_session.get(url, headers=headers,
+                                        verify=self.ssl_verify)
             if req.ok:
                 try:
                     return req.json()
@@ -328,7 +331,7 @@ class Request(object):
         }
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
-        req = requests.put(
+        req = self.http_session.put(
             self.url,
             headers=headers,
             data=json.dumps(data),
@@ -363,7 +366,7 @@ class Request(object):
         }
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
-        req = requests.post(
+        req = self.http_session.post(
             self.normalize_url(self.url),
             headers=headers,
             data=json.dumps(data),
@@ -394,7 +397,7 @@ class Request(object):
             "accept": "application/json;",
             "authorization": "Token {}".format(self.token),
         }
-        req = requests.delete(
+        req = self.http_session.delete(
             "{}".format(self.url), headers=headers, verify=self.ssl_verify
         )
         if req.ok:
@@ -419,7 +422,7 @@ class Request(object):
         }
         if self.session_key:
             headers.update({"X-Session-Key": self.session_key})
-        req = requests.patch(
+        req = self.http_session.patch(
             self.url,
             headers=headers,
             data=json.dumps(data),

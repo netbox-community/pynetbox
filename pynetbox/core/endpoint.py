@@ -93,6 +93,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            http_session=self.api.http_session,
         )
 
         return [self._response_loader(i) for i in req.get()]
@@ -150,6 +151,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            http_session=self.api.http_session,
         )
 
         return self._response_loader(req.get())
@@ -215,6 +217,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            http_session=self.api.http_session,
         )
 
         ret = [self._response_loader(i) for i in req.get()]
@@ -276,6 +279,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            http_session=self.api.http_session,
         ).post(args[0] if args else kwargs)
 
         if isinstance(req, list):
@@ -302,6 +306,7 @@ class DetailEndpoint(object):
             token=parent_obj.api.token,
             session_key=parent_obj.api.session_key,
             ssl_verify=parent_obj.api.ssl_verify,
+            http_session=parent_obj.api.http_session,
         )
 
     def list(self, **kwargs):
