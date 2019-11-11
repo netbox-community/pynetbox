@@ -92,7 +92,8 @@ class ApiArgumentsTestCase(unittest.TestCase):
 class ApiVersionTestCase(unittest.TestCase):
 
     class ResponseHeadersWithVersion:
-        headers = {"API-Version": "Mocked Version"}
+        headers = {"API-Version": "1.999"}
+        ok = True
 
     @patch(
         'requests.get',
@@ -102,10 +103,11 @@ class ApiVersionTestCase(unittest.TestCase):
         api = pynetbox.api(
             host,
         )
-        self.assertEqual(api.api_version(), "Mocked Version")
+        self.assertEqual(api.version(), "1.999")
 
     class ResponseHeadersWithoutVersion:
         headers = {}
+        ok = True
 
     @patch(
         'requests.get',
@@ -115,4 +117,4 @@ class ApiVersionTestCase(unittest.TestCase):
         api = pynetbox.api(
             host,
         )
-        self.assertEqual(api.api_version(), "")
+        self.assertEqual(api.version(), "")

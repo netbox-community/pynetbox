@@ -16,7 +16,6 @@ limitations under the License.
 from pynetbox.core.endpoint import Endpoint
 from pynetbox.core.query import Request
 from pynetbox.models import dcim, ipam, virtualization, circuits
-import requests
 
 
 class App(object):
@@ -161,7 +160,7 @@ class Api(object):
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
 
-    def api_version(self):
+    def version(self):
         """ Gets the API version of NetBox.
 
         Can be used to check the NetBox API version if there are
@@ -176,14 +175,12 @@ class Api(object):
         ...     private_key_file='/path/to/private-key.pem',
         ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
         ... )
-        >>> nb.api_version()
+        >>> nb.version()
         '2.6'
         >>>
         """
-
-        resp = requests.get(
-            "{}/".format(self.base_url),
-            headers={"accept": "application/json"},
-            verify=self.ssl_verify,
-        )
-        return resp.headers.get("API-Version", "")
+        version = Request(
+            base=self.base_url,
+            ssl_verify=self.ssl_verify,
+        ).get_version()
+        return version
