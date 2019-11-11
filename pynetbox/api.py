@@ -159,3 +159,29 @@ class Api(object):
         self.tenancy = App(self, "tenancy")
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
+
+    @property
+    def version(self):
+        """ Gets the API version of NetBox.
+
+        Can be used to check the NetBox API version if there are
+        version-dependent features or syntaxes in the API.
+
+        :Returns: Version number as a string.
+        :Example:
+
+        >>> import pynetbox
+        >>> nb = pynetbox.api(
+        ...     'http://localhost:8000',
+        ...     private_key_file='/path/to/private-key.pem',
+        ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+        ... )
+        >>> nb.version
+        '2.6'
+        >>>
+        """
+        version = Request(
+            base=self.base_url,
+            ssl_verify=self.ssl_verify,
+        ).get_version()
+        return version

@@ -161,6 +161,29 @@ class Request(object):
         self.session_key = session_key
         self.ssl_verify = ssl_verify
 
+    def get_version(self):
+        """ Gets the API version of NetBox.
+
+        Issues a GET request to the base URL to read the API version from the
+        response headers.
+
+        :Raises: RequestError if req.ok returns false.
+        :Returns: Version number as a string. Empty string if version is not
+        present in the headers.
+        """
+        headers = {
+            "Content-Type": "application/json;",
+        }
+        req = requests.get(
+            self.normalize_url(self.url),
+            headers=headers,
+            verify=self.ssl_verify,
+        )
+        if req.ok:
+            return req.headers.get("API-Version", "")
+        else:
+            raise RequestError(req)
+
     def get_session_key(self):
         """Requests session key
 
