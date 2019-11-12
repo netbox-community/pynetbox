@@ -291,12 +291,18 @@ class Endpoint(object):
     def choices(self):
         """ Returns all choices from the endpoint.
 
+        The returned dict is also saved in the endpoint object (in
+        ``_choices`` attribute) so that later calls will return the same data
+        without recurring requests to NetBox. When using ``.choices()`` in
+        long-running applications, consider restarting them whenever NetBox is
+        upgraded, to prevent using stale choices data.
+
         :Returns: Dict containing the available choices.
 
         :Examples:
 
         >>> from pprint import pprint
-        >>> pprint(netbox.ipam.ip_addresses.choices())
+        >>> pprint(nb.ipam.ip_addresses.choices())
         {'role': [{'display_name': 'Secondary', 'value': 20},
                   {'display_name': 'VIP', 'value': 40},
                   {'display_name': 'VRRP', 'value': 41},
