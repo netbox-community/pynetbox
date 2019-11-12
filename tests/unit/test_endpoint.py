@@ -5,9 +5,9 @@ import six
 from pynetbox.core.endpoint import Endpoint
 
 if six.PY3:
-    from unittest.mock import patch, Mock
+    from unittest.mock import patch, Mock, call
 else:
-    from mock import patch, Mock
+    from mock import patch, Mock, call
 
 
 class EndPointTestCase(unittest.TestCase):
@@ -38,3 +38,42 @@ class EndPointTestCase(unittest.TestCase):
         test_obj = Endpoint(api, app, "test")
         with self.assertRaises(ValueError) as _:
             test_obj.filter(id=1)
+
+    def test_count(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value={"count": 42}
+        ) as mock:
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock()
+            app.name = "test-app"
+            expected_call = call('http://localhost:8000/api/test-app/test-endpoint/?test_filter=test&limit=1')
+            test_obj = Endpoint(api, app, "test_endpoint")
+            test = test_obj.count(test_filter="test")
+            self.assertEqual(test, 42)
+            self.assertEqual(mock.call_args, expected_call)
+
+    def test_count_args(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value={"count": 42}
+        ) as mock:
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock()
+            app.name = "test-app"
+            expected_call = call('http://localhost:8000/api/test-app/test-endpoint/?q=test&limit=1')
+            test_obj = Endpoint(api, app, "test_endpoint")
+            test = test_obj.count("test")
+            self.assertEqual(test, 42)
+            self.assertEqual(mock.call_args, expected_call)
+
+    def test_count_no_args(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value={"count": 42}
+        ) as mock:
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock()
+            app.name = "test-app"
+            expected_call = call('http://localhost:8000/api/test-app/test-endpoint/?limit=1')
+            test_obj = Endpoint(api, app, "test_endpoint")
+            test = test_obj.count()
+            self.assertEqual(test, 42)
+            self.assertEqual(mock.call_args, expected_call)

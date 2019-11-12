@@ -258,6 +258,25 @@ class Request(object):
 
         return url
 
+    def _make_call(self, url):
+
+        headers = {"accept": "application/json;"}
+        if self.token:
+            headers.update(authorization="Token {}".format(self.token))
+        if self.session_key:
+            headers.update({"X-Session-Key": self.session_key})
+
+        req = self.http_session.get(
+            url, headers=headers, verify=self.ssl_verify
+        )
+        if req.ok:
+            try:
+                return req.json()
+            except json.JSONDecodeError:
+                raise ContentError(req)
+        else:
+            raise RequestError(req)
+
     def get(self):
         """Makes a GET request.
 
@@ -270,26 +289,9 @@ class Request(object):
         :Returns: List of `Response` objects returned from the
             endpoint.
         """
-        headers = {"accept": "application/json;"}
-        if self.token:
-            headers.update(authorization="Token {}".format(self.token))
-        if self.session_key:
-            headers.update({"X-Session-Key": self.session_key})
-
-        def make_request(url):
-
-            req = self.http_session.get(url, headers=headers,
-                                        verify=self.ssl_verify)
-            if req.ok:
-                try:
-                    return req.json()
-                except json.JSONDecodeError:
-                    raise ContentError(req)
-            else:
-                raise RequestError(req)
 
         def req_all(url):
-            req = make_request(url)
+            req = self._make_call(url)
             if isinstance(req, dict) and req.get("results") is not None:
                 ret = req["results"]
                 first_run = True
@@ -304,7 +306,7 @@ class Request(object):
                         if first_run
                         else req["next"]
                     )
-                    req = make_request(next_url)
+                    req = self._make_call(next_url)
                     first_run = False
                     ret.extend(req["results"])
                 return ret
@@ -464,3 +466,19 @@ class Request(object):
                 raise ContentError(req)
         else:
             raise RequestError(req)
+
+    def get_count(self, *args, **kwargs):
+        """Returns object count for query
+
+        Makes a query to the endpoint with ``limit=1`` set and only
+        returns the value of the "count" field.
+
+        :raises: RequestError if req.ok returns false.
+        :raises: ContentError if response is not json.
+
+        :returns: Int of number of objects query returned.
+        """
+
+        return self._make_call(
+            "{}{}limit=1".format(self.url, "/?" if not self.filters else "&")
+        )["count"]
