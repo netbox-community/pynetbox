@@ -395,7 +395,7 @@ class DetailEndpoint(object):
             )
         return req
 
-    def create(self, data):
+    def create(self, data={}):
         """The write operation for a detail endpoint.
 
         Creates objects on a detail endpoint in NetBox.
