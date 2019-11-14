@@ -341,6 +341,57 @@ class Endpoint(object):
 
         return self._choices
 
+    def count(self, *args, **kwargs):
+        r"""Returns the count of objects in a query.
+
+        Takes named arguments that match the usable filters on a
+        given endpoint. If an argument is passed then it's used as a
+        freeform search argument if the endpoint supports it. If no
+        arguments are passed the count for all objects on an endpoint
+        are returned.
+
+        :arg str,optional \*args: Freeform search string that's
+            accepted on given endpoint.
+        :arg str,optional \**kwargs: Any search argument the
+            endpoint accepts can be added as a keyword arg.
+
+        :Returns: Integer with count of objects returns by query.
+
+        :Examples:
+
+        To return a count of objects matching a named argument filter.
+
+        >>> nb.dcim.devices.count(site='tst1')
+        5827
+        >>>
+
+        To return a count of objects on an entire endpoint.
+
+        >>> nb.dcim.devices.count()
+        87382
+        >>>
+        """
+
+        if args:
+            kwargs.update({"q": args[0]})
+
+        if any(i in RESERVED_KWARGS for i in kwargs):
+            raise ValueError(
+                "A reserved {} kwarg was passed. Please remove it "
+                "try again.".format(RESERVED_KWARGS)
+            )
+
+        ret = Request(
+            filters=kwargs,
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            ssl_verify=self.ssl_verify,
+            http_session=self.api.http_session,
+        )
+
+        return ret.get_count()
+
 
 class DetailEndpoint(object):
     """Enables read/write Operations on detail endpoints.
