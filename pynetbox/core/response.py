@@ -18,7 +18,9 @@ from pynetbox.core.util import Hashabledict
 
 # List of fields that contain a dict but are not to be converted into
 # Record objects.
-JSON_FIELDS = ("custom_fields", "data", "config_context")
+JSON_FIELDS = (
+    "custom_fields", "data", "config_context", "object_data"
+)
 
 # List of fields that are lists but should be treated as sets.
 LIST_AS_SET = ("tags", "tagged_vlans")
