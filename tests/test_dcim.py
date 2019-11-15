@@ -12,17 +12,14 @@ else:
 
 api = pynetbox.api(
     "http://localhost:8000",
+    token="abc123",
 )
 
 nb = api.dcim
 
 HEADERS = {
     'accept': 'application/json;',
-}
-
-AUTH_HEADERS = {
-    'accept': 'application/json;',
-    'authorization': 'Token None',
+    'authorization': 'Token abc123',
 }
 
 
@@ -49,6 +46,8 @@ class Generic(object):
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
@@ -66,10 +65,12 @@ class Generic(object):
                 self.assertTrue(isinstance(ret, list))
                 self.assertTrue(isinstance(ret[0], self.ret))
                 mock.assert_called_with(
-                    'http://localhost:8000/api/{}/{}/?name=test'.format(
+                    'http://localhost:8000/api/{}/{}/'.format(
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={"name": "test"},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
@@ -92,6 +93,8 @@ class Generic(object):
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
@@ -111,6 +114,8 @@ class Generic(object):
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
@@ -119,7 +124,9 @@ class Generic(object):
                         self.app,
                         self.name.replace('_', '-')
                     ),
-                    headers=AUTH_HEADERS,
+                    params={},
+                    json=None,
+                    headers=HEADERS,
                     verify=True
                 )
 
@@ -168,6 +175,8 @@ class DeviceTestCase(Generic.Tests):
                 self.app,
                 self.name.replace('_', '-')
             ),
+            params={},
+            json=None,
             headers=HEADERS,
             verify=True
         )
@@ -182,10 +191,12 @@ class DeviceTestCase(Generic.Tests):
         self.assertTrue(isinstance(ret, list))
         self.assertTrue(isinstance(ret[0], self.ret))
         mock.assert_called_with(
-            'http://localhost:8000/api/{}/{}/?role=test&role=test1&site=TEST%231'.format(
+            'http://localhost:8000/api/{}/{}/'.format(
                 self.app,
                 self.name.replace('_', '-')
             ),
+            params={'role': ['test', 'test1'], 'site': 'TEST#1'},
+            json=None,
             headers=HEADERS,
             verify=True
         )
@@ -269,7 +280,9 @@ class DeviceTestCase(Generic.Tests):
         test = nb.devices.get(1)
         ret = test.napalm.list(method='get_facts')
         mock.assert_called_with(
-            'http://localhost:8000/api/dcim/devices/1/napalm/?method=get_facts',
+            'http://localhost:8000/api/dcim/devices/1/napalm/',
+            params={"method": "get_facts"},
+            json=None,
             headers=HEADERS,
             verify=True,
         )
@@ -354,7 +367,9 @@ class InterfaceTestCase(Generic.Tests):
         self.assertTrue(isinstance(ret[0], self.ret))
         self.assertEqual(len(ret), 71)
         mock.assert_called_with(
-            'http://localhost:8000/api/dcim/interfaces/?limit=221&offset=50',
+            'http://localhost:8000/api/dcim/interfaces/',
+            params={"limit": 221, "offset": 50},
+            json=None,
             headers=HEADERS,
             verify=True
         )
@@ -375,6 +390,8 @@ class RackTestCase(Generic.Tests):
         ret = test.units.list()
         mock.assert_called_with(
             'http://localhost:8000/api/dcim/racks/1/units/',
+            params={},
+            json=None,
             headers=HEADERS,
             verify=True,
         )
@@ -490,6 +507,8 @@ class Choices(unittest.TestCase):
             self.assertTrue(ret)
             mock.assert_called_with(
                 'http://localhost:8000/api/dcim/_choices/',
+                params={},
+                json=None,
                 headers=HEADERS,
                 verify=True
             )
@@ -552,5 +571,7 @@ class CablesTestCase(Generic.Tests):
                     self.name.replace('_', '-')
                 ),
                 headers=HEADERS,
+                params={},
+                json=None,
                 verify=True
             )

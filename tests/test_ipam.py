@@ -14,17 +14,19 @@ else:
 
 api = pynetbox.api(
     "http://localhost:8000",
+    token="abc123",
 )
 
 nb = api.ipam
 
 HEADERS = {
-    'accept': 'application/json;'
+    'accept': 'application/json;',
+    'authorization': 'Token abc123',
 }
 
 POST_HEADERS = {
     'Content-Type': 'application/json;',
-    'authorization': 'Token None',
+    'authorization': 'Token abc123',
 }
 
 
@@ -52,6 +54,8 @@ class Generic(object):
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
@@ -69,10 +73,12 @@ class Generic(object):
                 self.assertTrue(isinstance(ret, list))
                 self.assertTrue(isinstance(ret[0], self.ret))
                 mock.assert_called_with(
-                    'http://localhost:8000/api/{}/{}/?name=test'.format(
+                    'http://localhost:8000/api/{}/{}/'.format(
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={"name": "test"},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
@@ -95,6 +101,8 @@ class Generic(object):
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
@@ -141,6 +149,8 @@ class PrefixTestCase(Generic.Tests):
         ret = pfx.available_ips.list()
         mock.assert_called_with(
             'http://localhost:8000/api/ipam/prefixes/1/available-ips/',
+            params={},
+            json=None,
             headers=HEADERS,
             verify=True
         )
@@ -175,8 +185,9 @@ class PrefixTestCase(Generic.Tests):
         ret = pfx.available_ips.create(create_parms)
         post.assert_called_with(
             'http://localhost:8000/api/ipam/prefixes/1/available-ips/',
+            params={},
             headers=POST_HEADERS,
-            data=json.dumps(create_parms),
+            json=create_parms,
             verify=True
         )
         self.assertTrue(ret)
@@ -194,6 +205,8 @@ class PrefixTestCase(Generic.Tests):
         ret = pfx.available_prefixes.list()
         mock.assert_called_with(
             'http://localhost:8000/api/ipam/prefixes/1/available-prefixes/',
+            params={},
+            json=None,
             headers=HEADERS,
             verify=True
         )
@@ -215,8 +228,9 @@ class PrefixTestCase(Generic.Tests):
         ret = pfx.available_prefixes.create(create_parms)
         post.assert_called_with(
             'http://localhost:8000/api/ipam/prefixes/1/available-prefixes/',
+            params={},
             headers=POST_HEADERS,
-            data=json.dumps(create_parms),
+            json=create_parms,
             verify=True
         )
         self.assertTrue(ret)

@@ -24,14 +24,21 @@ class RequestTestCase(unittest.TestCase):
             "results": [],
         }
         expected = call(
-            "http://localhost:8001/api/dcim/devices/?q=abcd&limit=1",
+            "http://localhost:8001/api/dcim/devices/",
+            params={"q": "abcd", "limit": 1},
             headers={"accept": "application/json;"},
             verify=True,
         )
         test_obj.http_session.get.ok = True
         test = test_obj.get_count()
         self.assertEqual(test, 42)
-        self.assertEqual(test_obj.http_session.get.call_args, expected)
+        test_obj.http_session.get.assert_called_with(
+            "http://localhost:8001/api/dcim/devices/",
+            params={"q": "abcd", "limit": 1},
+            headers={"accept": "application/json;"},
+            json=None,
+            verify=True,
+        )
 
     def test_get_count_no_filters(self):
         test_obj = Request(
@@ -44,12 +51,13 @@ class RequestTestCase(unittest.TestCase):
             "previous": False,
             "results": [],
         }
-        expected = call(
-            "http://localhost:8001/api/dcim/devices/?limit=1",
-            headers={"accept": "application/json;"},
-            verify=True,
-        )
         test_obj.http_session.get.ok = True
         test = test_obj.get_count()
         self.assertEqual(test, 42)
-        self.assertEqual(test_obj.http_session.get.call_args, expected)
+        test_obj.http_session.get.assert_called_with(
+            "http://localhost:8001/api/dcim/devices/",
+            params={"limit": 1},
+            headers={"accept": "application/json;"},
+            json=None,
+            verify=True,
+        )
