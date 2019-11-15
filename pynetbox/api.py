@@ -17,7 +17,7 @@ import requests
 
 from pynetbox.core.endpoint import Endpoint
 from pynetbox.core.query import Request
-from pynetbox.models import dcim, ipam, virtualization, circuits
+from pynetbox.models import dcim, ipam, virtualization, circuits, extras
 
 
 class App(object):
@@ -39,7 +39,8 @@ class App(object):
         "dcim": dcim,
         "ipam": ipam,
         "circuits": circuits,
-        "virtualization": virtualization
+        "virtualization": virtualization,
+        "extras": extras
     }
 
     def _setmodel(self):
