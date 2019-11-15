@@ -427,11 +427,7 @@ class DetailEndpoint(object):
         :returns: A dictionary or list of dictionaries retrieved from
             NetBox.
         """
-        if kwargs:
-            self.request_kwargs["base"] = "{}{}".format(
-                self.url, url_param_builder(kwargs)
-            )
-        req = Request(**self.request_kwargs).get()
+        req = Request(**self.request_kwargs).get(add_params=kwargs)
 
         if self.custom_return:
             if isinstance(req, list):
