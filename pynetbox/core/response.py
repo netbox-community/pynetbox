@@ -16,11 +16,6 @@ limitations under the License.
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
-# List of fields that contain a dict but are not to be converted into
-# Record objects.
-JSON_FIELDS = (
-    "custom_fields", "data", "config_context", "object_data"
-)
 
 # List of fields that are lists but should be treated as sets.
 LIST_AS_SET = ("tags", "tagged_vlans")
@@ -59,6 +54,12 @@ def flatten_custom(custom_dict):
         k: v if not isinstance(v, dict) else v["value"]
         for k, v in custom_dict.items()
     }
+
+
+class JsonField(object):
+    """Explicit field type for values that are not to be converted
+    to a Record object"""
+    _json_field = True
 
 
 class Record(object):
@@ -235,25 +236,25 @@ class Record(object):
             return list_item
 
         for k, v in values.items():
-
-            if k not in JSON_FIELDS:
-                if isinstance(v, dict):
-                    lookup = getattr(self.__class__, k, None)
-                    if lookup:
-                        v = lookup(v, self.api, self.endpoint)
-                    else:
-                        v = self.default_ret(v, self.api, self.endpoint)
-                    self._add_cache((k, v))
-
-                elif isinstance(v, list):
-                    v = [list_parser(i) for i in v]
-                    to_cache = list(v)
-                    self._add_cache((k, to_cache))
-
+            if isinstance(v, dict):
+                lookup = getattr(self.__class__, k, None)
+                if k == "custom_fields" or hasattr(lookup, "_json_field"):
+                    self._add_cache((k, v.copy()))
+                    setattr(self, k, v)
+                    continue
+                if lookup:
+                    v = lookup(v, self.api, self.endpoint)
                 else:
-                    self._add_cache((k, v))
+                    v = self.default_ret(v, self.api, self.endpoint)
+                self._add_cache((k, v))
+
+            elif isinstance(v, list):
+                v = [list_parser(i) for i in v]
+                to_cache = list(v)
+                self._add_cache((k, to_cache))
+
             else:
-                self._add_cache((k, v.copy()))
+                self._add_cache((k, v))
             setattr(self, k, v)
 
     def _compare(self):
