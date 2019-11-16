@@ -132,14 +132,14 @@ class Request(object):
 
     def __init__(
         self,
-        base=None,
+        base,
+        http_session,
         filters=None,
         key=None,
         token=None,
         private_key=None,
         session_key=None,
         ssl_verify=True,
-        http_session=None,
     ):
         """
         Instantiates a new Request object

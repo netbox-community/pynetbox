@@ -189,5 +189,6 @@ class Api(object):
         version = Request(
             base=self.base_url,
             ssl_verify=self.ssl_verify,
+            http_session=self.http_session,
         ).get_version()
         return version
