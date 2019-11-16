@@ -13,9 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.core.response import Record
+from pynetbox.core.response import Record, JsonField
+
+
+class ConfigContexts(Record):
+    data = JsonField
 
 
 class ObjectChanges(Record):
+    object_data = JsonField
+
     def __str__(self):
         return self.request_id
