@@ -325,6 +325,7 @@ class Endpoint(object):
             token=self.api.token,
             private_key=self.api.private_key,
             ssl_verify=self.api.ssl_verify,
+            http_session=self.api.http_session,
         ).options()
         try:
             post_data = req['actions']['POST']
