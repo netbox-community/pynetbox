@@ -83,6 +83,11 @@ class App(object):
 
         :Returns: Raw response from NetBox's _custom_field_choices endpoint.
         :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
+        :Example:
+
+        >>> nb.extras.custom_choices()
+        {'Testfield1': {'Testvalue2': 2, 'Testvalue1': 1},
+         'Testfield2': {'Othervalue2': 4, 'Othervalue1': 3}}
         """
         custom_field_choices = Request(
             base="{}/{}/_custom_field_choices/".format(
