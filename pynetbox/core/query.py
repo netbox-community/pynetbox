@@ -196,7 +196,7 @@ class Request(object):
         :Returns: String containing session key.
         """
         req = self.http_session.post(
-            "{}/secrets/get-session-key/?preserve_key=True".format(self.base),
+            "{}secrets/get-session-key/?preserve_key=True".format(self.base),
             headers={
                 "accept": "application/json",
                 "authorization": "Token {}".format(self.token),
