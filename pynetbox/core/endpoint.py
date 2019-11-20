@@ -395,7 +395,7 @@ class DetailEndpoint(object):
             )
         return req
 
-    def create(self, data={}):
+    def create(self, data=None):
         """The write operation for a detail endpoint.
 
         Creates objects on a detail endpoint in NetBox.
@@ -408,6 +408,8 @@ class DetailEndpoint(object):
         :returns: A dictionary or list of dictionaries its created in
             NetBox.
         """
+        if not data:
+            return Request(**self.request_kwargs).post({})
         return Request(**self.request_kwargs).post(data)
 
 
