@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/digitalocean/pynetbox.svg?branch=master)](https://travis-ci.org/digitalocean/pynetbox)
 
 # Pynetbox
-Python API client library for [NetBox](https://github.com/digitalocean/netbox).
+Python API client library for [NetBox](https://github.com/netbox-community/netbox).
 
 
 ## Installation
