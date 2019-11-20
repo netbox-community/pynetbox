@@ -78,6 +78,29 @@ class App(object):
 
         return self._choices
 
+    def custom_choices(self):
+        """ Returns _custom_field_choices response from app
+
+        :Returns: Raw response from NetBox's _custom_field_choices endpoint.
+        :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
+        :Example:
+
+        >>> nb.extras.custom_choices()
+        {'Testfield1': {'Testvalue2': 2, 'Testvalue1': 1},
+         'Testfield2': {'Othervalue2': 4, 'Othervalue1': 3}}
+        """
+        custom_field_choices = Request(
+            base="{}/{}/_custom_field_choices/".format(
+                self.api.base_url,
+                self.name,
+            ),
+            token=self.api.token,
+            private_key=self.api.private_key,
+            ssl_verify=self.api.ssl_verify,
+            http_session=self.api.http_session,
+        ).get()
+        return custom_field_choices
+
 
 class Api(object):
     """ The API object is the point of entry to pynetbox.
