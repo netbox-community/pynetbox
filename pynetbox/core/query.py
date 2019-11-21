@@ -274,8 +274,9 @@ class Request(object):
 
         try:
             req = getattr(self.http_session, verb)(
-                url_override or self.url, headers=headers, verify=self.ssl_verify,
-                params=params, json=data, timeout=self.timeout
+                url_override or self.url, headers=headers,
+                verify=self.ssl_verify, params=params, json=data,
+                timeout=self.timeout,
             )
         except requests.exceptions.Timeout:
             raise TimeoutError(req)
