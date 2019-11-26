@@ -235,10 +235,11 @@ class Request(object):
             headers["X-Session-Key"] = self.session_key
 
         params = {}
-        if self.filters:
-            params = self.filters
-        if add_params:
-            params.update(add_params)
+        if not url_override:
+            if self.filters:
+                params = self.filters
+            if add_params:
+                params.update(add_params)
 
         req = getattr(self.http_session, verb)(
             url_override or self.url, headers=headers, verify=self.ssl_verify,
