@@ -213,11 +213,19 @@ class Record(object):
     def __setstate__(self, d):
         self.__dict__.update(d)
 
-    def __hash__(self):
+    def __key__(self):
         if hasattr(self, "id"):
-            return hash((self.endpoint.name, self.id))
+            return (self.endpoint.name, self.id)
         else:
-            return hash(self.endpoint.name)
+            return (self.endpoint.name)
+
+    def __hash__(self):
+        return hash(self.__key__())
+
+    def __eq__(self, other):
+        if isinstance(other, Record):
+            return self.__key__() == other.__key__()
+        return NotImplemented
 
     def _add_cache(self, item):
         key, value = item
