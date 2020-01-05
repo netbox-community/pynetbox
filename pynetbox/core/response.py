@@ -16,7 +16,6 @@ limitations under the License.
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
-
 # List of fields that are lists but should be treated as sets.
 LIST_AS_SET = ("tags", "tagged_vlans")
 
@@ -240,6 +239,8 @@ class Record(object):
 
         def list_parser(list_item):
             if isinstance(list_item, dict):
+                if self.api and "url" in list_item:
+                    return self._parse_related_item(list_item)
                 return self.default_ret(list_item, self.api, self.endpoint)
             return list_item
 
@@ -252,6 +253,8 @@ class Record(object):
                     continue
                 if lookup:
                     v = lookup(v, self.api, self.endpoint)
+                elif self.api and "url" in v:
+                    v = self._parse_related_item(v)
                 else:
                     v = self.default_ret(v, self.api, self.endpoint)
                 self._add_cache((k, v))
@@ -264,6 +267,23 @@ class Record(object):
             else:
                 self._add_cache((k, v))
             setattr(self, k, v)
+
+    def _parse_related_item(self, values):
+        """ Parses values for a related item contained within
+        the init values.
+
+        Returns:
+            Record object of the appropriate type
+            with the correct Endpoint,
+        """
+        url = values["url"]
+        app, name, _ = url.strip("/").split("/")[-3:]
+        app = getattr(self.api, app)
+        model = app.model
+
+        endpoint = self.endpoint.__class__(self.api, app, name, model)
+
+        return endpoint.return_obj(values, self.api, endpoint)
 
     def _compare(self):
         """Compares current attributes to values at instantiation.
