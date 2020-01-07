@@ -12,17 +12,14 @@ else:
 
 api = pynetbox.api(
     "http://localhost:8000",
+    token="abc123",
 )
 
 nb = api.dcim
 
 HEADERS = {
     'accept': 'application/json;',
-}
-
-AUTH_HEADERS = {
-    'accept': 'application/json;',
-    'authorization': 'Token None',
+    'authorization': 'Token abc123',
 }
 
 
@@ -34,7 +31,7 @@ class Generic(object):
 
         def test_get_all(self):
             with patch(
-                'pynetbox.core.query.requests.get',
+                'pynetbox.core.query.requests.sessions.Session.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name
@@ -49,13 +46,15 @@ class Generic(object):
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
 
         def test_filter(self):
             with patch(
-                'pynetbox.core.query.requests.get',
+                'pynetbox.core.query.requests.sessions.Session.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name
@@ -66,17 +65,19 @@ class Generic(object):
                 self.assertTrue(isinstance(ret, list))
                 self.assertTrue(isinstance(ret[0], self.ret))
                 mock.assert_called_with(
-                    'http://localhost:8000/api/{}/{}/?name=test'.format(
+                    'http://localhost:8000/api/{}/{}/'.format(
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={"name": "test"},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
 
         def test_get(self):
             with patch(
-                'pynetbox.core.query.requests.get',
+                'pynetbox.core.query.requests.sessions.Session.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name[:-1]
@@ -92,18 +93,20 @@ class Generic(object):
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
 
         def test_delete(self):
             with patch(
-                'pynetbox.core.query.requests.get',
+                'pynetbox.core.query.requests.sessions.Session.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name[:-1]
                 ))
-            ) as mock, patch('pynetbox.core.query.requests.delete') as delete:
+            ) as mock, patch('pynetbox.core.query.requests.sessions.Session.delete') as delete:
                 ret = getattr(nb, self.name).get(1)
                 self.assertTrue(ret.delete())
                 mock.assert_called_with(
@@ -111,6 +114,8 @@ class Generic(object):
                         self.app,
                         self.name.replace('_', '-')
                     ),
+                    params={},
+                    json=None,
                     headers=HEADERS,
                     verify=True
                 )
@@ -119,13 +124,15 @@ class Generic(object):
                         self.app,
                         self.name.replace('_', '-')
                     ),
-                    headers=AUTH_HEADERS,
+                    params={},
+                    json=None,
+                    headers=HEADERS,
                     verify=True
                 )
 
         def test_compare(self):
             with patch(
-                'pynetbox.core.query.requests.get',
+                'pynetbox.core.query.requests.sessions.Session.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name[:-1]
@@ -137,7 +144,7 @@ class Generic(object):
 
         def test_serialize(self):
             with patch(
-                'pynetbox.core.query.requests.get',
+                'pynetbox.core.query.requests.sessions.Session.get',
                 return_value=Response(fixture='{}/{}.json'.format(
                     self.app,
                     self.name[:-1]
@@ -152,7 +159,7 @@ class DeviceTestCase(Generic.Tests):
     name = 'devices'
 
     @patch(
-        'pynetbox.core.query.requests.get',
+        'pynetbox.core.query.requests.sessions.Session.get',
         return_value=Response(fixture='dcim/device.json')
     )
     def test_get(self, mock):
@@ -163,17 +170,20 @@ class DeviceTestCase(Generic.Tests):
         self.assertTrue(isinstance(ret.primary_ip4, pynetbox.models.ipam.IpAddresses))
         self.assertTrue(isinstance(ret.config_context, dict))
         self.assertTrue(isinstance(ret.custom_fields, dict))
+        self.assertTrue(isinstance(ret.local_context_data, dict))
         mock.assert_called_with(
             'http://localhost:8000/api/{}/{}/1/'.format(
                 self.app,
                 self.name.replace('_', '-')
             ),
+            params={},
+            json=None,
             headers=HEADERS,
             verify=True
         )
 
     @patch(
-        'pynetbox.core.query.requests.get',
+        'pynetbox.core.query.requests.sessions.Session.get',
         return_value=Response(fixture='dcim/devices.json')
     )
     def test_multi_filter(self, mock):
@@ -182,16 +192,18 @@ class DeviceTestCase(Generic.Tests):
         self.assertTrue(isinstance(ret, list))
         self.assertTrue(isinstance(ret[0], self.ret))
         mock.assert_called_with(
-            'http://localhost:8000/api/{}/{}/?role=test&role=test1&site=TEST%231'.format(
+            'http://localhost:8000/api/{}/{}/'.format(
                 self.app,
                 self.name.replace('_', '-')
             ),
+            params={'role': ['test', 'test1'], 'site': 'TEST#1'},
+            json=None,
             headers=HEADERS,
             verify=True
         )
 
     @patch(
-        'pynetbox.core.query.requests.get',
+        'pynetbox.core.query.requests.sessions.Session.get',
         return_value=Response(fixture='dcim/device.json')
     )
     def test_modify(self, *_):
@@ -203,7 +215,7 @@ class DeviceTestCase(Generic.Tests):
         self.assertEqual(ret_serialized['serial'], '123123123123')
 
     @patch(
-        'pynetbox.core.query.requests.post',
+        'pynetbox.core.query.requests.sessions.Session.post',
         return_value=Response(fixture='dcim/device.json')
     )
     def test_create(self, *_):
@@ -217,7 +229,7 @@ class DeviceTestCase(Generic.Tests):
         self.assertTrue(ret)
 
     @patch(
-        'pynetbox.core.query.requests.post',
+        'pynetbox.core.query.requests.sessions.Session.post',
         return_value=Response(fixture='dcim/device_bulk_create.json')
     )
     def test_create_device_bulk(self, *_):
@@ -240,7 +252,7 @@ class DeviceTestCase(Generic.Tests):
         self.assertTrue(len(ret), 2)
 
     @patch(
-        'pynetbox.core.query.requests.get',
+        'pynetbox.core.query.requests.sessions.Session.get',
         side_effect=[
             Response(fixture='dcim/device.json'),
             Response(fixture='dcim/rack.json'),
@@ -259,7 +271,7 @@ class DeviceTestCase(Generic.Tests):
         ))
 
     @patch(
-        'pynetbox.core.query.requests.get',
+        'pynetbox.core.query.requests.sessions.Session.get',
         side_effect=[
             Response(fixture='dcim/device.json'),
             Response(fixture='dcim/napalm.json'),
@@ -269,7 +281,9 @@ class DeviceTestCase(Generic.Tests):
         test = nb.devices.get(1)
         ret = test.napalm.list(method='get_facts')
         mock.assert_called_with(
-            'http://localhost:8000/api/dcim/devices/1/napalm/?method=get_facts',
+            'http://localhost:8000/api/dcim/devices/1/napalm/',
+            params={"method": "get_facts"},
+            json=None,
             headers=HEADERS,
             verify=True,
         )
@@ -281,7 +295,7 @@ class SiteTestCase(Generic.Tests):
     name = 'sites'
 
     @patch(
-        'pynetbox.core.query.requests.get',
+        'pynetbox.core.query.requests.sessions.Session.get',
         return_value=Response(fixture='dcim/site.json')
     )
     def test_modify_custom(self, *_):
@@ -296,7 +310,7 @@ class SiteTestCase(Generic.Tests):
         )
 
     @patch(
-        'pynetbox.core.query.requests.get',
+        'pynetbox.core.query.requests.sessions.Session.get',
         return_value=Response(fixture='dcim/site.json')
     )
     def test_custom_selection_serializer(self, _):
@@ -311,7 +325,7 @@ class SiteTestCase(Generic.Tests):
         )
 
     @patch(
-        'pynetbox.core.query.requests.post',
+        'pynetbox.core.query.requests.sessions.Session.post',
         return_value=Response(fixture='dcim/site.json')
     )
     def test_create(self, *_):
@@ -329,7 +343,7 @@ class InterfaceTestCase(Generic.Tests):
     name = 'interfaces'
 
     @patch(
-        'pynetbox.core.query.requests.get',
+        'pynetbox.core.query.requests.sessions.Session.get',
         return_value=Response(fixture='dcim/interface.json')
     )
     def test_modify(self, *_):
@@ -341,7 +355,7 @@ class InterfaceTestCase(Generic.Tests):
         self.assertEqual(ret_serialized['form_factor'], 1400)
 
     @patch(
-        'pynetbox.core.query.requests.get',
+        'pynetbox.core.query.requests.sessions.Session.get',
         side_effect=[
             Response(fixture='dcim/{}.json'.format(name + '_1')),
             Response(fixture='dcim/{}.json'.format(name + '_2')),
@@ -354,7 +368,9 @@ class InterfaceTestCase(Generic.Tests):
         self.assertTrue(isinstance(ret[0], self.ret))
         self.assertEqual(len(ret), 71)
         mock.assert_called_with(
-            'http://localhost:8000/api/dcim/interfaces/?limit=221&offset=50',
+            'http://localhost:8000/api/dcim/interfaces/',
+            params={"limit": 221, "offset": 50},
+            json=None,
             headers=HEADERS,
             verify=True
         )
@@ -364,7 +380,7 @@ class RackTestCase(Generic.Tests):
     name = 'racks'
 
     @patch(
-        'pynetbox.core.query.requests.get',
+        'pynetbox.core.query.requests.sessions.Session.get',
         side_effect=[
             Response(fixture='dcim/rack.json'),
             Response(fixture='dcim/rack_u.json'),
@@ -375,6 +391,8 @@ class RackTestCase(Generic.Tests):
         ret = test.units.list()
         mock.assert_called_with(
             'http://localhost:8000/api/dcim/racks/1/units/',
+            params={},
+            json=None,
             headers=HEADERS,
             verify=True,
         )
@@ -480,7 +498,7 @@ class Choices(unittest.TestCase):
 
     def test_get(self):
         with patch(
-            'pynetbox.core.query.requests.get',
+            'pynetbox.core.query.requests.sessions.Session.get',
             return_value=Response(fixture='{}/{}.json'.format(
                 'dcim',
                 'choices'
@@ -490,6 +508,8 @@ class Choices(unittest.TestCase):
             self.assertTrue(ret)
             mock.assert_called_with(
                 'http://localhost:8000/api/dcim/_choices/',
+                params={},
+                json=None,
                 headers=HEADERS,
                 verify=True
             )
@@ -538,7 +558,7 @@ class CablesTestCase(Generic.Tests):
             "length_unit": None
         })
         with patch(
-            'pynetbox.core.query.requests.get',
+            'pynetbox.core.query.requests.sessions.Session.get',
             return_value=response_obj
         ) as mock:
             ret = getattr(nb, self.name).get(1)
@@ -552,5 +572,7 @@ class CablesTestCase(Generic.Tests):
                     self.name.replace('_', '-')
                 ),
                 headers=HEADERS,
+                params={},
+                json=None,
                 verify=True
             )

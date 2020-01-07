@@ -65,6 +65,9 @@
     },
     "primary_ip6": null,
     "comments": "",
+    "local_context_data": {
+        "testing": "test"
+    },
     "custom_fields": {},
     "config_context": {
         "test_key": "test_val"

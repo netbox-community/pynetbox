@@ -30,7 +30,7 @@ endpoints = {
 class ApiTestCase(unittest.TestCase):
 
     @patch(
-        'pynetbox.core.query.requests.post',
+        'pynetbox.core.query.requests.sessions.Session.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
     def test_get(self, *_):
@@ -41,7 +41,7 @@ class ApiTestCase(unittest.TestCase):
         self.assertTrue(api)
 
     @patch(
-        'pynetbox.core.query.requests.post',
+        'pynetbox.core.query.requests.sessions.Session.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
     def test_sanitize_url(self, *_):
@@ -56,7 +56,7 @@ class ApiTestCase(unittest.TestCase):
 class ApiArgumentsTestCase(unittest.TestCase):
 
     @patch(
-        'pynetbox.core.query.requests.post',
+        'pynetbox.core.query.requests.sessions.Session.post',
         return_value=Response(fixture='api/get_session_key.json')
     )
     def common_arguments(self, kwargs, arg, expect, *_):
@@ -87,3 +87,34 @@ class ApiArgumentsTestCase(unittest.TestCase):
     def test_ssl_verify_string(self):
         kwargs = dict(def_kwargs, **{'ssl_verify': '/path/to/bundle'})
         self.common_arguments(kwargs, 'ssl_verify', '/path/to/bundle')
+
+
+class ApiVersionTestCase(unittest.TestCase):
+
+    class ResponseHeadersWithVersion:
+        headers = {"API-Version": "1.999"}
+        ok = True
+
+    @patch(
+        'requests.get',
+        return_value=ResponseHeadersWithVersion()
+    )
+    def test_api_version(self, *_):
+        api = pynetbox.api(
+            host,
+        )
+        self.assertEqual(api.version, "1.999")
+
+    class ResponseHeadersWithoutVersion:
+        headers = {}
+        ok = True
+
+    @patch(
+        'requests.get',
+        return_value=ResponseHeadersWithoutVersion()
+    )
+    def test_api_version_not_found(self, *_):
+        api = pynetbox.api(
+            host,
+        )
+        self.assertEqual(api.version, "")

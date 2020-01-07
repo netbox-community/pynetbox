@@ -13,9 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import requests
+
 from pynetbox.core.endpoint import Endpoint
 from pynetbox.core.query import Request
-from pynetbox.models import dcim, ipam, virtualization, circuits
+from pynetbox.models import dcim, ipam, virtualization, circuits, extras
 
 
 class App(object):
@@ -37,7 +39,8 @@ class App(object):
         "dcim": dcim,
         "ipam": ipam,
         "circuits": circuits,
-        "virtualization": virtualization
+        "virtualization": virtualization,
+        "extras": extras
     }
 
     def _setmodel(self):
@@ -70,9 +73,33 @@ class App(object):
             token=self.api.token,
             private_key=self.api.private_key,
             ssl_verify=self.api.ssl_verify,
+            http_session=self.api.http_session,
         ).get()
 
         return self._choices
+
+    def custom_choices(self):
+        """ Returns _custom_field_choices response from app
+
+        :Returns: Raw response from NetBox's _custom_field_choices endpoint.
+        :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
+        :Example:
+
+        >>> nb.extras.custom_choices()
+        {'Testfield1': {'Testvalue2': 2, 'Testvalue1': 1},
+         'Testfield2': {'Othervalue2': 4, 'Othervalue1': 3}}
+        """
+        custom_field_choices = Request(
+            base="{}/{}/_custom_field_choices/".format(
+                self.api.base_url,
+                self.name,
+            ),
+            token=self.api.token,
+            private_key=self.api.private_key,
+            ssl_verify=self.api.ssl_verify,
+            http_session=self.api.http_session,
+        ).get()
+        return custom_field_choices
 
 
 class Api(object):
@@ -137,6 +164,7 @@ class Api(object):
         self.base_url = base_url
         self.ssl_verify = ssl_verify
         self.session_key = None
+        self.http_session = requests.Session()
 
         if self.private_key_file:
             with open(self.private_key_file, "r") as kf:
@@ -148,6 +176,7 @@ class Api(object):
             token=token,
             private_key=private_key,
             ssl_verify=ssl_verify,
+            http_session=self.http_session
         )
         if self.token and self.private_key:
             self.session_key = req.get_session_key()
@@ -159,3 +188,30 @@ class Api(object):
         self.tenancy = App(self, "tenancy")
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
+
+    @property
+    def version(self):
+        """ Gets the API version of NetBox.
+
+        Can be used to check the NetBox API version if there are
+        version-dependent features or syntaxes in the API.
+
+        :Returns: Version number as a string.
+        :Example:
+
+        >>> import pynetbox
+        >>> nb = pynetbox.api(
+        ...     'http://localhost:8000',
+        ...     private_key_file='/path/to/private-key.pem',
+        ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+        ... )
+        >>> nb.version
+        '2.6'
+        >>>
+        """
+        version = Request(
+            base=self.base_url,
+            ssl_verify=self.ssl_verify,
+            http_session=self.http_session,
+        ).get_version()
+        return version

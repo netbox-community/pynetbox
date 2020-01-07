@@ -1,6 +1,13 @@
 import unittest
 
+import six
+
 from pynetbox.core.response import Record
+
+if six.PY3:
+    from unittest.mock import Mock
+else:
+    from mock import Mock
 
 
 class RecordTestCase(unittest.TestCase):
@@ -104,3 +111,31 @@ class RecordTestCase(unittest.TestCase):
         }
         test = Record(test_values, None, None)
         self.assertEqual(dict(test), test_values)
+
+    def test_hash(self):
+        endpoint = Mock()
+        endpoint.name = "test-endpoint"
+        test = Record({}, None, endpoint)
+        self.assertIsInstance(hash(test), int)
+
+    def test_hash_diff(self):
+        endpoint1 = Mock()
+        endpoint1.name = "test-endpoint"
+        endpoint2 = Mock()
+        endpoint2.name = "test-endpoint"
+        test1 = Record({}, None, endpoint1)
+        test1.id = 1
+        test2 = Record({}, None, endpoint2)
+        test2.id = 2
+        self.assertNotEqual(hash(test1), hash(test2))
+
+    def test_compare(self):
+        endpoint1 = Mock()
+        endpoint1.name = "test-endpoint"
+        endpoint2 = Mock()
+        endpoint2.name = "test-endpoint"
+        test1 = Record({}, None, endpoint1)
+        test1.id = 1
+        test2 = Record({}, None, endpoint2)
+        test2.id = 1
+        self.assertEqual(test1, test2)

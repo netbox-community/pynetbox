@@ -42,6 +42,7 @@ class Endpoint(object):
 
     def __init__(self, api, app, name, model=None):
         self.return_obj = self._lookup_ret_obj(name, model)
+        self.name = name.replace("_", "-")
         self.api = api
         self.base_url = api.base_url
         self.token = api.token
@@ -50,8 +51,9 @@ class Endpoint(object):
         self.url = "{base_url}/{app}/{endpoint}".format(
             base_url=self.base_url,
             app=app.name,
-            endpoint=name.replace("_", "-"),
+            endpoint=self.name,
         )
+        self._choices = None
 
     def _lookup_ret_obj(self, name, model):
         """Loads unique Response objects.
@@ -93,6 +95,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            http_session=self.api.http_session,
         )
 
         return [self._response_loader(i) for i in req.get()]
@@ -150,6 +153,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            http_session=self.api.http_session,
         )
 
         return self._response_loader(req.get())
@@ -215,6 +219,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            http_session=self.api.http_session,
         )
 
         ret = [self._response_loader(i) for i in req.get()]
@@ -276,12 +281,118 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
+            http_session=self.api.http_session,
         ).post(args[0] if args else kwargs)
 
         if isinstance(req, list):
             return [self._response_loader(i) for i in req]
 
         return self._response_loader(req)
+
+    def choices(self):
+        """ Returns all choices from the endpoint.
+
+        The returned dict is also saved in the endpoint object (in
+        ``_choices`` attribute) so that later calls will return the same data
+        without recurring requests to NetBox. When using ``.choices()`` in
+        long-running applications, consider restarting them whenever NetBox is
+        upgraded, to prevent using stale choices data.
+
+        :Returns: Dict containing the available choices.
+
+        :Examples:
+
+        >>> from pprint import pprint
+        >>> pprint(nb.ipam.ip_addresses.choices())
+        {'role': [{'display_name': 'Secondary', 'value': 20},
+                  {'display_name': 'VIP', 'value': 40},
+                  {'display_name': 'VRRP', 'value': 41},
+                  {'display_name': 'Loopback', 'value': 10},
+                  {'display_name': 'GLBP', 'value': 43},
+                  {'display_name': 'CARP', 'value': 44},
+                  {'display_name': 'HSRP', 'value': 42},
+                  {'display_name': 'Anycast', 'value': 30}],
+         'status': [{'display_name': 'Active', 'value': 1},
+                    {'display_name': 'Reserved', 'value': 2},
+                    {'display_name': 'Deprecated', 'value': 3},
+                    {'display_name': 'DHCP', 'value': 5}]}
+        >>>
+        """
+        if self._choices:
+            return self._choices
+
+        req = Request(
+            base=self.url,
+            token=self.api.token,
+            private_key=self.api.private_key,
+            ssl_verify=self.api.ssl_verify,
+            http_session=self.api.http_session,
+        ).options()
+        try:
+            post_data = req['actions']['POST']
+        except KeyError:
+            raise ValueError(
+                "Unexpected format in the OPTIONS response at {}".format(
+                    self.url
+                )
+            )
+        self._choices = {}
+        for prop in post_data:
+            if 'choices' in post_data[prop]:
+                self._choices[prop] = post_data[prop]['choices']
+
+        return self._choices
+
+    def count(self, *args, **kwargs):
+        r"""Returns the count of objects in a query.
+
+        Takes named arguments that match the usable filters on a
+        given endpoint. If an argument is passed then it's used as a
+        freeform search argument if the endpoint supports it. If no
+        arguments are passed the count for all objects on an endpoint
+        are returned.
+
+        :arg str,optional \*args: Freeform search string that's
+            accepted on given endpoint.
+        :arg str,optional \**kwargs: Any search argument the
+            endpoint accepts can be added as a keyword arg.
+
+        :Returns: Integer with count of objects returns by query.
+
+        :Examples:
+
+        To return a count of objects matching a named argument filter.
+
+        >>> nb.dcim.devices.count(site='tst1')
+        5827
+        >>>
+
+        To return a count of objects on an entire endpoint.
+
+        >>> nb.dcim.devices.count()
+        87382
+        >>>
+        """
+
+        if args:
+            kwargs.update({"q": args[0]})
+
+        if any(i in RESERVED_KWARGS for i in kwargs):
+            raise ValueError(
+                "A reserved {} kwarg was passed. Please remove it "
+                "try again.".format(RESERVED_KWARGS)
+            )
+
+        ret = Request(
+            filters=kwargs,
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            ssl_verify=self.ssl_verify,
+            http_session=self.api.http_session,
+        )
+
+        return ret.get_count()
 
 
 class DetailEndpoint(object):
@@ -302,6 +413,7 @@ class DetailEndpoint(object):
             token=parent_obj.api.token,
             session_key=parent_obj.api.session_key,
             ssl_verify=parent_obj.api.ssl_verify,
+            http_session=parent_obj.api.http_session,
         )
 
     def list(self, **kwargs):
@@ -317,11 +429,7 @@ class DetailEndpoint(object):
         :returns: A dictionary or list of dictionaries retrieved from
             NetBox.
         """
-        if kwargs:
-            self.request_kwargs["base"] = "{}{}".format(
-                self.url, url_param_builder(kwargs)
-            )
-        req = Request(**self.request_kwargs).get()
+        req = Request(**self.request_kwargs).get(add_params=kwargs)
 
         if self.custom_return:
             if isinstance(req, list):
@@ -336,7 +444,7 @@ class DetailEndpoint(object):
             )
         return req
 
-    def create(self, data):
+    def create(self, data=None):
         """The write operation for a detail endpoint.
 
         Creates objects on a detail endpoint in NetBox.
@@ -349,6 +457,8 @@ class DetailEndpoint(object):
         :returns: A dictionary or list of dictionaries its created in
             NetBox.
         """
+        if not data:
+            return Request(**self.request_kwargs).post({})
         return Request(**self.request_kwargs).post(data)
 
 

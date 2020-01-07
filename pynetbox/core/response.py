@@ -17,9 +17,6 @@ from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 import pynetbox.core.endpoint
 
-# List of fields that contain a dict but are not to be converted into
-# Record objects.
-JSON_FIELDS = ("custom_fields", "data", "config_context")
 
 # List of fields that are lists but should be treated as sets.
 LIST_AS_SET = ("tags", "tagged_vlans")
@@ -58,6 +55,12 @@ def flatten_custom(custom_dict):
         k: v if not isinstance(v, dict) else v["value"]
         for k, v in custom_dict.items()
     }
+
+
+class JsonField(object):
+    """Explicit field type for values that are not to be converted
+    to a Record object"""
+    _json_field = True
 
 
 class Record(object):
@@ -211,6 +214,20 @@ class Record(object):
     def __setstate__(self, d):
         self.__dict__.update(d)
 
+    def __key__(self):
+        if hasattr(self, "id"):
+            return (self.endpoint.name, self.id)
+        else:
+            return (self.endpoint.name)
+
+    def __hash__(self):
+        return hash(self.__key__())
+
+    def __eq__(self, other):
+        if isinstance(other, Record):
+            return self.__key__() == other.__key__()
+        return NotImplemented
+
     def _add_cache(self, item):
         key, value = item
         self._init_cache.append((key, get_return(value)))
@@ -246,41 +263,42 @@ class Record(object):
             return list_item
 
         for k, v in values.items():
-            if k not in JSON_FIELDS:
-                if isinstance(v, dict):
-                    lookup = getattr(self.__class__, k, None)
-                    k_endpoint = None
-                    if "url" in v:
-                        k_path_list = v["url"].split("/")
-                        if "api" in k_path_list:
-                            offset = k_path_list.index("api") + 1
-                            if len(k_path_list[offset:]) > 0 \
-                               and k_path_list[offset:][0] == "api":
-                                # domain name is "api"
-                                offset = offset + 1
-                            if len(k_path_list[offset:]) > 1:
-                                k_app = k_path_list[offset:][0]
-                                k_name = k_path_list[offset:][1]
-                                if hasattr(self.api, k_app):
-                                    k_endpoint = pynetbox.core.endpoint.\
-                                        Endpoint(self.api, getattr(self.api,
-                                                                   k_app),
-                                                 k_name, model=None)
-                    if lookup:
-                        v = lookup(v, self.api, k_endpoint)
-                    else:
-                        v = self.default_ret(v, self.api, k_endpoint)
-                    self._add_cache((k, v))
-
-                elif isinstance(v, list):
-                    v = [list_parser(i) for i in v]
-                    to_cache = list(v)
-                    self._add_cache((k, to_cache))
-
+            if isinstance(v, dict):
+                lookup = getattr(self.__class__, k, None)
+                if k == "custom_fields" or hasattr(lookup, "_json_field"):
+                    self._add_cache((k, v.copy()))
+                    setattr(self, k, v)
+                    continue
+                k_endpoint = None
+                if "url" in v:
+                    k_path_list = v["url"].split("/")
+                    if "api" in k_path_list:
+                        offset = k_path_list.index("api") + 1
+                        if len(k_path_list[offset:]) > 0 \
+                           and k_path_list[offset:][0] == "api":
+                            # domain name is "api"
+                            offset = offset + 1
+                        if len(k_path_list[offset:]) > 1:
+                            k_app = k_path_list[offset:][0]
+                            k_name = k_path_list[offset:][1]
+                            if hasattr(self.api, k_app):
+                                k_endpoint = pynetbox.core.endpoint.\
+                                    Endpoint(self.api, getattr(self.api,
+                                                               k_app),
+                                             k_name, model=None)
+                if lookup:
+                    v = lookup(v, self.api, k_endpoint)
                 else:
-                    self._add_cache((k, v))
+                    v = self.default_ret(v, self.api, k_endpoint)
+                self._add_cache((k, v))
+
+            elif isinstance(v, list):
+                v = [list_parser(i) for i in v]
+                to_cache = list(v)
+                self._add_cache((k, to_cache))
+
             else:
-                self._add_cache((k, v.copy()))
+                self._add_cache((k, v))
             setattr(self, k, v)
 
     def _compare(self):
@@ -313,6 +331,7 @@ class Record(object):
                 token=self.api.token,
                 session_key=self.api.session_key,
                 ssl_verify=self.api.ssl_verify,
+                http_session=self.api.http_session,
             )
             self._parse_values(req.get())
             self.has_details = True
@@ -406,6 +425,7 @@ class Record(object):
                     token=self.api.token,
                     session_key=self.api.session_key,
                     ssl_verify=self.api.ssl_verify,
+                    http_session=self.api.http_session,
                 )
                 if req.patch({i: serialized[i] for i in diff}):
                     return True
@@ -454,5 +474,6 @@ class Record(object):
             token=self.api.token,
             session_key=self.api.session_key,
             ssl_verify=self.api.ssl_verify,
+            http_session=self.api.http_session,
         )
         return True if req.delete() else False

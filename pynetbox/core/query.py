@@ -69,7 +69,7 @@ class RequestError(Exception):
         super(RequestError, self).__init__(message)
         self.req = req
         self.request_body = req.request.body
-        self.url = req.url
+        self.base = req.url
         self.error = req.text
 
 
@@ -88,7 +88,30 @@ class AllocationError(Exception):
         super(AllocationError, self).__init__(message)
         self.req = req
         self.request_body = req.request.body
-        self.url = req.url
+        self.base = req.url
+        self.error = message
+
+
+class ContentError(Exception):
+    """Content Exception
+
+    If the API URL does not point to a valid NetBox API, the server may
+    return a valid response code, but the content is not json. This
+    exception is raised in those cases.
+    """
+
+    def __init__(self, message):
+        req = message
+
+        message = (
+            "The server returned invalid (non-json) data. Maybe not "
+            "a NetBox server?"
+        )
+
+        super(ContentError, self).__init__(message)
+        self.req = req
+        self.request_body = req.request.body
+        self.base = req.url
         self.error = message
 
 
@@ -109,7 +132,8 @@ class Request(object):
 
     def __init__(
         self,
-        base=None,
+        base,
+        http_session,
         filters=None,
         key=None,
         token=None,
@@ -130,13 +154,38 @@ class Request(object):
             private_key (string, optional): The user's private key as a
                 string.
         """
-        self.base = base
+        self.base = self.normalize_url(base)
         self.filters = filters
         self.key = key
         self.token = token
         self.private_key = private_key
         self.session_key = session_key
         self.ssl_verify = ssl_verify
+        self.http_session = http_session
+        self.url = self.base if not key else "{}{}/".format(self.base, key)
+
+    def get_version(self):
+        """ Gets the API version of NetBox.
+
+        Issues a GET request to the base URL to read the API version from the
+        response headers.
+
+        :Raises: RequestError if req.ok returns false.
+        :Returns: Version number as a string. Empty string if version is not
+        present in the headers.
+        """
+        headers = {
+            "Content-Type": "application/json;",
+        }
+        req = requests.get(
+            self.normalize_url(self.base),
+            headers=headers,
+            verify=self.ssl_verify,
+        )
+        if req.ok:
+            return req.headers.get("API-Version", "")
+        else:
+            raise RequestError(req)
 
     def get_session_key(self):
         """Requests session key
@@ -146,8 +195,8 @@ class Request(object):
 
         :Returns: String containing session key.
         """
-        req = requests.post(
-            "{}/secrets/get-session-key/?preserve_key=True".format(self.base),
+        req = self.http_session.post(
+            "{}secrets/get-session-key/?preserve_key=True".format(self.base),
             headers={
                 "accept": "application/json",
                 "authorization": "Token {}".format(self.token),
@@ -157,47 +206,12 @@ class Request(object):
             verify=self.ssl_verify,
         )
         if req.ok:
-            return req.json()["session_key"]
+            try:
+                return req.json()["session_key"]
+            except json.JSONDecodeError:
+                raise ContentError(req)
         else:
             raise RequestError(req)
-
-    @property
-    def url(self):
-        """ Builds a URL.
-        Creates a valid netbox url based on kwargs passed during
-        instantiation.
-
-        :Returns: String of URL.
-        """
-
-        def construct_url(params):
-            for k, v in params.items():
-                if isinstance(v, list):
-                    for i in v:
-                        yield urlencode({k: i})
-                else:
-                    yield urlencode({k: v})
-
-        if self.key:
-            return "{}/{key}/".format(self.base, key=self.key)
-        if self.filters:
-            if self.base[-1] == "/":
-                return "{}?{query}".format(
-                    self.base,
-                    query="&".join(list(construct_url(self.filters))),
-                )
-            elif "/?" in self.base:
-                return "{}&{query}".format(
-                    self.base,
-                    query="&".join(list(construct_url(self.filters))),
-                )
-            else:
-                return "{}/?{query}".format(
-                    self.base,
-                    query="&".join(list(construct_url(self.filters))),
-                )
-        else:
-            return self.base
 
     def normalize_url(self, url):
         """ Builds a url for POST actions.
@@ -207,55 +221,82 @@ class Request(object):
 
         return url
 
-    def get(self):
+    def _make_call(
+        self, verb="get", url_override=None, add_params=None, data=None
+    ):
+        if verb in ("post", "put"):
+            headers = {"Content-Type": "application/json;"}
+        else:
+            headers = {"accept": "application/json;"}
+
+        if self.token:
+            headers["authorization"] = "Token {}".format(self.token)
+        if self.session_key:
+            headers["X-Session-Key"] = self.session_key
+
+        params = {}
+        if not url_override:
+            if self.filters:
+                params = self.filters
+            if add_params:
+                params.update(add_params)
+
+        req = getattr(self.http_session, verb)(
+            url_override or self.url, headers=headers, verify=self.ssl_verify,
+            params=params, json=data
+        )
+
+        if req.status_code == 204 and verb == "post":
+            raise AllocationError(req)
+        if verb == "delete":
+            if req.ok:
+                return True
+            else:
+                raise RequestError(req)
+        elif req.ok:
+            try:
+                return req.json()
+            except json.JSONDecodeError:
+                raise ContentError(req)
+        else:
+            raise RequestError(req)
+
+    def get(self, add_params=None):
         """Makes a GET request.
 
         Makes a GET request to NetBox's API, and automatically recurses
         any paginated results.
 
         :raises: RequestError if req.ok returns false.
+        :raises: ContentError if response is not json.
 
         :Returns: List of `Response` objects returned from the
             endpoint.
         """
-        headers = {"accept": "application/json;"}
-        if self.token:
-            headers.update(authorization="Token {}".format(self.token))
-        if self.session_key:
-            headers.update({"X-Session-Key": self.session_key})
 
-        def make_request(url):
-
-            req = requests.get(url, headers=headers, verify=self.ssl_verify)
-            if req.ok:
-                return req.json()
-            else:
-                raise RequestError(req)
-
-        def req_all(url):
-            req = make_request(url)
+        def req_all():
+            req = self._make_call(add_params=add_params)
             if isinstance(req, dict) and req.get("results") is not None:
                 ret = req["results"]
                 first_run = True
                 while req["next"]:
-                    next_url = (
-                        "{}{}limit={}&offset={}".format(
-                            self.url,
-                            "&" if self.url[-1] != "/" else "?",
-                            req["count"],
-                            len(req["results"]),
-                        )
-                        if first_run
-                        else req["next"]
-                    )
-                    req = make_request(next_url)
+                    # Not worrying about making sure add_params kwargs is
+                    # passed in here because results from detail routes aren't
+                    # paginated, thus far.
+                    if first_run:
+                        req = self._make_call(add_params={
+                            "limit": req["count"],
+                            "offset": len(req["results"])
+                        })
+                    else:
+                        req = self._make_call(url_override=req["next"])
                     first_run = False
                     ret.extend(req["results"])
                 return ret
             else:
                 return req
 
-        return req_all(self.url)
+        return req_all()
 
     def put(self, data):
         """Makes PUT request.
@@ -266,24 +307,10 @@ class Request(object):
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.
         :raises: RequestError if req.ok returns false.
+        :raises: ContentError if response is not json.
         :returns: Dict containing the response from NetBox's API.
         """
-        headers = {
-            "Content-Type": "application/json;",
-            "authorization": "Token {}".format(self.token),
-        }
-        if self.session_key:
-            headers.update({"X-Session-Key": self.session_key})
-        req = requests.put(
-            self.url,
-            headers=headers,
-            data=json.dumps(data),
-            verify=self.ssl_verify,
-        )
-        if req.ok:
-            return req.json()
-        else:
-            raise RequestError(req)
+        return self._make_call(verb="put", data=data)
 
     def post(self, data):
         """Makes POST request.
@@ -294,26 +321,13 @@ class Request(object):
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.
         :raises: RequestError if req.ok returns false.
+        :raises: AllocationError if req.status_code is 204 (No Content)
+            as with available-ips and available-prefixes when there is
+            no room for the requested allocation.
+        :raises: ContentError if response is not json.
         :Returns: Dict containing the response from NetBox's API.
         """
-        headers = {
-            "Content-Type": "application/json;",
-            "authorization": "Token {}".format(self.token),
-        }
-        if self.session_key:
-            headers.update({"X-Session-Key": self.session_key})
-        req = requests.post(
-            self.normalize_url(self.url),
-            headers=headers,
-            data=json.dumps(data),
-            verify=self.ssl_verify,
-        )
-        if req.status_code == 204:
-            raise AllocationError(req)
-        elif req.ok:
-            return req.json()
-        else:
-            raise RequestError(req)
+        return self._make_call(verb="post", data=data)
 
     def delete(self):
         """Makes DELETE request.
@@ -326,17 +340,7 @@ class Request(object):
         Raises:
             RequestError if req.ok doesn't return True.
         """
-        headers = {
-            "accept": "application/json;",
-            "authorization": "Token {}".format(self.token),
-        }
-        req = requests.delete(
-            "{}".format(self.url), headers=headers, verify=self.ssl_verify
-        )
-        if req.ok:
-            return True
-        else:
-            raise RequestError(req)
+        return self._make_call(verb="delete")
 
     def patch(self, data):
         """Makes PATCH request.
@@ -346,21 +350,33 @@ class Request(object):
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.
         :raises: RequestError if req.ok returns false.
+        :raises: ContentError if response is not json.
         :returns: Dict containing the response from NetBox's API.
         """
-        headers = {
-            "Content-Type": "application/json;",
-            "authorization": "Token {}".format(self.token),
-        }
-        if self.session_key:
-            headers.update({"X-Session-Key": self.session_key})
-        req = requests.patch(
-            self.url,
-            headers=headers,
-            data=json.dumps(data),
-            verify=self.ssl_verify,
-        )
-        if req.ok:
-            return req.json()
-        else:
-            raise RequestError(req)
+        return self._make_call(verb="patch", data=data)
+
+    def options(self):
+        """Makes an OPTIONS request.
+
+        Makes an OPTIONS request to NetBox's API.
+
+        :raises: RequestError if req.ok returns false.
+        :raises: ContentError if response is not json.
+
+        :returns: Dict containing the response from NetBox's API.
+        """
+        return self._make_call(verb="options")
+
+    def get_count(self, *args, **kwargs):
+        """Returns object count for query
+
+        Makes a query to the endpoint with ``limit=1`` set and only
+        returns the value of the "count" field.
+
+        :raises: RequestError if req.ok returns false.
+        :raises: ContentError if response is not json.
+
+        :returns: Int of number of objects query returned.
+        """
+
+        return self._make_call(add_params={"limit": 1})["count"]
