@@ -282,8 +282,10 @@ class Record(object):
         model = app.model
 
         endpoint = self.endpoint.__class__(self.api, app, name, model)
+        related_obj = endpoint.return_obj(values, self.api, endpoint)
+        related_obj.has_details = False
 
-        return endpoint.return_obj(values, self.api, endpoint)
+        return related_obj
 
     def _compare(self):
         """Compares current attributes to values at instantiation.
