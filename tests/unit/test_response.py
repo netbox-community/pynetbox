@@ -139,3 +139,21 @@ class RecordTestCase(unittest.TestCase):
         test2 = Record({}, None, endpoint2)
         test2.id = 1
         self.assertEqual(test1, test2)
+
+    def test_nested_write(self):
+        app = Mock()
+        app.token = 'abc123'
+        endpoint = Mock()
+        endpoint.name = "test-endpoint"
+        test = Record({
+            'id': 123,
+            'name': 'test',
+            'child': {
+                'id': 321,
+                'name': 'test123',
+                'url': 'http://localhost:8080/test',
+            },
+        }, app, endpoint)
+        test.child.name = 'test321'
+        test.child.save()
+        self.assertEqual(app.http_session.patch.call_args[0][0], "http://localhost:8080/test/")

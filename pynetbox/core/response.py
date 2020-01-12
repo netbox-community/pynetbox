@@ -384,8 +384,8 @@ class Record(object):
             if diff:
                 serialized = self.serialize()
                 req = Request(
-                    key=self.id,
-                    base=self.endpoint.url,
+                    key=self.id if not self.url else None,
+                    base=self.url or self.endpoint.url,
                     token=self.api.token,
                     session_key=self.api.session_key,
                     ssl_verify=self.api.ssl_verify,
@@ -433,8 +433,8 @@ class Record(object):
         >>>
         """
         req = Request(
-            key=self.id,
-            base=self.endpoint.url,
+            key=self.id if not self.url else None,
+            base=self.url or self.endpoint.url,
             token=self.api.token,
             session_key=self.api.session_key,
             ssl_verify=self.api.ssl_verify,
