@@ -140,6 +140,7 @@ class Request(object):
         private_key=None,
         session_key=None,
         ssl_verify=True,
+        url=None,
     ):
         """
         Instantiates a new Request object
