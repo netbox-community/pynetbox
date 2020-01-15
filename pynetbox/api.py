@@ -129,6 +129,8 @@ class Api(object):
     :param str,optional private_key: Your private key.
     :param bool/str,optional ssl_verify: Specify SSL verification behavior
         see: requests_.
+    :param int,optional poolsize: Specify size of HTTP connection pool
+        see: requests_.
     :raises ValueError: If *private_key* and *private_key_file* are both
         specified.
     :raises AttributeError: If app doesn't exist.
@@ -152,6 +154,7 @@ class Api(object):
         private_key=None,
         private_key_file=None,
         ssl_verify=True,
+        poolsize=10,
     ):
         if private_key and private_key_file:
             raise ValueError(
@@ -165,6 +168,13 @@ class Api(object):
         self.ssl_verify = ssl_verify
         self.session_key = None
         self.http_session = requests.Session()
+
+        adapter = requests.adapters.HTTPAdapter(
+            pool_connections=poolsize,
+            pool_maxsize=poolsize
+        )
+        self.http_session.mount('http://', adapter)
+        self.http_session.mount('https://', adapter)
 
         if self.private_key_file:
             with open(self.private_key_file, "r") as kf:
