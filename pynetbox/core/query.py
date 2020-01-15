@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import concurrent.futures as cf
 import json
 from six.moves.urllib.parse import urlencode
 
@@ -26,6 +27,11 @@ def url_param_builder(param_dict):
     passed in param_dict
     """
     return "?{}".format(urlencode(param_dict))
+
+
+def calc_pages(limit, count):
+    """ Calculate number of pages required for full results set. """
+    return int(count / limit) + (limit % count > 0)
 
 
 class RequestError(Exception):
@@ -296,6 +302,46 @@ class Request(object):
                 return ret
             else:
                 return req
+
+        def req_all_threaded():
+            if add_params is None:
+                add_params = {"limit": 0}
+            req = self._make_call(add_params=add_params)
+            if isinstance(req, dict) and req.get("results") is not None:
+                ret = req["results"]
+                if req.get("next"):
+                    page_size = len(req["results"])
+                    pages = calc_pages(page_size, req["count"])
+                    page_offsets = [
+                        increment * page_size for increment in range(1, pages)
+                    ]
+                    if pages == 1:
+                        req = self._make_call(url_override=req.get("next"))
+                        ret.extend(req["results"])
+                    futures_to_results = []
+
+                    with cf.ThreadPoolExecutor(max_workers=4) as pool:
+                        for offset in page_offsets:
+                            new_params = {"offset": offset, "limit": page_size}
+                            futures_to_results.append(
+                                pool.submit(self._make_call, add_params=new_params)
+                            )
+
+                        for future in cf.as_completed(futures_to_results):
+                            try:
+                                result = future.result()
+                            except Exception:
+                                # TODO: Raise exception with preferred method
+                                pass
+                            else:
+                                ret.extend(result["results"])
+
+                return ret
+            else:
+                return req
+
+        if self.threading:
+            return req_all_threaded()
 
         return req_all()
 
