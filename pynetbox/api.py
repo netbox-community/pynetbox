@@ -152,6 +152,7 @@ class Api(object):
         private_key=None,
         private_key_file=None,
         ssl_verify=True,
+        threading=False,
     ):
         if private_key and private_key_file:
             raise ValueError(
@@ -165,6 +166,7 @@ class Api(object):
         self.ssl_verify = ssl_verify
         self.session_key = None
         self.http_session = requests.Session()
+        self.threading = threading
 
         if self.private_key_file:
             with open(self.private_key_file, "r") as kf:
