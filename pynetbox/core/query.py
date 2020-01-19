@@ -270,6 +270,24 @@ class Request(object):
         else:
             raise RequestError(req)
 
+    def concurrent_get(self, ret, page_size, page_offsets):
+        futures_to_results = []
+        with cf.ThreadPoolExecutor(max_workers=4) as pool:
+            for offset in page_offsets:
+                new_params = {"offset": offset, "limit": page_size}
+                futures_to_results.append(
+                    pool.submit(self._make_call, add_params=new_params)
+                )
+
+            for future in cf.as_completed(futures_to_results):
+                try:
+                    result = future.result()
+                except Exception:
+                    # TODO: Raise exception with preferred method
+                    pass
+                else:
+                    ret.extend(result["results"])
+
     def get(self, add_params=None):
         """Makes a GET request.
 
@@ -307,6 +325,7 @@ class Request(object):
 
         def req_all_threaded(add_params):
             if add_params is None:
+                # Limit must be 0 to discover the max page size
                 add_params = {"limit": 0}
             req = self._make_call(add_params=add_params)
             if isinstance(req, dict) and req.get("results") is not None:
@@ -320,23 +339,8 @@ class Request(object):
                     if pages == 1:
                         req = self._make_call(url_override=req.get("next"))
                         ret.extend(req["results"])
-                    futures_to_results = []
-
-                    with cf.ThreadPoolExecutor(max_workers=4) as pool:
-                        for offset in page_offsets:
-                            new_params = {"offset": offset, "limit": page_size}
-                            futures_to_results.append(
-                                pool.submit(self._make_call, add_params=new_params)
-                            )
-
-                        for future in cf.as_completed(futures_to_results):
-                            try:
-                                result = future.result()
-                            except Exception:
-                                # TODO: Raise exception with preferred method
-                                pass
-                            else:
-                                ret.extend(result["results"])
+                    else:
+                        self.concurrent_get(ret, page_size, page_offsets)
 
                 return ret
             else:
