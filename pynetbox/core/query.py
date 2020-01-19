@@ -147,6 +147,7 @@ class Request(object):
         session_key=None,
         ssl_verify=True,
         url=None,
+        threading=False,
     ):
         """
         Instantiates a new Request object
@@ -170,6 +171,7 @@ class Request(object):
         self.ssl_verify = ssl_verify
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
+        self.threading = threading
 
     def get_version(self):
         """ Gets the API version of NetBox.
@@ -303,7 +305,7 @@ class Request(object):
             else:
                 return req
 
-        def req_all_threaded():
+        def req_all_threaded(add_params):
             if add_params is None:
                 add_params = {"limit": 0}
             req = self._make_call(add_params=add_params)
@@ -341,7 +343,7 @@ class Request(object):
                 return req
 
         if self.threading:
-            return req_all_threaded()
+            return req_all_threaded(add_params)
 
         return req_all()
 
