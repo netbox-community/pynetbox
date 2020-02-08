@@ -302,7 +302,7 @@ class Record(object):
             return True
         return False
 
-    def serialize(self, nested=False, init=False):
+    def serialize(self, nested=False, init=False, return_fields=None):
         """Serializes an object
 
         Pulls all the attributes in an object and creates a dict that
@@ -320,7 +320,7 @@ class Record(object):
         :returns: dict.
         """
         if nested:
-            return get_return(self)
+            return get_return(self, return_fields=return_fields)
 
         if init:
             init_vals = dict(self._init_cache)
@@ -333,7 +333,8 @@ class Record(object):
             else:
                 if isinstance(current_val, Record):
                     current_val = getattr(current_val, "serialize")(
-                        nested=True
+                        nested=True,
+                        return_fields=return_fields
                     )
 
                 if isinstance(current_val, list):
