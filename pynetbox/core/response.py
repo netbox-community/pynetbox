@@ -25,8 +25,7 @@ def get_return(lookup, return_fields=None):
     """Returns simple representations for items passed to lookup.
 
     Used to return a "simple" representation of objects and collections
-    sent to it via lookup. If lookup is an IPNetwork object immediately
-    return the string representation. Otherwise, we look to see if
+    sent to it via lookup. Otherwise, we look to see if
     lookup is a "choices" field (dict with only 'id' and 'value')
     or a nested_return. Finally, we check if it's a Record, if
     so simply return a string. Order is important due to nested_return
@@ -41,6 +40,10 @@ def get_return(lookup, return_fields=None):
             return lookup[i]
         else:
             if hasattr(lookup, i):
+                # check if this is a "choices" field record
+                # from a NetBox 2.7 server.
+                if sorted(dict(lookup)) == sorted(["id", "value", "label"]):
+                    return getattr(lookup, "value")
                 return getattr(lookup, i)
 
     if isinstance(lookup, Record):
