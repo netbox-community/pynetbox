@@ -169,7 +169,8 @@ class Api(object):
         self.session_key = None
         self.http_session = requests.Session()
         if threading and sys.version_info.major == 2:
-            raise NotImplementedError("Threaded pynetbox calls not supported in Python 2")
+            raise NotImplementedError("Threaded pynetbox calls not supported \
+                in Python 2")
         self.threading = threading
 
         if self.private_key_file:
