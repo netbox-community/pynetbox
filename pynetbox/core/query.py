@@ -13,7 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import concurrent.futures as cf
+try:
+    import concurrent.futures as cf
+except ImportError:
+    pass
 import json
 from six.moves.urllib.parse import urlencode
 
@@ -280,13 +283,8 @@ class Request(object):
                 )
 
             for future in cf.as_completed(futures_to_results):
-                try:
-                    result = future.result()
-                except Exception:
-                    # TODO: Raise exception with preferred method
-                    pass
-                else:
-                    ret.extend(result["results"])
+                result = future.result()
+                ret.extend(result["results"])
 
     def get(self, add_params=None):
         """Makes a GET request.
