@@ -38,3 +38,13 @@ nb.dcim.devices.all()
 [test1-leaf1, test1-leaf2]
 ```
 
+### Threading
+
+pynetbox supports multithreaded calls (in Python 3 only) for `.filter()` and `.all()` queries. It is **highly recommended** you have `MAX_PAGE_SIZE` in your Netbox install set to anything *except* `0` or `None`. The default value of `1000` is usually a good value to use. To enable threading, add `threading=True` parameter to the `.api`:
+
+```python
+nb = pynetbox.api(
+    'http://localhost:8000',
+    threading=True,
+)
+```
