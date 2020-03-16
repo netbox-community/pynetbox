@@ -96,6 +96,7 @@ class Endpoint(object):
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
             http_session=self.api.http_session,
+            threading=self.api.threading,
         )
 
         return [self._response_loader(i) for i in req.get()]
@@ -220,6 +221,7 @@ class Endpoint(object):
             session_key=self.session_key,
             ssl_verify=self.ssl_verify,
             http_session=self.api.http_session,
+            threading=self.api.threading,
         )
 
         ret = [self._response_loader(i) for i in req.get()]

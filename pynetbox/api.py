@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import sys
+
 import requests
 
 from pynetbox.core.endpoint import Endpoint
@@ -152,6 +154,7 @@ class Api(object):
         private_key=None,
         private_key_file=None,
         ssl_verify=True,
+        threading=False,
     ):
         if private_key and private_key_file:
             raise ValueError(
@@ -165,6 +168,10 @@ class Api(object):
         self.ssl_verify = ssl_verify
         self.session_key = None
         self.http_session = requests.Session()
+        if threading and sys.version_info.major == 2:
+            raise NotImplementedError("Threaded pynetbox calls not supported \
+                in Python 2")
+        self.threading = threading
 
         if self.private_key_file:
             with open(self.private_key_file, "r") as kf:
