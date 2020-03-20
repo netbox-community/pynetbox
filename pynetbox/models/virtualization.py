@@ -22,5 +22,4 @@ class VirtualMachines(Record):
     primary_ip = IpAddresses
     primary_ip4 = IpAddresses
     primary_ip6 = IpAddresses
-
     config_context = JsonField
