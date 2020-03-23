@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.core.response import Record
+from pynetbox.core.response import Record, JsonField
 from pynetbox.models.ipam import IpAddresses
 
 
@@ -22,3 +22,4 @@ class VirtualMachines(Record):
     primary_ip = IpAddresses
     primary_ip4 = IpAddresses
     primary_ip6 = IpAddresses
+    config_context = JsonField
