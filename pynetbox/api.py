@@ -65,6 +65,12 @@ class App(object):
     def choices(self):
         """ Returns _choices response from App
 
+        .. note::
+
+            This method is deprecated and only works with NetBox version 2.7.x
+            or older. The ``choices()`` method in :py:class:`.Endpoint` is
+            compatible with all NetBox versions.
+
         :Returns: Raw response from NetBox's _choices endpoint.
         """
         if self._choices:
