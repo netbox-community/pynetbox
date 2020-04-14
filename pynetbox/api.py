@@ -137,6 +137,8 @@ class Api(object):
     :param str,optional private_key: Your private key.
     :param bool/str,optional ssl_verify: Specify SSL verification behavior
         see: requests_.
+    :param bool,optional threading: Set to True to use threading in ``.all()``
+        and ``.filter()`` requests.
     :raises ValueError: If *private_key* and *private_key_file* are both
         specified.
     :raises AttributeError: If app doesn't exist.
