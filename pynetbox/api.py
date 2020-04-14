@@ -129,9 +129,9 @@ class Api(object):
     :py:class:`.App` which exposes endpoints as attributes.
 
     :type ssl_verify: bool or str
-    :param str url: The base url to the instance of Netbox you
+    :param str url: The base URL to the instance of NetBox you
         wish to connect to.
-    :param str token: Your netbox token.
+    :param str token: Your NetBox token.
     :param str,optional private_key_file: The path to your private
         key file.
     :param str,optional private_key: Your private key.
