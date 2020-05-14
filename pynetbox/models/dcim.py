@@ -119,6 +119,23 @@ class Racks(Record):
         """
         return RODetailEndpoint(self, "units", custom_return=RUs)
 
+    @property
+    def elevation(self):
+        """ Represents the ``elevation`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing response from the elevation endpoint updated in Netbox version 2.8.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> rack = nb.dcim.racks.get(123)
+        >>> rack.elevation.list()
+        {"get_facts": {"interface_list": ["ge-0/0/0"]}}
+
+        """
+        return RODetailEndpoint(self, "elevation", custom_return=RUs)
 
 class Termination(Record):
     def __str__(self):

@@ -401,6 +401,28 @@ class RackTestCase(Generic.Tests):
             isinstance(ret[0].device, pynetbox.models.dcim.Devices)
         )
 
+    @patch(
+        'pynetbox.core.query.requests.sessions.Session.get',
+        side_effect=[
+            Response(fixture='dcim/rack.json'),
+            Response(fixture='dcim/rack_u.json'),
+        ]
+    )
+    def test_get_elevation(self, mock):
+        test = nb.racks.get(1)
+        ret = test.elevation.list()
+        mock.assert_called_with(
+            'http://localhost:8000/api/dcim/racks/1/elevation/',
+            params={},
+            json=None,
+            headers=HEADERS,
+            verify=True,
+        )
+        self.assertTrue(ret)
+        self.assertTrue(
+            isinstance(ret[0].device, pynetbox.models.dcim.Devices)
+        )
+
 
 class RackRoleTestCase(Generic.Tests):
     name = 'rack_roles'
