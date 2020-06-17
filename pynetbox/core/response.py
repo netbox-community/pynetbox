@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import re
+
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
@@ -167,6 +169,25 @@ class Record(object):
         self.default_ret = Record
 
         if values:
+            if 'url' in values and self.api:
+                # Recreate `endpoint` from url when present
+                url_re = re.compile(
+                    r"^(?=\w)"
+                    rf"{self.api.base_url}/"
+                    r"(?P<app>\w*)/"
+                    r"(?P<endpoint>\w*)/"
+                    r"(?P<key>\w*)/"
+                    r"(?!\w)$"
+                )
+                url_match = url_re.match(values['url'])
+                if url_match:
+                    app = getattr(self.api, url_match.group('app'))
+                    name = url_match.group('endpoint')
+                    self.endpoint = self.endpoint.__class__(
+                        api=self.api,
+                        app=app,
+                        name=name
+                    )
             self._parse_values(values)
 
     def __getattr__(self, k):
