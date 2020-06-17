@@ -96,7 +96,6 @@ class VirtualChassis(Record):
 
 
 class RUs(Record):
-
     device = Devices
 
 
@@ -124,7 +123,8 @@ class Racks(Record):
         """ Represents the ``elevation`` detail endpoint.
 
         Returns a DetailEndpoint object that is the interface for
-        viewing response from the elevation endpoint updated in Netbox version 2.8.
+        viewing response from the elevation endpoint updated in
+        Netbox version 2.8.
 
         :returns: :py:class:`.DetailEndpoint`
 
@@ -136,6 +136,7 @@ class Racks(Record):
 
         """
         return RODetailEndpoint(self, "elevation", custom_return=RUs)
+
 
 class Termination(Record):
     def __str__(self):
