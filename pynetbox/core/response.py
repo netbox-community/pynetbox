@@ -177,6 +177,7 @@ class Record(object):
                     r"(?P<app>\w*)/"
                     r"(?P<endpoint>\w*)/"
                     r"(?P<key>\w*)/"
+                    r"(\?(.*=.*&?)+)?"
                     r"(?!\w)$"
                 )
                 url_match = url_re.match(values['url'])
