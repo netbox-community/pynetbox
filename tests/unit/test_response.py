@@ -180,6 +180,7 @@ class RecordTestCase(unittest.TestCase):
     def test_nested_write(self):
         app = Mock()
         app.token = 'abc123'
+        app.base_url = 'http://localhost:8080/api'
         endpoint = Mock()
         endpoint.name = "test-endpoint"
         test = Record({

@@ -397,7 +397,7 @@ class Record(object):
                 serialized = self.serialize()
                 req = Request(
                     key=self.id if not self.url else None,
-                    base=self.url or self.endpoint.url,
+                    base=self.endpoint.url,
                     token=self.api.token,
                     session_key=self.api.session_key,
                     ssl_verify=self.api.ssl_verify,
@@ -446,7 +446,7 @@ class Record(object):
         """
         req = Request(
             key=self.id if not self.url else None,
-            base=self.url or self.endpoint.url,
+            base=self.endpoint.url,
             token=self.api.token,
             session_key=self.api.session_key,
             ssl_verify=self.api.ssl_verify,
