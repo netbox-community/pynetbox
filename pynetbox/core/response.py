@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import pynetbox.core.app
+from six.moves.urllib.parse import urlsplit
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
@@ -267,6 +269,10 @@ class Record(object):
             else:
                 self._add_cache((k, v))
             setattr(self, k, v)
+
+    def _endpoint_from_url(self):
+        app, name = urlsplit(self.url).path.split("/")[2:4]
+        return getattr(pynetbox.core.app.App(self.api, app), name)
 
     def _compare(self):
         """Compares current attributes to values at instantiation.
