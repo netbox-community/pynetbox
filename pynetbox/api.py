@@ -17,97 +17,9 @@ import sys
 
 import requests
 
-from pynetbox.core.endpoint import Endpoint
 from pynetbox.core.query import Request
-from pynetbox.models import dcim, ipam, virtualization, circuits, extras
+from pynetbox.core.app import App
 
-
-class App(object):
-    """ Represents apps in NetBox.
-
-    Calls to attributes are returned as Endpoint objects.
-
-    :returns: :py:class:`.Endpoint` matching requested attribute.
-    :raises: :py:class:`.RequestError`
-        if requested endpoint doesn't exist.
-    """
-    def __init__(self, api, name):
-        self.api = api
-        self.name = name
-        self._choices = None
-        self._setmodel()
-
-    models = {
-        "dcim": dcim,
-        "ipam": ipam,
-        "circuits": circuits,
-        "virtualization": virtualization,
-        "extras": extras
-    }
-
-    def _setmodel(self):
-        self.model = App.models[self.name] if self.name in App.models else None
-
-    def __getstate__(self):
-        return {
-            'api': self.api,
-            'name': self.name,
-            '_choices': self._choices
-        }
-
-    def __setstate__(self, d):
-        self.__dict__.update(d)
-        self._setmodel()
-
-    def __getattr__(self, name):
-        return Endpoint(self.api, self, name, model=self.model)
-
-    def choices(self):
-        """ Returns _choices response from App
-
-        .. note::
-
-            This method is deprecated and only works with NetBox version 2.7.x
-            or older. The ``choices()`` method in :py:class:`.Endpoint` is
-            compatible with all NetBox versions.
-
-        :Returns: Raw response from NetBox's _choices endpoint.
-        """
-        if self._choices:
-            return self._choices
-
-        self._choices = Request(
-            base="{}/{}/_choices/".format(self.api.base_url, self.name),
-            token=self.api.token,
-            private_key=self.api.private_key,
-            ssl_verify=self.api.ssl_verify,
-            http_session=self.api.http_session,
-        ).get()
-
-        return self._choices
-
-    def custom_choices(self):
-        """ Returns _custom_field_choices response from app
-
-        :Returns: Raw response from NetBox's _custom_field_choices endpoint.
-        :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
-        :Example:
-
-        >>> nb.extras.custom_choices()
-        {'Testfield1': {'Testvalue2': 2, 'Testvalue1': 1},
-         'Testfield2': {'Othervalue2': 4, 'Othervalue1': 3}}
-        """
-        custom_field_choices = Request(
-            base="{}/{}/_custom_field_choices/".format(
-                self.api.base_url,
-                self.name,
-            ),
-            token=self.api.token,
-            private_key=self.api.private_key,
-            ssl_verify=self.api.ssl_verify,
-            http_session=self.api.http_session,
-        ).get()
-        return custom_field_choices
 
 
 class Api(object):

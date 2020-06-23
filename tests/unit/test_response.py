@@ -194,3 +194,16 @@ class RecordTestCase(unittest.TestCase):
         test.child.name = 'test321'
         test.child.save()
         self.assertEqual(app.http_session.patch.call_args[0][0], "http://localhost:8080/test/")
+
+    def test_endpoint_from_url(self):
+        app = Mock()
+        app.token = 'abc123'
+        endpoint = Mock()
+        endpoint.name = "test-endpoint"
+        test = Record({
+            'id': 123,
+            'name': 'test',
+            'url': 'http://localhost:8080/api/test-app/test-endpoint/1/',
+        }, app, endpoint)
+        ret = test._endpoint_from_url()
+        self.assertEqual(ret.name, "test-endpoint")
