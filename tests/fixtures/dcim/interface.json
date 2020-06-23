@@ -42,5 +42,26 @@
         "id": 1,
         "url": "http://localhost:8000/api/dcim/cables/1/",
         "label": ""
-    }
+    },
+    "mode": {
+        "value": "tagged",
+        "label": "Tagged",
+        "id": 200
+    },
+    "untagged_vlan": {
+        "id": 2,
+        "url": "http://localhost:8000/api/ipam/vlans/792/",
+        "vid": 2069,
+        "name": "v2069",
+        "display_name": "2069 (v2069)"
+    },
+    "tagged_vlans": [
+        {
+            "id": 3,
+            "url": "http://localhost:8000/api/ipam/vlans/248/",
+            "vid": 1210,
+            "name": "v1210",
+            "display_name": "1210 (v1210)"
+        }
+    ]
 }

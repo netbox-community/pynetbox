@@ -269,6 +269,27 @@ class AggregatesTestCase(Generic.Tests):
 class VlanTestCase(Generic.Tests):
     name = 'vlans'
 
+    @patch(
+        'pynetbox.core.query.requests.sessions.Session.get',
+        side_effect=[
+            Response(fixture='ipam/vlan.json'),
+            Response(fixture='dcim/interface.json'),
+        ]
+    )
+    def test_vlan_in_interface(self, mock):
+        vlan = nb.vlans.get(3)
+        interface = api.dcim.interfaces.get(1)
+        mock.assert_called_with(
+            'http://localhost:8000/api/dcim/interfaces/1/',
+            params={},
+            json=None,
+            headers=HEADERS,
+            verify=True
+        )
+        self.assertEqual(vlan.vid, interface.tagged_vlans[0].vid)
+        self.assertEqual(vlan.id, interface.tagged_vlans[0].id)
+        self.assertTrue(vlan in interface.tagged_vlans)
+
 
 class VlanGroupsTestCase(Generic.Tests):
     name = 'vlan_groups'
