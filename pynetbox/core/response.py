@@ -13,10 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import re
-
 import pynetbox.core.app
-from six.moves.urllib.parse import urlsplit
+from six.moves.urllib.parse import urlsplit, SplitResult
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
@@ -167,31 +165,12 @@ class Record(object):
         self._full_cache = []
         self._init_cache = []
         self.api = api
-        self.endpoint = endpoint
         self.default_ret = Record
 
         if values:
-            if 'url' in values and self.api:
-                # Recreate `endpoint` from url when present
-                url_re = re.compile(
-                    r"^(?=\w)"
-                    rf"{self.api.base_url}/"
-                    r"(?P<app>\w*)/"
-                    r"(?P<endpoint>\w*)/"
-                    r"(?P<key>\w*)/"
-                    r"(\?(.*=.*&?)+)?"
-                    r"(?!\w)$"
-                )
-                url_match = url_re.match(values['url'])
-                if url_match:
-                    app = getattr(self.api, url_match.group('app'))
-                    name = url_match.group('endpoint')
-                    self.endpoint = self.endpoint.__class__(
-                        api=self.api,
-                        app=app,
-                        name=name
-                    )
             self._parse_values(values)
+
+        self.endpoint = endpoint or self._endpoint_from_url()
 
     def __getattr__(self, k):
         """Default behavior for missing attrs.
@@ -267,7 +246,7 @@ class Record(object):
 
         def list_parser(list_item):
             if isinstance(list_item, dict):
-                return self.default_ret(list_item, self.api, self.endpoint)
+                return self.default_ret(list_item, self.api, None)
             return list_item
 
         for k, v in values.items():
@@ -278,9 +257,9 @@ class Record(object):
                     setattr(self, k, v)
                     continue
                 if lookup:
-                    v = lookup(v, self.api, self.endpoint)
+                    v = lookup(v, self.api, None)
                 else:
-                    v = self.default_ret(v, self.api, self.endpoint)
+                    v = self.default_ret(v, self.api, None)
                 self._add_cache((k, v))
 
             elif isinstance(v, list):
@@ -293,8 +272,10 @@ class Record(object):
             setattr(self, k, v)
 
     def _endpoint_from_url(self):
-        app, name = urlsplit(self.url).path.split("/")[2:4]
-        return getattr(pynetbox.core.app.App(self.api, app), name)
+        url_split = urlsplit(self.url)
+        if isinstance(url_split, SplitResult):
+            app, name = url_split.path.split("/")[2:4]
+            return getattr(pynetbox.core.app.App(self.api, app), name)
 
     def _compare(self):
         """Compares current attributes to values at instantiation.

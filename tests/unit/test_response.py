@@ -31,7 +31,7 @@ class RecordTestCase(unittest.TestCase):
                 },
             ],
         }
-        test_obj = Record(test_values, None, None)
+        test_obj = Record(test_values, Mock(base_url="test"), None)
         test = test_obj.serialize()
         self.assertEqual(test["tagged_vlans"], [1, 2])
 
@@ -75,7 +75,7 @@ class RecordTestCase(unittest.TestCase):
                 }
             ],
         }
-        test_obj = Record(test_values, None, None)
+        test_obj = Record(test_values, Mock(base_url="test"), None)
         test_obj.tagged_vlans.append(1)
         test = test_obj._diff()
         self.assertFalse(test)
@@ -188,12 +188,12 @@ class RecordTestCase(unittest.TestCase):
             'child': {
                 'id': 321,
                 'name': 'test123',
-                'url': 'http://localhost:8080/test',
+                'url': 'http://localhost:8080/api/test-app/test-endpoint/',
             },
         }, app, endpoint)
         test.child.name = 'test321'
         test.child.save()
-        self.assertEqual(app.http_session.patch.call_args[0][0], "http://localhost:8080/test/")
+        self.assertEqual(app.http_session.patch.call_args[0][0], "http://localhost:8080/api/test-app/test-endpoint/")
 
     def test_endpoint_from_url(self):
         app = Mock()
@@ -204,6 +204,11 @@ class RecordTestCase(unittest.TestCase):
             'id': 123,
             'name': 'test',
             'url': 'http://localhost:8080/api/test-app/test-endpoint/1/',
+            'child': {
+                'id': 321,
+                'name': 'test123',
+                'url': 'http://localhost:8080/api/test-app/other-endpoint/1/',
+            },
         }, app, endpoint)
         ret = test._endpoint_from_url()
         self.assertEqual(ret.name, "test-endpoint")
