@@ -21,7 +21,6 @@ from pynetbox.core.query import Request
 from pynetbox.core.app import App
 
 
-
 class Api(object):
     """ The API object is the point of entry to pynetbox.
 
