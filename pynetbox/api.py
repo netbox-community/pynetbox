@@ -97,16 +97,6 @@ class Api(object):
                 private_key = kf.read()
                 self.private_key = private_key
 
-        req = Request(
-            base=base_url,
-            token=token,
-            private_key=private_key,
-            ssl_verify=ssl_verify,
-            http_session=self.http_session
-        )
-        if self.token and self.private_key:
-            self.session_key = req.get_session_key()
-
         self.dcim = App(self, "dcim")
         self.ipam = App(self, "ipam")
         self.circuits = App(self, "circuits")
