@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.core.query import Request, url_param_builder
+from pynetbox.core.query import Request, RequestError, url_param_builder
 from pynetbox.core.response import Record
 
 RESERVED_KWARGS = ("id", "pk", "limit", "offset")
@@ -148,14 +148,17 @@ class Endpoint(object):
                     return filter_lookup[0]
             return None
 
-        req = Request(
-            key=key,
-            base=self.url,
-            token=self.token,
-            session_key=self.session_key,
-            ssl_verify=self.ssl_verify,
-            http_session=self.api.http_session,
-        )
+        try:
+            req = Request(
+                key=key,
+                base=self.url,
+                token=self.token,
+                session_key=self.session_key,
+                ssl_verify=self.ssl_verify,
+                http_session=self.api.http_session,
+            )
+        except RequestError:
+            return None
 
         return self._response_loader(req.get())
 
