@@ -1,5 +1,5 @@
 {
-    "id": 1,
+    "id": 3,
     "site": {
         "id": 1,
         "url": "http://localhost:8000/api/dcim/sites/1/",
@@ -7,8 +7,8 @@
         "slug": "test1"
     },
     "group": null,
-    "vid": 999,
-    "name": "TEST",
+    "vid": 1210,
+    "name": "v1210",
     "tenant": null,
     "status": {
         "value": 1,
@@ -21,6 +21,6 @@
         "slug": "lab-network"
     },
     "description": "",
-    "display_name": "999 (TEST)",
+    "display_name": "1210 (v1210)",
     "custom_fields": {}
 }

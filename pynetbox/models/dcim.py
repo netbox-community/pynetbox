@@ -96,7 +96,6 @@ class VirtualChassis(Record):
 
 
 class RUs(Record):
-
     device = Devices
 
 

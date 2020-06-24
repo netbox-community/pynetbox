@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import pynetbox.core.app
+from six.moves.urllib.parse import urlsplit
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
@@ -163,9 +165,12 @@ class Record(object):
         self._full_cache = []
         self._init_cache = []
         self.api = api
-        self.endpoint = endpoint
         self.default_ret = Record
-
+        self.endpoint = (
+            self._endpoint_from_url(values['url'])
+            if values and 'url' in values
+            else endpoint
+        )
         if values:
             self._parse_values(values)
 
@@ -267,6 +272,10 @@ class Record(object):
             else:
                 self._add_cache((k, v))
             setattr(self, k, v)
+
+    def _endpoint_from_url(self, url):
+        app, name = urlsplit(url).path.split("/")[2:4]
+        return getattr(pynetbox.core.app.App(self.api, app), name)
 
     def _compare(self):
         """Compares current attributes to values at instantiation.
@@ -388,7 +397,7 @@ class Record(object):
                 serialized = self.serialize()
                 req = Request(
                     key=self.id if not self.url else None,
-                    base=self.url or self.endpoint.url,
+                    base=self.endpoint.url,
                     token=self.api.token,
                     session_key=self.api.session_key,
                     ssl_verify=self.api.ssl_verify,
@@ -437,7 +446,7 @@ class Record(object):
         """
         req = Request(
             key=self.id if not self.url else None,
-            base=self.url or self.endpoint.url,
+            base=self.endpoint.url,
             token=self.api.token,
             session_key=self.api.session_key,
             ssl_verify=self.api.ssl_verify,
