@@ -68,7 +68,6 @@ class App(object):
                 base=self.api.base_url,
                 token=self.api.token,
                 private_key=self.api.private_key,
-                ssl_verify=self.api.ssl_verify,
                 http_session=self.api.http_session
             ).get_session_key()
 
@@ -90,7 +89,6 @@ class App(object):
             base="{}/{}/_choices/".format(self.api.base_url, self.name),
             token=self.api.token,
             private_key=self.api.private_key,
-            ssl_verify=self.api.ssl_verify,
             http_session=self.api.http_session,
         ).get()
 
@@ -114,7 +112,6 @@ class App(object):
             ),
             token=self.api.token,
             private_key=self.api.private_key,
-            ssl_verify=self.api.ssl_verify,
             http_session=self.api.http_session,
         ).get()
         return custom_field_choices

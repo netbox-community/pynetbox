@@ -57,7 +57,6 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
                 )
 
         def test_filter(self):
@@ -80,7 +79,6 @@ class Generic(object):
                     params={"name": "test"},
                     json=None,
                     headers=HEADERS,
-                    verify=True
                 )
 
         def test_get(self):
@@ -104,7 +102,6 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
                 )
 
 
@@ -152,7 +149,6 @@ class PrefixTestCase(Generic.Tests):
             params={},
             json=None,
             headers=HEADERS,
-            verify=True
         )
         self.assertTrue(ret)
         self.assertEqual(len(ret), 3)
@@ -188,7 +184,6 @@ class PrefixTestCase(Generic.Tests):
             params={},
             headers=POST_HEADERS,
             json=create_parms,
-            verify=True
         )
         self.assertTrue(ret)
         self.assertEqual(ret, expected_result)
@@ -208,7 +203,6 @@ class PrefixTestCase(Generic.Tests):
             params={},
             json=None,
             headers=HEADERS,
-            verify=True
         )
         self.assertTrue(ret)
 
@@ -231,7 +225,6 @@ class PrefixTestCase(Generic.Tests):
             params={},
             headers=POST_HEADERS,
             json=create_parms,
-            verify=True
         )
         self.assertTrue(ret)
 
@@ -284,7 +277,6 @@ class VlanTestCase(Generic.Tests):
             params={},
             json=None,
             headers=HEADERS,
-            verify=True
         )
         self.assertEqual(vlan.vid, interface.tagged_vlans[0].vid)
         self.assertEqual(vlan.id, interface.tagged_vlans[0].id)

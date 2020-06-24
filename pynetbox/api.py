@@ -39,15 +39,12 @@ class Api(object):
     Calling any of these attributes will return
     :py:class:`.App` which exposes endpoints as attributes.
 
-    :type ssl_verify: bool or str
     :param str url: The base URL to the instance of NetBox you
         wish to connect to.
     :param str token: Your NetBox token.
     :param str,optional private_key_file: The path to your private
         key file.
     :param str,optional private_key: Your private key.
-    :param bool/str,optional ssl_verify: Specify SSL verification behavior
-        see: requests_.
     :param bool,optional threading: Set to True to use threading in ``.all()``
         and ``.filter()`` requests.
     :raises ValueError: If *private_key* and *private_key_file* are both
@@ -62,9 +59,7 @@ class Api(object):
     ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
     ... )
     >>> nb.dcim.devices.all()
-
-    .. _requests: http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
-    """  # noqa
+    """
 
     def __init__(
         self,
@@ -72,7 +67,6 @@ class Api(object):
         token=None,
         private_key=None,
         private_key_file=None,
-        ssl_verify=True,
         threading=False,
     ):
         if private_key and private_key_file:
@@ -84,7 +78,6 @@ class Api(object):
         self.private_key = private_key
         self.private_key_file = private_key_file
         self.base_url = base_url
-        self.ssl_verify = ssl_verify
         self.session_key = None
         self.http_session = requests.Session()
         if threading and sys.version_info.major == 2:
@@ -127,7 +120,6 @@ class Api(object):
         """
         version = Request(
             base=self.base_url,
-            ssl_verify=self.ssl_verify,
             http_session=self.http_session,
         ).get_version()
         return version
@@ -152,6 +144,5 @@ class Api(object):
         """
         return Request(
             base=self.base_url,
-            ssl_verify=self.ssl_verify,
             http_session=self.http_session,
         ).get_openapi()

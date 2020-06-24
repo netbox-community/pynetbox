@@ -53,42 +53,6 @@ class ApiTestCase(unittest.TestCase):
         self.assertEqual(api.base_url, 'http://localhost:8000/api')
 
 
-class ApiArgumentsTestCase(unittest.TestCase):
-
-    @patch(
-        'pynetbox.core.query.requests.sessions.Session.post',
-        return_value=Response(fixture='api/get_session_key.json')
-    )
-    def common_arguments(self, kwargs, arg, expect, *_):
-        '''
-        Ensures the api and endpoint instances have ssl_verify set
-        as expected
-        '''
-        api = pynetbox.api(
-            host,
-            **kwargs
-        )
-        self.assertIs(getattr(api, arg, "fail"), expect)
-        for app, endpoint in endpoints.items():
-            ep = getattr(getattr(api, app), endpoint)
-            self.assertIs(getattr(ep, arg), expect)
-
-    def test_ssl_verify_default(self):
-        self.common_arguments(def_kwargs, 'ssl_verify', True)
-
-    def test_ssl_verify_true(self):
-        kwargs = dict(def_kwargs, **{'ssl_verify': True})
-        self.common_arguments(kwargs, 'ssl_verify', True)
-
-    def test_ssl_verify_false(self):
-        kwargs = dict(def_kwargs, **{'ssl_verify': False})
-        self.common_arguments(kwargs, 'ssl_verify', False)
-
-    def test_ssl_verify_string(self):
-        kwargs = dict(def_kwargs, **{'ssl_verify': '/path/to/bundle'})
-        self.common_arguments(kwargs, 'ssl_verify', '/path/to/bundle')
-
-
 class ApiVersionTestCase(unittest.TestCase):
 
     class ResponseHeadersWithVersion:
