@@ -176,6 +176,21 @@ class Request(object):
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
 
+    def get_openapi(self):
+        """ Gets the OpenAPI Spec """
+        headers = {
+            "Content-Type": "application/json;",
+        }
+        req = self.http_session.get(
+            "{}docs/?format=openapi".format(self.normalize_url(self.base)),
+            headers=headers,
+            verify=self.ssl_verify,
+        )
+        if req.ok:
+            return req.json()
+        else:
+            raise RequestError(req)
+
     def get_version(self):
         """ Gets the API version of NetBox.
 
