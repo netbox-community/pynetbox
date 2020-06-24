@@ -141,3 +141,27 @@ class Api(object):
             http_session=self.http_session,
         ).get_version()
         return version
+
+    def openapi(self):
+        """ Returns the OpenAPI spec.
+
+        Quick helper function to pull down the entire OpenAPI spec.
+
+        :Returns: dict
+        :Example:
+
+        >>> import pynetbox
+        >>> nb = pynetbox.api(
+        ...     'http://localhost:8000',
+        ...     private_key_file='/path/to/private-key.pem',
+        ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+        ... )
+        >>> nb.openapi()
+        {...}
+        >>>
+        """
+        return Request(
+            base=self.base_url,
+            ssl_verify=self.ssl_verify,
+            http_session=self.http_session,
+        ).get_openapi()
