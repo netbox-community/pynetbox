@@ -166,11 +166,13 @@ class Record(object):
         self._init_cache = []
         self.api = api
         self.default_ret = Record
-
+        self.endpoint = (
+            self._endpoint_from_url(values['url'])
+            if values and 'url' in values
+            else endpoint
+        )
         if values:
             self._parse_values(values)
-
-        self.endpoint = endpoint or self._endpoint_from_url()
 
     def __getattr__(self, k):
         """Default behavior for missing attrs.
@@ -246,7 +248,7 @@ class Record(object):
 
         def list_parser(list_item):
             if isinstance(list_item, dict):
-                return self.default_ret(list_item, self.api, None)
+                return self.default_ret(list_item, self.api, self.endpoint)
             return list_item
 
         for k, v in values.items():
@@ -257,9 +259,9 @@ class Record(object):
                     setattr(self, k, v)
                     continue
                 if lookup:
-                    v = lookup(v, self.api, None)
+                    v = lookup(v, self.api, self.endpoint)
                 else:
-                    v = self.default_ret(v, self.api, None)
+                    v = self.default_ret(v, self.api, self.endpoint)
                 self._add_cache((k, v))
 
             elif isinstance(v, list):
