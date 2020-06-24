@@ -165,4 +165,3 @@ class Api(object):
             ssl_verify=self.ssl_verify,
             http_session=self.http_session,
         ).get_openapi()
-
