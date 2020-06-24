@@ -346,6 +346,7 @@ class Record(object):
                     ]
                     if i in LIST_AS_SET:
                         current_val = list(set(current_val))
+                    current_val.sort()
                 ret[i] = current_val
         return ret
 
