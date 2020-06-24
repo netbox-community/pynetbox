@@ -202,5 +202,5 @@ class RecordTestCase(unittest.TestCase):
             'name': 'test',
             'url': 'http://localhost:8080/api/test-app/test-endpoint/1/',
         }, Mock(), None)
-        ret = test._endpoint_from_url()
+        ret = test._endpoint_from_url(test.url)
         self.assertEqual(ret.name, "test-endpoint")

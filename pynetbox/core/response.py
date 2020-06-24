@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import pynetbox.core.app
-from six.moves.urllib.parse import urlsplit, SplitResult
+from six.moves.urllib.parse import urlsplit
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
@@ -271,11 +271,9 @@ class Record(object):
                 self._add_cache((k, v))
             setattr(self, k, v)
 
-    def _endpoint_from_url(self):
-        url_split = urlsplit(self.url)
-        if isinstance(url_split, SplitResult):
-            app, name = url_split.path.split("/")[2:4]
-            return getattr(pynetbox.core.app.App(self.api, app), name)
+    def _endpoint_from_url(self, url):
+        app, name = urlsplit(url).path.split("/")[2:4]
+        return getattr(pynetbox.core.app.App(self.api, app), name)
 
     def _compare(self):
         """Compares current attributes to values at instantiation.
