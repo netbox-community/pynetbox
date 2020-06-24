@@ -20,4 +20,3 @@ class RequestTestCase(unittest.TestCase):
             headers={'Content-Type': 'application/json;'},
             verify=True,
         )
-
