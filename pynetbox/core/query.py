@@ -148,7 +148,6 @@ class Request(object):
         token=None,
         private_key=None,
         session_key=None,
-        ssl_verify=True,
         threading=False,
     ):
         """
@@ -170,7 +169,6 @@ class Request(object):
         self.token = token
         self.private_key = private_key
         self.session_key = session_key
-        self.ssl_verify = ssl_verify
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
@@ -183,7 +181,6 @@ class Request(object):
         req = self.http_session.get(
             "{}docs/?format=openapi".format(self.normalize_url(self.base)),
             headers=headers,
-            verify=self.ssl_verify,
         )
         if req.ok:
             return req.json()
@@ -206,7 +203,6 @@ class Request(object):
         req = requests.get(
             self.normalize_url(self.base),
             headers=headers,
-            verify=self.ssl_verify,
         )
         if req.ok:
             return req.headers.get("API-Version", "")
@@ -229,7 +225,6 @@ class Request(object):
                 "Content-Type": "application/x-www-form-urlencoded",
             },
             data=urlencode({"private_key": self.private_key.strip("\n")}),
-            verify=self.ssl_verify,
         )
         if req.ok:
             try:
@@ -268,7 +263,7 @@ class Request(object):
                 params.update(add_params)
 
         req = getattr(self.http_session, verb)(
-            url_override or self.url, headers=headers, verify=self.ssl_verify,
+            url_override or self.url, headers=headers,
             params=params, json=data
         )
 

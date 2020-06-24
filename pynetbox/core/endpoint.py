@@ -47,7 +47,6 @@ class Endpoint(object):
         self.base_url = api.base_url
         self.token = api.token
         self.session_key = api.session_key
-        self.ssl_verify = api.ssl_verify
         self.url = "{base_url}/{app}/{endpoint}".format(
             base_url=self.base_url,
             app=app.name,
@@ -94,7 +93,6 @@ class Endpoint(object):
             base="{}/".format(self.url),
             token=self.token,
             session_key=self.session_key,
-            ssl_verify=self.ssl_verify,
             http_session=self.api.http_session,
             threading=self.api.threading,
         )
@@ -154,7 +152,6 @@ class Endpoint(object):
                 base=self.url,
                 token=self.token,
                 session_key=self.session_key,
-                ssl_verify=self.ssl_verify,
                 http_session=self.api.http_session,
             )
         except RequestError:
@@ -222,7 +219,6 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            ssl_verify=self.ssl_verify,
             http_session=self.api.http_session,
             threading=self.api.threading,
         )
@@ -285,7 +281,6 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            ssl_verify=self.ssl_verify,
             http_session=self.api.http_session,
         ).post(args[0] if args else kwargs)
 
@@ -330,7 +325,6 @@ class Endpoint(object):
             base=self.url,
             token=self.api.token,
             private_key=self.api.private_key,
-            ssl_verify=self.api.ssl_verify,
             http_session=self.api.http_session,
         ).options()
         try:
@@ -393,7 +387,6 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            ssl_verify=self.ssl_verify,
             http_session=self.api.http_session,
         )
 
@@ -417,7 +410,6 @@ class DetailEndpoint(object):
             base=self.url,
             token=parent_obj.api.token,
             session_key=parent_obj.api.session_key,
-            ssl_verify=parent_obj.api.ssl_verify,
             http_session=parent_obj.api.http_session,
         )
 

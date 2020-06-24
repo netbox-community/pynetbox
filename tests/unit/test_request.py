@@ -18,5 +18,4 @@ class RequestTestCase(unittest.TestCase):
         test.http_session.get.assert_called_with(
             "http://localhost:8080/api/docs/?format=openapi",
             headers={'Content-Type': 'application/json;'},
-            verify=True,
         )

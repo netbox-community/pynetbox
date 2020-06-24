@@ -49,7 +49,6 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
                 )
 
         def test_filter(self):
@@ -72,7 +71,6 @@ class Generic(object):
                     params={"name": "test"},
                     json=None,
                     headers=HEADERS,
-                    verify=True
                 )
 
         def test_get(self):
@@ -96,7 +94,6 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
                 )
 
         def test_delete(self):
@@ -117,7 +114,6 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
                 )
                 delete.assert_called_with(
                     'http://localhost:8000/api/{}/{}/1/'.format(
@@ -127,7 +123,6 @@ class Generic(object):
                     params={},
                     json=None,
                     headers=HEADERS,
-                    verify=True
                 )
 
         def test_compare(self):
@@ -179,7 +174,6 @@ class DeviceTestCase(Generic.Tests):
             params={},
             json=None,
             headers=HEADERS,
-            verify=True
         )
 
     @patch(
@@ -199,7 +193,6 @@ class DeviceTestCase(Generic.Tests):
             params={'role': ['test', 'test1'], 'site': 'TEST#1'},
             json=None,
             headers=HEADERS,
-            verify=True
         )
 
     @patch(
@@ -285,7 +278,6 @@ class DeviceTestCase(Generic.Tests):
             params={"method": "get_facts"},
             json=None,
             headers=HEADERS,
-            verify=True,
         )
         self.assertTrue(ret)
         self.assertTrue(ret['get_facts'])
@@ -372,7 +364,6 @@ class InterfaceTestCase(Generic.Tests):
             params={"limit": 221, "offset": 50},
             json=None,
             headers=HEADERS,
-            verify=True
         )
 
 
@@ -394,7 +385,6 @@ class RackTestCase(Generic.Tests):
             params={},
             json=None,
             headers=HEADERS,
-            verify=True,
         )
         self.assertTrue(ret)
         self.assertTrue(
@@ -416,7 +406,6 @@ class RackTestCase(Generic.Tests):
             params={},
             json=None,
             headers=HEADERS,
-            verify=True,
         )
         self.assertTrue(ret)
         self.assertTrue(
@@ -533,7 +522,6 @@ class Choices(unittest.TestCase):
                 params={},
                 json=None,
                 headers=HEADERS,
-                verify=True
             )
 
 
@@ -596,5 +584,4 @@ class CablesTestCase(Generic.Tests):
                 headers=HEADERS,
                 params={},
                 json=None,
-                verify=True
             )
