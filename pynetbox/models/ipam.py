@@ -86,9 +86,7 @@ class Prefixes(Record):
         u'10.1.1.56/29'
 
         """
-        return DetailEndpoint(
-            self, "available-prefixes", custom_return=Prefixes
-        )
+        return DetailEndpoint(self, "available-prefixes", custom_return=Prefixes)
 
 
 class Aggregates(Record):

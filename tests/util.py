@@ -8,7 +8,7 @@ class Response(object):
         self.ok = ok
 
     def load_fixture(self, path):
-        with open("tests/fixtures/{}".format(path), 'r') as f:
+        with open("tests/fixtures/{}".format(path), "r") as f:
             return f.read()
 
     def json(self):

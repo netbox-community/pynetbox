@@ -62,12 +62,7 @@ class Api(object):
     """
 
     def __init__(
-        self,
-        url,
-        token=None,
-        private_key=None,
-        private_key_file=None,
-        threading=False,
+        self, url, token=None, private_key=None, private_key_file=None, threading=False,
     ):
         if private_key and private_key_file:
             raise ValueError(
@@ -81,8 +76,10 @@ class Api(object):
         self.session_key = None
         self.http_session = requests.Session()
         if threading and sys.version_info.major == 2:
-            raise NotImplementedError("Threaded pynetbox calls not supported \
-                in Python 2")
+            raise NotImplementedError(
+                "Threaded pynetbox calls not supported \
+                in Python 2"
+            )
         self.threading = threading
 
         if self.private_key_file:
@@ -119,8 +116,7 @@ class Api(object):
         >>>
         """
         version = Request(
-            base=self.base_url,
-            http_session=self.http_session,
+            base=self.base_url, http_session=self.http_session,
         ).get_version()
         return version
 
@@ -143,6 +139,5 @@ class Api(object):
         >>>
         """
         return Request(
-            base=self.base_url,
-            http_session=self.http_session,
+            base=self.base_url, http_session=self.http_session,
         ).get_openapi()

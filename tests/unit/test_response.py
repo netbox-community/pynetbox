@@ -115,10 +115,7 @@ class RecordTestCase(unittest.TestCase):
     def test_choices_idempotence_prev27(self):
         test_values = {
             "id": 123,
-            "choices_test": {
-                "value": 1,
-                "label": "test",
-            },
+            "choices_test": {"value": 1, "label": "test",},
         }
         test = Record(test_values, None, None)
         test.choices_test = 1
@@ -127,11 +124,7 @@ class RecordTestCase(unittest.TestCase):
     def test_choices_idempotence_v27(self):
         test_values = {
             "id": 123,
-            "choices_test": {
-                "value": "test",
-                "label": "test",
-                "id": 1,
-            },
+            "choices_test": {"value": "test", "label": "test", "id": 1,},
         }
         test = Record(test_values, None, None)
         test.choices_test = "test"
@@ -140,10 +133,7 @@ class RecordTestCase(unittest.TestCase):
     def test_choices_idempotence_v28(self):
         test_values = {
             "id": 123,
-            "choices_test": {
-                "value": "test",
-                "label": "test",
-            },
+            "choices_test": {"value": "test", "label": "test",},
         }
         test = Record(test_values, None, None)
         test.choices_test = "test"
@@ -179,28 +169,39 @@ class RecordTestCase(unittest.TestCase):
 
     def test_nested_write(self):
         app = Mock()
-        app.token = 'abc123'
-        app.base_url = 'http://localhost:8080/api'
+        app.token = "abc123"
+        app.base_url = "http://localhost:8080/api"
         endpoint = Mock()
         endpoint.name = "test-endpoint"
-        test = Record({
-            'id': 123,
-            'name': 'test',
-            'child': {
-                'id': 321,
-                'name': 'test123',
-                'url': 'http://localhost:8080/api/test-app/test-endpoint/',
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "child": {
+                    "id": 321,
+                    "name": "test123",
+                    "url": "http://localhost:8080/api/test-app/test-endpoint/",
+                },
             },
-        }, app, endpoint)
-        test.child.name = 'test321'
+            app,
+            endpoint,
+        )
+        test.child.name = "test321"
         test.child.save()
-        self.assertEqual(app.http_session.patch.call_args[0][0], "http://localhost:8080/api/test-app/test-endpoint/")
+        self.assertEqual(
+            app.http_session.patch.call_args[0][0],
+            "http://localhost:8080/api/test-app/test-endpoint/",
+        )
 
     def test_endpoint_from_url(self):
-        test = Record({
-            'id': 123,
-            'name': 'test',
-            'url': 'http://localhost:8080/api/test-app/test-endpoint/1/',
-        }, Mock(), None)
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "url": "http://localhost:8080/api/test-app/test-endpoint/1/",
+            },
+            Mock(),
+            None,
+        )
         ret = test._endpoint_from_url(test.url)
         self.assertEqual(ret.name, "test-endpoint")

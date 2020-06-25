@@ -56,14 +56,14 @@ def get_return(lookup, return_fields=None):
 
 def flatten_custom(custom_dict):
     return {
-        k: v if not isinstance(v, dict) else v["value"]
-        for k, v in custom_dict.items()
+        k: v if not isinstance(v, dict) else v["value"] for k, v in custom_dict.items()
     }
 
 
 class JsonField(object):
     """Explicit field type for values that are not to be converted
     to a Record object"""
+
     _json_field = True
 
 
@@ -167,8 +167,8 @@ class Record(object):
         self.api = api
         self.default_ret = Record
         self.endpoint = (
-            self._endpoint_from_url(values['url'])
-            if values and 'url' in values
+            self._endpoint_from_url(values["url"])
+            if values and "url" in values
             else endpoint
         )
         if values:
@@ -208,9 +208,7 @@ class Record(object):
         return item
 
     def __str__(self):
-        return (
-            getattr(self, "name", None) or getattr(self, "label", None) or ""
-        )
+        return getattr(self, "name", None) or getattr(self, "label", None) or ""
 
     def __repr__(self):
         return str(self)
@@ -225,7 +223,7 @@ class Record(object):
         if hasattr(self, "id"):
             return (self.endpoint.name, self.id)
         else:
-            return (self.endpoint.name)
+            return self.endpoint.name
 
     def __hash__(self):
         return hash(self.__key__())
@@ -343,14 +341,11 @@ class Record(object):
                 ret[i] = flatten_custom(current_val)
             else:
                 if isinstance(current_val, Record):
-                    current_val = getattr(current_val, "serialize")(
-                        nested=True
-                    )
+                    current_val = getattr(current_val, "serialize")(nested=True)
 
                 if isinstance(current_val, list):
                     current_val = [
-                        v.id if isinstance(v, Record) else v
-                        for v in current_val
+                        v.id if isinstance(v, Record) else v for v in current_val
                     ]
                     if i in LIST_AS_SET:
                         current_val = list(set(current_val))
@@ -365,9 +360,7 @@ class Record(object):
                 return k, ",".join(map(str, v))
             return k, v
 
-        current = Hashabledict(
-            {fmt_dict(k, v) for k, v in self.serialize().items()}
-        )
+        current = Hashabledict({fmt_dict(k, v) for k, v in self.serialize().items()})
         init = Hashabledict(
             {fmt_dict(k, v) for k, v in self.serialize(init=True).items()}
         )

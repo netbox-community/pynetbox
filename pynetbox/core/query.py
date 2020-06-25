@@ -58,9 +58,7 @@ class RequestError(Exception):
         req = message
 
         if req.status_code == 404:
-            message = "The requested url: {} could not be found.".format(
-                req.url
-            )
+            message = "The requested url: {} could not be found.".format(req.url)
         else:
             try:
                 message = "The request failed with code {} {}: {}".format(
@@ -113,8 +111,7 @@ class ContentError(Exception):
         req = message
 
         message = (
-            "The server returned invalid (non-json) data. Maybe not "
-            "a NetBox server?"
+            "The server returned invalid (non-json) data. Maybe not " "a NetBox server?"
         )
 
         super(ContentError, self).__init__(message)
@@ -200,10 +197,7 @@ class Request(object):
         headers = {
             "Content-Type": "application/json;",
         }
-        req = requests.get(
-            self.normalize_url(self.base),
-            headers=headers,
-        )
+        req = requests.get(self.normalize_url(self.base), headers=headers,)
         if req.ok:
             return req.headers.get("API-Version", "")
         else:
@@ -242,9 +236,7 @@ class Request(object):
 
         return url
 
-    def _make_call(
-        self, verb="get", url_override=None, add_params=None, data=None
-    ):
+    def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
         if verb in ("post", "put"):
             headers = {"Content-Type": "application/json;"}
         else:
@@ -263,8 +255,7 @@ class Request(object):
                 params.update(add_params)
 
         req = getattr(self.http_session, verb)(
-            url_override or self.url, headers=headers,
-            params=params, json=data
+            url_override or self.url, headers=headers, params=params, json=data
         )
 
         if req.status_code == 204 and verb == "post":
@@ -318,10 +309,12 @@ class Request(object):
                     # passed in here because results from detail routes aren't
                     # paginated, thus far.
                     if first_run:
-                        req = self._make_call(add_params={
-                            "limit": req["count"],
-                            "offset": len(req["results"])
-                        })
+                        req = self._make_call(
+                            add_params={
+                                "limit": req["count"],
+                                "offset": len(req["results"]),
+                            }
+                        )
                     else:
                         req = self._make_call(url_override=req["next"])
                     first_run = False
