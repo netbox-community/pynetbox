@@ -19,6 +19,15 @@ from pynetbox.core.response import Record
 RESERVED_KWARGS = ("id", "pk", "limit", "offset")
 
 
+def response_loader(req, return_obj, endpoint):
+    if isinstance(req, list):
+        return [
+            return_obj(i, endpoint.api, endpoint)
+            for i in req
+        ]
+    return return_obj(req, endpoint.api, endpoint)
+
+
 class Endpoint(object):
     """Represent actions available on endpoints in the Netbox API.
 
@@ -73,9 +82,6 @@ class Endpoint(object):
             ret = Record
         return ret
 
-    def _response_loader(self, values):
-        return self.return_obj(values, self.api, self)
-
     def all(self):
         """Queries the 'ListView' of a given endpoint.
 
@@ -97,7 +103,7 @@ class Endpoint(object):
             threading=self.api.threading,
         )
 
-        return [self._response_loader(i) for i in req.get()]
+        return response_loader(req.get(), self.return_obj, self)
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
@@ -157,7 +163,7 @@ class Endpoint(object):
         except RequestError:
             return None
 
-        return self._response_loader(req.get())
+        return response_loader(req.get(), self.return_obj, self)
 
     def filter(self, *args, **kwargs):
         r"""Queries the 'ListView' of a given endpoint.
@@ -223,8 +229,7 @@ class Endpoint(object):
             threading=self.api.threading,
         )
 
-        ret = [self._response_loader(i) for i in req.get()]
-        return ret
+        return response_loader(req.get(), self.return_obj, self)
 
     def create(self, *args, **kwargs):
         r"""Creates an object on an endpoint.
@@ -284,10 +289,7 @@ class Endpoint(object):
             http_session=self.api.http_session,
         ).post(args[0] if args else kwargs)
 
-        if isinstance(req, list):
-            return [self._response_loader(i) for i in req]
-
-        return self._response_loader(req)
+        return response_loader(req, self.return_obj, self)
 
     def choices(self):
         """ Returns all choices from the endpoint.
@@ -429,15 +431,8 @@ class DetailEndpoint(object):
         req = Request(**self.request_kwargs).get(add_params=kwargs)
 
         if self.custom_return:
-            if isinstance(req, list):
-                return [
-                    self.custom_return(
-                        i, self.parent_obj.api, self.parent_obj.endpoint
-                    )
-                    for i in req
-                ]
-            return self.custom_return(
-                req, self.parent_obj.api, self.parent_obj.endpoint
+            return response_loader(
+                req, self.custom_return, self.parent_obj.endpoint
             )
         return req
 
@@ -454,9 +449,13 @@ class DetailEndpoint(object):
         :returns: A dictionary or list of dictionaries its created in
             NetBox.
         """
-        if not data:
-            return Request(**self.request_kwargs).post({})
-        return Request(**self.request_kwargs).post(data)
+        data = data or {}
+        req = Request(**self.request_kwargs).post(data)
+        if self.custom_return:
+            return response_loader(
+                req, self.custom_return, self.parent_obj.endpoint
+            )
+        return req
 
 
 class RODetailEndpoint(DetailEndpoint):
