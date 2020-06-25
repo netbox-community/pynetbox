@@ -55,7 +55,7 @@ class Prefixes(Record):
         >>> len(create)
         2
         """
-        return DetailEndpoint(self, "available-ips")
+        return DetailEndpoint(self, "available-ips", custom_return=IpAddresses)
 
     @property
     def available_prefixes(self):
@@ -86,7 +86,7 @@ class Prefixes(Record):
         u'10.1.1.56/29'
 
         """
-        return DetailEndpoint(self, "available-prefixes")
+        return DetailEndpoint(self, "available-prefixes", custom_return=Prefixes)
 
 
 class Aggregates(Record):

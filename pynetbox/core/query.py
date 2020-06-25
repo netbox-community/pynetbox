@@ -58,9 +58,7 @@ class RequestError(Exception):
         req = message
 
         if req.status_code == 404:
-            message = "The requested url: {} could not be found.".format(
-                req.url
-            )
+            message = "The requested url: {} could not be found.".format(req.url)
         else:
             try:
                 message = "The request failed with code {} {}: {}".format(
@@ -113,8 +111,7 @@ class ContentError(Exception):
         req = message
 
         message = (
-            "The server returned invalid (non-json) data. Maybe not "
-            "a NetBox server?"
+            "The server returned invalid (non-json) data. Maybe not " "a NetBox server?"
         )
 
         super(ContentError, self).__init__(message)
@@ -148,8 +145,6 @@ class Request(object):
         token=None,
         private_key=None,
         session_key=None,
-        ssl_verify=True,
-        url=None,
         threading=False,
     ):
         """
@@ -171,10 +166,23 @@ class Request(object):
         self.token = token
         self.private_key = private_key
         self.session_key = session_key
-        self.ssl_verify = ssl_verify
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
+
+    def get_openapi(self):
+        """ Gets the OpenAPI Spec """
+        headers = {
+            "Content-Type": "application/json;",
+        }
+        req = self.http_session.get(
+            "{}docs/?format=openapi".format(self.normalize_url(self.base)),
+            headers=headers,
+        )
+        if req.ok:
+            return req.json()
+        else:
+            raise RequestError(req)
 
     def get_version(self):
         """ Gets the API version of NetBox.
@@ -189,11 +197,7 @@ class Request(object):
         headers = {
             "Content-Type": "application/json;",
         }
-        req = requests.get(
-            self.normalize_url(self.base),
-            headers=headers,
-            verify=self.ssl_verify,
-        )
+        req = requests.get(self.normalize_url(self.base), headers=headers,)
         if req.ok:
             return req.headers.get("API-Version", "")
         else:
@@ -215,7 +219,6 @@ class Request(object):
                 "Content-Type": "application/x-www-form-urlencoded",
             },
             data=urlencode({"private_key": self.private_key.strip("\n")}),
-            verify=self.ssl_verify,
         )
         if req.ok:
             try:
@@ -233,9 +236,7 @@ class Request(object):
 
         return url
 
-    def _make_call(
-        self, verb="get", url_override=None, add_params=None, data=None
-    ):
+    def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
         if verb in ("post", "put"):
             headers = {"Content-Type": "application/json;"}
         else:
@@ -254,8 +255,7 @@ class Request(object):
                 params.update(add_params)
 
         req = getattr(self.http_session, verb)(
-            url_override or self.url, headers=headers, verify=self.ssl_verify,
-            params=params, json=data
+            url_override or self.url, headers=headers, params=params, json=data
         )
 
         if req.status_code == 204 and verb == "post":
@@ -309,10 +309,12 @@ class Request(object):
                     # passed in here because results from detail routes aren't
                     # paginated, thus far.
                     if first_run:
-                        req = self._make_call(add_params={
-                            "limit": req["count"],
-                            "offset": len(req["results"])
-                        })
+                        req = self._make_call(
+                            add_params={
+                                "limit": req["count"],
+                                "offset": len(req["results"]),
+                            }
+                        )
                     else:
                         req = self._make_call(url_override=req["next"])
                     first_run = False

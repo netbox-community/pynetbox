@@ -13,10 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.core.query import Request, url_param_builder
+from pynetbox.core.query import Request, RequestError, url_param_builder
 from pynetbox.core.response import Record
 
 RESERVED_KWARGS = ("id", "pk", "limit", "offset")
+
+
+def response_loader(req, return_obj, endpoint):
+    if isinstance(req, list):
+        return [return_obj(i, endpoint.api, endpoint) for i in req]
+    return return_obj(req, endpoint.api, endpoint)
 
 
 class Endpoint(object):
@@ -47,11 +53,8 @@ class Endpoint(object):
         self.base_url = api.base_url
         self.token = api.token
         self.session_key = api.session_key
-        self.ssl_verify = api.ssl_verify
         self.url = "{base_url}/{app}/{endpoint}".format(
-            base_url=self.base_url,
-            app=app.name,
-            endpoint=self.name,
+            base_url=self.base_url, app=app.name, endpoint=self.name,
         )
         self._choices = None
 
@@ -74,9 +77,6 @@ class Endpoint(object):
             ret = Record
         return ret
 
-    def _response_loader(self, values):
-        return self.return_obj(values, self.api, self)
-
     def all(self):
         """Queries the 'ListView' of a given endpoint.
 
@@ -94,12 +94,11 @@ class Endpoint(object):
             base="{}/".format(self.url),
             token=self.token,
             session_key=self.session_key,
-            ssl_verify=self.ssl_verify,
             http_session=self.api.http_session,
             threading=self.api.threading,
         )
 
-        return [self._response_loader(i) for i in req.get()]
+        return response_loader(req.get(), self.return_obj, self)
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
@@ -148,16 +147,18 @@ class Endpoint(object):
                     return filter_lookup[0]
             return None
 
-        req = Request(
-            key=key,
-            base=self.url,
-            token=self.token,
-            session_key=self.session_key,
-            ssl_verify=self.ssl_verify,
-            http_session=self.api.http_session,
-        )
+        try:
+            req = Request(
+                key=key,
+                base=self.url,
+                token=self.token,
+                session_key=self.session_key,
+                http_session=self.api.http_session,
+            )
+        except RequestError:
+            return None
 
-        return self._response_loader(req.get())
+        return response_loader(req.get(), self.return_obj, self)
 
     def filter(self, *args, **kwargs):
         r"""Queries the 'ListView' of a given endpoint.
@@ -205,9 +206,7 @@ class Endpoint(object):
             kwargs.update({"q": args[0]})
 
         if not kwargs:
-            raise ValueError(
-                "filter must be passed kwargs. Perhaps use all() instead."
-            )
+            raise ValueError("filter must be passed kwargs. Perhaps use all() instead.")
         if any(i in RESERVED_KWARGS for i in kwargs):
             raise ValueError(
                 "A reserved {} kwarg was passed. Please remove it "
@@ -219,13 +218,11 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            ssl_verify=self.ssl_verify,
             http_session=self.api.http_session,
             threading=self.api.threading,
         )
 
-        ret = [self._response_loader(i) for i in req.get()]
-        return ret
+        return response_loader(req.get(), self.return_obj, self)
 
     def create(self, *args, **kwargs):
         r"""Creates an object on an endpoint.
@@ -282,14 +279,10 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            ssl_verify=self.ssl_verify,
             http_session=self.api.http_session,
         ).post(args[0] if args else kwargs)
 
-        if isinstance(req, list):
-            return [self._response_loader(i) for i in req]
-
-        return self._response_loader(req)
+        return response_loader(req, self.return_obj, self)
 
     def choices(self):
         """ Returns all choices from the endpoint.
@@ -327,21 +320,18 @@ class Endpoint(object):
             base=self.url,
             token=self.api.token,
             private_key=self.api.private_key,
-            ssl_verify=self.api.ssl_verify,
             http_session=self.api.http_session,
         ).options()
         try:
-            post_data = req['actions']['POST']
+            post_data = req["actions"]["POST"]
         except KeyError:
             raise ValueError(
-                "Unexpected format in the OPTIONS response at {}".format(
-                    self.url
-                )
+                "Unexpected format in the OPTIONS response at {}".format(self.url)
             )
         self._choices = {}
         for prop in post_data:
-            if 'choices' in post_data[prop]:
-                self._choices[prop] = post_data[prop]['choices']
+            if "choices" in post_data[prop]:
+                self._choices[prop] = post_data[prop]["choices"]
 
         return self._choices
 
@@ -390,7 +380,6 @@ class Endpoint(object):
             base=self.url,
             token=self.token,
             session_key=self.session_key,
-            ssl_verify=self.ssl_verify,
             http_session=self.api.http_session,
         )
 
@@ -407,14 +396,11 @@ class DetailEndpoint(object):
     def __init__(self, parent_obj, name, custom_return=None):
         self.parent_obj = parent_obj
         self.custom_return = custom_return
-        self.url = "{}/{}/{}/".format(
-            parent_obj.endpoint.url, parent_obj.id, name
-        )
+        self.url = "{}/{}/{}/".format(parent_obj.endpoint.url, parent_obj.id, name)
         self.request_kwargs = dict(
             base=self.url,
             token=parent_obj.api.token,
             session_key=parent_obj.api.session_key,
-            ssl_verify=parent_obj.api.ssl_verify,
             http_session=parent_obj.api.http_session,
         )
 
@@ -434,16 +420,7 @@ class DetailEndpoint(object):
         req = Request(**self.request_kwargs).get(add_params=kwargs)
 
         if self.custom_return:
-            if isinstance(req, list):
-                return [
-                    self.custom_return(
-                        i, self.parent_obj.api, self.parent_obj.endpoint
-                    )
-                    for i in req
-                ]
-            return self.custom_return(
-                req, self.parent_obj.api, self.parent_obj.endpoint
-            )
+            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
         return req
 
     def create(self, data=None):
@@ -459,13 +436,13 @@ class DetailEndpoint(object):
         :returns: A dictionary or list of dictionaries its created in
             NetBox.
         """
-        if not data:
-            return Request(**self.request_kwargs).post({})
-        return Request(**self.request_kwargs).post(data)
+        data = data or {}
+        req = Request(**self.request_kwargs).post(data)
+        if self.custom_return:
+            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
+        return req
 
 
 class RODetailEndpoint(DetailEndpoint):
     def create(self, data):
-        raise NotImplementedError(
-            "Writes are not supported for this endpoint."
-        )
+        raise NotImplementedError("Writes are not supported for this endpoint.")

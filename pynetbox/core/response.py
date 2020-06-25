@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import pynetbox.core.app
+from six.moves.urllib.parse import urlsplit
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
@@ -54,14 +56,14 @@ def get_return(lookup, return_fields=None):
 
 def flatten_custom(custom_dict):
     return {
-        k: v if not isinstance(v, dict) else v["value"]
-        for k, v in custom_dict.items()
+        k: v if not isinstance(v, dict) else v["value"] for k, v in custom_dict.items()
     }
 
 
 class JsonField(object):
     """Explicit field type for values that are not to be converted
     to a Record object"""
+
     _json_field = True
 
 
@@ -163,9 +165,12 @@ class Record(object):
         self._full_cache = []
         self._init_cache = []
         self.api = api
-        self.endpoint = endpoint
         self.default_ret = Record
-
+        self.endpoint = (
+            self._endpoint_from_url(values["url"])
+            if values and "url" in values
+            else endpoint
+        )
         if values:
             self._parse_values(values)
 
@@ -203,9 +208,7 @@ class Record(object):
         return item
 
     def __str__(self):
-        return (
-            getattr(self, "name", None) or getattr(self, "label", None) or ""
-        )
+        return getattr(self, "name", None) or getattr(self, "label", None) or ""
 
     def __repr__(self):
         return str(self)
@@ -220,7 +223,7 @@ class Record(object):
         if hasattr(self, "id"):
             return (self.endpoint.name, self.id)
         else:
-            return (self.endpoint.name)
+            return self.endpoint.name
 
     def __hash__(self):
         return hash(self.__key__())
@@ -268,6 +271,10 @@ class Record(object):
                 self._add_cache((k, v))
             setattr(self, k, v)
 
+    def _endpoint_from_url(self, url):
+        app, name = urlsplit(url).path.split("/")[2:4]
+        return getattr(pynetbox.core.app.App(self.api, app), name)
+
     def _compare(self):
         """Compares current attributes to values at instantiation.
 
@@ -297,7 +304,6 @@ class Record(object):
                 base=self.url,
                 token=self.api.token,
                 session_key=self.api.session_key,
-                ssl_verify=self.api.ssl_verify,
                 http_session=self.api.http_session,
             )
             self._parse_values(req.get())
@@ -335,14 +341,11 @@ class Record(object):
                 ret[i] = flatten_custom(current_val)
             else:
                 if isinstance(current_val, Record):
-                    current_val = getattr(current_val, "serialize")(
-                        nested=True
-                    )
+                    current_val = getattr(current_val, "serialize")(nested=True)
 
                 if isinstance(current_val, list):
                     current_val = [
-                        v.id if isinstance(v, Record) else v
-                        for v in current_val
+                        v.id if isinstance(v, Record) else v for v in current_val
                     ]
                     if i in LIST_AS_SET:
                         current_val = list(set(current_val))
@@ -357,9 +360,7 @@ class Record(object):
                 return k, ",".join(map(str, v))
             return k, v
 
-        current = Hashabledict(
-            {fmt_dict(k, v) for k, v in self.serialize().items()}
-        )
+        current = Hashabledict({fmt_dict(k, v) for k, v in self.serialize().items()})
         init = Hashabledict(
             {fmt_dict(k, v) for k, v in self.serialize(init=True).items()}
         )
@@ -388,10 +389,9 @@ class Record(object):
                 serialized = self.serialize()
                 req = Request(
                     key=self.id if not self.url else None,
-                    base=self.url or self.endpoint.url,
+                    base=self.endpoint.url,
                     token=self.api.token,
                     session_key=self.api.session_key,
-                    ssl_verify=self.api.ssl_verify,
                     http_session=self.api.http_session,
                 )
                 if req.patch({i: serialized[i] for i in diff}):
@@ -437,10 +437,9 @@ class Record(object):
         """
         req = Request(
             key=self.id if not self.url else None,
-            base=self.url or self.endpoint.url,
+            base=self.endpoint.url,
             token=self.api.token,
             session_key=self.api.session_key,
-            ssl_verify=self.api.ssl_verify,
             http_session=self.api.http_session,
         )
         return True if req.delete() else False

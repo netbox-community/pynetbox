@@ -1,5 +1,5 @@
 {
-    "count": 1,
+    "count": 3,
     "next": null,
     "previous": null,
     "results": [
@@ -27,6 +27,58 @@
             },
             "description": "",
             "display_name": "999 (TEST)",
+            "custom_fields": {}
+        },
+        {
+            "id": 2,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "group": null,
+            "vid": 2069,
+            "name": "v2069",
+            "tenant": null,
+            "status": {
+                "value": 1,
+                "label": "Active"
+            },
+            "role": {
+                "id": 1,
+                "url": "http://localhost:8000/api/ipam/roles/1/",
+                "name": "Lab Network",
+                "slug": "lab-network"
+            },
+            "description": "",
+            "display_name": "2069 (v2069)",
+            "custom_fields": {}
+        },
+        {
+            "id": 3,
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "name": "TEST1",
+                "slug": "test1"
+            },
+            "group": null,
+            "vid": 1210,
+            "name": "v1210",
+            "tenant": null,
+            "status": {
+                "value": 1,
+                "label": "Active"
+            },
+            "role": {
+                "id": 1,
+                "url": "http://localhost:8000/api/ipam/roles/1/",
+                "name": "Lab Network",
+                "slug": "lab-network"
+            },
+            "description": "",
+            "display_name": "1210 (v1210)",
             "custom_fields": {}
         }
     ]
