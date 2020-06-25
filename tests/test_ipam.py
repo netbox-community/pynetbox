@@ -162,18 +162,6 @@ class PrefixTestCase(Generic.Tests):
         return_value=Response(fixture='ipam/prefix.json'),
     )
     def test_create_available_ips(self, _, post):
-        expected_result = {
-            'status': 1,
-            'description': '',
-            'nat_inside': None,
-            'role': None,
-            'vrf': None,
-            'address':
-            '10.1.1.1/32',
-            'interface': None,
-            'id': 1,
-            'tenant': None
-        }
         create_parms = dict(
             status=2,
         )
@@ -186,7 +174,7 @@ class PrefixTestCase(Generic.Tests):
             json=create_parms,
         )
         self.assertTrue(ret)
-        self.assertEqual(ret, expected_result)
+        self.assertTrue(isinstance(ret, pynetbox.models.ipam.IpAddresses))
 
     @patch(
         'pynetbox.core.query.requests.sessions.Session.get',
@@ -227,6 +215,7 @@ class PrefixTestCase(Generic.Tests):
             json=create_parms,
         )
         self.assertTrue(ret)
+        self.assertTrue(isinstance(ret[0], pynetbox.models.ipam.Prefixes))
 
 
 class IPAddressTestCase(Generic.Tests):

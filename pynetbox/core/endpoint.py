@@ -454,9 +454,11 @@ class DetailEndpoint(object):
         :returns: A dictionary or list of dictionaries its created in
             NetBox.
         """
-        if not data:
-            return Request(**self.request_kwargs).post({})
-        return Request(**self.request_kwargs).post(data)
+        data = data or {}
+        req = Request(**self.request_kwargs).post(data)
+        if self.custom_return:
+            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
+        return req
 
 
 class RODetailEndpoint(DetailEndpoint):
