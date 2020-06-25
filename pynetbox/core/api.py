@@ -22,7 +22,7 @@ from pynetbox.core.app import App
 
 
 class Api(object):
-    """ The API object is the point of entry to pynetbox.
+    """The API object is the point of entry to pynetbox.
 
     After instantiating the Api() with the appropriate named arguments
     you can specify which app and endpoint you wish to interact with.
@@ -38,6 +38,13 @@ class Api(object):
 
     Calling any of these attributes will return
     :py:class:`.App` which exposes endpoints as attributes.
+
+    **Additional Attributes**:
+        *  **http_session(requests.Session)**:
+                Override the default session with your own. This is used to control
+                a number of HTTP behaviors such as SSL verification, custom headers,
+                retires, and timeouts.
+                See `custom sessions <advanced.html#custom-sessions>`__ for more info.
 
     :param str url: The base URL to the instance of NetBox you
         wish to connect to.
@@ -77,8 +84,7 @@ class Api(object):
         self.http_session = requests.Session()
         if threading and sys.version_info.major == 2:
             raise NotImplementedError(
-                "Threaded pynetbox calls not supported \
-                in Python 2"
+                "Threaded pynetbox calls not supported                 in Python 2"
             )
         self.threading = threading
 
@@ -97,7 +103,7 @@ class Api(object):
 
     @property
     def version(self):
-        """ Gets the API version of NetBox.
+        """Gets the API version of NetBox.
 
         Can be used to check the NetBox API version if there are
         version-dependent features or syntaxes in the API.
@@ -121,7 +127,7 @@ class Api(object):
         return version
 
     def openapi(self):
-        """ Returns the OpenAPI spec.
+        """Returns the OpenAPI spec.
 
         Quick helper function to pull down the entire OpenAPI spec.
 
