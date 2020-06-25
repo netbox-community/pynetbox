@@ -431,7 +431,9 @@ class DetailEndpoint(object):
         req = Request(**self.request_kwargs).get(add_params=kwargs)
 
         if self.custom_return:
-            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
+            return response_loader(
+                req, self.custom_return, self.parent_obj.endpoint
+            )
         return req
 
     def create(self, data=None):
@@ -450,7 +452,9 @@ class DetailEndpoint(object):
         data = data or {}
         req = Request(**self.request_kwargs).post(data)
         if self.custom_return:
-            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
+            return response_loader(
+                req, self.custom_return, self.parent_obj.endpoint
+            )
         return req
 
 
