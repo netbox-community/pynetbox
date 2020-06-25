@@ -21,10 +21,7 @@ RESERVED_KWARGS = ("id", "pk", "limit", "offset")
 
 def response_loader(req, return_obj, endpoint):
     if isinstance(req, list):
-        return [
-            return_obj(i, endpoint.api, endpoint)
-            for i in req
-        ]
+        return [return_obj(i, endpoint.api, endpoint) for i in req]
     return return_obj(req, endpoint.api, endpoint)
 
 
@@ -57,9 +54,7 @@ class Endpoint(object):
         self.token = api.token
         self.session_key = api.session_key
         self.url = "{base_url}/{app}/{endpoint}".format(
-            base_url=self.base_url,
-            app=app.name,
-            endpoint=self.name,
+            base_url=self.base_url, app=app.name, endpoint=self.name,
         )
         self._choices = None
 
@@ -211,9 +206,7 @@ class Endpoint(object):
             kwargs.update({"q": args[0]})
 
         if not kwargs:
-            raise ValueError(
-                "filter must be passed kwargs. Perhaps use all() instead."
-            )
+            raise ValueError("filter must be passed kwargs. Perhaps use all() instead.")
         if any(i in RESERVED_KWARGS for i in kwargs):
             raise ValueError(
                 "A reserved {} kwarg was passed. Please remove it "
@@ -330,17 +323,15 @@ class Endpoint(object):
             http_session=self.api.http_session,
         ).options()
         try:
-            post_data = req['actions']['POST']
+            post_data = req["actions"]["POST"]
         except KeyError:
             raise ValueError(
-                "Unexpected format in the OPTIONS response at {}".format(
-                    self.url
-                )
+                "Unexpected format in the OPTIONS response at {}".format(self.url)
             )
         self._choices = {}
         for prop in post_data:
-            if 'choices' in post_data[prop]:
-                self._choices[prop] = post_data[prop]['choices']
+            if "choices" in post_data[prop]:
+                self._choices[prop] = post_data[prop]["choices"]
 
         return self._choices
 
@@ -405,9 +396,7 @@ class DetailEndpoint(object):
     def __init__(self, parent_obj, name, custom_return=None):
         self.parent_obj = parent_obj
         self.custom_return = custom_return
-        self.url = "{}/{}/{}/".format(
-            parent_obj.endpoint.url, parent_obj.id, name
-        )
+        self.url = "{}/{}/{}/".format(parent_obj.endpoint.url, parent_obj.id, name)
         self.request_kwargs = dict(
             base=self.url,
             token=parent_obj.api.token,
@@ -431,9 +420,7 @@ class DetailEndpoint(object):
         req = Request(**self.request_kwargs).get(add_params=kwargs)
 
         if self.custom_return:
-            return response_loader(
-                req, self.custom_return, self.parent_obj.endpoint
-            )
+            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
         return req
 
     def create(self, data=None):
@@ -452,14 +439,10 @@ class DetailEndpoint(object):
         data = data or {}
         req = Request(**self.request_kwargs).post(data)
         if self.custom_return:
-            return response_loader(
-                req, self.custom_return, self.parent_obj.endpoint
-            )
+            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
         return req
 
 
 class RODetailEndpoint(DetailEndpoint):
     def create(self, data):
-        raise NotImplementedError(
-            "Writes are not supported for this endpoint."
-        )
+        raise NotImplementedError("Writes are not supported for this endpoint.")

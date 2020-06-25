@@ -11,14 +11,11 @@ else:
 
 
 class EndPointTestCase(unittest.TestCase):
-
     def test_filter(self):
-        with patch(
-            "pynetbox.core.query.Request.get", return_value=Mock()
-        ) as mock:
+        with patch("pynetbox.core.query.Request.get", return_value=Mock()) as mock:
             api = Mock(base_url="http://localhost:8000/api")
             app = Mock(name="test")
-            mock.return_value = [{'id': 123}, {'id': 321}]
+            mock.return_value = [{"id": 123}, {"id": 321}]
             test_obj = Endpoint(api, app, "test")
             test = test_obj.filter(test="test")
             self.assertEqual(len(test), 2)
@@ -40,9 +37,7 @@ class EndPointTestCase(unittest.TestCase):
             test_obj.filter(id=1)
 
     def test_choices(self):
-        with patch(
-            "pynetbox.core.query.Request.options", return_value=Mock()
-        ) as mock:
+        with patch("pynetbox.core.query.Request.options", return_value=Mock()) as mock:
             api = Mock(base_url="http://localhost:8000/api")
             app = Mock(name="test")
             mock.return_value = {

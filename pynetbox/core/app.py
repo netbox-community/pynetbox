@@ -27,6 +27,7 @@ class App(object):
     :raises: :py:class:`.RequestError`
         if requested endpoint doesn't exist.
     """
+
     def __init__(self, api, name):
         self.api = api
         self.name = name
@@ -38,18 +39,14 @@ class App(object):
         "ipam": ipam,
         "circuits": circuits,
         "virtualization": virtualization,
-        "extras": extras
+        "extras": extras,
     }
 
     def _setmodel(self):
         self.model = App.models[self.name] if self.name in App.models else None
 
     def __getstate__(self):
-        return {
-            'api': self.api,
-            'name': self.name,
-            '_choices': self._choices
-        }
+        return {"api": self.api, "name": self.name, "_choices": self._choices}
 
     def __setstate__(self, d):
         self.__dict__.update(d)
@@ -68,7 +65,7 @@ class App(object):
                 base=self.api.base_url,
                 token=self.api.token,
                 private_key=self.api.private_key,
-                http_session=self.api.http_session
+                http_session=self.api.http_session,
             ).get_session_key()
 
     def choices(self):
@@ -106,10 +103,7 @@ class App(object):
          'Testfield2': {'Othervalue2': 4, 'Othervalue1': 3}}
         """
         custom_field_choices = Request(
-            base="{}/{}/_custom_field_choices/".format(
-                self.api.base_url,
-                self.name,
-            ),
+            base="{}/{}/_custom_field_choices/".format(self.api.base_url, self.name,),
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
