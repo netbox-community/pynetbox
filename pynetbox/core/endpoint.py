@@ -295,22 +295,22 @@ class Endpoint(object):
 
         :Returns: Dict containing the available choices.
 
-        :Examples:
+        :Example (from NetBox 2.8.x):
 
         >>> from pprint import pprint
         >>> pprint(nb.ipam.ip_addresses.choices())
-        {'role': [{'display_name': 'Secondary', 'value': 20},
-                  {'display_name': 'VIP', 'value': 40},
-                  {'display_name': 'VRRP', 'value': 41},
-                  {'display_name': 'Loopback', 'value': 10},
-                  {'display_name': 'GLBP', 'value': 43},
-                  {'display_name': 'CARP', 'value': 44},
-                  {'display_name': 'HSRP', 'value': 42},
-                  {'display_name': 'Anycast', 'value': 30}],
-         'status': [{'display_name': 'Active', 'value': 1},
-                    {'display_name': 'Reserved', 'value': 2},
-                    {'display_name': 'Deprecated', 'value': 3},
-                    {'display_name': 'DHCP', 'value': 5}]}
+        {'role': [{'display_name': 'Loopback', 'value': 'loopback'},
+                  {'display_name': 'Secondary', 'value': 'secondary'},
+                  {'display_name': 'Anycast', 'value': 'anycast'},
+                  {'display_name': 'VIP', 'value': 'vip'},
+                  {'display_name': 'VRRP', 'value': 'vrrp'},
+                  {'display_name': 'HSRP', 'value': 'hsrp'},
+                  {'display_name': 'GLBP', 'value': 'glbp'},
+                  {'display_name': 'CARP', 'value': 'carp'}],
+         'status': [{'display_name': 'Active', 'value': 'active'},
+                    {'display_name': 'Reserved', 'value': 'reserved'},
+                    {'display_name': 'Deprecated', 'value': 'deprecated'},
+                    {'display_name': 'DHCP', 'value': 'dhcp'}]}
         >>>
         """
         if self._choices:
