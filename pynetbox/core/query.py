@@ -197,7 +197,10 @@ class Request(object):
         headers = {
             "Content-Type": "application/json;",
         }
-        req = requests.get(self.normalize_url(self.base), headers=headers,)
+        req = self.http_session.get(
+            self.normalize_url(self.base),
+            headers=headers,
+        )
         if req.ok:
             return req.headers.get("API-Version", "")
         else:
