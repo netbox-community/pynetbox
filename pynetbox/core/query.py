@@ -250,7 +250,7 @@ class Request(object):
         params = {}
         if not url_override:
             if self.filters:
-                params = self.filters
+                params.update(self.filters)
             if add_params:
                 params.update(add_params)
 
