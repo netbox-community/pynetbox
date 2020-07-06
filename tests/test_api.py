@@ -51,7 +51,10 @@ class ApiVersionTestCase(unittest.TestCase):
         headers = {"API-Version": "1.999"}
         ok = True
 
-    @patch("requests.get", return_value=ResponseHeadersWithVersion())
+    @patch(
+        "pynetbox.core.query.requests.sessions.Session.get",
+        return_value=ResponseHeadersWithVersion(),
+    )
     def test_api_version(self, *_):
         api = pynetbox.api(host,)
         self.assertEqual(api.version, "1.999")
@@ -60,7 +63,10 @@ class ApiVersionTestCase(unittest.TestCase):
         headers = {}
         ok = True
 
-    @patch("requests.get", return_value=ResponseHeadersWithoutVersion())
+    @patch(
+        "pynetbox.core.query.requests.sessions.Session.get",
+        return_value=ResponseHeadersWithoutVersion(),
+    )
     def test_api_version_not_found(self, *_):
         api = pynetbox.api(host,)
         self.assertEqual(api.version, "")
