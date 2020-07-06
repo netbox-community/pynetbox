@@ -75,7 +75,7 @@ class Endpoint(object):
     def _response_loader(self, values):
         return self.return_obj(values, self.api, self)
 
-    def all(self):
+    def iall(self):
         """Queries the 'ListView' of a given endpoint.
 
         Returns all objects from an endpoint.
@@ -95,7 +95,12 @@ class Endpoint(object):
             ssl_verify=self.ssl_verify,
         )
 
-        return [self._response_loader(i) for i in req.get()]
+        for i in req.get():
+            yield self._response_loader(i)
+
+    def all(self):
+        """ consumes the above generator and return list of records """
+        return list(self.iall())
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
@@ -154,7 +159,7 @@ class Endpoint(object):
 
         return self._response_loader(req.get())
 
-    def filter(self, *args, **kwargs):
+    def ifilter(self, *args, **kwargs):
         r"""Queries the 'ListView' of a given endpoint.
 
         Takes named arguments that match the usable filters on a
@@ -217,8 +222,11 @@ class Endpoint(object):
             ssl_verify=self.ssl_verify,
         )
 
-        ret = [self._response_loader(i) for i in req.get()]
-        return ret
+        for i in req.get():
+            yield self._response_loader(i)
+
+    def filter(self, *args, **kwargs):
+        return list(self.ifilter(*args, **kwargs))
 
     def create(self, *args, **kwargs):
         r"""Creates an object on an endpoint.

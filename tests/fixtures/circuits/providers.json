@@ -1,5 +1,5 @@
 {
-    "count": 1,
+    "count": 2,
     "next": null,
     "previous": null,
     "results": [
@@ -7,6 +7,18 @@
             "id": 1,
             "name": "TEST",
             "slug": "test",
+            "asn": null,
+            "account": "",
+            "portal_url": "",
+            "noc_contact": "",
+            "admin_contact": "",
+            "comments": "",
+            "custom_fields": {}
+        },
+        {
+            "id": 2,
+            "name": "TEST2",
+            "slug": "test2",
             "asn": null,
             "account": "",
             "portal_url": "",

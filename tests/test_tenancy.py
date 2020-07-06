@@ -9,6 +9,7 @@ if six.PY3:
 else:
     from mock import patch
 
+from typing import Generator
 
 api = pynetbox.api(
     "http://localhost:8000",
@@ -48,6 +49,28 @@ class Generic(object):
                     verify=True
                 )
 
+        def test_get_iall(self):
+            with patch(
+                'pynetbox.core.query.requests.get',
+                return_value=Response(fixture='{}/{}.json'.format(
+                    self.app,
+                    self.name
+                ))
+            ) as mock:
+                ret = getattr(nb, self.name).iall()
+                self.assertTrue(ret)
+                rec1 = next(ret)
+                self.assertTrue(isinstance(ret, Generator))
+                self.assertTrue(isinstance(rec1, self.ret))
+                mock.assert_called_with(
+                    'http://localhost:8000/api/{}/{}/'.format(
+                        self.app,
+                        self.name.replace('_', '-')
+                    ),
+                    headers=HEADERS,
+                    verify=True
+                )
+
         def test_filter(self):
             with patch(
                 'pynetbox.core.query.requests.get',
@@ -60,6 +83,28 @@ class Generic(object):
                 self.assertTrue(ret)
                 self.assertTrue(isinstance(ret, list))
                 self.assertTrue(isinstance(ret[0], self.ret))
+                mock.assert_called_with(
+                    'http://localhost:8000/api/{}/{}/?name=test'.format(
+                        self.app,
+                        self.name.replace('_', '-')
+                    ),
+                    headers=HEADERS,
+                    verify=True
+                )
+
+        def test_ifilter(self):
+            with patch(
+                'pynetbox.core.query.requests.get',
+                return_value=Response(fixture='{}/{}.json'.format(
+                    self.app,
+                    self.name
+                ))
+            ) as mock:
+                ret = getattr(nb, self.name).ifilter(name='test')
+                self.assertTrue(ret)
+                self.assertTrue(isinstance(ret, Generator))
+                rec1 = next(ret)
+                self.assertTrue(isinstance(rec1, self.ret))
                 mock.assert_called_with(
                     'http://localhost:8000/api/{}/{}/?name=test'.format(
                         self.app,
