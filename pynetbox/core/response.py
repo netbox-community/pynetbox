@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import copy
+
 import pynetbox.core.app
 from six.moves.urllib.parse import urlsplit
 from pynetbox.core.query import Request
@@ -235,7 +237,10 @@ class Record(object):
 
     def _add_cache(self, item):
         key, value = item
-        self._init_cache.append((key, get_return(value)))
+        if key == "local_context_data":
+            self._init_cache.append((key, copy.deepcopy(value)))
+        else:
+            self._init_cache.append((key, get_return(value)))
 
     def _parse_values(self, values):
         """ Parses values init arg.
