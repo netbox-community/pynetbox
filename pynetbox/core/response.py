@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+import copy
+
 import pynetbox.core.app
 from six.moves.urllib.parse import urlsplit
 from pynetbox.core.query import Request
@@ -235,7 +237,10 @@ class Record(object):
 
     def _add_cache(self, item):
         key, value = item
-        self._init_cache.append((key, get_return(value)))
+        if key == "local_context_data":
+            self._init_cache.append((key, copy.deepcopy(value)))
+        else:
+            self._init_cache.append((key, get_return(value)))
 
     def _parse_values(self, values):
         """ Parses values init arg.
@@ -252,7 +257,9 @@ class Record(object):
         for k, v in values.items():
             if isinstance(v, dict):
                 lookup = getattr(self.__class__, k, None)
-                if k == "custom_fields" or hasattr(lookup, "_json_field"):
+                if k in ["custom_fields", "local_context_data"] or hasattr(
+                    lookup, "_json_field"
+                ):
                     self._add_cache((k, v.copy()))
                     setattr(self, k, v)
                     continue
@@ -274,20 +281,6 @@ class Record(object):
     def _endpoint_from_url(self, url):
         app, name = urlsplit(url).path.split("/")[2:4]
         return getattr(pynetbox.core.app.App(self.api, app), name)
-
-    def _compare(self):
-        """Compares current attributes to values at instantiation.
-
-        In order to be idempotent we run this method in `save()`.
-
-        Returns:
-            Boolean value, True indicates current instance has the same
-            attributes as the ones passed to `values`.
-        """
-
-        if self.serialize(init=True) == self.serialize():
-            return True
-        return False
 
     def full_details(self):
         """Queries the hyperlinked endpoint if 'url' is defined.

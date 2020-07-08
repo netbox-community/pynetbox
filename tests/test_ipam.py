@@ -107,7 +107,7 @@ class PrefixTestCase(Generic.Tests):
         ret.prefix = "10.1.2.0/24"
         ret_serialized = ret.serialize()
         self.assertTrue(ret_serialized)
-        self.assertFalse(ret._compare())
+        self.assertEqual(ret._diff(), {"prefix"})
         self.assertEqual(ret_serialized["prefix"], "10.1.2.0/24")
 
     @patch(
@@ -216,7 +216,7 @@ class IPAddressTestCase(Generic.Tests):
         ret.description = "testing"
         ret_serialized = ret.serialize()
         self.assertTrue(ret_serialized)
-        self.assertFalse(ret._compare())
+        self.assertEqual(ret._diff(), {"description"})
         self.assertEqual(ret_serialized["address"], "10.0.255.1/32")
         self.assertEqual(ret_serialized["description"], "testing")
 

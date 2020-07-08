@@ -111,7 +111,7 @@ class Generic(object):
                     headers=HEADERS,
                 )
 
-        def test_compare(self):
+        def test_diff(self):
             with patch(
                 "pynetbox.core.query.requests.sessions.Session.get",
                 return_value=Response(
@@ -120,7 +120,7 @@ class Generic(object):
             ):
                 ret = getattr(nb, self.name).get(1)
                 self.assertTrue(ret)
-                self.assertTrue(ret._compare())
+                self.assertEqual(ret._diff(), set())
 
         def test_serialize(self):
             with patch(
@@ -186,7 +186,7 @@ class DeviceTestCase(Generic.Tests):
         ret.serial = "123123123123"
         ret_serialized = ret.serialize()
         self.assertTrue(ret_serialized)
-        self.assertFalse(ret._compare())
+        self.assertEqual(ret._diff(), {"serial"})
         self.assertEqual(ret_serialized["serial"], "123123123123")
 
     @patch(
@@ -264,7 +264,7 @@ class SiteTestCase(Generic.Tests):
         """
         ret = getattr(nb, self.name).get(1)
         ret.custom_fields["test_custom"] = "Testing"
-        self.assertFalse(ret._compare())
+        self.assertEqual(ret._diff(), {"custom_fields"})
         self.assertTrue(ret.serialize())
         self.assertEqual(ret.custom_fields["test_custom"], "Testing")
 
