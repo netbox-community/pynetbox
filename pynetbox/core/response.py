@@ -280,20 +280,6 @@ class Record(object):
         app, name = urlsplit(url).path.split("/")[2:4]
         return getattr(pynetbox.core.app.App(self.api, app), name)
 
-    def _compare(self):
-        """Compares current attributes to values at instantiation.
-
-        In order to be idempotent we run this method in `save()`.
-
-        Returns:
-            Boolean value, True indicates current instance has the same
-            attributes as the ones passed to `values`.
-        """
-
-        if self.serialize(init=True) == self.serialize():
-            return True
-        return False
-
     def full_details(self):
         """Queries the hyperlinked endpoint if 'url' is defined.
 
