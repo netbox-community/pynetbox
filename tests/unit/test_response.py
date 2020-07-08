@@ -55,13 +55,13 @@ class RecordTestCase(unittest.TestCase):
             "nested_dict": {"id": 222, "name": "bar"},
             "tags": ["foo", "bar"],
             "int_list": [123, 321, 231],
-            "local_context_data": {"data": "foo"},
+            "local_context_data": {"data": ["one"]},
         }
         test = Record(test_values, None, None)
         test.tags.append("baz")
         test.nested_dict = 1
         test.string_field = "foobaz"
-        test.local_context_data = {"new_data": "bar"}
+        test.local_context_data["data"].append("two")
         self.assertEqual(
             test._diff(), {"tags", "nested_dict", "string_field", "local_context_data"}
         )
