@@ -209,3 +209,19 @@ class RecordTestCase(unittest.TestCase):
         )
         ret = test._endpoint_from_url(test.url)
         self.assertEqual(ret.name, "test-endpoint")
+
+    def test_serialize_tag_list_order(self):
+        test_tags = [
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "ten",
+        ]
+        test = Record({"id": 123, "tags": test_tags}, None, None).serialize()
+        self.assertEqual(test["tags"], test_tags)
