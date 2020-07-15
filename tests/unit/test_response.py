@@ -211,6 +211,12 @@ class RecordTestCase(unittest.TestCase):
         self.assertEqual(ret.name, "test-endpoint")
 
     def test_serialize_tag_list_order(self):
+        """Add tests to ensure we're preserving tag order
+
+        This test could still give false-negatives, but making the tag list
+        longer helps mitigate that.
+        """
+
         test_tags = [
             "one",
             "two",
