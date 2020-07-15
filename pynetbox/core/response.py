@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import copy
+from collections import OrderedDict
 
 import pynetbox.core.app
 from six.moves.urllib.parse import urlsplit
@@ -341,7 +342,7 @@ class Record(object):
                         v.id if isinstance(v, Record) else v for v in current_val
                     ]
                     if i in LIST_AS_SET:
-                        current_val = list(set(current_val))
+                        current_val = list(OrderedDict.fromkeys(current_val))
                 ret[i] = current_val
         return ret
 

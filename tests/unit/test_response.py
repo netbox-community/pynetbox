@@ -209,3 +209,25 @@ class RecordTestCase(unittest.TestCase):
         )
         ret = test._endpoint_from_url(test.url)
         self.assertEqual(ret.name, "test-endpoint")
+
+    def test_serialize_tag_list_order(self):
+        """Add tests to ensure we're preserving tag order
+
+        This test could still give false-negatives, but making the tag list
+        longer helps mitigate that.
+        """
+
+        test_tags = [
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine",
+            "ten",
+        ]
+        test = Record({"id": 123, "tags": test_tags}, None, None).serialize()
+        self.assertEqual(test["tags"], test_tags)
