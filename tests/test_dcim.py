@@ -54,7 +54,7 @@ class Generic(object):
                     verify=True
                 )
 
-        def test_get_iall(self):
+        def test_get_iterall(self):
             with patch(
                 'pynetbox.core.query.requests.get',
                 return_value=Response(fixture='{}/{}.json'.format(
@@ -62,7 +62,7 @@ class Generic(object):
                     self.name
                 ))
             ) as mock:
-                ret = getattr(nb, self.name).iall()
+                ret = getattr(nb, self.name).iterall()
                 self.assertTrue(ret)
                 self.assertTrue(isinstance(ret, Generator))
                 rec1 = next(ret)
@@ -97,7 +97,7 @@ class Generic(object):
                     verify=True
                 )
 
-        def test_ifilter(self):
+        def test_iterfilter(self):
             with patch(
                 'pynetbox.core.query.requests.get',
                 return_value=Response(fixture='{}/{}.json'.format(
@@ -105,7 +105,7 @@ class Generic(object):
                     self.name
                 ))
             ) as mock:
-                ret = getattr(nb, self.name).ifilter(name='test')
+                ret = getattr(nb, self.name).iterfilter(name='test')
                 self.assertTrue(ret)
                 self.assertTrue(isinstance(ret, Generator))
                 rec1 = next(ret)

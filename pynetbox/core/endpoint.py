@@ -75,7 +75,7 @@ class Endpoint(object):
     def _response_loader(self, values):
         return self.return_obj(values, self.api, self)
 
-    def iall(self):
+    def iterall(self):
         """Queries the 'ListView' of a given endpoint.
 
         Returns all objects from an endpoint.
@@ -100,7 +100,7 @@ class Endpoint(object):
 
     def all(self):
         """ consumes the above generator and return list of records """
-        return list(self.iall())
+        return list(self.iterall())
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
@@ -159,7 +159,7 @@ class Endpoint(object):
 
         return self._response_loader(req.get())
 
-    def ifilter(self, *args, **kwargs):
+    def iterfilter(self, *args, **kwargs):
         r"""Queries the 'ListView' of a given endpoint.
 
         Takes named arguments that match the usable filters on a
@@ -226,7 +226,7 @@ class Endpoint(object):
             yield self._response_loader(i)
 
     def filter(self, *args, **kwargs):
-        return list(self.ifilter(*args, **kwargs))
+        return list(self.iterfilter(*args, **kwargs))
 
     def create(self, *args, **kwargs):
         r"""Creates an object on an endpoint.
