@@ -311,7 +311,7 @@ class Request(object):
                     if first_run:
                         req = self._make_call(
                             add_params={
-                                "limit": req["count"],
+                                "limit": len(req["results"]),
                                 "offset": len(req["results"]),
                             }
                         )
@@ -324,9 +324,6 @@ class Request(object):
                 return req
 
         def req_all_threaded(add_params):
-            if add_params is None:
-                # Limit must be 0 to discover the max page size
-                add_params = {"limit": 0}
             req = self._make_call(add_params=add_params)
             if isinstance(req, dict) and req.get("results") is not None:
                 ret = req["results"]
