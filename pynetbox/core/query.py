@@ -146,6 +146,7 @@ class Request(object):
         private_key=None,
         session_key=None,
         threading=False,
+        offset=None,
     ):
         """
         Instantiates a new Request object
@@ -169,6 +170,7 @@ class Request(object):
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
+        self.offset = offset
 
     def get_openapi(self):
         """ Gets the OpenAPI Spec """
@@ -323,6 +325,13 @@ class Request(object):
             else:
                 return req
 
+        def req_next():
+            req = self._make_call(add_params={
+                            "limit": 1,
+                            "offset": self.offset
+                        })["results"]
+            return req
+
         def req_all_threaded(add_params):
             if add_params is None:
                 # Limit must be 0 to discover the max page size
@@ -346,6 +355,8 @@ class Request(object):
             else:
                 return req
 
+        if self.offset is not None:
+            return req_next()
         if self.threading:
             return req_all_threaded(add_params)
 

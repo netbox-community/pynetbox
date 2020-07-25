@@ -100,6 +100,23 @@ class Endpoint(object):
 
         return response_loader(req.get(), self.return_obj, self)
 
+    def getnext(self, *args):
+
+        try:
+            offset = args[0]
+        except IndexError:
+            offset = 0
+
+        req = Request(
+            offset=offset,
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            http_session=self.api.http_session,
+        )
+
+        return response_loader(req.get(), self.return_obj, self)
+
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
 
