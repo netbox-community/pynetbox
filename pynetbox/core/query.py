@@ -303,21 +303,8 @@ class Request(object):
             req = self._make_call(add_params=add_params)
             if isinstance(req, dict) and req.get("results") is not None:
                 ret = req["results"]
-                first_run = True
                 while req["next"]:
-                    # Not worrying about making sure add_params kwargs is
-                    # passed in here because results from detail routes aren't
-                    # paginated, thus far.
-                    if first_run:
-                        req = self._make_call(
-                            add_params={
-                                "limit": req["count"],
-                                "offset": len(req["results"]),
-                            }
-                        )
-                    else:
-                        req = self._make_call(url_override=req["next"])
-                    first_run = False
+                    req = self._make_call(url_override=req["next"])
                     ret.extend(req["results"])
                 return ret
             else:
