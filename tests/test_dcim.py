@@ -319,10 +319,10 @@ class InterfaceTestCase(Generic.Tests):
         self.assertTrue(isinstance(ret[0], self.ret))
         self.assertEqual(len(ret), 71)
         mock.assert_called_with(
-            "http://localhost:8000/api/dcim/interfaces/",
-            params={"limit": 221, "offset": 50},
+            "http://localhost:8000/api/dcim/interfaces/?limit=50&offset=50",
             json=None,
             headers=HEADERS,
+            params={},
         )
 
 
