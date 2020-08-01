@@ -84,6 +84,33 @@ class Interfaces(Record):
     interface_connection = InterfaceConnection
     connected_endpoint = ConnectedEndpoint
 
+    @property
+    def trace(self):
+        """ Represents the ``trace`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing response from the trace endpoint.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> interface = nb.dcim.interfaces.get(123)
+        >>> interface.trace.list()
+        {"get_facts": {"interface_list": ["ge-0/0/0"]}}
+
+        """
+        return RODetailEndpoint(
+            self,
+            "trace",
+            custom_return={
+                "dcim/cables": Cables,
+                "dcim/interfaces": Interfaces,
+                "dcim/front-ports": FrontPorts,
+                "dcim/rear-ports": RearPorts,
+            },
+        )
+
 
 class RackReservations(Record):
     def __str__(self):
@@ -96,6 +123,14 @@ class VirtualChassis(Record):
 
 
 class RUs(Record):
+    device = Devices
+
+
+class FrontPorts(Record):
+    device = Devices
+
+
+class RearPorts(Record):
     device = Devices
 
 
