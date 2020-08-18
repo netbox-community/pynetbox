@@ -207,8 +207,8 @@ class Record(object):
             else:
                 yield i, cur_attr
 
-    def __getitem__(self, item):
-        return item
+    def __getitem__(self, k):
+        return dict(self)[k]
 
     def __str__(self):
         return getattr(self, "name", None) or getattr(self, "label", None) or ""

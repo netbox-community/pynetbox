@@ -11,6 +11,36 @@ else:
 
 
 class RecordTestCase(unittest.TestCase):
+    def test_attribute_access(self):
+        test_values = {
+            "id": 123,
+            "units": 12,
+            "nested_dict": {"id": 222, "name": "bar"},
+            "int_list": [123, 321, 231],
+        }
+        test_obj = Record(test_values, None, None)
+        self.assertEqual(test_obj.id, 123)
+        self.assertEqual(test_obj.units, 12)
+        self.assertEqual(test_obj.nested_dict.name, "bar")
+        self.assertEqual(test_obj.int_list[1], 321)
+        with self.assertRaises(AttributeError) as _:
+            test_obj.nothing
+
+    def test_dict_access(self):
+        test_values = {
+            "id": 123,
+            "units": 12,
+            "nested_dict": {"id": 222, "name": "bar"},
+            "int_list": [123, 321, 231],
+        }
+        test_obj = Record(test_values, None, None)
+        self.assertEqual(test_obj["id"], 123)
+        self.assertEqual(test_obj["units"], 12)
+        self.assertEqual(test_obj["nested_dict"]["name"], "bar")
+        self.assertEqual(test_obj["int_list"][1], 321)
+        with self.assertRaises(KeyError) as _:
+            test_obj["nothing"]
+
     def test_serialize_list_of_records(self):
         test_values = {
             "id": 123,
