@@ -13,10 +13,54 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from six.moves.urllib.parse import urlsplit
+
+from pynetbox.core.query import Request
 from pynetbox.core.response import Record, JsonField
 from pynetbox.core.endpoint import RODetailEndpoint
 from pynetbox.models.ipam import IpAddresses
 from pynetbox.models.circuits import Circuits
+
+
+class TraceableRecord(Record):
+    @property
+    def trace(self):
+        req = Request(
+            key=str(self.id) + "/trace" if not self.url else None,
+            base=self.endpoint.url,
+            token=self.api.token,
+            session_key=self.api.session_key,
+            http_session=self.api.http_session,
+        )
+        ret = []
+        for (termination_a_data, cable_data, termination_b_data) in req.get():
+            this_hop_ret = []
+            for hop_item_data in (termination_a_data, cable_data, termination_b_data):
+                # if not fully terminated then some items will be None
+                if not hop_item_data:
+                    this_hop_ret.append(hop_item_data)
+                    continue
+
+                url_path = urlsplit(hop_item_data["url"]).path
+                if url_path.startswith("/api/dcim/cables"):
+                    return_obj_class = Cables
+                elif url_path.startswith("/api/dcim/front-ports"):
+                    return_obj_class = FrontPorts
+                elif url_path.startswith("/api/dcim/interfaces"):
+                    return_obj_class = Interfaces
+                elif url_path.startswith("/api/dcim/rear-ports"):
+                    return_obj_class = RearPorts
+                else:
+                    raise NotImplementedError(
+                        "unable to unpack item data from endpoint '{}'".format(url_path)
+                    )
+                this_hop_ret.append(
+                    return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
+                )
+
+            ret.append(this_hop_ret)
+
+        return ret
 
 
 class DeviceTypes(Record):
@@ -80,36 +124,25 @@ class ConnectedEndpoint(Record):
     device = Devices
 
 
-class Interfaces(Record):
+class Interfaces(TraceableRecord):
     interface_connection = InterfaceConnection
     connected_endpoint = ConnectedEndpoint
 
-    @property
-    def trace(self):
-        """ Represents the ``trace`` detail endpoint.
 
-        Returns a DetailEndpoint object that is the interface for
-        viewing response from the trace endpoint.
+class PowerOutlets(TraceableRecord):
+    device = Devices
 
-        :returns: :py:class:`.DetailEndpoint`
 
-        :Examples:
+class PowerPorts(TraceableRecord):
+    device = Devices
 
-        >>> interface = nb.dcim.interfaces.get(123)
-        >>> interface.trace.list()
-        {"get_facts": {"interface_list": ["ge-0/0/0"]}}
 
-        """
-        return RODetailEndpoint(
-            self,
-            "trace",
-            custom_return={
-                "dcim/cables": Cables,
-                "dcim/interfaces": Interfaces,
-                "dcim/front-ports": FrontPorts,
-                "dcim/rear-ports": RearPorts,
-            },
-        )
+class ConsolePorts(TraceableRecord):
+    device = Devices
+
+
+class ConsoleServerPorts(TraceableRecord):
+    device = Devices
 
 
 class RackReservations(Record):
@@ -189,7 +222,21 @@ class Termination(Record):
 
 class Cables(Record):
     def __str__(self):
-        return "{} <> {}".format(self.termination_a, self.termination_b)
+        # populate the terminations to get the full names if they are not already
+        try:
+            termination_a_name = self.termination_a.name
+        except AttributeError:
+            self.termination_a.full_details(self)
+            termination_a_name = self.termination_a.name
+
+        try:
+            termination_b_name = self.termination_b.name
+        except AttributeError:
+            self.termination_b.full_details(self)
+            termination_b_name = self.termination_b.name
+
+
+        return "{} <> {}".format(termination_a_name, termination_b_name)
 
     termination_a = Termination
     termination_b = Termination

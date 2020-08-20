@@ -21,36 +21,7 @@ RESERVED_KWARGS = ("id", "pk", "limit", "offset")
 
 def response_loader(req, return_obj, endpoint):
     if isinstance(req, list):
-        # interface/cable traces are lists of lists
-        if req and isinstance(req[0], list) and isinstance(return_obj, dict):
-            # we will have to build the response piecewise since the items contained
-            # within it are of varying types
-            ret = []
-            for i in req:
-                this_sub_ret = []
-                for ii in i:
-                    # the individual items in a trace are comprised of [<interface/
-                    # frontport/rearport>, <cable>, <interface/frontport/rearport>].
-                    # The last trace can consist of [<interface/frontport/rearport>,
-                    # None, None] if the last hop is not actually connected to anything
-                    if ii:
-                        this_sub_ret.append(
-                            next(
-                                (
-                                    return_obj_class(ii, endpoint.api, endpoint)
-                                    for (return_obj_uri, return_obj_class) in return_obj.items()
-                                    if return_obj_uri in ii["url"]
-                                )
-                            )
-                        )
-                    else:
-                        # the last trace can consist of [cable_a, None, None] if there is no
-                        this_sub_ret.append(None)
-
-                ret.append(this_sub_ret)
-            return ret
-        else:
-            return [return_obj(i, endpoint.api, endpoint) for i in req]
+        return [return_obj(i, endpoint.api, endpoint) for i in req]
     return return_obj(req, endpoint.api, endpoint)
 
 
