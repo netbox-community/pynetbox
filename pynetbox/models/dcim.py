@@ -230,7 +230,7 @@ class Cables(Record):
                 self.termination_a.full_details()
             except TypeError:
                 self.termination_a.full_details(self)
-            termination_a_name = self.termination_a.name
+            termination_a_name = getattr(self.termination_a, "name", self.termination_a)
 
         try:
             termination_b_name = self.termination_b.name
@@ -239,7 +239,7 @@ class Cables(Record):
                 self.termination_b.full_details()
             except TypeError:
                 self.termination_b.full_details(self)
-            termination_b_name = self.termination_b.name
+            termination_b_name = getattr(self.termination_b, "name", self.termination_b)
 
         return "{} <> {}".format(termination_a_name, termination_b_name)
 
