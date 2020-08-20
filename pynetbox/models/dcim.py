@@ -226,15 +226,20 @@ class Cables(Record):
         try:
             termination_a_name = self.termination_a.name
         except AttributeError:
-            self.termination_a.full_details(self)
+            try:
+                self.termination_a.full_details()
+            except TypeError:
+                self.termination_a.full_details(self)
             termination_a_name = self.termination_a.name
 
         try:
             termination_b_name = self.termination_b.name
         except AttributeError:
-            self.termination_b.full_details(self)
+            try:
+                self.termination_b.full_details()
+            except TypeError:
+                self.termination_b.full_details(self)
             termination_b_name = self.termination_b.name
-
 
         return "{} <> {}".format(termination_a_name, termination_b_name)
 
