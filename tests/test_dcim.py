@@ -5,9 +5,9 @@ import pynetbox
 from .util import Response
 
 if six.PY3:
-    from unittest.mock import patch
+    from unittest.mock import patch, call
 else:
-    from mock import patch
+    from mock import patch, call
 
 
 api = pynetbox.api("http://localhost:8000", token="abc123",)
@@ -526,11 +526,32 @@ class CablesTestCase(Generic.Tests):
             self.assertTrue(isinstance(ret, self.ret))
             self.assertTrue(isinstance(str(ret), str))
             self.assertTrue(isinstance(dict(ret), dict))
-            mock.assert_called_with(
-                "http://localhost:8000/api/{}/{}/1/".format(
-                    self.app, self.name.replace("_", "-")
-                ),
-                headers=HEADERS,
-                params={},
-                json=None,
+            mock.assert_has_calls(
+                [
+                    call(
+                        "http://localhost:8000/api/{}/{}/1/".format(
+                            self.app, self.name.replace("_", "-")
+                        ),
+                        headers=HEADERS,
+                        params={},
+                        json=None,
+                    ),
+                    call(
+                        "http://localhost:8000/api/{}/{}/1/".format(
+                            "circuits", "circuit-terminations"
+                        ),
+                        headers=HEADERS,
+                        params={},
+                        json=None,
+                    ),
+                    call(
+                        "http://localhost:8000/api/{}/{}/1/".format(
+                            "circuits", "circuit-terminations"
+                        ),
+                        headers=HEADERS,
+                        params={},
+                        json=None,
+                    ),
+                ]
             )
+
