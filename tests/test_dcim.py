@@ -554,4 +554,3 @@ class CablesTestCase(Generic.Tests):
                     ),
                 ]
             )
-
