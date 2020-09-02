@@ -19,10 +19,10 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install pynetbox and testing packages.
-        run: pip install . black pytest
+        run: pip install . black==19.10b0 pytest
 
       - name: Run Linter
-        run: black --check .
+        run: black --diff pynetbox tests
           
       - name: Run Tests
         run: pytest

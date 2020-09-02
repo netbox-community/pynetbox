@@ -214,7 +214,7 @@ class RecordTestCase(unittest.TestCase):
                 "child": {
                     "id": 321,
                     "name": "test123",
-                    "url": "http://localhost:8080/api/test-app/test-endpoint/",
+                    "url": "http://localhost:8080/api/test-app/test-endpoint/321/",
                 },
             },
             app,
@@ -224,7 +224,7 @@ class RecordTestCase(unittest.TestCase):
         test.child.save()
         self.assertEqual(
             app.http_session.patch.call_args[0][0],
-            "http://localhost:8080/api/test-app/test-endpoint/",
+            "http://localhost:8080/api/test-app/test-endpoint/321/",
         )
 
     def test_endpoint_from_url(self):
