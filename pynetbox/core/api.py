@@ -21,6 +21,10 @@ from pynetbox.core.query import Request
 from pynetbox.core.app import App
 
 class PluginsApi(object):
+    """ 
+    Return dynamically generated app for your plugin
+    At worst it will return 400 error on request
+    """
     def __init__(self, api):
         self.api = api
     
