@@ -109,3 +109,14 @@ class App(object):
             http_session=self.api.http_session,
         ).get()
         return custom_field_choices
+
+class PluginsApp(object):
+    """ 
+    Return dynamically generated app for your plugin
+    At worst it will return 400 error on request
+    """
+    def __init__(self, api):
+        self.api = api
+    
+    def __getattr__(self, name):
+        return App(self.api, 'plugins/{}'.format(name))
