@@ -71,11 +71,6 @@ class RecordTestCase(unittest.TestCase):
         test = test_obj.serialize()
         self.assertEqual(test["units"], [12])
 
-    def test_serialize_tag_set(self):
-        test_values = {"id": 123, "tags": ["foo", "bar", "foo"]}
-        test = Record(test_values, None, None).serialize()
-        self.assertEqual(len(test["tags"]), 2)
-
     def test_diff(self):
         test_values = {
             "id": 123,
@@ -83,12 +78,12 @@ class RecordTestCase(unittest.TestCase):
             "string_field": "foobar",
             "int_field": 1,
             "nested_dict": {"id": 222, "name": "bar"},
-            "tags": ["foo", "bar"],
+            "tags": [{"id": 55, "name": "foo"}, {"id": 66, "name": "bar"}],
             "int_list": [123, 321, 231],
             "local_context_data": {"data": ["one"]},
         }
         test = Record(test_values, None, None)
-        test.tags.append("baz")
+        test.tags.append({"name": "baz"})
         test.nested_dict = 1
         test.string_field = "foobaz"
         test.local_context_data["data"].append("two")
@@ -121,7 +116,7 @@ class RecordTestCase(unittest.TestCase):
             "string_field": "foobar",
             "int_field": 1,
             "nested_dict": {"id": 222, "name": "bar"},
-            "tags": ["foo", "bar"],
+            "tags": [{"name": "foo"}, {"name":"bar"}],
             "int_list": [123, 321, 231],
             "empty_list": [],
             "record_list": [
@@ -131,7 +126,7 @@ class RecordTestCase(unittest.TestCase):
                     "str_attr": "foo",
                     "int_attr": 123,
                     "custom_fields": {"foo": "bar"},
-                    "tags": ["foo", "bar"],
+                    "tags": [{"name": "foo"}, {"name":"bar"}],
                 },
                 {
                     "id": 321,
@@ -139,7 +134,7 @@ class RecordTestCase(unittest.TestCase):
                     "str_attr": "bar",
                     "int_attr": 321,
                     "custom_fields": {"foo": "bar"},
-                    "tags": ["foo", "bar"],
+                    "tags": [{"name": "foo"}, {"name":"bar"}],
                 },
             ],
         }
@@ -239,25 +234,3 @@ class RecordTestCase(unittest.TestCase):
         )
         ret = test._endpoint_from_url(test.url)
         self.assertEqual(ret.name, "test-endpoint")
-
-    def test_serialize_tag_list_order(self):
-        """Add tests to ensure we're preserving tag order
-
-        This test could still give false-negatives, but making the tag list
-        longer helps mitigate that.
-        """
-
-        test_tags = [
-            "one",
-            "two",
-            "three",
-            "four",
-            "five",
-            "six",
-            "seven",
-            "eight",
-            "nine",
-            "ten",
-        ]
-        test = Record({"id": 123, "tags": test_tags}, None, None).serialize()
-        self.assertEqual(test["tags"], test_tags)
