@@ -20,6 +20,12 @@ import requests
 from pynetbox.core.query import Request
 from pynetbox.core.app import App
 
+class PluginsApi(object):
+    def __init__(self, api):
+        self.api = api
+    
+    def __getattr__(self, name):
+        return App(self.api, f'plugins/{name}')
 
 class Api(object):
     """The API object is the point of entry to pynetbox.
@@ -100,6 +106,7 @@ class Api(object):
         self.tenancy = App(self, "tenancy")
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
+        self.plugins = PluginsApi(self)
 
     @property
     def version(self):
