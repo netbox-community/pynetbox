@@ -18,7 +18,7 @@ import sys
 import requests
 
 from pynetbox.core.query import Request
-from pynetbox.core.app import App
+from pynetbox.core.app import App, PluginsApp
 
 
 class Api(object):
@@ -100,6 +100,7 @@ class Api(object):
         self.tenancy = App(self, "tenancy")
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
+        self.plugins = PluginsApp(self)
 
     @property
     def version(self):
