@@ -111,9 +111,12 @@ class App(object):
         return custom_field_choices
 
 class PluginsApp(object):
-    """ 
-    Return dynamically generated app for your plugin
-    At worst it will return 400 error on request
+    """
+    Basically valid plugins api could be handled by same App class,
+    but you need to add plugins to request url path.
+
+    :returns: :py:class:`.App` with added plugins into path.
+
     """
     def __init__(self, api):
         self.api = api
