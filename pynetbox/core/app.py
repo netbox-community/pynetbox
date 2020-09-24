@@ -110,6 +110,7 @@ class App(object):
         ).get()
         return custom_field_choices
 
+
 class PluginsApp(object):
     """
     Basically valid plugins api could be handled by same App class,
@@ -118,9 +119,10 @@ class PluginsApp(object):
     :returns: :py:class:`.App` with added plugins into path.
 
     """
+
     def __init__(self, api):
         self.api = api
-    
+
     def __getattr__(self, name):
         return App(self.api, 'plugins/{}'.format(name))
 

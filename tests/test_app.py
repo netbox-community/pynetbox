@@ -30,6 +30,7 @@ class AppCustomChoicesTestCase(unittest.TestCase):
         self.assertEqual(len(choices), 2)
         self.assertEqual(sorted(choices.keys()), ["Testfield1", "Testfield2"])
 
+
 class PluginAppCustomChoicesTestCase(unittest.TestCase):
     @patch(
         "pynetbox.core.query.Request.get",
@@ -43,7 +44,7 @@ class PluginAppCustomChoicesTestCase(unittest.TestCase):
         choices = api.plugins.test_plugin.custom_choices()
         self.assertEqual(len(choices), 2)
         self.assertEqual(sorted(choices.keys()), ["Testfield1", "Testfield2"])
-    
+
     @patch(
         "pynetbox.core.query.Request.get",
         return_value=[{
