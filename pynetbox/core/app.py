@@ -123,3 +123,26 @@ class PluginsApp(object):
     
     def __getattr__(self, name):
         return App(self.api, 'plugins/{}'.format(name))
+
+    def installed_plugins(self):
+        """ Returns raw response with installed plugins
+
+        :returns: Raw response NetBox's installed plugins.
+        :Example:
+
+        >>> nb.plugins.installed_plugins()
+        [{
+            'name': 'test_plugin', 
+            'package': 'test_plugin', 
+            'author': 'Dmitry', 
+            'description': 'Netbox test plugin', 
+            'verison': '0.10'
+        }]
+        """
+        installed_plugins = Request(
+            base="{}/plugins/installed-plugins".format(self.api.base_url,),
+            token=self.api.token,
+            private_key=self.api.private_key,
+            http_session=self.api.http_session,
+        ).get()
+        return installed_plugins
