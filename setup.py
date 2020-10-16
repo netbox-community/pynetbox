@@ -10,7 +10,7 @@ setup(
     include_package_data=True,
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=["requests>=2.20.0,<3.0", "six==1.*",],
     zip_safe=False,
     keywords=["netbox"],
