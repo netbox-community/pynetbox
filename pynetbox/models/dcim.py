@@ -23,7 +23,6 @@ from pynetbox.models.circuits import Circuits
 
 
 class TraceableRecord(Record):
-    @property
     def trace(self):
         req = Request(
             key=str(self.id) + "/trace" if not self.url else None,
@@ -33,6 +32,8 @@ class TraceableRecord(Record):
             http_session=self.api.http_session,
         )
         ret = []
+        # from IPython import embed
+        # embed()
         for (termination_a_data, cable_data, termination_b_data) in req.get():
             this_hop_ret = []
             for hop_item_data in (termination_a_data, cable_data, termination_b_data):
@@ -41,22 +42,32 @@ class TraceableRecord(Record):
                     this_hop_ret.append(hop_item_data)
                     continue
 
-                url_path = urlsplit(hop_item_data["url"]).path
-                if url_path.startswith("/api/dcim/cables"):
-                    return_obj_class = Cables
-                elif url_path.startswith("/api/dcim/front-ports"):
-                    return_obj_class = FrontPorts
-                elif url_path.startswith("/api/dcim/interfaces"):
-                    return_obj_class = Interfaces
-                elif url_path.startswith("/api/dcim/rear-ports"):
-                    return_obj_class = RearPorts
-                else:
-                    raise NotImplementedError(
-                        "unable to unpack item data from endpoint '{}'".format(url_path)
-                    )
+                uri_to_obj_class_map = {
+                    "/api/dcim/cables": Cables,
+                    "/api/dcim/front-ports": FrontPorts,
+                    "/api/dcim/interfaces": Interfaces,
+                    "/api/dcim/rear-ports": RearPorts,
+                }
+
+                uri = urlsplit(hop_item_data["url"]).path
+                return_obj_class = uri_to_obj_class_map.get(
+                    "/".join(uri.split("/")[:4]),  # trim the uri down to it's base
+                    Record,
+                )
+
                 this_hop_ret.append(
                     return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
                 )
+
+            # Try to access an attribute of the Cable object so that the Termination
+            # objects inside of it get populated properly via the .full_details method
+            # call. Without this the Cable object will be printed as:
+            # "<class 'pynetbox.models.dcim.Termination'> <> <class 'pynetbox.models.dcim.Termination'>"
+            # until it gets accessed.
+            try:
+                this_hop_ret[1].name
+            except (AttributeError, IndexError):
+                pass
 
             ret.append(this_hop_ret)
 
@@ -222,26 +233,7 @@ class Termination(Record):
 
 class Cables(Record):
     def __str__(self):
-        # populate the terminations to get the full names if they are not already
-        try:
-            termination_a_name = self.termination_a.name
-        except AttributeError:
-            try:
-                self.termination_a.full_details()
-            except TypeError:
-                self.termination_a.full_details(self)
-            termination_a_name = getattr(self.termination_a, "name", self.termination_a)
-
-        try:
-            termination_b_name = self.termination_b.name
-        except AttributeError:
-            try:
-                self.termination_b.full_details()
-            except TypeError:
-                self.termination_b.full_details(self)
-            termination_b_name = getattr(self.termination_b, "name", self.termination_b)
-
-        return "{} <> {}".format(termination_a_name, termination_b_name)
+        return "{} <> {}".format(self.termination_a, self.termination_b)
 
     termination_a = Termination
     termination_b = Termination
