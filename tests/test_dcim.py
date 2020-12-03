@@ -556,31 +556,3 @@ class CablesTestCase(Generic.Tests):
                 params={},
                 json=None,
             )
-            # mock.assert_has_calls(
-            #     [
-            #         call(
-            #             "http://localhost:8000/api/{}/{}/1/".format(
-            #                 self.app, self.name.replace("_", "-")
-            #             ),
-            #             headers=HEADERS,
-            #             params={},
-            #             json=None,
-            #         ),
-            #         call(
-            #             "http://localhost:8000/api/{}/{}/1/".format(
-            #                 "circuits", "circuit-terminations"
-            #             ),
-            #             headers=HEADERS,
-            #             params={},
-            #             json=None,
-            #         ),
-            #         call(
-            #             "http://localhost:8000/api/{}/{}/1/".format(
-            #                 "circuits", "circuit-terminations"
-            #             ),
-            #             headers=HEADERS,
-            #             params={},
-            #             json=None,
-            #         ),
-            #     ]
-            # )
