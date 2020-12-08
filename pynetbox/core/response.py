@@ -171,7 +171,7 @@ class Record(object):
         self.default_ret = Record
         self.endpoint = (
             self._endpoint_from_url(values["url"])
-            if values and "url" in values
+            if values and "url" in values and "/api/plugins/" not in values["url"]
             else endpoint
         )
         if values:
