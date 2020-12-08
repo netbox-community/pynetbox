@@ -284,6 +284,48 @@ class Endpoint(object):
 
         return response_loader(req, self.return_obj, self)
 
+    def update(self, id, *args, **kwargs):
+        r"""Updates an object on an endpoint.
+
+        Allows for the patching of new objects on an endpoint. Named
+        arguments are converted to json properties, and a single object
+        is created. NetBox's bulk creation capabilities can be used by
+        passing a list of dictionaries as the first argument.
+
+        .. note:
+
+            Any positional arguments will supercede named ones.
+
+        :arg int \id: The id of the object you want to update
+        :arg list \*args: A list of dictionaries containing the
+            properties of the objects to be created.
+        :arg str \**kwargs: key/value strings representing
+            properties on a json object.
+
+        :returns: A list or single :py:class:`.Record` object depending
+            on whether a bulk creation was requested.
+
+        :Examples:
+
+        Updating an object on the `devices` endpoint you can lookup a
+        device_role's name with:
+
+        >>> netbox.dcim.devices.update(
+        ...    1,
+        ...    name='test',
+        ...    device_role=1,
+        ... )
+        """
+
+        req = Request(
+            base="{url}/{id}".format(url=self.url, id=id),
+            token=self.token,
+            session_key=self.session_key,
+            http_session=self.api.http_session,
+        ).patch(args[0] if args else kwargs)
+
+        return response_loader(req, self.return_obj, self)
+
     def choices(self):
         """ Returns all choices from the endpoint.
 
