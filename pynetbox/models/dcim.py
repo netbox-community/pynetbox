@@ -25,15 +25,13 @@ from pynetbox.models.circuits import Circuits
 class TraceableRecord(Record):
     def trace(self):
         req = Request(
-            key=str(self.id) + "/trace" if not self.url else None,
+            key=str(self.id) + "/trace",
             base=self.endpoint.url,
             token=self.api.token,
             session_key=self.api.session_key,
             http_session=self.api.http_session,
         )
         ret = []
-        # from IPython import embed
-        # embed()
         for (termination_a_data, cable_data, termination_b_data) in req.get():
             this_hop_ret = []
             for hop_item_data in (termination_a_data, cable_data, termination_b_data):
