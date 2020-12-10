@@ -305,7 +305,7 @@ class Record(object):
             return True
         return False
 
-    def serialize(self, nested=False, init=False):
+    def serialize(self, nested=False, init=False, diff=False):
         """Serializes an object
 
         Pulls all the attributes in an object and creates a dict that
@@ -328,6 +328,11 @@ class Record(object):
         if init:
             init_vals = dict(self._init_cache)
 
+        if self.api:
+            api_version = float(self.api.version)
+        else:
+            api_version = 1
+
         ret = {}
         for i in dict(self):
             current_val = getattr(self, i) if not init else init_vals.get(i)
@@ -338,11 +343,25 @@ class Record(object):
                     current_val = getattr(current_val, "serialize")(nested=True)
 
                 if isinstance(current_val, list):
-                    current_val = [
-                        v.id if isinstance(v, Record) else v for v in current_val
-                    ]
-                    if i in LIST_AS_SET:
-                        current_val = list(OrderedDict.fromkeys(current_val))
+                    if api_version >= 2.9 and i == "tags":
+                        if diff:
+                            current_val = list(OrderedDict.fromkeys([
+                                v.name if (isinstance(v, Record) or isinstance(v, dict))
+                                else v for v in current_val
+                            ]))
+                        else:
+                            current_val = [
+                                v.id if isinstance(v, Record)
+                                else v if (isinstance(v, dict) or isinstance(v, int))
+                                else { "name": v}
+                                for v in current_val
+                            ]
+                    else:
+                        current_val = [
+                            v.id if isinstance(v, Record) else v for v in current_val
+                        ]
+                        if i in LIST_AS_SET:
+                            current_val = list(OrderedDict.fromkeys(current_val))
                 ret[i] = current_val
         return ret
 
@@ -354,9 +373,9 @@ class Record(object):
                 return k, ",".join(map(str, v))
             return k, v
 
-        current = Hashabledict({fmt_dict(k, v) for k, v in self.serialize().items()})
+        current = Hashabledict({fmt_dict(k, v) for k, v in self.serialize(diff=True).items()})
         init = Hashabledict(
-            {fmt_dict(k, v) for k, v in self.serialize(init=True).items()}
+            {fmt_dict(k, v) for k, v in self.serialize(init=True, diff=True).items()}
         )
         return set([i[0] for i in set(current.items()) ^ set(init.items())])
 
