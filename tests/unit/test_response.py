@@ -227,6 +227,32 @@ class RecordTestCase(unittest.TestCase):
             "http://localhost:8080/api/test-app/test-endpoint/321/",
         )
 
+    def test_nested_write_with_directory_in_base_url(self):
+        app = Mock()
+        app.token = "abc123"
+        app.base_url = "http://localhost:8080/testing/api"
+        endpoint = Mock()
+        endpoint.name = "test-endpoint"
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "child": {
+                    "id": 321,
+                    "name": "test123",
+                    "url": "http://localhost:8080/testing/api/test-app/test-endpoint/321/",
+                },
+            },
+            app,
+            endpoint,
+        )
+        test.child.name = "test321"
+        test.child.save()
+        self.assertEqual(
+            app.http_session.patch.call_args[0][0],
+            "http://localhost:8080/testing/api/test-app/test-endpoint/321/",
+        )
+
     def test_endpoint_from_url(self):
         test = Record(
             {
