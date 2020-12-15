@@ -254,13 +254,30 @@ class RecordTestCase(unittest.TestCase):
         )
 
     def test_endpoint_from_url(self):
+        api = Mock()
+        api.base_url = "http://localhost:8080/api"
         test = Record(
             {
                 "id": 123,
                 "name": "test",
                 "url": "http://localhost:8080/api/test-app/test-endpoint/1/",
             },
-            Mock(),
+            api,
+            None,
+        )
+        ret = test._endpoint_from_url(test.url)
+        self.assertEqual(ret.name, "test-endpoint")
+
+    def test_endpoint_from_url_with_directory_in_base_url(self):
+        api = Mock()
+        api.base_url = "http://localhost:8080/testing/api"
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "url": "http://localhost:8080/testing/api/test-app/test-endpoint/1/",
+            },
+            api,
             None,
         )
         ret = test._endpoint_from_url(test.url)
