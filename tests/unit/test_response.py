@@ -61,7 +61,7 @@ class RecordTestCase(unittest.TestCase):
                 },
             ],
         }
-        test_obj = Record(test_values, Mock(base_url="test"), None)
+        test_obj = Record(test_values, Mock(base_url="test", version="2.8"), None)
         test = test_obj.serialize()
         self.assertEqual(test["tagged_vlans"], [1, 2])
 
@@ -109,7 +109,7 @@ class RecordTestCase(unittest.TestCase):
                 }
             ],
         }
-        test_obj = Record(test_values, Mock(base_url="test"), None)
+        test_obj = Record(test_values, Mock(base_url="test", version="2.8"), None)
         test_obj.tagged_vlans.append(1)
         test = test_obj._diff()
         self.assertFalse(test)
@@ -205,6 +205,7 @@ class RecordTestCase(unittest.TestCase):
         app = Mock()
         app.token = "abc123"
         app.base_url = "http://localhost:8080/api"
+        app.version = "2.8"
         endpoint = Mock()
         endpoint.name = "test-endpoint"
         test = Record(
