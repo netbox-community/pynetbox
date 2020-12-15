@@ -280,7 +280,7 @@ class Record(object):
             setattr(self, k, v)
 
     def _endpoint_from_url(self, url):
-        app, name = urlsplit(url).path.split("/")[2:4]
+        app, name = urlsplit(url).path.split("/")[-4:-2]
         return getattr(pynetbox.core.app.App(self.api, app), name)
 
     def full_details(self):
