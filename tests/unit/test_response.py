@@ -283,7 +283,7 @@ class RecordTestCase(unittest.TestCase):
         ret = test._endpoint_from_url(test.url)
         self.assertEqual(ret.name, "test-endpoint")
 
-    def test_endpoint_from_url_with_stripped_port(self):
+    def test_endpoint_from_url_with_stripped_http_port(self):
         api = Mock()
         api.base_url = "http://localhost:80/api"
         test = Record(
@@ -291,6 +291,22 @@ class RecordTestCase(unittest.TestCase):
                 "id": 123,
                 "name": "test",
                 "url": "http://localhost/api/test-app/test-endpoint/1/",
+            },
+            api,
+            None,
+        )
+        ret = test._endpoint_from_url(test.url)
+        self.assertTrue(ret.url.endswith("/api/test-app/test-endpoint"))
+        self.assertEqual(ret.name, "test-endpoint")
+
+    def test_endpoint_from_url_with_stripped_https_port(self):
+        api = Mock()
+        api.base_url = "https://localhost:443/api"
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "url": "https://localhost/api/test-app/test-endpoint/1/",
             },
             api,
             None,
