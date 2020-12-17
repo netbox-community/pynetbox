@@ -280,11 +280,20 @@ class Record(object):
             setattr(self, k, v)
 
     def _endpoint_from_url(self, url):
+        api_base_url = self.api.base_url
+        if not url.startswith(api_base_url):
+            # Let's account for stripped http..:80 or https..:443
+            b = urlsplit(api_base_url)
+            if (b.scheme == "http" and b.netloc.endswith(":80")) or (
+                b.scheme == "https" and b.netloc.endswith(":443")
+            ):
+                # Rewrite base_url without the default port
+                api_base_url = "{}://{}{}".format(
+                    b.scheme, b.netloc.split(":")[0], b.path,
+                )
         # Remove the base URL from the beginning
-        url = url[len(self.api.base_url):]
-        if url.startswith("/"):
-            url = url[1:]
-        app, name = urlsplit(url).path.split("/")[:2]
+        url = url[len(api_base_url):]
+        app, name = urlsplit(url).path.split("/")[1:3]
         return getattr(pynetbox.core.app.App(self.api, app), name)
 
     def full_details(self):
