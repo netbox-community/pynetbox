@@ -283,6 +283,22 @@ class RecordTestCase(unittest.TestCase):
         ret = test._endpoint_from_url(test.url)
         self.assertEqual(ret.name, "test-endpoint")
 
+    def test_endpoint_from_url_with_stripped_port(self):
+        api = Mock()
+        api.base_url = "http://localhost:80/api"
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "url": "http://localhost/api/test-app/test-endpoint/1/",
+            },
+            api,
+            None,
+        )
+        ret = test._endpoint_from_url(test.url)
+        self.assertTrue(ret.url.endswith("/api/test-app/test-endpoint"))
+        self.assertEqual(ret.name, "test-endpoint")
+
     def test_serialize_tag_list_order(self):
         """Add tests to ensure we're preserving tag order
 
