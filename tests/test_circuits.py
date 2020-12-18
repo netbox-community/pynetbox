@@ -24,7 +24,7 @@ class Generic(object):
 
         def test_get_all(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
             ) as mock:
                 ret = getattr(nb, self.name).all()
@@ -42,7 +42,7 @@ class Generic(object):
 
         def test_filter(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
             ) as mock:
                 ret = getattr(nb, self.name).filter(name="test")
@@ -60,7 +60,7 @@ class Generic(object):
 
         def test_get(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(
                     fixture="{}/{}.json".format(self.app, self.name[:-1])
                 ),
@@ -82,7 +82,7 @@ class CircuitsTestCase(Generic.Tests):
     name = "circuits"
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="circuits/circuit.json"),
     )
     def test_repr(self, _):
@@ -102,7 +102,7 @@ class CircuitTerminationsTestCase(Generic.Tests):
     name = "circuit_terminations"
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="circuits/circuit_termination.json"),
     )
     def test_repr(self, _):

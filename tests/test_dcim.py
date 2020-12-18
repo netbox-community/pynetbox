@@ -28,7 +28,7 @@ class Generic(object):
 
         def test_get_all(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
             ) as mock:
                 ret = getattr(nb, self.name).all()
@@ -46,7 +46,7 @@ class Generic(object):
 
         def test_filter(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
             ) as mock:
                 ret = getattr(nb, self.name).filter(name="test")
@@ -64,7 +64,7 @@ class Generic(object):
 
         def test_get(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(
                     fixture="{}/{}.json".format(self.app, self.name[:-1])
                 ),
@@ -85,12 +85,12 @@ class Generic(object):
 
         def test_delete(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(
                     fixture="{}/{}.json".format(self.app, self.name[:-1])
                 ),
             ) as mock, patch(
-                "pynetbox.core.query.requests.sessions.Session.delete"
+                "requests.sessions.Session.delete"
             ) as delete:
                 ret = getattr(nb, self.name).get(1)
                 self.assertTrue(ret.delete())
@@ -113,7 +113,7 @@ class Generic(object):
 
         def test_diff(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(
                     fixture="{}/{}.json".format(self.app, self.name[:-1])
                 ),
@@ -124,7 +124,7 @@ class Generic(object):
 
         def test_serialize(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(
                     fixture="{}/{}.json".format(self.app, self.name[:-1])
                 ),
@@ -138,7 +138,7 @@ class DeviceTestCase(Generic.Tests):
     name = "devices"
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="dcim/device.json"),
     )
     def test_get(self, mock):
@@ -160,7 +160,7 @@ class DeviceTestCase(Generic.Tests):
         )
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="dcim/devices.json"),
     )
     def test_multi_filter(self, mock):
@@ -178,7 +178,7 @@ class DeviceTestCase(Generic.Tests):
         )
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="dcim/device.json"),
     )
     def test_modify(self, *_):
@@ -190,7 +190,7 @@ class DeviceTestCase(Generic.Tests):
         self.assertEqual(ret_serialized["serial"], "123123123123")
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.post",
+        "requests.sessions.Session.post",
         return_value=Response(fixture="dcim/device.json"),
     )
     def test_create(self, *_):
@@ -204,7 +204,7 @@ class DeviceTestCase(Generic.Tests):
         self.assertTrue(ret)
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.post",
+        "requests.sessions.Session.post",
         return_value=Response(fixture="dcim/device_bulk_create.json"),
     )
     def test_create_device_bulk(self, *_):
@@ -217,7 +217,7 @@ class DeviceTestCase(Generic.Tests):
         self.assertTrue(len(ret), 2)
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         side_effect=[
             Response(fixture="dcim/device.json"),
             Response(fixture="dcim/rack.json"),
@@ -233,7 +233,7 @@ class DeviceTestCase(Generic.Tests):
         self.assertTrue(isinstance(ret.rack.role, self.ret))
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         side_effect=[
             Response(fixture="dcim/device.json"),
             Response(fixture="dcim/napalm.json"),
@@ -256,7 +256,7 @@ class SiteTestCase(Generic.Tests):
     name = "sites"
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="dcim/site.json"),
     )
     def test_modify_custom(self, *_):
@@ -269,7 +269,7 @@ class SiteTestCase(Generic.Tests):
         self.assertEqual(ret.custom_fields["test_custom"], "Testing")
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="dcim/site.json"),
     )
     def test_custom_selection_serializer(self, _):
@@ -281,7 +281,7 @@ class SiteTestCase(Generic.Tests):
         self.assertEqual(test["custom_fields"]["test_selection"], 2)
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.post",
+        "requests.sessions.Session.post",
         return_value=Response(fixture="dcim/site.json"),
     )
     def test_create(self, *_):
@@ -294,7 +294,7 @@ class InterfaceTestCase(Generic.Tests):
     name = "interfaces"
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="dcim/interface.json"),
     )
     def test_modify(self, *_):
@@ -306,7 +306,7 @@ class InterfaceTestCase(Generic.Tests):
         self.assertEqual(ret_serialized["form_factor"], 1400)
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         side_effect=[
             Response(fixture="dcim/{}.json".format(name + "_1")),
             Response(fixture="dcim/{}.json".format(name + "_2")),
@@ -330,7 +330,7 @@ class RackTestCase(Generic.Tests):
     name = "racks"
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         side_effect=[
             Response(fixture="dcim/rack.json"),
             Response(fixture="dcim/rack_u.json"),
@@ -349,7 +349,7 @@ class RackTestCase(Generic.Tests):
         self.assertTrue(isinstance(ret[0].device, pynetbox.models.dcim.Devices))
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         side_effect=[
             Response(fixture="dcim/rack.json"),
             Response(fixture="dcim/rack_u.json"),
@@ -463,7 +463,7 @@ class VirtualChassisTestCase(Generic.Tests):
 class Choices(unittest.TestCase):
     def test_get(self):
         with patch(
-            "pynetbox.core.query.requests.sessions.Session.get",
+            "requests.sessions.Session.get",
             return_value=Response(fixture="{}/{}.json".format("dcim", "choices")),
         ) as mock:
             ret = nb.choices()
@@ -518,7 +518,7 @@ class CablesTestCase(Generic.Tests):
             }
         )
         with patch(
-            "pynetbox.core.query.requests.sessions.Session.get",
+            "requests.sessions.Session.get",
             return_value=response_obj,
         ) as mock:
             ret = getattr(nb, self.name).get(1)
