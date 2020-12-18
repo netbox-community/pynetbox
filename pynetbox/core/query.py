@@ -21,7 +21,6 @@ import json
 from six.moves.urllib.parse import urlencode
 
 
-
 def calc_pages(limit, count):
     """ Calculate number of pages required for full results set. """
     return int(count / limit) + (limit % count > 0)
