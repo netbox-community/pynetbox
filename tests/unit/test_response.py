@@ -71,10 +71,28 @@ class RecordTestCase(unittest.TestCase):
         test = test_obj.serialize()
         self.assertEqual(test["units"], [12])
 
-    def test_serialize_tag_set(self):
+    def test_serialize_string_tag_set(self):
         test_values = {"id": 123, "tags": ["foo", "bar", "foo"]}
         test = Record(test_values, None, None).serialize()
         self.assertEqual(len(test["tags"]), 2)
+
+    def test_serialize_dict_tag_set(self):
+        test_values = {"id": 123, "tags": [
+            {
+                "id": 1,
+                "name": "foo",
+            },
+            {
+                "id": 2,
+                "name": "bar",
+            },
+            {
+                "id": 3,
+                "name": "baz",
+            },
+        ]}
+        test = Record(test_values, None, None).serialize()
+        self.assertEqual(len(test["tags"]), 3)
 
     def test_diff(self):
         test_values = {

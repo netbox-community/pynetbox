@@ -345,7 +345,10 @@ class Record(object):
                     current_val = [
                         v.id if isinstance(v, Record) else v for v in current_val
                     ]
-                    if i in LIST_AS_SET:
+                    if i in LIST_AS_SET and (
+                        all(map(lambda t: isinstance(t, str), current_val))
+                        or all(map(lambda t: isinstance(t, int), current_val))
+                    ):
                         current_val = list(OrderedDict.fromkeys(current_val))
                 ret[i] = current_val
         return ret
