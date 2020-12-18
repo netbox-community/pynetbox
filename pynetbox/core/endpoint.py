@@ -98,7 +98,10 @@ class Endpoint(object):
             threading=self.api.threading,
         )
 
-        return response_loader(req.get(), self.return_obj, self)
+        get_req = req.get()
+        self.api.api_version = req.api_version
+
+        return response_loader(get_req, self.return_obj, self)
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
@@ -158,7 +161,10 @@ class Endpoint(object):
         except RequestError:
             return None
 
-        return response_loader(req.get(), self.return_obj, self)
+        get_req = req.get()
+        self.api.api_version = req.api_version
+
+        return response_loader(get_req, self.return_obj, self)
 
     def filter(self, *args, **kwargs):
         r"""Queries the 'ListView' of a given endpoint.
@@ -222,7 +228,10 @@ class Endpoint(object):
             threading=self.api.threading,
         )
 
-        return response_loader(req.get(), self.return_obj, self)
+        get_req = req.get()
+        self.api.api_version = req.api_version
+
+        return response_loader(get_req, self.return_obj, self)
 
     def create(self, *args, **kwargs):
         r"""Creates an object on an endpoint.
@@ -280,9 +289,13 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             http_session=self.api.http_session,
-        ).post(args[0] if args else kwargs)
+        )
 
-        return response_loader(req, self.return_obj, self)
+        resp = req.post(args[0] if args else kwargs)
+        
+        self.api.api_version = req.api_version
+
+        return response_loader(resp, self.return_obj, self)
 
     def choices(self):
         """ Returns all choices from the endpoint.
@@ -321,7 +334,10 @@ class Endpoint(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
-        ).options()
+        )
+        req.options()
+        self.api.api_version = req.api_version
+        
         try:
             post_data = req["actions"]["POST"]
         except KeyError:
@@ -382,8 +398,9 @@ class Endpoint(object):
             session_key=self.session_key,
             http_session=self.api.http_session,
         )
-
-        return ret.get_count()
+        resp = ret.get_count()
+        self.api.api_version = ret.api_version
+        return resp
 
 
 class DetailEndpoint(object):
@@ -417,10 +434,13 @@ class DetailEndpoint(object):
         :returns: A dictionary or list of dictionaries retrieved from
             NetBox.
         """
-        req = Request(**self.request_kwargs).get(add_params=kwargs)
+        req = Request(**self.request_kwargs)
+        resp = req.get(add_params=kwargs)
+
+        self.api.api_version = req.api_version
 
         if self.custom_return:
-            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
+            return response_loader(resp, self.custom_return, self.parent_obj.endpoint)
         return req
 
     def create(self, data=None):
@@ -437,9 +457,12 @@ class DetailEndpoint(object):
             NetBox.
         """
         data = data or {}
-        req = Request(**self.request_kwargs).post(data)
+        req = Request(**self.request_kwargs)
+        resp = req.post(data)
+        self.api.api_version = req.api_version
+
         if self.custom_return:
-            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
+            return response_loader(resp, self.custom_return, self.parent_obj.endpoint)
         return req
 
 

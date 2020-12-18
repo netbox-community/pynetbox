@@ -301,6 +301,7 @@ class Record(object):
                 http_session=self.api.http_session,
             )
             self._parse_values(req.get())
+            self.api.api_version = req.api_version
             self.has_details = True
             return True
         return False
@@ -329,7 +330,7 @@ class Record(object):
             init_vals = dict(self._init_cache)
 
         if self.api:
-            api_version = float(self.api.version)
+            api_version = float(self.api.api_version)
         else:
             api_version = 1
 
@@ -408,6 +409,7 @@ class Record(object):
                     http_session=self.api.http_session,
                 )
                 if req.patch({i: serialized[i] for i in diff}):
+                    self.api.api_version = req.api_version
                     return True
 
         return False
@@ -455,4 +457,6 @@ class Record(object):
             session_key=self.api.session_key,
             http_session=self.api.http_session,
         )
-        return True if req.delete() else False
+        resp = req.delete()
+        self.api.api_version = req.api_version
+        return True if resp else False

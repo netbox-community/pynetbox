@@ -101,6 +101,7 @@ class Api(object):
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
         self.plugins = PluginsApp(self)
+        self.api_version = None
 
     @property
     def version(self):

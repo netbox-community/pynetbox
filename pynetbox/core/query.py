@@ -169,6 +169,7 @@ class Request(object):
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
+        self.api_version = None
 
     def get_openapi(self):
         """ Gets the OpenAPI Spec """
@@ -257,6 +258,8 @@ class Request(object):
         req = getattr(self.http_session, verb)(
             url_override or self.url, headers=headers, params=params, json=data
         )
+        
+        self.api_version = req.headers.get("API-Version", "")
 
         if req.status_code == 204 and verb == "post":
             raise AllocationError(req)
