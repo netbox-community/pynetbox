@@ -111,6 +111,30 @@ class App(object):
         ).get()
         return custom_field_choices
 
+    def config(self):
+        """ Returns config response from app
+
+        :Returns: Raw response from NetBox's config endpoint.
+        :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
+        :Example:
+
+        >>> pprint.pprint(nb.users.config())
+        {'tables': {'DeviceTable': {'columns': ['name',
+                                                'status',
+                                                'tenant',
+                                                'device_role',
+                                                'site',
+                                                'primary_ip',
+                                                'tags']}}}
+        """
+        config = Request(
+            base="{}/{}/config/".format(self.api.base_url, self.name,),
+            token=self.api.token,
+            private_key=self.api.private_key,
+            http_session=self.api.http_session,
+        ).get()
+        return config
+
 
 class PluginsApp(object):
     """
