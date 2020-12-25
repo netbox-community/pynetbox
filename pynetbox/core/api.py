@@ -100,6 +100,7 @@ class Api(object):
         self.tenancy = App(self, "tenancy")
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
+        self.users = App(self, "users")
         self.plugins = PluginsApp(self)
 
     @property

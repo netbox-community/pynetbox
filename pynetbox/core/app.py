@@ -15,7 +15,7 @@ limitations under the License.
 """
 from pynetbox.core.endpoint import Endpoint
 from pynetbox.core.query import Request
-from pynetbox.models import dcim, ipam, virtualization, circuits, extras
+from pynetbox.models import dcim, ipam, virtualization, circuits, extras, users
 
 
 class App(object):
@@ -40,6 +40,7 @@ class App(object):
         "circuits": circuits,
         "virtualization": virtualization,
         "extras": extras,
+        "users": users,
     }
 
     def _setmodel(self):
