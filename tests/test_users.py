@@ -54,7 +54,7 @@ class Generic(object):
                     "http://localhost:8000/api/{}/{}/".format(
                         self.app, self.name.replace("_", "-")
                     ),
-                    params={"username": "test"},
+                    params={"name": "test"},
                     json=None,
                     headers=HEADERS,
                 )
