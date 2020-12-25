@@ -46,7 +46,7 @@ class Generic(object):
                 "pynetbox.core.query.requests.sessions.Session.get",
                 return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
             ) as mock:
-                ret = getattr(nb, self.name).filter(username="test")
+                ret = getattr(nb, self.name).filter(name="test")
                 self.assertTrue(ret)
                 self.assertTrue(isinstance(ret, list))
                 self.assertTrue(isinstance(ret[0], self.ret))
@@ -82,6 +82,18 @@ class Generic(object):
 class UsersTestCase(Generic.Tests):
     name = "users"
 
+    @patch(
+        "pynetbox.core.query.requests.sessions.Session.get",
+        return_value=Response(fixture="users/user.json"),
+    )
+    def test_repr(self, _):
+        test = nb.users.get(1)
+        self.assertEqual(str(test), "user1")
+
 
 class GroupsTestCase(Generic.Tests):
     name = "groups"
+
+
+class PermissionsTestCase(Generic.Tests):
+    name = "permissions"

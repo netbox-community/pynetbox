@@ -1,0 +1,15 @@
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "name": "permission1"
+        },
+        {
+            "id": 2,
+            "name": "permission2"
+        }
+    ]
+}
