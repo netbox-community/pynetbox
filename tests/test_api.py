@@ -70,3 +70,20 @@ class ApiVersionTestCase(unittest.TestCase):
     def test_api_version_not_found(self, *_):
         api = pynetbox.api(host,)
         self.assertEqual(api.version, "")
+
+
+class ApiStatusTestCase(unittest.TestCase):
+    class ResponseWithStatus:
+        ok = True
+        def json(self):
+            return {
+                "netbox-version": "0.9.9",
+            }
+
+    @patch(
+        "pynetbox.core.query.requests.sessions.Session.get",
+        return_value=ResponseWithStatus(),
+    )
+    def test_api_status(self, *_):
+        api = pynetbox.api(host,)
+        self.assertEqual(api.status()["netbox-version"], "0.9.9")
