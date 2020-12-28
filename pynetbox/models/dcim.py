@@ -47,9 +47,8 @@ class TraceableRecord(Record):
                     "/api/dcim/rear-ports": RearPorts,
                 }
 
-                uri = urlsplit(hop_item_data["url"]).path
                 return_obj_class = uri_to_obj_class_map.get(
-                    "/".join(uri.split("/")[:4]),  # trim the uri down to it's base
+                    urlsplit(req.base).path,
                     Record,
                 )
 
