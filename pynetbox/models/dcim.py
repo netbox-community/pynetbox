@@ -31,6 +31,12 @@ class TraceableRecord(Record):
             session_key=self.api.session_key,
             http_session=self.api.http_session,
         )
+        uri_to_obj_class_map = {
+            "dcim/cables": Cables,
+            "dcim/front-ports": FrontPorts,
+            "dcim/interfaces": Interfaces,
+            "dcim/rear-ports": RearPorts,
+        }
         ret = []
         for (termination_a_data, cable_data, termination_b_data) in req.get():
             this_hop_ret = []
@@ -40,16 +46,14 @@ class TraceableRecord(Record):
                     this_hop_ret.append(hop_item_data)
                     continue
 
-                uri_to_obj_class_map = {
-                    "/api/dcim/cables": Cables,
-                    "/api/dcim/front-ports": FrontPorts,
-                    "/api/dcim/interfaces": Interfaces,
-                    "/api/dcim/rear-ports": RearPorts,
-                }
-
-                return_obj_class = uri_to_obj_class_map.get(
-                    urlsplit(req.base).path, Record,
+                # TODO: Move this to a more general function.
+                app_endpoint = "/".join(
+                    urlsplit(hop_item_data["url"][len(self.api.base_url) :]).path.split(
+                        "/"
+                    )[1:3]
                 )
+
+                return_obj_class = uri_to_obj_class_map.get(app_endpoint, Record,)
 
                 this_hop_ret.append(
                     return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
