@@ -33,22 +33,43 @@ def git_toplevel():
 
 
 @pytest.fixture(scope="session")
+def netbox_docker_repo_fpath(git_toplevel):
+    repo_fpath = "/".join([git_toplevel, ".netbox-docker"])
+    if os.path.isdir(repo_fpath):
+        subp.check_call(
+            ["git", "fetch",], cwd=repo_fpath,
+        )
+        subp.check_call(
+            ["git", "pull",], cwd=repo_fpath,
+        )
+    else:
+        subp.check_call(
+            [
+                "git",
+                "clone",
+                "https://github.com/netbox-community/netbox-docker",
+                repo_fpath,
+            ]
+        )
+
+    return repo_fpath
+
+
+@pytest.fixture(scope="session")
 def docker_compose_project_name(pytestconfig):
     """Return a consistent project name so we can kill stale containers."""
     return "pytest_pynetbox_%s" % int(time.time())
 
 
 @pytest.fixture(scope="session")
-def docker_compose_file(pytestconfig, git_toplevel):
+def docker_compose_file(pytestconfig, netbox_docker_repo_fpath):
     """Return paths to the compose files needed to create test containers.
     
     We can create container sets for multiple versions of netbox here by returning a
     list of paths to multiple compose files.
     """
     compose_files = []
-    compose_source_fpath = os.path.join(
-        git_toplevel, ".netbox-docker", "docker-compose.yml"
-    )
+    compose_source_fpath = os.path.join(netbox_docker_repo_fpath, "docker-compose.yml")
 
     for netbox_integration_version in netbox_integration_versions():
         # load the compose file yaml
@@ -146,29 +167,6 @@ def docker_compose_file(pytestconfig, git_toplevel):
         compose_files.append(compose_output_fpath)
 
     return compose_files
-
-
-@pytest.fixture(scope="session")
-def netbox_docker_repo_fpath(git_toplevel):
-    repo_fpath = "/".join([git_toplevel, ".netbox-docker"])
-    if os.path.isdir(repo_fpath):
-        subp.check_call(
-            ["git", "fetch",], cwd=repo_fpath,
-        )
-        subp.check_call(
-            ["git", "pull",], cwd=repo_fpath,
-        )
-    else:
-        subp.check_call(
-            [
-                "git",
-                "clone",
-                "https://github.com/netbox-community/netbox-docker",
-                repo_fpath,
-            ]
-        )
-
-    return repo_fpath
 
 
 def is_responsive(url):
