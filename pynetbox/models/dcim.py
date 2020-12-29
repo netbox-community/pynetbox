@@ -48,8 +48,7 @@ class TraceableRecord(Record):
                 }
 
                 return_obj_class = uri_to_obj_class_map.get(
-                    urlsplit(req.base).path,
-                    Record,
+                    urlsplit(req.base).path, Record,
                 )
 
                 this_hop_ret.append(
@@ -230,7 +229,9 @@ class Termination(Record):
 
 class Cables(Record):
     def __str__(self):
-        return "{} <> {}".format(self.termination_a, self.termination_b)
+        if all(["name" in dict(i) for i in (self.termination_a, self.termination_b)]):
+            return "{} <> {}".format(self.termination_a, self.termination_b)
+        return "Cable #{}".format(self.id)
 
     termination_a = Termination
     termination_b = Termination
