@@ -217,6 +217,23 @@ class Request(object):
         else:
             raise RequestError(req)
 
+    def get_status(self):
+        """ Gets the status from /api/status/ endpoint in NetBox.
+
+        :Returns: Dictionary as returned by NetBox.
+        :Raises: RequestError if request is not successful.
+        """
+        headers = {"Content-Type": "application/json;"}
+        if self.token:
+            headers["authorization"] = "Token {}".format(self.token)
+        req = self.http_session.get(
+            "{}status/".format(self.normalize_url(self.base)), headers=headers,
+        )
+        if req.ok:
+            return req.json()
+        else:
+            raise RequestError(req)
+
     def normalize_url(self, url):
         """ Builds a url for POST actions.
         """
