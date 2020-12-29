@@ -325,6 +325,20 @@ class InterfaceTestCase(Generic.Tests):
             headers=HEADERS,
         )
 
+    @patch(
+        "pynetbox.core.query.requests.sessions.Session.get",
+        side_effect=[
+            Response(fixture="dcim/interface.json"),
+            Response(fixture="dcim/interface_trace.json"),
+        ],
+    )
+    def test_trace(self, mock):
+        ret = nb.interfaces.get(1)
+        trace = ret.trace()
+        self.assertTrue(len(trace) == 3)
+        for hop in trace:
+            self.assertTrue(len(hop) == 3)
+
 
 class RackTestCase(Generic.Tests):
     name = "racks"
