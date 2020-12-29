@@ -2,10 +2,6 @@ import os
 import pytest
 
 import subprocess as subp
-import os
-import requests
-import shutil
-import jinja2
 import yaml
 from packaging import version
 import time
