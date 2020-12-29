@@ -330,9 +330,6 @@ class InterfaceTestCase(Generic.Tests):
         side_effect=[
             Response(fixture="dcim/interface.json"),
             Response(fixture="dcim/interface_trace.json"),
-            Response(fixture="dcim/cable.json"),
-            Response(fixture="dcim/cable.json"),
-            Response(fixture="dcim/cable.json"),
         ],
     )
     def test_trace(self, mock):
@@ -341,11 +338,6 @@ class InterfaceTestCase(Generic.Tests):
         self.assertTrue(len(trace) == 3)
         for hop in trace:
             self.assertTrue(len(hop) == 3)
-            self.assertTrue("Termination" not in str(hop[1]))
-            self.assertTrue(hasattr(hop[1], "termination_a"))
-            self.assertTrue(hasattr(hop[1].termination_a, "name"))
-
-
 
 
 class RackTestCase(Generic.Tests):
