@@ -55,16 +55,6 @@ class TraceableRecord(Record):
                     return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
                 )
 
-            # Try to access an attribute of the Cable object so that the Termination
-            # objects inside of it get populated properly via the .full_details method
-            # call. Without this the Cable object will be printed as:
-            # "<class 'pynetbox.models.dcim.Termination'> <> <class 'pynetbox.models.dcim.Termination'>"
-            # until it gets accessed.
-            try:
-                this_hop_ret[1].name
-            except (AttributeError, IndexError):
-                pass
-
             ret.append(this_hop_ret)
 
         return ret
