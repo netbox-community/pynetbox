@@ -7,6 +7,7 @@ from packaging import version
 import time
 
 import pynetbox
+import requests
 
 
 def netbox_integration_versions():
