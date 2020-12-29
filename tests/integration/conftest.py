@@ -157,8 +157,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_fpath):
         compose_data["volumes"] = new_volumes
 
         compose_output_fpath = os.path.join(
-            git_toplevel,
-            ".netbox-docker",
+            netbox_docker_repo_fpath,
             "docker-compose_%s.yml" % netbox_integration_version["tag"],
         )
         with open(compose_output_fpath, "w") as fdesc:
