@@ -219,7 +219,12 @@ class Termination(Record):
 
 class Cables(Record):
     def __str__(self):
-        if all(["name" in dict(i) for i in (self.termination_a, self.termination_b)]):
+        if all(
+            [
+                isinstance(i, Termination)
+                for i in (self.termination_a, self.termination_b)
+            ]
+        ):
             return "{} <> {}".format(self.termination_a, self.termination_b)
         return "Cable #{}".format(self.id)
 
