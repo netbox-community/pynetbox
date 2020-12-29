@@ -29,7 +29,7 @@ endpoints = {
 
 class ApiTestCase(unittest.TestCase):
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.post",
+        "requests.sessions.Session.post",
         return_value=Response(fixture="api/get_session_key.json"),
     )
     def test_get(self, *_):
@@ -37,7 +37,7 @@ class ApiTestCase(unittest.TestCase):
         self.assertTrue(api)
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.post",
+        "requests.sessions.Session.post",
         return_value=Response(fixture="api/get_session_key.json"),
     )
     def test_sanitize_url(self, *_):
@@ -52,7 +52,7 @@ class ApiVersionTestCase(unittest.TestCase):
         ok = True
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=ResponseHeadersWithVersion(),
     )
     def test_api_version(self, *_):
@@ -64,7 +64,7 @@ class ApiVersionTestCase(unittest.TestCase):
         ok = True
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=ResponseHeadersWithoutVersion(),
     )
     def test_api_version_not_found(self, *_):

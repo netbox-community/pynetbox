@@ -20,17 +20,6 @@ except ImportError:
 import json
 from six.moves.urllib.parse import urlencode
 
-import requests
-
-
-def url_param_builder(param_dict):
-    """Builds url parameters
-
-    Creates URL paramters (e.g. '.../?xyz=r21&abc=123') from a dict
-    passed in param_dict
-    """
-    return "?{}".format(urlencode(param_dict))
-
 
 def calc_pages(limit, count):
     """ Calculate number of pages required for full results set. """
