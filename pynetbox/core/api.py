@@ -35,6 +35,7 @@ class Api(object):
         * tenancy
         * extras
         * virtualization
+        * users
 
     Calling any of these attributes will return
     :py:class:`.App` which exposes endpoints as attributes.
@@ -100,6 +101,7 @@ class Api(object):
         self.tenancy = App(self, "tenancy")
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
+        self.users = App(self, "users")
         self.plugins = PluginsApp(self)
 
     @property

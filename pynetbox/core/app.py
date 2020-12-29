@@ -15,7 +15,7 @@ limitations under the License.
 """
 from pynetbox.core.endpoint import Endpoint
 from pynetbox.core.query import Request
-from pynetbox.models import dcim, ipam, virtualization, circuits, extras
+from pynetbox.models import dcim, ipam, virtualization, circuits, extras, users
 
 
 class App(object):
@@ -40,6 +40,7 @@ class App(object):
         "circuits": circuits,
         "virtualization": virtualization,
         "extras": extras,
+        "users": users,
     }
 
     def _setmodel(self):
@@ -109,6 +110,30 @@ class App(object):
             http_session=self.api.http_session,
         ).get()
         return custom_field_choices
+
+    def config(self):
+        """ Returns config response from app
+
+        :Returns: Raw response from NetBox's config endpoint.
+        :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
+        :Example:
+
+        >>> pprint.pprint(nb.users.config())
+        {'tables': {'DeviceTable': {'columns': ['name',
+                                                'status',
+                                                'tenant',
+                                                'device_role',
+                                                'site',
+                                                'primary_ip',
+                                                'tags']}}}
+        """
+        config = Request(
+            base="{}/{}/config/".format(self.api.base_url, self.name,),
+            token=self.api.token,
+            private_key=self.api.private_key,
+            http_session=self.api.http_session,
+        ).get()
+        return config
 
 
 class PluginsApp(object):
