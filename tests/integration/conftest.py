@@ -38,10 +38,18 @@ def netbox_docker_repo_fpath(git_toplevel):
     repo_fpath = "/".join([git_toplevel, ".netbox-docker"])
     if os.path.isdir(repo_fpath):
         subp.check_call(
-            ["git", "fetch",], cwd=repo_fpath,
+            [
+                "git",
+                "fetch",
+            ],
+            cwd=repo_fpath,
         )
         subp.check_call(
-            ["git", "pull",], cwd=repo_fpath,
+            [
+                "git",
+                "pull",
+            ],
+            cwd=repo_fpath,
         )
     else:
         subp.check_call(
@@ -65,7 +73,7 @@ def docker_compose_project_name(pytestconfig):
 @pytest.fixture(scope="session")
 def docker_compose_file(pytestconfig, netbox_docker_repo_fpath):
     """Return paths to the compose files needed to create test containers.
-    
+
     We can create container sets for multiple versions of netbox here by returning a
     list of paths to multiple compose files.
     """
@@ -74,7 +82,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_fpath):
 
     for netbox_integration_version in netbox_integration_versions():
         # load the compose file yaml
-        compose_data = yaml.load(open(compose_source_fpath, "r").read())
+        compose_data = yaml.safe_load(open(compose_source_fpath, "r").read())
 
         # add the custom network for this version
         compose_data["networks"] = {
