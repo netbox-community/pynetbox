@@ -326,7 +326,7 @@ class InterfaceTestCase(Generic.Tests):
         )
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         side_effect=[
             Response(fixture="dcim/interface.json"),
             Response(fixture="dcim/interface_trace.json"),

@@ -81,7 +81,7 @@ class ApiStatusTestCase(unittest.TestCase):
             }
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=ResponseWithStatus(),
     )
     def test_api_status(self, *_):
