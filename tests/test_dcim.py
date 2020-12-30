@@ -89,9 +89,7 @@ class Generic(object):
                 return_value=Response(
                     fixture="{}/{}.json".format(self.app, self.name[:-1])
                 ),
-            ) as mock, patch(
-                "requests.sessions.Session.delete"
-            ) as delete:
+            ) as mock, patch("requests.sessions.Session.delete") as delete:
                 ret = getattr(nb, self.name).get(1)
                 self.assertTrue(ret.delete())
                 mock.assert_called_with(
@@ -531,10 +529,7 @@ class CablesTestCase(Generic.Tests):
                 "length_unit": None,
             }
         )
-        with patch(
-            "requests.sessions.Session.get",
-            return_value=response_obj,
-        ) as mock:
+        with patch("requests.sessions.Session.get", return_value=response_obj,) as mock:
             ret = getattr(nb, self.name).get(1)
             self.assertTrue(ret)
             self.assertTrue(isinstance(ret, self.ret))

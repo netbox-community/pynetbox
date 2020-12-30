@@ -281,7 +281,7 @@ class Record(object):
 
     def _endpoint_from_url(self, url):
         # Remove the base URL from the beginning
-        url = url[len(self.api.base_url):]
+        url = url[len(self.api.base_url) :]
         if url.startswith("/"):
             url = url[1:]
         app, name = urlsplit(url).path.split("/")[:2]
