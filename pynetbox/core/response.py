@@ -280,11 +280,13 @@ class Record(object):
             setattr(self, k, v)
 
     def _endpoint_from_url(self, url):
-        # Remove the base URL from the beginning
-        url = url[len(self.api.base_url) :]
-        if url.startswith("/"):
-            url = url[1:]
-        app, name = urlsplit(url).path.split("/")[:2]
+        url_path = urlsplit(url).path
+        base_url_path_parts = urlsplit(self.api.base_url).path.split("/")
+        if len(base_url_path_parts) > 2:
+            # There are some extra directories in the path, remove them from url
+            extra_path = "/".join(base_url_path_parts[:-1])
+            url_path = url_path[len(extra_path) :]
+        app, name = url_path.split("/")[2:4]
         return getattr(pynetbox.core.app.App(self.api, app), name)
 
     def full_details(self):
