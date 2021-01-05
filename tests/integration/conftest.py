@@ -30,18 +30,10 @@ def netbox_docker_repo_dirpath(git_toplevel):
     repo_fpath = os.path.join(git_toplevel, ".netbox-docker")
     if os.path.isdir(repo_fpath):
         subp.check_call(
-            [
-                "git",
-                "fetch",
-            ],
-            cwd=repo_fpath,
+            ["git", "fetch",], cwd=repo_fpath,
         )
         subp.check_call(
-            [
-                "git",
-                "pull",
-            ],
-            cwd=repo_fpath,
+            ["git", "pull",], cwd=repo_fpath,
         )
     else:
         subp.check_call(
@@ -82,7 +74,9 @@ def clean_docker_objects():
             continue
         if words[-1].startswith(DOCKER_PROJECT_PREFIX):
             print("removing")
-            subp.check_call(["docker", "rm", "-f", words[0]])
+            subp.check_call(
+                ["docker", "rm", "-f", words[0]], stdout=subp.PIPE, stderr=subp.PIPE
+            )
 
     # TODO: clean up networks and volumes as well
 
@@ -109,20 +103,13 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpath):
 
         # add the custom network for this version
         docker_network_name = "%s_v%s" % (DOCKER_PROJECT_PREFIX, docker_netbox_version)
-        compose_data["networks"] = {
-            docker_network_name: {
-                "name": docker_network_name,
-            }
-        }
+        compose_data["networks"] = {docker_network_name: {"name": docker_network_name,}}
 
         # prepend the netbox version to each of the service names and anything else
         # needed to make the continers unique to the netbox version
         new_services = {}
         for service_name in compose_data["services"].keys():
-            new_service_name = "netbox_v%s_%s" % (
-                docker_netbox_version,
-                service_name,
-            )
+            new_service_name = "netbox_v%s_%s" % (docker_netbox_version, service_name,)
             new_services[new_service_name] = compose_data["services"][service_name]
 
             if service_name in ["netbox", "netbox-worker"]:
@@ -145,10 +132,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpath):
                 ]:
                     new_service_dependencies.append(
                         "netbox_v%s_%s"
-                        % (
-                            docker_netbox_version,
-                            dependent_service_name,
-                        )
+                        % (docker_netbox_version, dependent_service_name,)
                     )
                 new_services[new_service_name]["depends_on"] = new_service_dependencies
 
@@ -178,28 +162,23 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpath):
         for volume_name, volume_config in compose_data["volumes"].items():
             new_volumes[
                 "%s_v%s_%s"
-                % (
-                    DOCKER_PROJECT_PREFIX,
-                    docker_netbox_version,
-                    volume_name,
-                )
+                % (DOCKER_PROJECT_PREFIX, docker_netbox_version, volume_name,)
             ] = volume_config
         compose_data["volumes"] = new_volumes
 
         compose_output_fpath = os.path.join(
-            netbox_docker_repo_dirpath,
-            "docker-compose-v%s.yml" % netbox_version,
+            netbox_docker_repo_dirpath, "docker-compose-v%s.yml" % netbox_version,
         )
         with open(compose_output_fpath, "w") as fdesc:
             fdesc.write(yaml.dump(compose_data))
 
         compose_files.append(compose_output_fpath)
 
-    yield compose_files
-
     if pytestconfig.option.cleanup:
         atexit.register(clean_docker_objects)
         atexit.register(clean_netbox_docker_tmpfiles)
+
+    return compose_files
 
 
 def netbox_is_responsive(url):
