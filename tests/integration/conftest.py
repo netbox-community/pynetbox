@@ -67,13 +67,13 @@ def clean_netbox_docker_tmpfiles():
 
 
 def clean_docker_objects():
+    """Clean up any docker containers created via these tests."""
     # clean up any containers
     for line in subp.check_output(["docker", "ps"]).decode("utf-8").splitlines():
         words = line.split()
         if not words:
             continue
         if words[-1].startswith(DOCKER_PROJECT_PREFIX):
-            print("removing")
             subp.check_call(
                 ["docker", "rm", "-f", words[0]], stdout=subp.PIPE, stderr=subp.PIPE
             )
@@ -242,6 +242,8 @@ def docker_cleanup(pytestconfig):
     # will fail during cleanup because there is still a connection to one of the
     # running containers. Here we will disable the builtin cleanup of containers via the
     # pytest-docker module and implement our own instead.
+    # This is only relevant until https://github.com/avast/pytest-docker/pull/33 gets
+    # resolved.
 
     # There is not a great way to skip the shutdown step, so in this case to skip
     # it we will just pass the "version" arg so the containers are left alone
