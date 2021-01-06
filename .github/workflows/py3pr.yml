@@ -19,7 +19,7 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install pynetbox and testing packages.
-        run: pip install . black==19.10b0 pytest pytest-docker faker
+        run: pip install . black==20.8b1 pytest pytest-docker faker
 
       - name: Run Linter
         run: black --diff pynetbox tests
