@@ -9,6 +9,7 @@ import time
 import pynetbox
 import requests
 import atexit
+import faker
 
 
 DOCKER_PROJECT_PREFIX = "pytest_pynetbox"
@@ -250,7 +251,7 @@ def id_netbox_service(fixture_value):
 def populate_netbox_object_types(nb_api, devicetype_library_repo_dirpath):
     """Load some object types in to a fresh instance of netbox.
     
-    These objects will be used in tests.py
+    These objects will be used in tests.
     """
     # collect and load the configs for each of the requested object models
     device_type_models = []
@@ -398,10 +399,14 @@ def docker_cleanup(pytestconfig):
 
 @pytest.fixture(scope="session")
 def faker():
-    """Hook to let us set a consistent seed for the Faker module."""
-    # return 12345
-    import faker
-
+    """Override the default `faker` fixture provided by the faker module.
+    
+    Unfortunately the default behavior of the faker fixture clears the history and
+    resets the seed between fixture uses but in our case since we need to remember
+    history we will override the default fixture and use a single faker instance across
+    all tests. This will let us spin up lots of objects in netbox without naming
+    collisions.
+    """
     fake = faker.Faker()
     fake.seed_instance(0)
 
