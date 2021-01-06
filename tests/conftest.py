@@ -1,7 +1,7 @@
 from packaging import version
 
 
-# FIXME: 2.8 does not currently work with netbox-docker, try to force it?
+# FIXME: 2.8 does not currently work with netbox-docker, try to get it fixed if possible
 DEFAULT_NETBOX_VERSIONS = "2.9, 2.10" 
 
 
