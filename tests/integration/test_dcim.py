@@ -1,7 +1,6 @@
 import pytest
 
 
-# @pytest.mark.usefixtures("netbox_service")
 class TestSimpleServerRackingAndConnecting:
 
     """Verify we can create, rack, and connect a server."""
