@@ -122,7 +122,19 @@ class TestSimpleServerRackingAndConnecting:
 
         # now reload the server and verify it's set correctly
         server = server.api.dcim.devices.get(server.id)
-        # for iface in server.api.dcim.interfaces.filter(device_id=server.id, cabled=True):
-        #     trace = iface.trace()
-        from IPython import embed
-        embed()
+
+        # check the cable traces
+        for iface in server.api.dcim.interfaces.filter(
+            device_id=server.id, cabled=True
+        ):
+            trace = iface.trace()
+            assert len(trace) == 1
+            local_iface, cable, remote_iface = trace[0]
+
+            assert local_iface.device.id == server.id
+            assert remote_iface.device.id in [dleaf_iface.id] + [
+                data_leaf.id for data_leaf in data_leafs
+            ]
+
+        # check that it's racked properly
+        assert server.rack.id == rack.id
