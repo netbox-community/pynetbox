@@ -58,6 +58,8 @@ def devicetype_library_repo_dirpath(git_toplevel):
                 "fetch",
             ],
             cwd=repo_fpath,
+            stdout=subp.PIPE,
+            stderr=subp.PIPE,
         )
         subp.check_call(
             [
@@ -65,6 +67,8 @@ def devicetype_library_repo_dirpath(git_toplevel):
                 "pull",
             ],
             cwd=repo_fpath,
+            stdout=subp.PIPE,
+            stderr=subp.PIPE,
         )
     else:
         subp.check_call(
@@ -73,7 +77,9 @@ def devicetype_library_repo_dirpath(git_toplevel):
                 "clone",
                 "https://github.com/netbox-community/devicetype-library",
                 repo_fpath,
-            ]
+            ],
+            stdout=subp.PIPE,
+            stderr=subp.PIPE,
         )
 
     return repo_fpath
@@ -90,6 +96,8 @@ def netbox_docker_repo_dirpath(git_toplevel):
                 "fetch",
             ],
             cwd=repo_fpath,
+            stdout=subp.PIPE,
+            stderr=subp.PIPE,
         )
         subp.check_call(
             [
@@ -97,6 +105,8 @@ def netbox_docker_repo_dirpath(git_toplevel):
                 "pull",
             ],
             cwd=repo_fpath,
+            stdout=subp.PIPE,
+            stderr=subp.PIPE,
         )
     else:
         subp.check_call(
@@ -105,7 +115,9 @@ def netbox_docker_repo_dirpath(git_toplevel):
                 "clone",
                 "https://github.com/netbox-community/netbox-docker",
                 repo_fpath,
-            ]
+            ],
+            stdout=subp.PIPE,
+            stderr=subp.PIPE,
         )
 
     return repo_fpath
@@ -309,7 +321,7 @@ def id_netbox_service(fixture_value):
         str: Identifiable representation of the service, as best we can
 
     """
-    return "netbox %s" % fixture_value
+    return "netbox v%s" % fixture_value
 
 
 def populate_netbox_object_types(nb_api, devicetype_library_repo_dirpath):
