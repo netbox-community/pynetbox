@@ -183,7 +183,8 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpath):
     clean_netbox_docker_tmpfiles()
     clean_docker_objects()
 
-    compose_files = []
+    compose_files = []  # response object
+    # path to the compose file to use as a template
     compose_source_fpath = os.path.join(
         netbox_docker_repo_dirpath, "docker-compose.yml"
     )
@@ -203,6 +204,8 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpath):
 
         # prepend the netbox version to each of the service names and anything else
         # needed to make the continers unique to the netbox version
+        
+        # keep a map of the new and old service names in format {new: old}
         new_services = {}
         for service_name in compose_data["services"].keys():
             new_service_name = "netbox_v%s_%s" % (
@@ -281,6 +284,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpath):
 
         compose_files.append(compose_output_fpath)
 
+    # set post=run cleanup hooks if requested 
     if pytestconfig.option.cleanup:
         atexit.register(clean_docker_objects)
         atexit.register(clean_netbox_docker_tmpfiles)
