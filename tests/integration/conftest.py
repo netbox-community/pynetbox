@@ -9,7 +9,7 @@ import time
 import pynetbox
 import requests
 import atexit
-import faker
+import faker as _faker
 
 
 DOCKER_PROJECT_PREFIX = "pytest_pynetbox"
@@ -132,7 +132,7 @@ def clean_netbox_docker_tmpfiles():
 def clean_docker_objects():
     """Clean up any docker containers created via these tests."""
     # clean up any containers
-    for line in subp.check_output(["docker", "ps"]).decode("utf-8").splitlines():
+    for line in subp.check_output(["docker", "ps", "-a"]).decode("utf-8").splitlines():
         words = line.split()
         if not words:
             continue
@@ -467,7 +467,7 @@ def faker():
     all tests. This will let us spin up lots of objects in netbox without naming
     collisions.
     """
-    fake = faker.Faker()
+    fake = _faker.Faker()
     fake.seed_instance(0)
 
     return fake
