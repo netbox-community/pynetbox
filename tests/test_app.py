@@ -31,6 +31,25 @@ class AppCustomChoicesTestCase(unittest.TestCase):
         self.assertEqual(sorted(choices.keys()), ["Testfield1", "Testfield2"])
 
 
+class AppConfigTestCase(unittest.TestCase):
+    @patch(
+        "pynetbox.core.query.Request.get",
+        return_value={
+            "tables": {
+                "DeviceTable": {"columns": ["name", "status", "tenant", "tags",],},
+            },
+        },
+    )
+    def test_config(self, *_):
+        api = pynetbox.api(host, **def_kwargs)
+        config = api.users.config()
+        self.assertEqual(sorted(config.keys()), ["tables"])
+        self.assertEqual(
+            sorted(config["tables"]["DeviceTable"]["columns"]),
+            ["name", "status", "tags", "tenant"],
+        )
+
+
 class PluginAppCustomChoicesTestCase(unittest.TestCase):
     @patch(
         "pynetbox.core.query.Request.get",
@@ -47,10 +66,7 @@ class PluginAppCustomChoicesTestCase(unittest.TestCase):
 
     @patch(
         "pynetbox.core.query.Request.get",
-        return_value=[{
-            "name": "test_plugin",
-            "package": "netbox_test_plugin",
-        }],
+        return_value=[{"name": "test_plugin", "package": "netbox_test_plugin",}],
     )
     def test_installed_plugins(self, *_):
         api = pynetbox.api(host, **def_kwargs)

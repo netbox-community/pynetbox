@@ -1,0 +1,118 @@
+[
+    [
+        {
+            "id": 39126,
+            "url": "http://localhost:8000/api/dcim/interfaces/39126/",
+            "device": {
+                "id": 4747,
+                "url": "http://localhost:8000/api/dcim/devices/4747/",
+                "name": "test1-core1",
+                "display_name": "test1-core1"
+            },
+            "name": "em1",
+            "cable": 9911,
+            "connection_status": {
+                "value": false,
+                "label": "Not Connected"
+            }
+        },
+        {
+            "id": 9911,
+            "url": "http://localhost:8000/api/dcim/cables/9911/",
+            "type": "",
+            "status": "planned",
+            "label": "",
+            "color": "",
+            "length": null,
+            "length_unit": ""
+        },
+        {
+            "id": 5583,
+            "url": "http://localhost:8000/api/dcim/front-ports/5583/",
+            "device": {
+                "id": 4430,
+                "url": "http://localhost:8000/api/dcim/devices/4430/",
+                "name": "test1-patchpanel1",
+                "display_name": "test1-patchpanel1"
+            },
+            "name": "pair-11 (ports 21-22)",
+            "cable": 9911
+        }
+    ],
+    [
+        {
+            "id": 3736,
+            "url": "http://localhost:8000/api/dcim/rear-ports/3736/",
+            "device": {
+                "id": 4430,
+                "url": "http://localhost:8000/api/dcim/devices/4430/",
+                "name": "test1-patchpanel1",
+                "display_name": "test1-patchpanel1"
+            },
+            "name": "port-2",
+            "cable": 9229
+        },
+        {
+            "id": 9229,
+            "url": "http://localhost:8000/api/dcim/cables/9229/",
+            "type": "mmf-om4",
+            "status": "planned",
+            "label": "",
+            "color": "",
+            "length": null,
+            "length_unit": ""
+        },
+        {
+            "id": 3768,
+            "url": "http://localhost:8000/api/dcim/rear-ports/3768/",
+            "device": {
+                "id": 4436,
+                "url": "http://localhost:8000/api/dcim/devices/4436/",
+                "name": "test1-patchpanel2",
+                "display_name": "test1-patchpanel2"
+            },
+            "name": "port-2",
+            "cable": 9229
+        }
+    ],
+    [
+        {
+            "id": 5655,
+            "url": "http://localhost:8000/api/dcim/front-ports/5655/",
+            "device": {
+                "id": 4436,
+                "url": "http://localhost:8000/api/dcim/devices/4436/",
+                "name": "test1-patchpanel2",
+                "display_name": "test1-patchpanel2"
+            },
+            "name": "pair-11 (ports 21-22)",
+            "cable": 9240
+        },
+        {
+            "id": 9240,
+            "url": "http://localhost:8000/api/dcim/cables/9240/",
+            "type": "mmf-om4",
+            "status": "planned",
+            "label": "",
+            "color": "",
+            "length": null,
+            "length_unit": ""
+        },
+        {
+            "id": 35473,
+            "url": "http://localhost:8000/api/dcim/interfaces/35473/",
+            "device": {
+                "id": 3930,
+                "url": "http://localhost:8000/api/dcim/devices/3930/",
+                "name": "test1-core2",
+                "display_name": "test1-core2"
+            },
+            "name": "Ethernet11",
+            "cable": 9240,
+            "connection_status": {
+                "value": false,
+                "label": "Not Connected"
+            }
+        }
+    ]
+]

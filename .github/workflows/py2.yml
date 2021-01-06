@@ -1,6 +1,10 @@
-name: PR Test
+name: Py2 Test
 
-on: [pull_request]
+on:
+  pull_request: {}
+  push:
+    branches:
+      - master
 
 jobs:
   build:

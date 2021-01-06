@@ -20,17 +20,6 @@ except ImportError:
 import json
 from six.moves.urllib.parse import urlencode
 
-import requests
-
-
-def url_param_builder(param_dict):
-    """Builds url parameters
-
-    Creates URL paramters (e.g. '.../?xyz=r21&abc=123') from a dict
-    passed in param_dict
-    """
-    return "?{}".format(urlencode(param_dict))
-
 
 def calc_pages(limit, count):
     """ Calculate number of pages required for full results set. """
@@ -225,6 +214,23 @@ class Request(object):
                 return req.json()["session_key"]
             except json.JSONDecodeError:
                 raise ContentError(req)
+        else:
+            raise RequestError(req)
+
+    def get_status(self):
+        """ Gets the status from /api/status/ endpoint in NetBox.
+
+        :Returns: Dictionary as returned by NetBox.
+        :Raises: RequestError if request is not successful.
+        """
+        headers = {"Content-Type": "application/json;"}
+        if self.token:
+            headers["authorization"] = "Token {}".format(self.token)
+        req = self.http_session.get(
+            "{}status/".format(self.normalize_url(self.base)), headers=headers,
+        )
+        if req.ok:
+            return req.json()
         else:
             raise RequestError(req)
 

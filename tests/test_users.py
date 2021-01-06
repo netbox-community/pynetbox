@@ -1,17 +1,18 @@
 import unittest
 import six
 
-from .util import Response
 import pynetbox
+from .util import Response
 
 if six.PY3:
     from unittest.mock import patch
 else:
     from mock import patch
 
+
 api = pynetbox.api("http://localhost:8000",)
 
-nb = api.circuits
+nb = api.users
 
 HEADERS = {"accept": "application/json;"}
 
@@ -20,7 +21,7 @@ class Generic(object):
     class Tests(unittest.TestCase):
         name = ""
         ret = pynetbox.core.response.Record
-        app = "circuits"
+        app = "users"
 
         def test_get_all(self):
             with patch(
@@ -78,33 +79,21 @@ class Generic(object):
                 )
 
 
-class CircuitsTestCase(Generic.Tests):
-    name = "circuits"
+class UsersTestCase(Generic.Tests):
+    name = "users"
 
     @patch(
         "requests.sessions.Session.get",
-        return_value=Response(fixture="circuits/circuit.json"),
+        return_value=Response(fixture="users/user.json"),
     )
     def test_repr(self, _):
-        test = nb.circuits.get(1)
-        self.assertEqual(str(test), "123456")
+        test = nb.users.get(1)
+        self.assertEqual(str(test), "user1")
 
 
-class ProviderTestCase(Generic.Tests):
-    name = "providers"
+class GroupsTestCase(Generic.Tests):
+    name = "groups"
 
 
-class CircuitTypeTestCase(Generic.Tests):
-    name = "circuit_types"
-
-
-class CircuitTerminationsTestCase(Generic.Tests):
-    name = "circuit_terminations"
-
-    @patch(
-        "requests.sessions.Session.get",
-        return_value=Response(fixture="circuits/circuit_termination.json"),
-    )
-    def test_repr(self, _):
-        test = nb.circuit_terminations.get(1)
-        self.assertEqual(str(test), "123456")
+class PermissionsTestCase(Generic.Tests):
+    name = "permissions"

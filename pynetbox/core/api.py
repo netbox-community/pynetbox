@@ -35,6 +35,7 @@ class Api(object):
         * tenancy
         * extras
         * virtualization
+        * users
 
     Calling any of these attributes will return
     :py:class:`.App` which exposes endpoints as attributes.
@@ -100,6 +101,7 @@ class Api(object):
         self.tenancy = App(self, "tenancy")
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
+        self.users = App(self, "users")
         self.plugins = PluginsApp(self)
 
     @property
@@ -148,3 +150,36 @@ class Api(object):
         return Request(
             base=self.base_url, http_session=self.http_session,
         ).get_openapi()
+
+    def status(self):
+        """Gets the status information from NetBox.
+
+        Available in NetBox 2.10.0 or newer.
+
+        :Returns: Dictionary as returned by NetBox.
+        :Raises: :py:class:`.RequestError` if the request is not successful.
+        :Example:
+
+        >>> pprint.pprint(nb.status())
+        {'django-version': '3.1.3',
+         'installed-apps': {'cacheops': '5.0.1',
+                            'debug_toolbar': '3.1.1',
+                            'django_filters': '2.4.0',
+                            'django_prometheus': '2.1.0',
+                            'django_rq': '2.4.0',
+                            'django_tables2': '2.3.3',
+                            'drf_yasg': '1.20.0',
+                            'mptt': '0.11.0',
+                            'rest_framework': '3.12.2',
+                            'taggit': '1.3.0',
+                            'timezone_field': '4.0'},
+         'netbox-version': '2.10.2',
+         'plugins': {},
+         'python-version': '3.7.3',
+         'rq-workers-running': 1}
+        >>>
+        """
+        status = Request(
+            base=self.base_url, token=self.token, http_session=self.http_session,
+        ).get_status()
+        return status
