@@ -1,6 +1,10 @@
-name: PR Test
+name: Py2 Test
 
-on: [pull_request]
+on:
+  pull_request: {}
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -8,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.6, 3.8]
+        python: [2.7]
 
     steps:
       - uses: actions/checkout@v2
@@ -19,11 +23,8 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install pynetbox and testing packages.
-        run: pip install . black==19.10b0 pytest pytest-docker
+        run: pip install . mock
 
-      - name: Run Linter
-        run: black --diff pynetbox tests
-          
       - name: Run Tests
-        run: pytest
+        run: python -m unittest discover 
 

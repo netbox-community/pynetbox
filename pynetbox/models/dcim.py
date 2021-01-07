@@ -13,10 +13,55 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from six.moves.urllib.parse import urlsplit
+
+from pynetbox.core.query import Request
 from pynetbox.core.response import Record, JsonField
 from pynetbox.core.endpoint import RODetailEndpoint
 from pynetbox.models.ipam import IpAddresses
 from pynetbox.models.circuits import Circuits
+
+
+class TraceableRecord(Record):
+    def trace(self):
+        req = Request(
+            key=str(self.id) + "/trace",
+            base=self.endpoint.url,
+            token=self.api.token,
+            session_key=self.api.session_key,
+            http_session=self.api.http_session,
+        )
+        uri_to_obj_class_map = {
+            "dcim/cables": Cables,
+            "dcim/front-ports": FrontPorts,
+            "dcim/interfaces": Interfaces,
+            "dcim/rear-ports": RearPorts,
+        }
+        ret = []
+        for (termination_a_data, cable_data, termination_b_data) in req.get():
+            this_hop_ret = []
+            for hop_item_data in (termination_a_data, cable_data, termination_b_data):
+                # if not fully terminated then some items will be None
+                if not hop_item_data:
+                    this_hop_ret.append(hop_item_data)
+                    continue
+
+                # TODO: Move this to a more general function.
+                app_endpoint = "/".join(
+                    urlsplit(hop_item_data["url"][len(self.api.base_url) :]).path.split(
+                        "/"
+                    )[1:3]
+                )
+
+                return_obj_class = uri_to_obj_class_map.get(app_endpoint, Record,)
+
+                this_hop_ret.append(
+                    return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
+                )
+
+            ret.append(this_hop_ret)
+
+        return ret
 
 
 class DeviceTypes(Record):
@@ -80,9 +125,25 @@ class ConnectedEndpoint(Record):
     device = Devices
 
 
-class Interfaces(Record):
+class Interfaces(TraceableRecord):
     interface_connection = InterfaceConnection
     connected_endpoint = ConnectedEndpoint
+
+
+class PowerOutlets(TraceableRecord):
+    device = Devices
+
+
+class PowerPorts(TraceableRecord):
+    device = Devices
+
+
+class ConsolePorts(TraceableRecord):
+    device = Devices
+
+
+class ConsoleServerPorts(TraceableRecord):
+    device = Devices
 
 
 class RackReservations(Record):
@@ -96,6 +157,14 @@ class VirtualChassis(Record):
 
 
 class RUs(Record):
+    device = Devices
+
+
+class FrontPorts(Record):
+    device = Devices
+
+
+class RearPorts(Record):
     device = Devices
 
 
@@ -154,7 +223,14 @@ class Termination(Record):
 
 class Cables(Record):
     def __str__(self):
-        return "{} <> {}".format(self.termination_a, self.termination_b)
+        if all(
+            [
+                isinstance(i, Termination)
+                for i in (self.termination_a, self.termination_b)
+            ]
+        ):
+            return "{} <> {}".format(self.termination_a, self.termination_b)
+        return "Cable #{}".format(self.id)
 
     termination_a = Termination
     termination_b = Termination

@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.core.query import Request, RequestError, url_param_builder
+from pynetbox.core.query import Request, RequestError
 from pynetbox.core.response import Record
 
 RESERVED_KWARGS = ("id", "pk", "limit", "offset")
@@ -147,18 +147,23 @@ class Endpoint(object):
                     return filter_lookup[0]
             return None
 
-        try:
-            req = Request(
-                key=key,
-                base=self.url,
-                token=self.token,
-                session_key=self.session_key,
-                http_session=self.api.http_session,
-            )
-        except RequestError:
-            return None
+        req = Request(
+            key=key,
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            http_session=self.api.http_session,
+        )
 
-        return response_loader(req.get(), self.return_obj, self)
+        try:
+            resp = req.get()
+        except RequestError as e:
+            if e.req.status_code == 404:
+                return None
+            else:
+                raise e
+
+        return response_loader(resp, self.return_obj, self)
 
     def filter(self, *args, **kwargs):
         r"""Queries the 'ListView' of a given endpoint.

@@ -1,7 +1,6 @@
 import pytest
 
 
-# @pytest.mark.usefixtures("netbox_service")
 class TestSimpleServerRackingAndConnecting:
 
     """Verify we can create, rack, and connect a server."""
@@ -17,10 +16,6 @@ class TestSimpleServerRackingAndConnecting:
 
         return site
 
-        # # cleanup
-        # site.delete()
-        # assert not netbox_service["api"].dcim.sites.get(site_id)
-
     @pytest.fixture
     def rack(self, site, faker):
         """Verify we can create a rack device."""
@@ -29,15 +24,11 @@ class TestSimpleServerRackingAndConnecting:
 
         return rack
 
-        # # cleanup
-        # rack.delete()
-        # assert not site.api.dcim.racks.get(rack_id)
-
     @pytest.fixture
     def data_leafs(self, rack, faker):
         """Verify we can create data leaf switch devices."""
         devices = []
-        for i in range(1, 3):
+        for i in [1, 2]:
             device = rack.api.dcim.devices.create(
                 name="access_switch%s." % i + faker.domain_name(),
                 device_type={"slug": "dcs-7050tx3-48c8"},
@@ -78,6 +69,7 @@ class TestSimpleServerRackingAndConnecting:
             site=site.id,
         )
         assert device
+
         return device
 
     def test_racking_server(self, server, data_leafs, mgmt_leaf, rack):
@@ -127,3 +119,21 @@ class TestSimpleServerRackingAndConnecting:
 
             assert server_data_iface.update({"lag": bond_iface.id})
 
+        # now reload the server and verify it's set correctly
+        server = server.api.dcim.devices.get(server.id)
+
+        # check the cable traces
+        for iface in server.api.dcim.interfaces.filter(
+            device_id=server.id, cabled=True
+        ):
+            trace = iface.trace()
+            assert len(trace) == 1
+            local_iface, cable, remote_iface = trace[0]
+
+            assert local_iface.device.id == server.id
+            assert remote_iface.device.id in [dleaf_iface.id] + [
+                data_leaf.id for data_leaf in data_leafs
+            ]
+
+        # check that it's racked properly
+        assert server.rack.id == rack.id

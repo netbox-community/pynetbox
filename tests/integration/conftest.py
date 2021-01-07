@@ -192,6 +192,7 @@ def clean_docker_objects():
         words = line.split()
         if not words:
             continue
+
         if words[-1].startswith(DOCKER_PROJECT_PREFIX):
             subp.check_call(
                 ["docker", "rm", "-f", words[0]], stdout=subp.PIPE, stderr=subp.PIPE
@@ -350,6 +351,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
 
             compose_files.append(compose_output_fpath)
 
+    # set post=run cleanup hooks if requested
     if pytestconfig.option.cleanup:
         atexit.register(clean_docker_objects)
         atexit.register(clean_netbox_docker_tmpfiles)
@@ -374,13 +376,13 @@ def id_netbox_service(fixture_value):
         str: Identifiable representation of the service, as best we can
 
     """
-    return "netbox %s" % fixture_value
+    return "netbox v%s" % fixture_value
 
 
 def populate_netbox_object_types(nb_api, devicetype_library_repo_dirpath, faker):
     """Load some object types in to a fresh instance of netbox.
-    
-    These objects will be used in tests.py
+
+    These objects will be used in tests.
     """
     # collect and load the configs for each of the requested object models
     device_type_models = []
@@ -480,10 +482,10 @@ def netbox_service(
     faker,
 ):
     """Get the netbox service to test against.
-    
+
     This function waits until the netbox container is fully up and running then does an
     initial data population with a few object types to be used in testing. Then the
-    service is returned as a fixture to be called from tests. 
+    service is returned as a fixture to be called from tests.
     """
     netbox_integration_version = request.param
 
@@ -543,6 +545,7 @@ def docker_cleanup(pytestconfig):
 @pytest.fixture(scope="session")
 def faker():
     """Override the default `faker` fixture provided by the faker module.
+
     Unfortunately the default behavior of the faker fixture clears the history and
     resets the seed between fixture uses but in our case since we need to remember
     history we will override the default fixture and use a single faker instance across

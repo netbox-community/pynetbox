@@ -36,7 +36,7 @@ class Generic(object):
 
         def test_get_all(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
             ) as mock:
                 ret = getattr(nb, self.name).all()
@@ -54,7 +54,7 @@ class Generic(object):
 
         def test_filter(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
             ) as mock:
                 ret = getattr(nb, self.name).filter(name="test")
@@ -72,7 +72,7 @@ class Generic(object):
 
         def test_get(self):
             with patch(
-                "pynetbox.core.query.requests.sessions.Session.get",
+                "requests.sessions.Session.get",
                 return_value=Response(
                     fixture="{}/{}.json".format(
                         self.app, self.name_singular or self.name[:-1]
@@ -99,7 +99,7 @@ class PrefixTestCase(Generic.Tests):
     name_singular = "prefix"
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="ipam/prefix.json"),
     )
     def test_modify(self, *_):
@@ -111,11 +111,11 @@ class PrefixTestCase(Generic.Tests):
         self.assertEqual(ret_serialized["prefix"], "10.1.2.0/24")
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.put",
+        "requests.sessions.Session.put",
         return_value=Response(fixture="ipam/prefix.json"),
     )
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="ipam/prefix.json"),
     )
     def test_idempotence(self, *_):
@@ -124,7 +124,7 @@ class PrefixTestCase(Generic.Tests):
         self.assertFalse(test)
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         side_effect=[
             Response(fixture="ipam/prefix.json"),
             Response(fixture="ipam/available-ips.json"),
@@ -143,11 +143,11 @@ class PrefixTestCase(Generic.Tests):
         self.assertEqual(len(ret), 3)
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.post",
+        "requests.sessions.Session.post",
         return_value=Response(fixture="ipam/available-ips-post.json"),
     )
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="ipam/prefix.json"),
     )
     def test_create_available_ips(self, _, post):
@@ -164,7 +164,7 @@ class PrefixTestCase(Generic.Tests):
         self.assertTrue(isinstance(ret, pynetbox.models.ipam.IpAddresses))
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         side_effect=[
             Response(fixture="ipam/prefix.json"),
             Response(fixture="ipam/available-prefixes.json"),
@@ -182,11 +182,11 @@ class PrefixTestCase(Generic.Tests):
         self.assertTrue(ret)
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.post",
+        "requests.sessions.Session.post",
         return_value=Response(fixture="ipam/available-prefixes-post.json"),
     )
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="ipam/prefix.json"),
     )
     def test_create_available_prefixes(self, _, post):
@@ -208,7 +208,7 @@ class IPAddressTestCase(Generic.Tests):
     name_singular = "ip_address"
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         return_value=Response(fixture="ipam/ip_address.json"),
     )
     def test_modify(self, *_):
@@ -237,7 +237,7 @@ class VlanTestCase(Generic.Tests):
     name = "vlans"
 
     @patch(
-        "pynetbox.core.query.requests.sessions.Session.get",
+        "requests.sessions.Session.get",
         side_effect=[
             Response(fixture="ipam/vlan.json"),
             Response(fixture="dcim/interface.json"),

@@ -30,6 +30,7 @@ def pytest_addoption(parser):
         ),
     )
 
+
 def pytest_configure(config):
     """Hook that runs after test collection is completed.
 
