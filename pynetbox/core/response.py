@@ -286,12 +286,12 @@ class Record(object):
             # There are some extra directories in the path, remove them from url
             extra_path = "/".join(base_url_path_parts[:-1])
             url_path = url_path[len(extra_path) :]
-        splitted_url_path = url_path.split("/")
-        if splitted_url_path[2] == "plugins":
+        split_url_path = url_path.split("/")
+        if split_url_path[2] == "plugins":
             # Skip plugins from the path
-            app, name = splitted_url_path[3:5]
+            app, name = split_url_path[3:5]
         else:
-            app, name = splitted_url_path[2:4]
+            app, name = split_url_path[2:4]
         return getattr(pynetbox.core.app.App(self.api, app), name)
 
     def full_details(self):
