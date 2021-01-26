@@ -50,7 +50,7 @@ class TraceableRecord(Record):
                 #     https://netbox/api/dcim/rear-ports/12761/
                 # TODO: Move this to a more general function.
                 app_endpoint = "/".join(
-                    urlsplit(hop_item_data["url"][len(urlsplit(self.api.base_url).path) :]).path.split(
+                    urlsplit(hop_item_data["url"]).path[len(urlsplit(self.api.base_url).path) :].split(
                         "/"
                     )[-4:-2]
                 )
