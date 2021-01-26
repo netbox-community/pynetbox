@@ -46,6 +46,8 @@ class TraceableRecord(Record):
                     this_hop_ret.append(hop_item_data)
                     continue
 
+                # the url for this item will be something like:
+                #     https://netbox/api/dcim/rear-ports/12761/
                 # TODO: Move this to a more general function.
                 app_endpoint = "/".join(
                     urlsplit(hop_item_data["url"][len(urlsplit(self.api.base_url).path) :]).path.split(
