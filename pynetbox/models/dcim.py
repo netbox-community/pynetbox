@@ -48,13 +48,11 @@ class TraceableRecord(Record):
 
                 # TODO: Move this to a more general function.
                 app_endpoint = "/".join(
-                    urlsplit(hop_item_data["url"][len(self.api.base_url) :]).path.split(
+                    urlsplit(hop_item_data["url"][len(urlsplit(self.api.base_url).path) :]).path.split(
                         "/"
-                    )[1:3]
+                    )[-4:-2]
                 )
-
                 return_obj_class = uri_to_obj_class_map.get(app_endpoint, Record,)
-
                 this_hop_ret.append(
                     return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
                 )
@@ -160,11 +158,11 @@ class RUs(Record):
     device = Devices
 
 
-class FrontPorts(Record):
+class FrontPorts(TraceableRecord):
     device = Devices
 
 
-class RearPorts(Record):
+class RearPorts(TraceableRecord):
     device = Devices
 
 
