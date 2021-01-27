@@ -52,7 +52,7 @@ class TraceableRecord(Record):
                 app_endpoint = "/".join(
                     urlsplit(hop_item_data["url"]).path[len(urlsplit(self.api.base_url).path) :].split(
                         "/"
-                    )[-4:-2]
+                    )[1:3]
                 )
                 return_obj_class = uri_to_obj_class_map.get(app_endpoint, Record,)
                 this_hop_ret.append(
