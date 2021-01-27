@@ -70,7 +70,12 @@ class Api(object):
     """
 
     def __init__(
-        self, url, token=None, private_key=None, private_key_file=None, threading=False,
+        self,
+        url,
+        token=None,
+        private_key=None,
+        private_key_file=None,
+        threading=False,
     ):
         if private_key and private_key_file:
             raise ValueError(
@@ -125,7 +130,8 @@ class Api(object):
         >>>
         """
         version = Request(
-            base=self.base_url, http_session=self.http_session,
+            base=self.base_url,
+            http_session=self.http_session,
         ).get_version()
         return version
 
@@ -148,7 +154,8 @@ class Api(object):
         >>>
         """
         return Request(
-            base=self.base_url, http_session=self.http_session,
+            base=self.base_url,
+            http_session=self.http_session,
         ).get_openapi()
 
     def status(self):
@@ -180,6 +187,8 @@ class Api(object):
         >>>
         """
         status = Request(
-            base=self.base_url, token=self.token, http_session=self.http_session,
+            base=self.base_url,
+            token=self.token,
+            http_session=self.http_session,
         ).get_status()
         return status

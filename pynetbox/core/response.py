@@ -244,7 +244,7 @@ class Record(object):
             self._init_cache.append((key, get_return(value)))
 
     def _parse_values(self, values):
-        """ Parses values init arg.
+        """Parses values init arg.
 
         Parses values dict at init and sets object attributes with the
         values within.

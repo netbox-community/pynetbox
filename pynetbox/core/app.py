@@ -19,7 +19,7 @@ from pynetbox.models import dcim, ipam, virtualization, circuits, extras, users
 
 
 class App(object):
-    """ Represents apps in NetBox.
+    """Represents apps in NetBox.
 
     Calls to attributes are returned as Endpoint objects.
 
@@ -70,7 +70,7 @@ class App(object):
             ).get_session_key()
 
     def choices(self):
-        """ Returns _choices response from App
+        """Returns _choices response from App
 
         .. note::
 
@@ -93,7 +93,7 @@ class App(object):
         return self._choices
 
     def custom_choices(self):
-        """ Returns _custom_field_choices response from app
+        """Returns _custom_field_choices response from app
 
         :Returns: Raw response from NetBox's _custom_field_choices endpoint.
         :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
@@ -104,7 +104,10 @@ class App(object):
          'Testfield2': {'Othervalue2': 4, 'Othervalue1': 3}}
         """
         custom_field_choices = Request(
-            base="{}/{}/_custom_field_choices/".format(self.api.base_url, self.name,),
+            base="{}/{}/_custom_field_choices/".format(
+                self.api.base_url,
+                self.name,
+            ),
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
@@ -112,7 +115,7 @@ class App(object):
         return custom_field_choices
 
     def config(self):
-        """ Returns config response from app
+        """Returns config response from app
 
         :Returns: Raw response from NetBox's config endpoint.
         :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
@@ -128,7 +131,10 @@ class App(object):
                                                 'tags']}}}
         """
         config = Request(
-            base="{}/{}/config/".format(self.api.base_url, self.name,),
+            base="{}/{}/config/".format(
+                self.api.base_url,
+                self.name,
+            ),
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
@@ -152,22 +158,24 @@ class PluginsApp(object):
         return App(self.api, "plugins/{}".format(name))
 
     def installed_plugins(self):
-        """ Returns raw response with installed plugins
+        """Returns raw response with installed plugins
 
         :returns: Raw response NetBox's installed plugins.
         :Example:
 
         >>> nb.plugins.installed_plugins()
         [{
-            'name': 'test_plugin', 
-            'package': 'test_plugin', 
-            'author': 'Dmitry', 
-            'description': 'Netbox test plugin', 
+            'name': 'test_plugin',
+            'package': 'test_plugin',
+            'author': 'Dmitry',
+            'description': 'Netbox test plugin',
             'verison': '0.10'
         }]
         """
         installed_plugins = Request(
-            base="{}/plugins/installed-plugins".format(self.api.base_url,),
+            base="{}/plugins/installed-plugins".format(
+                self.api.base_url,
+            ),
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,

@@ -54,7 +54,9 @@ class Endpoint(object):
         self.token = api.token
         self.session_key = api.session_key
         self.url = "{base_url}/{app}/{endpoint}".format(
-            base_url=self.base_url, app=app.name, endpoint=self.name,
+            base_url=self.base_url,
+            app=app.name,
+            endpoint=self.name,
         )
         self._choices = None
 
@@ -290,7 +292,7 @@ class Endpoint(object):
         return response_loader(req, self.return_obj, self)
 
     def choices(self):
-        """ Returns all choices from the endpoint.
+        """Returns all choices from the endpoint.
 
         The returned dict is also saved in the endpoint object (in
         ``_choices`` attribute) so that later calls will return the same data
