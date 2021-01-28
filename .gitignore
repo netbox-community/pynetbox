@@ -97,3 +97,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Other git repos checked out locally
+.netbox-docker-*/
+.devicetype-library/
