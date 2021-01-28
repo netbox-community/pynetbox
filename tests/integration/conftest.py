@@ -39,13 +39,13 @@ DEVICE_ROLE_NAMES = [
 
 def get_netbox_docker_version_tag(netbox_version):
     """Get the repo tag to build netbox-docker in from the requested netbox version.
-    
+
     Args:
         netbox_version (version.Version): The version of netbox we want to build
 
     Returns:
         str: The release tag for the netbox-docker repo that should be able to build
-            the requested version of netbox. 
+            the requested version of netbox.
 
     """
     major, minor = netbox_version.major, netbox_version.minor
@@ -66,7 +66,7 @@ def get_netbox_docker_version_tag(netbox_version):
 @pytest.fixture(scope="session")
 def git_toplevel():
     """Get the top level of the current git repo.
-    
+
     Returns:
         str: The path of the top level directory of the current git repo.
 
@@ -81,7 +81,7 @@ def git_toplevel():
 @pytest.fixture(scope="session")
 def devicetype_library_repo_dirpath(git_toplevel):
     """Get the path to the devicetype-library repo we will use.
-    
+
     Returns:
         str: The path of the directory of the devicetype-library repo we will use.
     """
@@ -112,10 +112,10 @@ def devicetype_library_repo_dirpath(git_toplevel):
 @pytest.fixture(scope="session")
 def netbox_docker_repo_dirpaths(pytestconfig, git_toplevel):
     """Get the path to the netbox-docker repos we will use.
-    
+
     Returns:
         dict: A map of the repo dir paths to the versions of netbox that should be run
-            from that repo as: 
+            from that repo as:
                 {
                     <path to repo dir as str>: [
                         <netbox version>,
@@ -260,7 +260,9 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                 docker_netbox_version,
             )
             compose_data["networks"] = {
-                docker_network_name: {"name": docker_network_name,}
+                docker_network_name: {
+                    "name": docker_network_name,
+                }
             }
 
             # prepend the netbox version to each of the service names and anything else
@@ -293,7 +295,10 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                     ]:
                         new_service_dependencies.append(
                             "netbox_v%s_%s"
-                            % (docker_netbox_version, dependent_service_name,)
+                            % (
+                                docker_netbox_version,
+                                dependent_service_name,
+                            )
                         )
                     new_services[new_service_name][
                         "depends_on"
@@ -339,12 +344,17 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
             for volume_name, volume_config in compose_data["volumes"].items():
                 new_volumes[
                     "%s_v%s_%s"
-                    % (DOCKER_PROJECT_PREFIX, docker_netbox_version, volume_name,)
+                    % (
+                        DOCKER_PROJECT_PREFIX,
+                        docker_netbox_version,
+                        volume_name,
+                    )
                 ] = volume_config
             compose_data["volumes"] = new_volumes
 
             compose_output_fpath = os.path.join(
-                netbox_docker_repo_dirpath, "docker-compose-v%s.yml" % netbox_version,
+                netbox_docker_repo_dirpath,
+                "docker-compose-v%s.yml" % netbox_version,
             )
             with open(compose_output_fpath, "w") as fdesc:
                 fdesc.write(yaml.dump(compose_data))
