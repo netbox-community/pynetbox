@@ -50,7 +50,7 @@ def get_netbox_docker_version_tag(netbox_version):
     """
     major, minor = netbox_version.major, netbox_version.minor
 
-    tag = "release"  # default
+    tag = "0.27.0"  # default
     if (major, minor) == (2, 8):
         tag = "0.24.1"
     elif (major, minor) == (2, 8):
@@ -132,6 +132,12 @@ def netbox_docker_repo_dirpaths(pytestconfig, git_toplevel):
         if os.path.isdir(repo_fpath):
             subp.check_call(
                 ["git", "fetch"], cwd=repo_fpath, stdout=subp.PIPE, stderr=subp.PIPE
+            )
+            subp.check_call(
+                ["git", "reset", "--hard"],
+                cwd=repo_fpath,
+                stdout=subp.PIPE,
+                stderr=subp.PIPE,
             )
             subp.check_call(
                 ["git", "pull", "origin", "release"],
