@@ -496,9 +496,14 @@ def netbox_service(
     netbox_integration_version = request.param
 
     # `port_for` takes a container port and returns the corresponding host port
-    nginx_service_name = "netbox_v%s_nginx" % str(netbox_integration_version).replace(
-        ".", "_"
-    )
+    if netbox_integration_version >= version.Version("2.10"):
+        nginx_service_name = "netbox_v%s_nginx_1" % str(
+            netbox_integration_version
+        ).replace(".", "_")
+    else:
+        nginx_service_name = "netbox_v%s_nginx" % str(
+            netbox_integration_version
+        ).replace(".", "_")
     nginx_service_port = 8080
     try:
         port = docker_services.port_for(nginx_service_name, nginx_service_port)
