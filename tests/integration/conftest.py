@@ -53,7 +53,7 @@ def get_netbox_docker_version_tag(netbox_version):
     tag = "0.27.0"  # default
     if (major, minor) == (2, 9):
         tag = "0.26.2"
-    if (major, minor) == (2, 8):
+    elif (major, minor) == (2, 8):
         tag = "0.24.1"
     elif (major, minor) == (2, 7):
         tag = "0.24.0"
