@@ -51,9 +51,9 @@ def get_netbox_docker_version_tag(netbox_version):
     major, minor = netbox_version.major, netbox_version.minor
 
     tag = "0.27.0"  # default
+    if (major, minor) == (2, 9):
+        tag = "0.26.2"
     if (major, minor) == (2, 8):
-        tag = "0.24.1"
-    elif (major, minor) == (2, 8):
         tag = "0.24.1"
     elif (major, minor) == (2, 7):
         tag = "0.24.0"
@@ -499,13 +499,15 @@ def netbox_service(
     docker_service_name = "netbox_v%s_nginx" % str(netbox_integration_version).replace(
         ".", "_"
     )
+    docker_service_port = 8080
     try:
-        port = docker_services.port_for(docker_service_name, 8080)
-    except Exception:
+        port = docker_services.port_for(docker_service_name, docker_service_port)
+    except Exception as err:
         docker_ps_stdout = subp.check_output(["docker", "ps", "-a"]).decode("utf-8")
         raise KeyError(
-            "Unable to find a docker service matching the name %s. Running containers:"
-            " %s" % (docker_service_name, docker_ps_stdout)
+            "Unable to find a docker service matching the name %s on port %s. Running"
+            " containers: %s. Original error: %s"
+            % (docker_service_name, docker_service_port, docker_ps_stdout, err)
         )
 
     url = "http://{}:{}".format(docker_ip, port)
