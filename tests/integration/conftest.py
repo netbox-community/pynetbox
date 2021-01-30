@@ -496,9 +496,18 @@ def netbox_service(
     netbox_integration_version = request.param
 
     # `port_for` takes a container port and returns the corresponding host port
-    port = docker_services.port_for(
-        "netbox_v%s_nginx" % str(netbox_integration_version).replace(".", "_"), 8080
+    docker_service_name = "netbox_v%s_nginx" % str(netbox_integration_version).replace(
+        ".", "_"
     )
+    try:
+        port = docker_services.port_for(docker_service_name, 8080)
+    except Exception:
+        docker_ps_stdout = subp.check_output(["docker", "ps", "-a"]).decode("utf-8")
+        raise KeyError(
+            "Unable to find a docker service matching the name %s. Running containers:"
+            " %s" % (docker_service_name, docker_ps_stdout)
+        )
+
     url = "http://{}:{}".format(docker_ip, port)
     docker_services.wait_until_responsive(
         timeout=300.0, pause=1, check=lambda: netbox_is_responsive(url)
