@@ -508,7 +508,7 @@ def netbox_service(
     except Exception as err:
         docker_ps_stdout = subp.check_output(["docker", "ps", "-a"]).decode("utf-8")
         exited_container_logs = []
-        for line in docker_ps_output.splitlines():
+        for line in docker_ps_stdout.splitlines():
             if "Exited" in line:
                 container_id = line.split()[0]
                 exited_container_logs.append(
