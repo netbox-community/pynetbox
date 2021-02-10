@@ -1,7 +1,7 @@
 from packaging import version
 
 
-DEFAULT_NETBOX_VERSIONS = "2.7, 2.8, 2.9, 2.10"
+DEFAULT_NETBOX_VERSIONS = "2.9, 2.10"
 
 
 def pytest_addoption(parser):
