@@ -377,8 +377,6 @@ def netbox_is_responsive(url):
             return True
     except (ConnectionError, ConnectionResetError, RemoteDisconnected):
         return False
-    except Exception:
-        return False
 
 
 def id_netbox_service(fixture_value):
