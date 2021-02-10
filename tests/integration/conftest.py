@@ -239,6 +239,7 @@ def clean_docker_objects():
             )
 
 
+# TODO: this function could be split up
 @pytest.fixture(scope="session")
 def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
     """Return paths to the compose files needed to create test containers.
@@ -260,6 +261,13 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
         )
 
         for netbox_version in netbox_versions:
+            # check for updates to the local netbox images
+            subp.check_call(
+                ["docker", "pull", "netboxcommunity/netbox:v%s" % (netbox_version)],
+                stdout=subp.PIPE,
+                stderr=subp.PIPE,
+            )
+
             docker_netbox_version = str(netbox_version).replace(".", "_")
             # load the compose file yaml
             compose_data = yaml.safe_load(open(compose_source_fpath, "r").read())
