@@ -4,6 +4,7 @@ from packaging import version
 import subprocess as subp
 import time
 import yaml
+from http.client import RemoteDisconnected
 
 import atexit
 import faker as _faker
@@ -51,7 +52,7 @@ def get_netbox_docker_version_tag(netbox_version):
     major, minor = netbox_version.major, netbox_version.minor
 
     if (major, minor) == (2, 10):
-        tag = "0.27.0"
+        tag = "1.0.1"
     elif (major, minor) == (2, 9):
         tag = "0.26.2"
     elif (major, minor) == (2, 8):
@@ -374,7 +375,9 @@ def netbox_is_responsive(url):
         response = requests.get(url)
         if response.status_code == 200:
             return True
-    except ConnectionError:
+    except (ConnectionError, ConnectionResetError, RemoteDisconnected):
+        return False
+    except Exception:
         return False
 
 
@@ -498,13 +501,18 @@ def netbox_service(
     """
     netbox_integration_version = request.param
 
-    nginx_service_name = "netbox_v%s_nginx" % str(netbox_integration_version).replace(
-        ".", "_"
-    )
-    nginx_service_port = 8080
+    if netbox_integration_version >= version.Version("2.10"):
+        netbox_service_name = "netbox_v%s_netbox" % str(
+            netbox_integration_version
+        ).replace(".", "_")
+    else:
+        netbox_service_name = "netbox_v%s_nginx" % str(
+            netbox_integration_version
+        ).replace(".", "_")
+    netbox_service_port = 8080
     try:
         # `port_for` takes a container port and returns the corresponding host port
-        port = docker_services.port_for(nginx_service_name, nginx_service_port)
+        port = docker_services.port_for(netbox_service_name, netbox_service_port)
     except Exception as err:
         docker_ps_stdout = subp.check_output(["docker", "ps", "-a"]).decode("utf-8")
         exited_container_logs = []
@@ -524,8 +532,8 @@ def netbox_service(
             "Unable to find a docker service matching the name %s on port %s. Running"
             " containers: %s. Original error: %s. Logs:\n%s"
             % (
-                nginx_service_name,
-                nginx_service_port,
+                netbox_service_name,
+                netbox_service_port,
                 docker_ps_stdout,
                 err,
                 exited_container_logs,
