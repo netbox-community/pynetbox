@@ -507,10 +507,29 @@ def netbox_service(
         port = docker_services.port_for(nginx_service_name, nginx_service_port)
     except Exception as err:
         docker_ps_stdout = subp.check_output(["docker", "ps", "-a"]).decode("utf-8")
+        exited_container_logs = []
+        for line in docker_ps_output.splitlines():
+            if "Exited" in line:
+                container_id = line.split()[0]
+                exited_container_logs.append(
+                    "\nContainer %s logs:\n%s"
+                    % (
+                        container_id,
+                        subp.check_output(["docker", "logs", container_id]).decode(
+                            "utf-8"
+                        ),
+                    )
+                )
         raise KeyError(
             "Unable to find a docker service matching the name %s on port %s. Running"
-            " containers: %s. Original error: %s"
-            % (nginx_service_name, nginx_service_port, docker_ps_stdout, err)
+            " containers: %s. Original error: %s. Logs:\n%s"
+            % (
+                nginx_service_name,
+                nginx_service_port,
+                docker_ps_stdout,
+                err,
+                exited_container_logs,
+            )
         )
 
     url = "http://{}:{}".format(docker_ip, port)
