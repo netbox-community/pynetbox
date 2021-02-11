@@ -337,6 +337,20 @@ class InterfaceTestCase(Generic.Tests):
         for hop in trace:
             self.assertTrue(len(hop) == 3)
 
+            for item in hop:
+                if item:
+                    self.assertIsInstance(
+                        item,
+                        (
+                            pynetbox.models.dcim.Cables,
+                            pynetbox.models.dcim.ConsolePorts,
+                            pynetbox.models.dcim.ConsoleServerPorts,
+                            pynetbox.models.dcim.FrontPorts,
+                            pynetbox.models.dcim.Interfaces,
+                            pynetbox.models.dcim.RearPorts,
+                        ),
+                    )
+
 
 class RackTestCase(Generic.Tests):
     name = "racks"
