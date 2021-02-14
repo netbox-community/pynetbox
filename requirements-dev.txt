@@ -1,0 +1,4 @@
+black==19.10b0
+faker
+pytest
+pytest-docker
