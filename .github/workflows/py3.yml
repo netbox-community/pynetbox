@@ -22,15 +22,11 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install pynetbox
-        run: pip install .
-
       - name: Install dev requirements
-        run: pip install -r requirements-dev.txt
+        run: pip install -r requirements-dev.txt .
 
       - name: Run Linter
         run: black --diff --check pynetbox tests
           
       - name: Run Tests
         run: pytest
-
