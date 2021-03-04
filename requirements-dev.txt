@@ -1,5 +1,5 @@
 black==19.10b0
-faker
-pytest
-pytest-docker
+Faker==6.5.*
+pytest==6.2.*
+pytest-docker==0.10.*
 pyyaml
