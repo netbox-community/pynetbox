@@ -1,4 +1,5 @@
-black==19.10b0
 Faker==6.5.*
-pytest==6.2.*
+black==19.10b0
+pre-commit==2.10.*
 pytest-docker==0.10.*
+pytest==6.2.*

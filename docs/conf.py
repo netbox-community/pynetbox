@@ -128,7 +128,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "pynetbox.tex", u"pynetbox Documentation", u"Zach Moody", "manual"),
+    (master_doc, "pynetbox.tex", u"pynetbox Documentation", u"Zach Moody", "manual")
 ]
 
 
@@ -153,5 +153,5 @@ texinfo_documents = [
         "pynetbox",
         "A python library for NetBox.",
         "Miscellaneous",
-    ),
+    )
 ]

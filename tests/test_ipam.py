@@ -12,22 +12,13 @@ else:
     from mock import patch
 
 
-api = pynetbox.api(
-    "http://localhost:8000",
-    token="abc123",
-)
+api = pynetbox.api("http://localhost:8000", token="abc123")
 
 nb = api.ipam
 
-HEADERS = {
-    "accept": "application/json;",
-    "authorization": "Token abc123",
-}
+HEADERS = {"accept": "application/json;", "authorization": "Token abc123"}
 
-POST_HEADERS = {
-    "Content-Type": "application/json;",
-    "authorization": "Token abc123",
-}
+POST_HEADERS = {"Content-Type": "application/json;", "authorization": "Token abc123"}
 
 
 class Generic(object):
@@ -154,9 +145,7 @@ class PrefixTestCase(Generic.Tests):
         return_value=Response(fixture="ipam/prefix.json"),
     )
     def test_create_available_ips(self, _, post):
-        create_parms = dict(
-            status=2,
-        )
+        create_parms = dict(status=2)
         pfx = nb.prefixes.get(1)
         ret = pfx.available_ips.create(create_parms)
         post.assert_called_with(
@@ -195,9 +184,7 @@ class PrefixTestCase(Generic.Tests):
         return_value=Response(fixture="ipam/prefix.json"),
     )
     def test_create_available_prefixes(self, _, post):
-        create_parms = dict(
-            prefix_length=30,
-        )
+        create_parms = dict(prefix_length=30)
         pfx = nb.prefixes.get(1)
         ret = pfx.available_prefixes.create(create_parms)
         post.assert_called_with(

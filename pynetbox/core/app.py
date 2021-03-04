@@ -104,10 +104,7 @@ class App(object):
          'Testfield2': {'Othervalue2': 4, 'Othervalue1': 3}}
         """
         custom_field_choices = Request(
-            base="{}/{}/_custom_field_choices/".format(
-                self.api.base_url,
-                self.name,
-            ),
+            base="{}/{}/_custom_field_choices/".format(self.api.base_url, self.name),
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
@@ -131,10 +128,7 @@ class App(object):
                                                 'tags']}}}
         """
         config = Request(
-            base="{}/{}/config/".format(
-                self.api.base_url,
-                self.name,
-            ),
+            base="{}/{}/config/".format(self.api.base_url, self.name),
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
@@ -173,9 +167,7 @@ class PluginsApp(object):
         }]
         """
         installed_plugins = Request(
-            base="{}/plugins/installed-plugins".format(
-                self.api.base_url,
-            ),
+            base="{}/plugins/installed-plugins".format(self.api.base_url),
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,

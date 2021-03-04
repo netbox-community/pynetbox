@@ -26,5 +26,4 @@ jobs:
         run: pip install . mock
 
       - name: Run Tests
-        run: python -m unittest discover 
-
+        run: python -m unittest discover

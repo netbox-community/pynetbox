@@ -72,4 +72,3 @@ Setting timeouts requires the use of Adapters.
         token='d6f4e314a5b5fefd164995169f28ae32d987704f'
     )
     nb.http_session = session
-

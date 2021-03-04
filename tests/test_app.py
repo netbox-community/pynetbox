@@ -11,9 +11,7 @@ else:
 
 host = "http://localhost:8000"
 
-def_kwargs = {
-    "token": "abc123",
-}
+def_kwargs = {"token": "abc123"}
 
 
 class AppCustomChoicesTestCase(unittest.TestCase):
@@ -35,16 +33,7 @@ class AppConfigTestCase(unittest.TestCase):
     @patch(
         "pynetbox.core.query.Request.get",
         return_value={
-            "tables": {
-                "DeviceTable": {
-                    "columns": [
-                        "name",
-                        "status",
-                        "tenant",
-                        "tags",
-                    ],
-                },
-            },
+            "tables": {"DeviceTable": {"columns": ["name", "status", "tenant", "tags"]}}
         },
     )
     def test_config(self, *_):
@@ -73,12 +62,7 @@ class PluginAppCustomChoicesTestCase(unittest.TestCase):
 
     @patch(
         "pynetbox.core.query.Request.get",
-        return_value=[
-            {
-                "name": "test_plugin",
-                "package": "netbox_test_plugin",
-            }
-        ],
+        return_value=[{"name": "test_plugin", "package": "netbox_test_plugin"}],
     )
     def test_installed_plugins(self, *_):
         api = pynetbox.api(host, **def_kwargs)

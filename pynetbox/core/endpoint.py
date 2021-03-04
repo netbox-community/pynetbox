@@ -54,9 +54,7 @@ class Endpoint(object):
         self.token = api.token
         self.session_key = api.session_key
         self.url = "{base_url}/{app}/{endpoint}".format(
-            base_url=self.base_url,
-            app=app.name,
-            endpoint=self.name,
+            base_url=self.base_url, app=app.name, endpoint=self.name
         )
         self._choices = None
 

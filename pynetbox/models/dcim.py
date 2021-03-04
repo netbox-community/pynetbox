@@ -53,10 +53,7 @@ class TraceableRecord(Record):
                     )[1:3]
                 )
 
-                return_obj_class = uri_to_obj_class_map.get(
-                    app_endpoint,
-                    Record,
-                )
+                return_obj_class = uri_to_obj_class_map.get(app_endpoint, Record)
 
                 this_hop_ret.append(
                     return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)

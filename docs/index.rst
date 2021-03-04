@@ -9,7 +9,7 @@
 
 TL;DR
 =====
-Instantiate the :py:class:`.Api`. Use the methods available on :py:class:`.Endpoint` to return :py:class:`.Record` objects. 
+Instantiate the :py:class:`.Api`. Use the methods available on :py:class:`.Endpoint` to return :py:class:`.Record` objects.
 
 API
 ===

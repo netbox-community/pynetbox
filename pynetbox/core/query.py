@@ -161,9 +161,7 @@ class Request(object):
 
     def get_openapi(self):
         """ Gets the OpenAPI Spec """
-        headers = {
-            "Content-Type": "application/json;",
-        }
+        headers = {"Content-Type": "application/json;"}
         req = self.http_session.get(
             "{}docs/?format=openapi".format(self.normalize_url(self.base)),
             headers=headers,
@@ -183,13 +181,8 @@ class Request(object):
         :Returns: Version number as a string. Empty string if version is not
         present in the headers.
         """
-        headers = {
-            "Content-Type": "application/json;",
-        }
-        req = self.http_session.get(
-            self.normalize_url(self.base),
-            headers=headers,
-        )
+        headers = {"Content-Type": "application/json;"}
+        req = self.http_session.get(self.normalize_url(self.base), headers=headers)
         if req.ok:
             return req.headers.get("API-Version", "")
         else:
@@ -230,8 +223,7 @@ class Request(object):
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
         req = self.http_session.get(
-            "{}status/".format(self.normalize_url(self.base)),
-            headers=headers,
+            "{}status/".format(self.normalize_url(self.base)), headers=headers
         )
         if req.ok:
             return req.json()

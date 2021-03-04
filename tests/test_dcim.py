@@ -10,17 +10,11 @@ else:
     from mock import patch
 
 
-api = pynetbox.api(
-    "http://localhost:8000",
-    token="abc123",
-)
+api = pynetbox.api("http://localhost:8000", token="abc123")
 
 nb = api.dcim
 
-HEADERS = {
-    "accept": "application/json;",
-    "authorization": "Token abc123",
-}
+HEADERS = {"accept": "application/json;", "authorization": "Token abc123"}
 
 
 class Generic(object):
@@ -195,12 +189,7 @@ class DeviceTestCase(Generic.Tests):
         return_value=Response(fixture="dcim/device.json"),
     )
     def test_create(self, *_):
-        data = {
-            "name": "test-device",
-            "site": 1,
-            "device_type": 1,
-            "device_role": 1,
-        }
+        data = {"name": "test-device", "site": 1, "device_type": 1, "device_role": 1}
         ret = nb.devices.create(**data)
         self.assertTrue(ret)
 
@@ -210,18 +199,8 @@ class DeviceTestCase(Generic.Tests):
     )
     def test_create_device_bulk(self, *_):
         data = [
-            {
-                "name": "test-device",
-                "site": 1,
-                "device_type": 1,
-                "device_role": 1,
-            },
-            {
-                "name": "test-device1",
-                "site": 1,
-                "device_type": 1,
-                "device_role": 1,
-            },
+            {"name": "test-device", "site": 1, "device_type": 1, "device_role": 1},
+            {"name": "test-device1", "site": 1, "device_type": 1, "device_role": 1},
         ]
         ret = nb.devices.create(data)
         self.assertTrue(ret)
@@ -267,8 +246,7 @@ class SiteTestCase(Generic.Tests):
     name = "sites"
 
     @patch(
-        "requests.sessions.Session.get",
-        return_value=Response(fixture="dcim/site.json"),
+        "requests.sessions.Session.get", return_value=Response(fixture="dcim/site.json")
     )
     def test_modify_custom(self, *_):
         """Test modifying a custom field."""
@@ -279,8 +257,7 @@ class SiteTestCase(Generic.Tests):
         self.assertEqual(ret.custom_fields["test_custom"], "Testing")
 
     @patch(
-        "requests.sessions.Session.get",
-        return_value=Response(fixture="dcim/site.json"),
+        "requests.sessions.Session.get", return_value=Response(fixture="dcim/site.json")
     )
     def test_custom_selection_serializer(self, _):
         """Tests serializer with custom selection fields."""
@@ -540,10 +517,7 @@ class CablesTestCase(Generic.Tests):
                 "length_unit": None,
             }
         )
-        with patch(
-            "requests.sessions.Session.get",
-            return_value=response_obj,
-        ) as mock:
+        with patch("requests.sessions.Session.get", return_value=response_obj) as mock:
             ret = getattr(nb, self.name).get(1)
             self.assertTrue(ret)
             self.assertTrue(isinstance(ret, self.ret))
