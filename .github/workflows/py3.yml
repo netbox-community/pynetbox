@@ -26,7 +26,7 @@ jobs:
         run: pip install -r requirements-dev.txt .
 
       - name: Run Linter
-        run: black --diff --check pynetbox tests
+        run: pre-commit run
 
       - name: Run Tests
         run: pytest
