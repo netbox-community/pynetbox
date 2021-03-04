@@ -26,7 +26,7 @@ jobs:
         run: pip install -r requirements-dev.txt .
 
       - name: Run Linter
-        run: pre-commit run
+        run: pre-commit run --all-files
 
       - name: Run Tests
         run: pytest
