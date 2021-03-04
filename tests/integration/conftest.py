@@ -4,6 +4,7 @@ from packaging import version
 import subprocess as subp
 import time
 import yaml
+from http.client import RemoteDisconnected
 
 import atexit
 import faker as _faker
@@ -50,15 +51,18 @@ def get_netbox_docker_version_tag(netbox_version):
     """
     major, minor = netbox_version.major, netbox_version.minor
 
-    tag = "release"  # default
-    if (major, minor) == (2, 8):
-        tag = "0.24.1"
+    if (major, minor) == (2, 10):
+        tag = "1.0.1"
+    elif (major, minor) == (2, 9):
+        tag = "0.26.2"
     elif (major, minor) == (2, 8):
         tag = "0.24.1"
     elif (major, minor) == (2, 7):
         tag = "0.24.0"
-    elif netbox_version < version.Version("2.7"):
-        raise UnsupportedError("Versions below 2.7 are not currently supported")
+    else:
+        raise NotImplementedError(
+            "Version %s is not currently supported" % netbox_version
+        )
 
     return tag
 
@@ -132,6 +136,12 @@ def netbox_docker_repo_dirpaths(pytestconfig, git_toplevel):
         if os.path.isdir(repo_fpath):
             subp.check_call(
                 ["git", "fetch"], cwd=repo_fpath, stdout=subp.PIPE, stderr=subp.PIPE
+            )
+            subp.check_call(
+                ["git", "reset", "--hard"],
+                cwd=repo_fpath,
+                stdout=subp.PIPE,
+                stderr=subp.PIPE,
             )
             subp.check_call(
                 ["git", "pull", "origin", "release"],
@@ -229,6 +239,7 @@ def clean_docker_objects():
             )
 
 
+# TODO: this function could be split up
 @pytest.fixture(scope="session")
 def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
     """Return paths to the compose files needed to create test containers.
@@ -250,6 +261,13 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
         )
 
         for netbox_version in netbox_versions:
+            # check for updates to the local netbox images
+            subp.check_call(
+                ["docker", "pull", "netboxcommunity/netbox:v%s" % (netbox_version)],
+                stdout=subp.PIPE,
+                stderr=subp.PIPE,
+            )
+
             docker_netbox_version = str(netbox_version).replace(".", "_")
             # load the compose file yaml
             compose_data = yaml.safe_load(open(compose_source_fpath, "r").read())
@@ -375,7 +393,7 @@ def netbox_is_responsive(url):
         response = requests.get(url)
         if response.status_code == 200:
             return True
-    except ConnectionError:
+    except (ConnectionError, ConnectionResetError, RemoteDisconnected):
         return False
 
 
@@ -499,10 +517,45 @@ def netbox_service(
     """
     netbox_integration_version = request.param
 
-    # `port_for` takes a container port and returns the corresponding host port
-    port = docker_services.port_for(
-        "netbox_v%s_nginx" % str(netbox_integration_version).replace(".", "_"), 8080
-    )
+    if netbox_integration_version >= version.Version("2.10"):
+        netbox_service_name = "netbox_v%s_netbox" % str(
+            netbox_integration_version
+        ).replace(".", "_")
+    else:
+        netbox_service_name = "netbox_v%s_nginx" % str(
+            netbox_integration_version
+        ).replace(".", "_")
+    netbox_service_port = 8080
+    try:
+        # `port_for` takes a container port and returns the corresponding host port
+        port = docker_services.port_for(netbox_service_name, netbox_service_port)
+    except Exception as err:
+        docker_ps_stdout = subp.check_output(["docker", "ps", "-a"]).decode("utf-8")
+        exited_container_logs = []
+        for line in docker_ps_stdout.splitlines():
+            if "Exited" in line:
+                container_id = line.split()[0]
+                exited_container_logs.append(
+                    "\nContainer %s logs:\n%s"
+                    % (
+                        container_id,
+                        subp.check_output(["docker", "logs", container_id]).decode(
+                            "utf-8"
+                        ),
+                    )
+                )
+        raise KeyError(
+            "Unable to find a docker service matching the name %s on port %s. Running"
+            " containers: %s. Original error: %s. Logs:\n%s"
+            % (
+                netbox_service_name,
+                netbox_service_port,
+                docker_ps_stdout,
+                err,
+                exited_container_logs,
+            )
+        )
+
     url = "http://{}:{}".format(docker_ip, port)
     docker_services.wait_until_responsive(
         timeout=300.0, pause=1, check=lambda: netbox_is_responsive(url)
