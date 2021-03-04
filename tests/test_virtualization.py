@@ -28,9 +28,8 @@ class Generic(object):
                 "requests.sessions.Session.get",
                 return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
             ) as mock:
-                ret = getattr(nb, self.name).all()
+                ret = list(getattr(nb, self.name).all())
                 self.assertTrue(ret)
-                self.assertTrue(isinstance(ret, list))
                 self.assertTrue(isinstance(ret[0], self.ret))
                 mock.assert_called_with(
                     "http://localhost:8000/api/{}/{}/".format(
@@ -46,9 +45,8 @@ class Generic(object):
                 "requests.sessions.Session.get",
                 return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
             ) as mock:
-                ret = getattr(nb, self.name).filter(name="test")
+                ret = list(getattr(nb, self.name).filter(name="test"))
                 self.assertTrue(ret)
-                self.assertTrue(isinstance(ret, list))
                 self.assertTrue(isinstance(ret[0], self.ret))
                 mock.assert_called_with(
                     "http://localhost:8000/api/{}/{}/".format(
