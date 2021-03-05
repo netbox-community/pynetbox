@@ -7,6 +7,13 @@ on:
       - master
 
 jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+    - uses: pre-commit/action@v2.0.0
+
   build:
 
     runs-on: ubuntu-latest
@@ -24,9 +31,6 @@ jobs:
 
       - name: Install dev requirements
         run: pip install -r requirements-dev.txt .
-
-      - name: Run Linter
-        run: pre-commit run --all-files
 
       - name: Run Tests
         run: pytest
