@@ -40,13 +40,13 @@ DEVICE_ROLE_NAMES = [
 
 def get_netbox_docker_version_tag(netbox_version):
     """Get the repo tag to build netbox-docker in from the requested netbox version.
-    
+
     Args:
         netbox_version (version.Version): The version of netbox we want to build
 
     Returns:
         str: The release tag for the netbox-docker repo that should be able to build
-            the requested version of netbox. 
+            the requested version of netbox.
 
     """
     major, minor = netbox_version.major, netbox_version.minor
@@ -70,7 +70,7 @@ def get_netbox_docker_version_tag(netbox_version):
 @pytest.fixture(scope="session")
 def git_toplevel():
     """Get the top level of the current git repo.
-    
+
     Returns:
         str: The path of the top level directory of the current git repo.
 
@@ -85,7 +85,7 @@ def git_toplevel():
 @pytest.fixture(scope="session")
 def devicetype_library_repo_dirpath(git_toplevel):
     """Get the path to the devicetype-library repo we will use.
-    
+
     Returns:
         str: The path of the directory of the devicetype-library repo we will use.
     """
@@ -116,10 +116,10 @@ def devicetype_library_repo_dirpath(git_toplevel):
 @pytest.fixture(scope="session")
 def netbox_docker_repo_dirpaths(pytestconfig, git_toplevel):
     """Get the path to the netbox-docker repos we will use.
-    
+
     Returns:
         dict: A map of the repo dir paths to the versions of netbox that should be run
-            from that repo as: 
+            from that repo as:
                 {
                     <path to repo dir as str>: [
                         <netbox version>,
@@ -383,7 +383,12 @@ def netbox_is_responsive(url):
         response = requests.get(url)
         if response.status_code == 200:
             return True
-    except (ConnectionError, ConnectionResetError, RemoteDisconnected):
+    except (
+        ConnectionError,
+        ConnectionResetError,
+        requests.exceptions.ConnectionError,
+        RemoteDisconnected,
+    ):
         return False
 
 
