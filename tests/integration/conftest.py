@@ -89,6 +89,11 @@ def devicetype_library_repo_dirpath(git_toplevel):
     Returns:
         str: The path of the directory of the devicetype-library repo we will use.
     """
+    try:
+        subp.check_call(["which", "git"])
+    except subp.CalledProcessError:
+        pytest.skip(msg="git executable was not found on the host")
+
     repo_fpath = os.path.join(git_toplevel, ".devicetype-library")
     if os.path.isdir(repo_fpath):
         subp.check_call(
@@ -249,6 +254,11 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
     """
     clean_netbox_docker_tmpfiles()
     clean_docker_objects()
+
+    try:
+        subp.check_call(["which", "docker"])
+    except subp.CalledProcessError:
+        pytest.skip(msg="docker executable was not found on the host")
 
     compose_files = []
 
