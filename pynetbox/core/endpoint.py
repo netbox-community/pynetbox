@@ -76,6 +76,9 @@ class Endpoint(object):
 
         Returns all objects from an endpoint.
 
+        :arg int,optional limit: Overrides the max page size on
+            paginated returns.
+
         :Returns: List of :py:class:`.Record` objects.
 
         :Examples:
@@ -158,6 +161,8 @@ class Endpoint(object):
             accepted on given endpoint.
         :arg str,optional \**kwargs: Any search argument the
             endpoint accepts can be added as a keyword arg.
+        :arg int,optional limit: Overrides the max page size on
+            paginated returns.
 
         :Returns: A list of :py:class:`.Record` objects.
 
@@ -196,8 +201,8 @@ class Endpoint(object):
             raise ValueError("filter must be passed kwargs. Perhaps use all() instead.")
         if any(i in RESERVED_KWARGS for i in kwargs):
             raise ValueError(
-                "A reserved {} kwarg was passed. Please remove it "
-                "try again.".format(RESERVED_KWARGS)
+                "A reserved kwarg was passed ({}). Please remove it "
+                "and try again.".format(RESERVED_KWARGS)
             )
 
         req = Request(
