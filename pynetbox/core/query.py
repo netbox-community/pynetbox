@@ -130,6 +130,7 @@ class Request(object):
         base,
         http_session,
         filters=None,
+        limit=0,
         key=None,
         token=None,
         private_key=None,
@@ -158,6 +159,7 @@ class Request(object):
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
+        self.limit = limit
 
     def get_openapi(self):
         """ Gets the OpenAPI Spec """
@@ -305,36 +307,10 @@ class Request(object):
             endpoint.
         """
 
-        def req_all():
-            req = self._make_call(add_params=add_params)
-            if isinstance(req, dict) and req.get("results") is not None:
-                ret = req["results"]
-                first_run = True
-                while req["next"]:
-                    # Not worrying about making sure add_params kwargs is
-                    # passed in here because results from detail routes aren't
-                    # paginated, thus far.
-                    if first_run:
-                        req = self._make_call(
-                            add_params={
-                                "limit": req["count"],
-                                "offset": len(req["results"]),
-                            }
-                        )
-                    else:
-                        req = self._make_call(url_override=req["next"])
-                    first_run = False
-                    ret.extend(req["results"])
-                return ret
-            else:
-                return req
-
-        def req_all_threaded(add_params):
-            if add_params is None:
-                # Limit must be 0 to discover the max page size
-                add_params = {"limit": 0}
-            req = self._make_call(add_params=add_params)
-            if isinstance(req, dict) and req.get("results") is not None:
+        req = self._make_call(add_params=add_params)
+        if isinstance(req, dict) and req.get("results") is not None:
+            self.count = req["count"]
+            if self.threading:
                 ret = req["results"]
                 if req.get("next"):
                     page_size = len(req["results"])
@@ -347,15 +323,29 @@ class Request(object):
                         ret.extend(req["results"])
                     else:
                         self.concurrent_get(ret, page_size, page_offsets)
-
                 return ret
-            else:
-                return req
-
-        if self.threading:
-            return req_all_threaded(add_params)
-
-        return req_all()
+            first_run = True
+            for i in req["results"]:
+                yield i
+            while req["next"]:
+                # Not worrying about making sure add_params kwargs is
+                # passed in here because results from detail routes aren't
+                # paginated, thus far.
+                if first_run:
+                    req = self._make_call(
+                        add_params={
+                            "limit": self.limit or req["count"],
+                            "offset": len(req["results"]),
+                        }
+                    )
+                else:
+                    req = self._make_call(url_override=req["next"])
+                first_run = False
+                for i in req["results"]:
+                    yield i
+        else:
+            self.count = len(req)
+            yield req
 
     def put(self, data):
         """Makes PUT request.
@@ -438,4 +428,6 @@ class Request(object):
         :returns: Int of number of objects query returned.
         """
 
-        return self._make_call(add_params={"limit": 1})["count"]
+        if not hasattr(self, "count"):
+            self.count = self._make_call(add_params={"limit": 1})["count"]
+        return self.count
