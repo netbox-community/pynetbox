@@ -130,7 +130,7 @@ class Request(object):
         base,
         http_session,
         filters=None,
-        limit=0,
+        limit=None,
         key=None,
         token=None,
         private_key=None,
@@ -307,6 +307,8 @@ class Request(object):
             endpoint.
         """
 
+        if not add_params and self.limit is not None:
+            add_params = {"limit": self.limit}
         req = self._make_call(add_params=add_params)
         if isinstance(req, dict) and req.get("results") is not None:
             self.count = req["count"]
@@ -323,7 +325,8 @@ class Request(object):
                         ret.extend(req["results"])
                     else:
                         self.concurrent_get(ret, page_size, page_offsets)
-                return ret
+                for i in ret:
+                    yield i
             first_run = True
             for i in req["results"]:
                 yield i
