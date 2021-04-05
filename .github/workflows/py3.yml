@@ -22,12 +22,11 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install pynetbox and testing packages.
-        run: pip install . black==19.10b0 pytest pytest-docker faker
+      - name: Install dev requirements
+        run: pip install -r requirements-dev.txt .
 
       - name: Run Linter
         run: black --diff --check pynetbox tests
           
       - name: Run Tests
         run: pytest
-

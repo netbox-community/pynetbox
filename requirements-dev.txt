@@ -1,0 +1,3 @@
+black==19.10b0
+pytest==6.2.*
+pytest-docker==0.10.*

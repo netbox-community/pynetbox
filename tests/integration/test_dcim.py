@@ -1,139 +1,290 @@
 import pytest
+from packaging import version
 
 
-class TestSimpleServerRackingAndConnecting:
+@pytest.fixture(scope="module")
+def rack(api, site):
+    rack = api.dcim.racks.create(site=site.id, name="test-rack")
+    yield rack
+    rack.delete()
 
-    """Verify we can create, rack, and connect a server."""
 
-    @pytest.fixture
-    def site(self, netbox_service, faker):
-        """Verify we can create a site."""
-        site_name = faker.city()
-        site = netbox_service["api"].dcim.sites.create(
-            name=site_name, slug=site_name.lower().replace(" ", "_")
+@pytest.fixture(scope="module")
+def device(api, site, device_type, device_role):
+    device = api.dcim.devices.create(
+        name="test-device",
+        device_role=device_role.id,
+        device_type=device_type.id,
+        site=site.id,
+        color="000000",
+    )
+    yield device
+    device.delete()
+
+
+@pytest.mark.usefixtures("init")
+class BaseTest:
+    app = "dcim"
+
+    def _init_helper(
+        self,
+        request,
+        fixture,
+        update_field=None,
+        filter_kwargs=None,
+        endpoint=None,
+        str_repr=None,
+    ):
+        request.cls.endpoint = endpoint
+        request.cls.fixture = fixture
+        request.cls.update_field = update_field
+        request.cls.filter_kwargs = filter_kwargs
+        request.cls.str_repr = str_repr
+
+    def test_create(self):
+        assert self.fixture
+
+    def test_str(self):
+        if self.str_repr:
+            test = str(self.fixture)
+            assert test == self.str_repr
+
+    def test_update_fixture(self):
+        if self.update_field:
+            setattr(self.fixture, self.update_field, "Test Value")
+            assert self.fixture.save()
+
+    def test_get_fixture_by_id(self, api):
+        test = getattr(getattr(api, self.app), self.endpoint).get(self.fixture.id)
+        assert test
+        if self.update_field:
+            assert getattr(test, self.update_field) == "Test Value"
+
+    def test_get_fixture_by_kwarg(self, api):
+        test = getattr(getattr(api, self.app), self.endpoint).get(**self.filter_kwargs)
+        assert test
+        if self.update_field:
+            assert getattr(test, self.update_field) == "Test Value"
+
+    def test_filter_fixture(self, api):
+        test = list(
+            getattr(getattr(api, self.app), self.endpoint).filter(**self.filter_kwargs)
+        )[0]
+        assert test
+        if self.update_field:
+            assert getattr(test, self.update_field) == "Test Value"
+
+
+class TestSite(BaseTest):
+    @pytest.fixture(scope="class")
+    def init(self, request, site):
+        self._init_helper(
+            request,
+            site,
+            filter_kwargs={"name": "test"},
+            update_field="description",
+            endpoint="sites",
         )
-        assert site
 
-        return site
 
-    @pytest.fixture
-    def rack(self, site, faker):
-        """Verify we can create a rack device."""
-        rack = site.api.dcim.racks.create(name="rack1", site=site.id)
-        assert rack
-
-        return rack
-
-    @pytest.fixture
-    def data_leafs(self, rack, faker):
-        """Verify we can create data leaf switch devices."""
-        devices = []
-        for i in [1, 2]:
-            device = rack.api.dcim.devices.create(
-                name="access_switch%s." % i + faker.domain_name(),
-                device_type={"slug": "dcs-7050tx3-48c8"},
-                device_role={"name": "Leaf Switch"},
-                site=rack.site.id,
-                rack=rack.id,
-                face="rear",
-                position=rack.u_height - i,
-            )
-            assert device
-            devices.append(device)
-
-        return devices
-
-    @pytest.fixture
-    def mgmt_leaf(self, rack, faker):
-        """Verify we can create data leaf switch devices."""
-        device = rack.api.dcim.devices.create(
-            name="mgmt_switch1." + faker.domain_name(),
-            device_type={"slug": "dcs-7010t-48"},
-            device_role={"name": "Leaf Switch"},
-            site=rack.site.id,
-            rack=rack.id,
-            face="rear",
-            position=rack.u_height - 3,
+class TestRack(BaseTest):
+    @pytest.fixture(scope="class")
+    def init(self, request, rack):
+        self._init_helper(
+            request,
+            rack,
+            filter_kwargs={"name": rack.name},
+            update_field="comments",
+            endpoint="racks",
         )
-        assert device
 
-        return device
+    def test_get_elevation(self):
+        test = self.fixture.elevation.list()
+        assert next(test)
 
-    @pytest.fixture
-    def server(self, site, faker):
-        """Verify we can create a server device."""
-        device = site.api.dcim.devices.create(
-            name=faker.hostname(),
-            device_type={"slug": "dell_poweredge_r640"},
-            device_role={"name": "Server"},
+
+class TestManufacturer(BaseTest):
+    @pytest.fixture(scope="class")
+    def init(self, request, manufacturer, nb_version):
+        self._init_helper(
+            request,
+            manufacturer,
+            filter_kwargs={"name": manufacturer.name},
+            update_field="description" if version.parse("2.10") < nb_version else None,
+            endpoint="manufacturers",
+        )
+
+
+class TestDeviceType(BaseTest):
+    @pytest.fixture(scope="class")
+    def init(self, request, device_type):
+        self._init_helper(
+            request,
+            device_type,
+            filter_kwargs={"model": device_type.model},
+            update_field="comments",
+            endpoint="device_types",
+            str_repr=device_type.model,
+        )
+
+
+class TestDevice(BaseTest):
+    @pytest.fixture(scope="class")
+    def init(self, request, device):
+        self._init_helper(
+            request,
+            device,
+            filter_kwargs={"name": device.name},
+            update_field="comments",
+            endpoint="devices",
+        )
+
+
+class TestInterface(BaseTest):
+    @pytest.fixture(scope="class")
+    def interface(self, api, device):
+        ret = api.dcim.interfaces.create(
+            name="test-interface", type="1000base-t", device=device.id
+        )
+        yield ret
+        ret.delete()
+
+    @pytest.fixture(scope="class")
+    def init(self, request, interface):
+        self._init_helper(
+            request,
+            interface,
+            filter_kwargs={"name": interface.name},
+            update_field="description",
+            endpoint="interfaces",
+        )
+
+
+class TestPowerCable(BaseTest):
+    @pytest.fixture(scope="class")
+    def power_outlet(self, api, device_type, device_role, site):
+        pdu = api.dcim.devices.create(
+            name="test-pdu",
+            device_role=device_role.id,
+            device_type=device_type.id,
             site=site.id,
         )
-        assert device
+        outlet = api.dcim.power_outlets.create(name="outlet", device=pdu.id)
+        yield outlet
+        pdu.delete()
 
-        return device
+    @pytest.fixture(scope="class")
+    def power_port(self, api, device):
+        ret = api.dcim.power_ports.create(name="PSU1", device=device.id)
+        yield ret
 
-    def test_racking_server(self, server, data_leafs, mgmt_leaf, rack):
-        """Verify we can rack the server."""
-        assert server.update(
-            {"rack": rack.id, "face": "front", "position": rack.u_height - 4}
+    @pytest.fixture(scope="class")
+    def power_cable(self, api, power_outlet, power_port):
+        cable = api.dcim.cables.create(
+            termination_a_id=power_port.id,
+            termination_a_type="dcim.powerport",
+            termination_b_id=power_outlet.id,
+            termination_b_type="dcim.poweroutlet",
+        )
+        yield cable
+        cable.delete()
+
+    @pytest.fixture(scope="class")
+    def init(self, request, power_cable):
+        self._init_helper(
+            request,
+            power_cable,
+            filter_kwargs={"id": power_cable.id},
+            endpoint="cables",
+            str_repr="PSU1 <> outlet",
         )
 
-        # connect the mgmt iface
-        server_mgmt_iface = server.api.dcim.interfaces.get(
-            device_id=server.id, mgmt_only=True, cabled=False
-        )
-        assert server_mgmt_iface
 
-        mleaf_iface = mgmt_leaf.api.dcim.interfaces.filter(
-            mgmt_only=False, cabled=False
-        )[0]
-        cable = server.api.dcim.cables.create(
+class TestConsoleCable(BaseTest):
+    @pytest.fixture(scope="class")
+    def console_server_port(self, api, device_type, device_role, site):
+        device = api.dcim.devices.create(
+            name="test-console-server",
+            device_role=device_role.id,
+            device_type=device_type.id,
+            site=site.id,
+        )
+        ret = api.dcim.console_server_ports.create(name="Port 1", device=device.id)
+        yield ret
+        device.delete()
+
+    @pytest.fixture(scope="class")
+    def console_port(self, api, device):
+        ret = api.dcim.console_ports.create(name="Console", device=device.id)
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def console_cable(self, api, console_port, console_server_port):
+        ret = api.dcim.cables.create(
+            termination_a_id=console_port.id,
+            termination_a_type="dcim.consoleport",
+            termination_b_id=console_server_port.id,
+            termination_b_type="dcim.consoleserverport",
+        )
+        yield ret
+        ret.delete()
+
+    @pytest.fixture(scope="class")
+    def init(self, request, console_cable):
+        self._init_helper(
+            request,
+            console_cable,
+            filter_kwargs={"id": console_cable.id},
+            endpoint="cables",
+            str_repr="Console <> Port 1",
+        )
+
+
+class TestInterfaceCable(BaseTest):
+    @pytest.fixture(scope="class")
+    def interface_b(self, api, device_type, device_role, site):
+        device = api.dcim.devices.create(
+            name="test-device-2",
+            device_role=device_role.id,
+            device_type=device_type.id,
+            site=site.id,
+        )
+        ret = api.dcim.interfaces.create(
+            name="Ethernet1", type="1000base-t", device=device.id
+        )
+        yield ret
+        device.delete()
+
+    @pytest.fixture(scope="class")
+    def interface_a(self, api, device):
+        ret = api.dcim.interfaces.create(
+            name="Ethernet1", type="1000base-t", device=device.id
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def interface_cable(self, api, interface_a, interface_b):
+        ret = api.dcim.cables.create(
+            termination_a_id=interface_a.id,
             termination_a_type="dcim.interface",
-            termination_a_id=server_mgmt_iface.id,
+            termination_b_id=interface_b.id,
             termination_b_type="dcim.interface",
-            termination_b_id=mleaf_iface.id,
+        )
+        yield ret
+        ret.delete()
+
+    @pytest.fixture(scope="class")
+    def init(self, request, interface_cable):
+        self._init_helper(
+            request,
+            interface_cable,
+            filter_kwargs={"id": interface_cable.id},
+            endpoint="cables",
+            str_repr="Ethernet1 <> Ethernet1",
         )
 
-        # connect the data ifaces in a bond
-        server_data_ifaces = server.api.dcim.interfaces.filter(
-            device_id=server.id, mgmt_only=False
-        )[:2]
-        assert len(server_data_ifaces) == 2
-
-        bond_iface = server.api.dcim.interfaces.create(
-            device=server.id, name="bond0", type="lag"
-        )
-        assert bond_iface
-
-        for server_data_iface, data_leaf in zip(server_data_ifaces, data_leafs):
-            dleaf_iface = data_leaf.api.dcim.interfaces.filter(
-                device_id=data_leaf.id, mgmt_only=False, cabled=False
-            )[0]
-            cable = server.api.dcim.cables.create(
-                termination_a_type="dcim.interface",
-                termination_a_id=server_data_iface.id,
-                termination_b_type="dcim.interface",
-                termination_b_id=dleaf_iface.id,
-            )
-            assert cable
-
-            assert server_data_iface.update({"lag": bond_iface.id})
-
-        # now reload the server and verify it's set correctly
-        server = server.api.dcim.devices.get(server.id)
-
-        # check the cable traces
-        for iface in server.api.dcim.interfaces.filter(
-            device_id=server.id, cabled=True
-        ):
-            trace = iface.trace()
-            assert len(trace) == 1
-            local_iface, cable, remote_iface = trace[0]
-
-            assert local_iface.device.id == server.id
-            assert remote_iface.device.id in [dleaf_iface.id] + [
-                data_leaf.id for data_leaf in data_leafs
-            ]
-
-        # check that it's racked properly
-        assert server.rack.id == rack.id
+    def test_trace(self, interface_a):
+        test = interface_a.trace()
+        assert test
+        assert test[0][0].name == "Ethernet1"
+        assert test[0][2].name == "Ethernet1"
