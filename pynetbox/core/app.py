@@ -148,6 +148,12 @@ class PluginsApp(object):
     def __init__(self, api):
         self.api = api
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, d):
+        self.__dict__.update(d)
+
     def __getattr__(self, name):
         return App(self.api, "plugins/{}".format(name))
 
