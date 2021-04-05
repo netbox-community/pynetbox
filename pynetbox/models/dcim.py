@@ -48,15 +48,15 @@ class TraceableRecord(Record):
                     this_hop_ret.append(hop_item_data)
                     continue
 
+                # the url for this item will be something like:
+                #     https://netbox/api/dcim/rear-ports/12761/
                 # TODO: Move this to a more general function.
                 app_endpoint = "/".join(
-                    urlsplit(hop_item_data["url"][len(self.api.base_url) :]).path.split(
-                        "/"
-                    )[1:3]
+                    urlsplit(hop_item_data["url"])
+                    .path[len(urlsplit(self.api.base_url).path) :]
+                    .split("/")[1:3]
                 )
-
                 return_obj_class = uri_to_obj_class_map.get(app_endpoint, Record,)
-
                 this_hop_ret.append(
                     return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
                 )
@@ -162,11 +162,11 @@ class RUs(Record):
     device = Devices
 
 
-class FrontPorts(Record):
+class FrontPorts(TraceableRecord):
     device = Devices
 
 
-class RearPorts(Record):
+class RearPorts(TraceableRecord):
     device = Devices
 
 
