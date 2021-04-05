@@ -34,7 +34,7 @@ class Generic(object):
                     "http://localhost:8000/api/{}/{}/".format(
                         self.app, self.name.replace("_", "-")
                     ),
-                    params={},
+                    params={"limit": 0},
                     json=None,
                     headers=HEADERS,
                 )
@@ -51,7 +51,7 @@ class Generic(object):
                     "http://localhost:8000/api/{}/{}/".format(
                         self.app, self.name.replace("_", "-")
                     ),
-                    params={"name": "test"},
+                    params={"name": "test", "limit": 0},
                     json=None,
                     headers=HEADERS,
                 )
