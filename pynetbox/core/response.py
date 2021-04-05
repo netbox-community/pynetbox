@@ -18,7 +18,7 @@ from collections import OrderedDict
 
 import pynetbox.core.app
 from six.moves.urllib.parse import urlsplit
-from pynetbox.core.query import Request
+from pynetbox.core.query import Request, RequestError
 from pynetbox.core.util import Hashabledict
 
 
@@ -68,6 +68,27 @@ class JsonField(object):
     to a Record object"""
 
     _json_field = True
+
+
+class RecordSet(object):
+    def __init__(self, endpoint, request, **kwargs):
+        self.endpoint = endpoint
+        self.request = request
+        self.response = self.request.get()
+        self._response_cache = []
+
+    def __iter__(self):
+        for i in self._response_cache:
+            yield self.endpoint.return_obj(i, self.endpoint.api, self.endpoint)
+        for i in self.response:
+            yield self.endpoint.return_obj(i, self.endpoint.api, self.endpoint)
+
+    def __len__(self):
+        try:
+            return self.request.count
+        except AttributeError:
+            self._response_cache.append(next(self.response))
+            return self.request.count
 
 
 class Record(object):
@@ -311,7 +332,7 @@ class Record(object):
                 session_key=self.api.session_key,
                 http_session=self.api.http_session,
             )
-            self._parse_values(req.get())
+            self._parse_values(next(req.get()))
             self.has_details = True
             return True
         return False

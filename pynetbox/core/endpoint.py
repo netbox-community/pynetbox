@@ -14,15 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from pynetbox.core.query import Request, RequestError
-from pynetbox.core.response import Record
+from pynetbox.core.response import Record, RecordSet
 
-RESERVED_KWARGS = ("id", "pk", "limit", "offset")
-
-
-def response_loader(req, return_obj, endpoint):
-    if isinstance(req, list):
-        return [return_obj(i, endpoint.api, endpoint) for i in req]
-    return return_obj(req, endpoint.api, endpoint)
+RESERVED_KWARGS = ("offset",)
 
 
 class Endpoint(object):
@@ -77,10 +71,13 @@ class Endpoint(object):
             ret = Record
         return ret
 
-    def all(self):
+    def all(self, limit=0):
         """Queries the 'ListView' of a given endpoint.
 
         Returns all objects from an endpoint.
+
+        :arg int,optional limit: Overrides the max page size on
+            paginated returns.
 
         :Returns: List of :py:class:`.Record` objects.
 
@@ -96,9 +93,10 @@ class Endpoint(object):
             session_key=self.session_key,
             http_session=self.api.http_session,
             threading=self.api.threading,
+            limit=limit,
         )
 
-        return response_loader(req.get(), self.return_obj, self)
+        return RecordSet(self, req)
 
     def get(self, *args, **kwargs):
         r"""Queries the DetailsView of a given endpoint.
@@ -135,17 +133,7 @@ class Endpoint(object):
             key = None
 
         if not key:
-            filter_lookup = self.filter(**kwargs)
-            if filter_lookup:
-                if len(filter_lookup) > 1:
-                    raise ValueError(
-                        "get() returned more than one result. "
-                        "Check that the kwarg(s) passed are valid for this "
-                        "endpoint or use filter() or all() instead."
-                    )
-                else:
-                    return filter_lookup[0]
-            return None
+            return next(iter(self.filter(**kwargs)), None)
 
         req = Request(
             key=key,
@@ -154,16 +142,13 @@ class Endpoint(object):
             session_key=self.session_key,
             http_session=self.api.http_session,
         )
-
         try:
-            resp = req.get()
+            return next(iter(RecordSet(self, req)), None)
         except RequestError as e:
             if e.req.status_code == 404:
                 return None
             else:
                 raise e
-
-        return response_loader(resp, self.return_obj, self)
 
     def filter(self, *args, **kwargs):
         r"""Queries the 'ListView' of a given endpoint.
@@ -176,6 +161,8 @@ class Endpoint(object):
             accepted on given endpoint.
         :arg str,optional \**kwargs: Any search argument the
             endpoint accepts can be added as a keyword arg.
+        :arg int,optional limit: Overrides the max page size on
+            paginated returns.
 
         :Returns: A list of :py:class:`.Record` objects.
 
@@ -214,8 +201,8 @@ class Endpoint(object):
             raise ValueError("filter must be passed kwargs. Perhaps use all() instead.")
         if any(i in RESERVED_KWARGS for i in kwargs):
             raise ValueError(
-                "A reserved {} kwarg was passed. Please remove it "
-                "try again.".format(RESERVED_KWARGS)
+                "A reserved kwarg was passed ({}). Please remove it "
+                "and try again.".format(RESERVED_KWARGS)
             )
 
         req = Request(
@@ -225,9 +212,10 @@ class Endpoint(object):
             session_key=self.session_key,
             http_session=self.api.http_session,
             threading=self.api.threading,
+            limit=kwargs.get("limit", 0),
         )
 
-        return response_loader(req.get(), self.return_obj, self)
+        return RecordSet(self, req)
 
     def create(self, *args, **kwargs):
         r"""Creates an object on an endpoint.
@@ -287,7 +275,7 @@ class Endpoint(object):
             http_session=self.api.http_session,
         ).post(args[0] if args else kwargs)
 
-        return response_loader(req, self.return_obj, self)
+        return self.return_obj(req, self.api, self)
 
     def choices(self):
         """ Returns all choices from the endpoint.
@@ -425,7 +413,10 @@ class DetailEndpoint(object):
         req = Request(**self.request_kwargs).get(add_params=kwargs)
 
         if self.custom_return:
-            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
+            for i in req:
+                yield self.custom_return(
+                    i, self.parent_obj.endpoint.api, self.parent_obj.endpoint
+                )
         return req
 
     def create(self, data=None):
@@ -444,7 +435,9 @@ class DetailEndpoint(object):
         data = data or {}
         req = Request(**self.request_kwargs).post(data)
         if self.custom_return:
-            return response_loader(req, self.custom_return, self.parent_obj.endpoint)
+            return self.custom_return(
+                req, self.parent_obj.endpoint.api, self.parent_obj.endpoint
+            )
         return req
 
 
