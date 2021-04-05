@@ -1,3 +1,6 @@
+from urllib import parse
+
+import pytest
 from packaging import version
 
 
@@ -30,6 +33,16 @@ def pytest_addoption(parser):
         ),
     )
 
+    parser.addoption(
+        "--url-override",
+        dest="url_override",
+        action="store",
+        help=(
+            "Overrides the URL to run tests to. This allows for testing to the same"
+            " containers for seperate runs."
+        ),
+    )
+
 
 def pytest_configure(config):
     """Hook that runs after test collection is completed.
@@ -41,3 +54,27 @@ def pytest_configure(config):
         version.Version(version_string)
         for version_string in config.option.netbox_versions.split(",")
     ]
+    if "no:docker" in config.option.plugins and config.option.url_override:
+
+        url_parse = parse.urlparse(config.option.url_override)
+
+        class DockerServicesMock(object):
+            def __init__(self, ports):
+                self.ports = ports
+
+            def wait_until_responsive(self, *args, **kwargs):
+                return None
+
+            def port_for(self, *args):
+                return self.ports
+
+        class Plugin:
+            @pytest.fixture(scope="session")
+            def docker_ip(self):
+                return "127.0.0.1"
+
+            @pytest.fixture(scope="session")
+            def docker_services(self):
+                return DockerServicesMock(url_parse.port)
+
+        config.pluginmanager.register(Plugin())

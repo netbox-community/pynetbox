@@ -24,13 +24,15 @@ from pynetbox.models.circuits import Circuits
 
 class TraceableRecord(Record):
     def trace(self):
-        req = Request(
-            key=str(self.id) + "/trace",
-            base=self.endpoint.url,
-            token=self.api.token,
-            session_key=self.api.session_key,
-            http_session=self.api.http_session,
-        )
+        req = list(
+            Request(
+                key=str(self.id) + "/trace",
+                base=self.endpoint.url,
+                token=self.api.token,
+                session_key=self.api.session_key,
+                http_session=self.api.http_session,
+            ).get()
+        )[0]
         uri_to_obj_class_map = {
             "dcim/cables": Cables,
             "dcim/front-ports": FrontPorts,
@@ -38,7 +40,7 @@ class TraceableRecord(Record):
             "dcim/rear-ports": RearPorts,
         }
         ret = []
-        for (termination_a_data, cable_data, termination_b_data) in req.get():
+        for (termination_a_data, cable_data, termination_b_data) in req:
             this_hop_ret = []
             for hop_item_data in (termination_a_data, cable_data, termination_b_data):
                 # if not fully terminated then some items will be None

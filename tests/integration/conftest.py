@@ -7,46 +7,23 @@ import yaml
 from http.client import RemoteDisconnected
 
 import atexit
-import faker as _faker
 import pynetbox
 import pytest
 import requests
 
 
 DOCKER_PROJECT_PREFIX = "pytest_pynetbox"
-DEVICETYPE_LIBRARY_OBJECTS = [
-    "A10/TH6430.yaml",
-    "APC/AP8868.yaml",
-    "Arista/DCS-7010T-48.yaml",
-    "Arista/DCS-7050TX3-48C8.yaml",
-    "Arista/DCS-7280CR3-32P4.yaml",
-    "Arista/DCS-7280SR-48C6.yaml",
-    "Dell/Networking_S4048-ON.yaml",
-    "Dell/PowerEdge_R640.yaml",
-    "Generic/48-port_copper_patch_panel.yaml",
-    "Generic/LC-48-port_fiber_patch_panel.yaml",
-    "Opengear/IM7248-2-DAC-US.yaml",
-]
-DEVICE_ROLE_NAMES = [
-    "Border Leaf Switch",
-    "Console Server",
-    "Leaf Switch",
-    "PDU",
-    "Patch Panel",
-    "Server",
-    "Spine Switch",
-]
 
 
 def get_netbox_docker_version_tag(netbox_version):
     """Get the repo tag to build netbox-docker in from the requested netbox version.
-    
+
     Args:
         netbox_version (version.Version): The version of netbox we want to build
 
     Returns:
         str: The release tag for the netbox-docker repo that should be able to build
-            the requested version of netbox. 
+            the requested version of netbox.
 
     """
     major, minor = netbox_version.major, netbox_version.minor
@@ -70,7 +47,7 @@ def get_netbox_docker_version_tag(netbox_version):
 @pytest.fixture(scope="session")
 def git_toplevel():
     """Get the top level of the current git repo.
-    
+
     Returns:
         str: The path of the top level directory of the current git repo.
 
@@ -83,43 +60,12 @@ def git_toplevel():
 
 
 @pytest.fixture(scope="session")
-def devicetype_library_repo_dirpath(git_toplevel):
-    """Get the path to the devicetype-library repo we will use.
-    
-    Returns:
-        str: The path of the directory of the devicetype-library repo we will use.
-    """
-    repo_fpath = os.path.join(git_toplevel, ".devicetype-library")
-    if os.path.isdir(repo_fpath):
-        subp.check_call(
-            ["git", "fetch"], cwd=repo_fpath, stdout=subp.PIPE, stderr=subp.PIPE
-        )
-        subp.check_call(
-            ["git", "pull"], cwd=repo_fpath, stdout=subp.PIPE, stderr=subp.PIPE
-        )
-    else:
-        subp.check_call(
-            [
-                "git",
-                "clone",
-                "https://github.com/netbox-community/devicetype-library",
-                repo_fpath,
-            ],
-            cwd=git_toplevel,
-            stdout=subp.PIPE,
-            stderr=subp.PIPE,
-        )
-
-    return repo_fpath
-
-
-@pytest.fixture(scope="session")
 def netbox_docker_repo_dirpaths(pytestconfig, git_toplevel):
     """Get the path to the netbox-docker repos we will use.
-    
+
     Returns:
         dict: A map of the repo dir paths to the versions of netbox that should be run
-            from that repo as: 
+            from that repo as:
                 {
                     <path to repo dir as str>: [
                         <netbox version>,
@@ -249,6 +195,11 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
     """
     clean_netbox_docker_tmpfiles()
     clean_docker_objects()
+
+    try:
+        subp.check_call(["which", "docker"])
+    except subp.CalledProcessError:
+        pytest.skip(msg="docker executable was not found on the host")
 
     compose_files = []
 
@@ -383,7 +334,12 @@ def netbox_is_responsive(url):
         response = requests.get(url)
         if response.status_code == 200:
             return True
-    except (ConnectionError, ConnectionResetError, RemoteDisconnected):
+    except (
+        ConnectionError,
+        ConnectionResetError,
+        requests.exceptions.ConnectionError,
+        RemoteDisconnected,
+    ):
         return False
 
 
@@ -397,107 +353,9 @@ def id_netbox_service(fixture_value):
     return "netbox v%s" % fixture_value
 
 
-def populate_netbox_object_types(nb_api, devicetype_library_repo_dirpath, faker):
-    """Load some object types in to a fresh instance of netbox.
-
-    These objects will be used in tests.
-    """
-    # collect and load the configs for each of the requested object models
-    device_type_models = []
-    for object_model_relfpath in DEVICETYPE_LIBRARY_OBJECTS:
-        device_type_models.append(
-            yaml.safe_load(
-                open(
-                    os.path.join(
-                        devicetype_library_repo_dirpath,
-                        "device-types",
-                        object_model_relfpath,
-                    ),
-                    "r",
-                ).read()
-            )
-        )
-
-    # create the manufacturers
-    manufacturer_names = {model["manufacturer"] for model in device_type_models}
-    for manufacturer_name in manufacturer_names:
-        nb_api.dcim.manufacturers.create(
-            name=manufacturer_name, slug=manufacturer_name.lower().replace(" ", "-")
-        )
-
-    # create the device types and their components
-    for device_type_model in device_type_models:
-        device_type_model["manufacturer"] = {"name": device_type_model["manufacturer"]}
-        device_type = nb_api.dcim.device_types.create(**device_type_model)
-
-        for interface_template in device_type_model.get("interfaces", []):
-            nb_api.dcim.interface_templates.create(
-                device_type=device_type.id, **interface_template
-            )
-
-        for front_port_template in device_type_model.get("front_ports", []):
-            nb_api.dcim.front_port_templates.create(
-                device_type=device_type.id, **front_port_template
-            )
-
-        for rear_port_template in device_type_model.get("rear_ports", []):
-            nb_api.dcim.rear_port_templates.create(
-                device_type=device_type.id, **rear_port_template
-            )
-
-        for console_port_template in device_type_model.get("console-ports", []):
-            nb_api.dcim.console_port_templates.create(
-                device_type=device_type.id, **console_port_template
-            )
-
-        for console_server_port_template in device_type_model.get(
-            "console-server-ports", []
-        ):
-            nb_api.dcim.console_server_port_templates.create(
-                device_type=device_type.id, **console_server_port_template
-            )
-
-        for power_port_template in device_type_model.get("power-ports", []):
-            nb_api.dcim.power_port_templates.create(
-                device_type=device_type.id, **power_port_template
-            )
-
-        for power_outlet_template in device_type_model.get("power-outlets", []):
-            if "power_port" in power_outlet_template:
-                power_outlet_template["power_port"] = {
-                    "name": power_outlet_template["power_port"]
-                }
-            nb_api.dcim.power_outlet_templates.create(
-                device_type=device_type.id, **power_outlet_template
-            )
-
-        for device_bay_template in device_type_model.get("device-bays", []):
-            nb_api.dcim.device_bay_templates.create(
-                device_type=device_type.id, **device_bay_template
-            )
-
-    # add device roles
-    for device_role_name in DEVICE_ROLE_NAMES:
-        extra_kwargs = {}
-        if version.Version(nb_api.version) < version.Version("2.8"):
-            # color is mandatory
-            extra_kwargs = {"color": faker.color().lstrip("#")}
-
-        nb_api.dcim.device_roles.create(
-            name=device_role_name,
-            slug=device_role_name.lower().replace(" ", "-"),
-            **extra_kwargs
-        )
-
-
 @pytest.fixture(scope="session")
 def netbox_service(
-    pytestconfig,
-    docker_ip,
-    docker_services,
-    devicetype_library_repo_dirpath,
-    request,
-    faker,
+    pytestconfig, docker_ip, docker_services, request,
 ):
     """Get the netbox service to test against.
 
@@ -551,17 +409,59 @@ def netbox_service(
         timeout=300.0, pause=1, check=lambda: netbox_is_responsive(url)
     )
     nb_api = pynetbox.api(url, token="0123456789abcdef0123456789abcdef01234567")
-    populate_netbox_object_types(
-        nb_api=nb_api,
-        devicetype_library_repo_dirpath=devicetype_library_repo_dirpath,
-        faker=faker,
-    )
 
     return {
         "url": url,
         "netbox_version": netbox_integration_version,
         "api": nb_api,
     }
+
+
+@pytest.fixture(scope="session", autouse=True)
+def api(netbox_service):
+    return netbox_service["api"]
+
+
+@pytest.fixture(scope="session")
+def nb_version(netbox_service):
+    return netbox_service["netbox_version"]
+
+
+@pytest.fixture(scope="session")
+def site(api):
+    site = api.dcim.sites.create(name="test", slug="test")
+    yield site
+    site.delete()
+
+
+@pytest.fixture(scope="session")
+def manufacturer(api):
+    manufacturer = api.dcim.manufacturers.create(
+        name="test-manufacturer", slug="test-manufacturer"
+    )
+    yield manufacturer
+    manufacturer.delete()
+
+
+@pytest.fixture(scope="session")
+def device_type(api, manufacturer):
+    device_type = api.dcim.device_types.create(
+        manufacturer=manufacturer.id,
+        model="test-device-type",
+        slug="test-device-type",
+        height=1,
+    )
+    yield device_type
+    device_type.delete()
+
+
+@pytest.fixture(scope="session")
+def device_role(api):
+    device_role = api.dcim.device_roles.create(
+        name="test-device-role", slug="test-device-role", color="000000",
+    )
+    yield device_role
+    device_role.delete()
 
 
 def pytest_generate_tests(metafunc):
@@ -593,19 +493,3 @@ def docker_cleanup(pytestconfig):
     command_args = "version"
 
     return command_args
-
-
-@pytest.fixture(scope="session")
-def faker():
-    """Override the default `faker` fixture provided by the faker module.
-
-    Unfortunately the default behavior of the faker fixture clears the history and
-    resets the seed between fixture uses but in our case since we need to remember
-    history we will override the default fixture and use a single faker instance across
-    all tests. This will let us spin up lots of objects in netbox without naming
-    collisions.
-    """
-    fake = _faker.Faker()
-    fake.seed_instance(0)
-
-    return fake
