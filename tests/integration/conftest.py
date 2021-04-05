@@ -52,6 +52,10 @@ def git_toplevel():
         str: The path of the top level directory of the current git repo.
 
     """
+    try:
+        subp.check_call(["which", "git"])
+    except subp.CalledProcessError:
+        pytest.skip(msg="git executable was not found on the host")
     return (
         subp.check_output(["git", "rev-parse", "--show-toplevel"])
         .decode("utf-8")
@@ -73,6 +77,10 @@ def netbox_docker_repo_dirpaths(pytestconfig, git_toplevel):
                     ]
                 }
     """
+    try:
+        subp.check_call(["which", "docker"])
+    except subp.CalledProcessError:
+        pytest.skip(msg="docker executable was not found on the host")
     netbox_versions_by_repo_dirpaths = {}
     for netbox_version in pytestconfig.option.netbox_versions:
         repo_version_tag = get_netbox_docker_version_tag(netbox_version=netbox_version)
@@ -195,11 +203,6 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
     """
     clean_netbox_docker_tmpfiles()
     clean_docker_objects()
-
-    try:
-        subp.check_call(["which", "docker"])
-    except subp.CalledProcessError:
-        pytest.skip(msg="docker executable was not found on the host")
 
     compose_files = []
 
