@@ -85,10 +85,10 @@ class RecordSet(object):
 
     def __len__(self):
         try:
-            return self.request.count
+            return self.request.get_count()
         except AttributeError:
             self._response_cache.append(next(self.response))
-            return self.request.count
+            return self.request.get_count()
 
 
 class Record(object):
