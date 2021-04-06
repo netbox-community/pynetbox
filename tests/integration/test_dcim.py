@@ -100,7 +100,8 @@ class TestRack(BaseTest):
 
     def test_get_elevation(self):
         test = self.fixture.elevation.list()
-        assert next(test)
+        assert test
+        assert isinstance(test, list)
 
 
 class TestManufacturer(BaseTest):
