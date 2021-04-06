@@ -83,6 +83,12 @@ class RecordSet(object):
         for i in self.response:
             yield self.endpoint.return_obj(i, self.endpoint.api, self.endpoint)
 
+    def __next__(self):
+        for i in self._response_cache:
+            return self.endpoint.return_obj(i, self.endpoint.api, self.endpoint)
+        for i in self.response:
+            return self.endpoint.return_obj(i, self.endpoint.api, self.endpoint)
+
     def __len__(self):
         try:
             return self.request.count
