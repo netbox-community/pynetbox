@@ -87,7 +87,10 @@ class RecordSet(object):
         try:
             return self.request.count
         except AttributeError:
-            self._response_cache.append(next(self.response))
+            try:
+                self._response_cache.append(next(self.response))
+            except StopIteration:
+                return 0
             return self.request.count
 
 
