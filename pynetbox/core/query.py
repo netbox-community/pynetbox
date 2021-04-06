@@ -346,6 +346,10 @@ class Request(object):
                 first_run = False
                 for i in req["results"]:
                     yield i
+        elif isinstance(req, list):
+            self.count = len(req)
+            for i in req:
+                yield i
         else:
             self.count = len(req)
             yield req

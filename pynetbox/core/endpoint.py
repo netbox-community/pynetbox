@@ -413,10 +413,12 @@ class DetailEndpoint(object):
         req = Request(**self.request_kwargs).get(add_params=kwargs)
 
         if self.custom_return:
-            for i in req:
-                yield self.custom_return(
+            return [
+                self.custom_return(
                     i, self.parent_obj.endpoint.api, self.parent_obj.endpoint
                 )
+                for i in req
+            ]
         return req
 
     def create(self, data=None):

@@ -24,15 +24,13 @@ from pynetbox.models.circuits import Circuits
 
 class TraceableRecord(Record):
     def trace(self):
-        req = list(
-            Request(
-                key=str(self.id) + "/trace",
-                base=self.endpoint.url,
-                token=self.api.token,
-                session_key=self.api.session_key,
-                http_session=self.api.http_session,
-            ).get()
-        )[0]
+        req = Request(
+            key=str(self.id) + "/trace",
+            base=self.endpoint.url,
+            token=self.api.token,
+            session_key=self.api.session_key,
+            http_session=self.api.http_session,
+        ).get()
         uri_to_obj_class_map = {
             "dcim/cables": Cables,
             "dcim/front-ports": FrontPorts,
