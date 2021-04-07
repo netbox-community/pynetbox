@@ -133,7 +133,7 @@ class Endpoint(object):
             key = None
 
         if not key:
-            return next(iter(self.filter(**kwargs)), None)
+            return next(self.filter(**kwargs), None)
 
         req = Request(
             key=key,
@@ -143,7 +143,7 @@ class Endpoint(object):
             http_session=self.api.http_session,
         )
         try:
-            return next(iter(RecordSet(self, req)), None)
+            return next(RecordSet(self, req), None)
         except RequestError as e:
             if e.req.status_code == 404:
                 return None
