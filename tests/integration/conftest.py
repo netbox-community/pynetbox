@@ -357,7 +357,7 @@ def id_netbox_service(fixture_value):
 
 
 @pytest.fixture(scope="session")
-def netbox_service(
+def docker_netbox_service(
     pytestconfig, docker_ip, docker_services, request,
 ):
     """Get the netbox service to test against.
@@ -411,23 +411,23 @@ def netbox_service(
     docker_services.wait_until_responsive(
         timeout=300.0, pause=1, check=lambda: netbox_is_responsive(url)
     )
-    nb_api = pynetbox.api(url, token="0123456789abcdef0123456789abcdef01234567")
 
     return {
         "url": url,
         "netbox_version": netbox_integration_version,
-        "api": nb_api,
     }
 
 
-@pytest.fixture(scope="session", autouse=True)
-def api(netbox_service):
-    return netbox_service["api"]
+@pytest.fixture(scope="session")
+def api(docker_netbox_service):
+    return pynetbox.api(
+        docker_netbox_service["url"], token="0123456789abcdef0123456789abcdef01234567"
+    )
 
 
 @pytest.fixture(scope="session")
-def nb_version(netbox_service):
-    return netbox_service["netbox_version"]
+def nb_version(docker_netbox_service):
+    return docker_netbox_service["netbox_version"]
 
 
 @pytest.fixture(scope="session")
@@ -469,12 +469,12 @@ def device_role(api):
 
 def pytest_generate_tests(metafunc):
     """Dynamically parametrize some functions based on args from the cli parser."""
-    if "netbox_service" in metafunc.fixturenames:
-        # parametrize the requested versions of netbox to the netbox_services fixture
+    if "docker_netbox_service" in metafunc.fixturenames:
+        # parametrize the requested versions of netbox to the docker_netbox_services fixture
         # so that it will return a fixture for each of the versions requested
         # individually rather than one fixture with multiple versions within it
         metafunc.parametrize(
-            "netbox_service",
+            "docker_netbox_service",
             metafunc.config.getoption("netbox_versions"),
             ids=id_netbox_service,
             indirect=True,
