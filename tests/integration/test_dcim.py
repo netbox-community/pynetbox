@@ -1,6 +1,8 @@
 import pytest
 from packaging import version
 
+import pynetbox
+
 
 @pytest.fixture(scope="module")
 def rack(api, site):
@@ -85,6 +87,27 @@ class TestSite(BaseTest):
             update_field="description",
             endpoint="sites",
         )
+
+    @pytest.fixture(scope="class")
+    def add_sites(self, api):
+        sites = [
+            api.dcim.sites.create(name="test{}".format(i), slug="test{}".format(i))
+            for i in range(2, 20)
+        ]
+        yield
+        for i in sites:
+            i.delete()
+
+    def test_threading_duplicates(self, docker_netbox_service, add_sites):
+        api = pynetbox.api(
+            docker_netbox_service["url"],
+            token="0123456789abcdef0123456789abcdef01234567",
+            threading=True,
+        )
+        test = api.dcim.sites.all(limit=5)
+        test_list = list(test)
+        test_set = set(test_list)
+        assert len(test_list) == len(test_set)
 
 
 class TestRack(BaseTest):
