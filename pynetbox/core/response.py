@@ -268,10 +268,7 @@ class Record(object):
 
     def _add_cache(self, item):
         key, value = item
-        if key == "local_context_data":
-            self._init_cache.append((key, copy.deepcopy(value)))
-        else:
-            self._init_cache.append((key, get_return(value)))
+        self._init_cache.append((key, get_return(value)))
 
     def _parse_values(self, values):
         """ Parses values init arg.
@@ -291,7 +288,7 @@ class Record(object):
                 if k in ["custom_fields", "local_context_data"] or hasattr(
                     lookup, "_json_field"
                 ):
-                    self._add_cache((k, v.copy()))
+                    self._add_cache((k, copy.deepcopy(v)))
                     setattr(self, k, v)
                     continue
                 if lookup:
