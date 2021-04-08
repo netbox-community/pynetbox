@@ -327,25 +327,26 @@ class Request(object):
                         self.concurrent_get(ret, page_size, page_offsets)
                 for i in ret:
                     yield i
-            first_run = True
-            for i in req["results"]:
-                yield i
-            while req["next"]:
-                # Not worrying about making sure add_params kwargs is
-                # passed in here because results from detail routes aren't
-                # paginated, thus far.
-                if first_run:
-                    req = self._make_call(
-                        add_params={
-                            "limit": self.limit or req["count"],
-                            "offset": len(req["results"]),
-                        }
-                    )
-                else:
-                    req = self._make_call(url_override=req["next"])
-                first_run = False
+            else:
+                first_run = True
                 for i in req["results"]:
                     yield i
+                while req["next"]:
+                    # Not worrying about making sure add_params kwargs is
+                    # passed in here because results from detail routes aren't
+                    # paginated, thus far.
+                    if first_run:
+                        req = self._make_call(
+                            add_params={
+                                "limit": self.limit or req["count"],
+                                "offset": len(req["results"]),
+                            }
+                        )
+                    else:
+                        req = self._make_call(url_override=req["next"])
+                    first_run = False
+                    for i in req["results"]:
+                        yield i
         elif isinstance(req, list):
             self.count = len(req)
             for i in req:
