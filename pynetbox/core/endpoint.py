@@ -133,7 +133,19 @@ class Endpoint(object):
             key = None
 
         if not key:
-            return next(self.filter(**kwargs), None)
+            resp = self.filter(**kwargs)
+            ret = next(resp, None)
+            if not ret:
+                return ret
+            try:
+                next(resp)
+                raise ValueError(
+                    "get() returned more than one result. "
+                    "Check that the kwarg(s) passed are valid for this "
+                    "endpoint or use filter() or all() instead."
+                )
+            except StopIteration:
+                return ret
 
         req = Request(
             key=key,
