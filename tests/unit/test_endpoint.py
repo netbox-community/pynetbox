@@ -59,3 +59,36 @@ class EndPointTestCase(unittest.TestCase):
             choices = test_obj.choices()
             self.assertEqual(choices["letter"][1]["display_name"], "B")
             self.assertEqual(choices["letter"][1]["value"], 2)
+
+    def test_get_with_filter(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=Mock()
+        ) as mock:
+            mock.return_value = [{"id": 123}]
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock(name="test")
+            test_obj = Endpoint(api, app, "test")
+            test = test_obj.get(name="test")
+            self.assertEqual(test.id, 123)
+
+    def test_get_greater_than_one(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=Mock()
+        ) as mock:
+            mock.return_value = [{"id": 123}, {"id": 321}]
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock(name="test")
+            test_obj = Endpoint(api, app, "test")
+            with self.assertRaises(ValueError) as _:
+                test_obj.get(name="test")
+
+    def test_get_no_results(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=Mock()
+        ) as mock:
+            mock.return_value = []
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock(name="test")
+            test_obj = Endpoint(api, app, "test")
+            test = test_obj.get(name="test")
+            self.assertIsNone(test)
