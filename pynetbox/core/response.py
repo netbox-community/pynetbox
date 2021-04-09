@@ -78,16 +78,16 @@ class RecordSet(object):
         self._response_cache = []
 
     def __iter__(self):
-        if self._response_cache:
-            yield self.endpoint.return_obj(
-                self._response_cache.pop(), self.endpoint.api, self.endpoint
-            )
-        for i in self.response:
-            yield self.endpoint.return_obj(i, self.endpoint.api, self.endpoint)
+        return self
 
     def __next__(self):
-        for i in self:
-            return i
+        if self._response_cache:
+            return self.endpoint.return_obj(
+                self._response_cache.pop(), self.endpoint.api, self.endpoint
+            )
+        return self.endpoint.return_obj(
+            next(self.response), self.endpoint.api, self.endpoint
+        )
 
     def __len__(self):
         try:
