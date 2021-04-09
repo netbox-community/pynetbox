@@ -79,12 +79,17 @@ class Endpoint(object):
         :arg int,optional limit: Overrides the max page size on
             paginated returns.
 
-        :Returns: List of :py:class:`.Record` objects.
+        :Returns: A :py:class:`.RecordSet` object.
 
         :Examples:
 
-        >>> nb.dcim.devices.all()
-        [test1-a3-oobsw2, test1-a3-oobsw3, test1-a3-oobsw4]
+        >>> devices = nb.dcim.devices.all()
+        >>> for device in devices:
+        ...     print(device.name)
+        ...
+        test1-leaf1
+        test1-leaf2
+        test1-leaf3
         >>>
         """
         req = Request(
@@ -176,33 +181,50 @@ class Endpoint(object):
         :arg int,optional limit: Overrides the max page size on
             paginated returns.
 
-        :Returns: A list of :py:class:`.Record` objects.
+        :Returns: A :py:class:`.RecordSet` object.
 
         :Examples:
 
         To return a list of objects matching a named argument filter.
 
-        >>> nb.dcim.devices.filter(role='leaf-switch')
-        [test1-a3-tor1b, test1-a3-tor1c, test1-a3-tor1d, test1-a3-tor2a]
+        >>> devices = nb.dcim.devices.filter(role='leaf-switch')
+        >>> for device in devices:
+        ...     print(device.name)
+        ...
+        test1-leaf1
+        test1-leaf2
+        test1-leaf3
         >>>
 
         Using a freeform query along with a named argument.
 
-        >>> nb.dcim.devices.filter('a3', role='leaf-switch')
-        [test1-a3-tor1b, test1-a3-tor1c, test1-a3-tor1d, test1-a3-tor2a]
+        >>> devices = nb.dcim.devices.filter('a3', role='leaf-switch')
+        >>> for device in devices:
+        ...     print(device.name)
+        ...
+        test1-a3-leaf1
+        test1-a3-leaf2
         >>>
 
         Chaining multiple named arguments.
 
-        >>> nb.dcim.devices.filter(role='leaf-switch', status=True)
-        [test1-leaf2]
+        >>> devices = nb.dcim.devices.filter(role='leaf-switch', status=True)
+        >>> for device in devices:
+        ...     print(device.name)
+        ...
+        test1-leaf2
         >>>
 
         Passing a list as a named argument adds multiple filters of the
         same value.
 
-        >>> nb.dcim.devices.filter(role=['leaf-switch', 'spine-switch'])
-        [test1-a3-spine1, test1-a3-spine2, test1-a3-leaf1]
+        >>> device = nb.dcim.devices.filter(role=['leaf-switch', 'spine-switch'])
+        >>> for device in devices:
+        ...     print(device.name)
+        ...
+        test1-a3-spine1
+        test1-a3-spine2
+        test1-a3-leaf1
         >>>
         """
 
@@ -251,10 +273,9 @@ class Endpoint(object):
 
         :Examples:
 
-        Creating an object on the `devices` endpoint you can lookup a
-        device_role's name with:
+        Creating an object on the `devices` endpoint:
 
-        >>> netbox.dcim.devices.create(
+        >>> device = netbox.dcim.devices.create(
         ...    name='test',
         ...    device_role=1,
         ... )

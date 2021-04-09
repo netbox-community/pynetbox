@@ -71,6 +71,34 @@ class JsonField(object):
 
 
 class RecordSet(object):
+    """Iterator containing Record objects.
+
+    Returned by :py:meth:`.Endpoint.all()` and :py:meth:`.Endpoint.filter()` methods.
+    Allows iteration of and actions to be taken on the results from the aforementioned
+    methods. Contains :py:class:`.Record` objects.
+
+    :Examples:
+
+    To see how many results are in a query by calling ``len()``.
+
+    >>> x = nb.dcim.devices.all()
+    >>> len(x)
+    123
+    >>>
+
+    Simple iteration of the results.
+
+    >>> devices = nb.dcim.devices.all()
+    >>> for device in devices:
+    ...     print(device.name)
+    ...
+    test1-leaf1
+    test1-leaf2
+    test1-leaf3
+    >>>
+
+    """
+
     def __init__(self, endpoint, request, **kwargs):
         self.endpoint = endpoint
         self.request = request
