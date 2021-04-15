@@ -90,10 +90,12 @@ class TestSite(BaseTest):
 
     @pytest.fixture(scope="class")
     def add_sites(self, api):
-        sites = [
-            api.dcim.sites.create(name="test{}".format(i), slug="test{}".format(i))
-            for i in range(2, 20)
-        ]
+        sites = api.dcim.sites.create(
+            [
+                {"name": "test{}".format(i), "slug": "test{}".format(i)}
+                for i in range(2, 20)
+            ]
+        )
         yield
         for i in sites:
             i.delete()

@@ -308,6 +308,8 @@ class Endpoint(object):
             http_session=self.api.http_session,
         ).post(args[0] if args else kwargs)
 
+        if isinstance(req, list):
+            return [self.return_obj(i, self.api, self) for i in req]
         return self.return_obj(req, self.api, self)
 
     def choices(self):
