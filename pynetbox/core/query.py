@@ -244,6 +244,13 @@ class Request(object):
 
         return url
 
+    def _set_base_url(self, url):
+        """ 
+        Replace base url (before '/api/') with base_url from 
+        pynetbox.api() instantiation.
+        """
+        return self.base.split("/api/")[0] + "/api/" + url.split("/api/")[1]
+
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
         if verb in ("post", "put"):
             headers = {"Content-Type": "application/json;"}
@@ -321,7 +328,11 @@ class Request(object):
                         increment * page_size for increment in range(1, pages)
                     ]
                     if pages == 1:
-                        req = self._make_call(url_override=req.get("next"))
+                        req = self._make_call(
+                                url_override=self._set_base_url(
+                                    req.get("next")
+                                    )
+                                )
                         ret.extend(req["results"])
                     else:
                         self.concurrent_get(ret, page_size, page_offsets)
@@ -343,7 +354,9 @@ class Request(object):
                             }
                         )
                     else:
-                        req = self._make_call(url_override=req["next"])
+                        req = self._make_call(
+                                url_override=self._set_base_url(req["next"])
+                                )
                     first_run = False
                     for i in req["results"]:
                         yield i
