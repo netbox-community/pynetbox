@@ -228,7 +228,11 @@ class Record(object):
         self.api = api
         self.default_ret = Record
         self.endpoint = (
-            self._endpoint_from_url(values["url"])
+            # Replace base of values["url"] with api.base_url
+            # if netbox is behind an external proxy
+            self._endpoint_from_url(
+                api.base_url + values["url"].split("/api")[1]
+                )
             if values and "url" in values
             else endpoint
         )
@@ -319,6 +323,8 @@ class Record(object):
                     self._add_cache((k, copy.deepcopy(v)))
                     setattr(self, k, v)
                     continue
+                elif k == "url":
+                    v = self.api.base_url + v.split("/api")[1]
                 if lookup:
                     v = lookup(v, self.api, self.endpoint)
                 else:
@@ -331,6 +337,8 @@ class Record(object):
                 self._add_cache((k, to_cache))
 
             else:
+                if k == "url":
+                    v = self.api.base_url + v.split("/api")[1]
                 self._add_cache((k, v))
             setattr(self, k, v)
 

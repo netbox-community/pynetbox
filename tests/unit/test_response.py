@@ -239,6 +239,32 @@ class RecordTestCase(unittest.TestCase):
             "http://localhost:8080/api/test-app/test-endpoint/321/",
         )
 
+    def test_nested_write_behind_external_proxy(self):
+        app = Mock()
+        app.token = "abc123"
+        app.base_url = "http://example.com/netbox/api"
+        endpoint = Mock()
+        endpoint.name = "test-endpoint"
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "child": {
+                    "id": 321,
+                    "name": "test123",
+                    "url": "http://localhost:8080/api/test-app/test-endpoint/321/",
+                },
+            },
+            app,
+            endpoint,
+        )
+        test.child.name = "test321"
+        test.child.save()
+        self.assertEqual(
+            app.http_session.patch.call_args[0][0],
+            "http://example.com/netbox/api/test-app/test-endpoint/321/",
+        )
+
     def test_nested_write_with_directory_in_base_url(self):
         app = Mock()
         app.token = "abc123"
@@ -265,9 +291,50 @@ class RecordTestCase(unittest.TestCase):
             "http://localhost:8080/testing/api/test-app/test-endpoint/321/",
         )
 
+    def test_nested_write_with_directory_in_base_url_behind_external_proxy(self):
+        app = Mock()
+        app.token = "abc123"
+        app.base_url = "http://example.com/netbox/testing/api"
+        endpoint = Mock()
+        endpoint.name = "test-endpoint"
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "child": {
+                    "id": 321,
+                    "name": "test123",
+                    "url": "http://localhost:8080/testing/api/test-app/test-endpoint/321/",
+                },
+            },
+            app,
+            endpoint,
+        )
+        test.child.name = "test321"
+        test.child.save()
+        self.assertEqual(
+            app.http_session.patch.call_args[0][0],
+            "http://example.com/netbox/testing/api/test-app/test-endpoint/321/",
+        )
+
     def test_endpoint_from_url(self):
         api = Mock()
         api.base_url = "http://localhost:8080/api"
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "url": "http://localhost:8080/api/test-app/test-endpoint/1/",
+            },
+            api,
+            None,
+        )
+        ret = test._endpoint_from_url(test.url)
+        self.assertEqual(ret.name, "test-endpoint")
+
+    def test_endpoint_from_url_behind_external_proxy(self):
+        api = Mock()
+        api.base_url = "http://example.com/netbox/api"
         test = Record(
             {
                 "id": 123,
@@ -295,6 +362,21 @@ class RecordTestCase(unittest.TestCase):
         ret = test._endpoint_from_url(test.url)
         self.assertEqual(ret.name, "test-endpoint")
 
+    def test_endpoint_from_url_with_directory_in_base_url_behind_external_proxy(self):
+        api = Mock()
+        api.base_url = "http://example.com/netbox/testing/api"
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "url": "http://localhost:8080/testing/api/test-app/test-endpoint/1/",
+            },
+            api,
+            None,
+        )
+        ret = test._endpoint_from_url(test.url)
+        self.assertEqual(ret.name, "test-endpoint")
+
     def test_endpoint_from_url_with_plugins(self):
         api = Mock()
         api.base_url = "http://localhost:8080/api"
@@ -310,9 +392,39 @@ class RecordTestCase(unittest.TestCase):
         ret = test._endpoint_from_url(test.url)
         self.assertEqual(ret.name, "test-endpoint")
 
+    def test_endpoint_from_url_with_plugins_behind_external_proxy(self):
+        api = Mock()
+        api.base_url = "http://example.com/netbox/api"
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "url": "http://localhost:8080/api/plugins/test-app/test-endpoint/1/",
+            },
+            api,
+            None,
+        )
+        ret = test._endpoint_from_url(test.url)
+        self.assertEqual(ret.name, "test-endpoint")
+
     def test_endpoint_from_url_with_plugins_and_directory_in_base_url(self):
         api = Mock()
         api.base_url = "http://localhost:8080/testing/api"
+        test = Record(
+            {
+                "id": 123,
+                "name": "test",
+                "url": "http://localhost:8080/testing/api/plugins/test-app/test-endpoint/1/",
+            },
+            api,
+            None,
+        )
+        ret = test._endpoint_from_url(test.url)
+        self.assertEqual(ret.name, "test-endpoint")
+
+    def test_endpoint_from_url_with_plugins_and_directory_in_base_url_behind_external_proxy(self):
+        api = Mock()
+        api.base_url = "http://example.com/testing/api"
         test = Record(
             {
                 "id": 123,
