@@ -19,6 +19,7 @@ except ImportError:
     pass
 import json
 from six.moves.urllib.parse import urlencode
+from pynetbox.core.util import set_base_url
 
 
 def calc_pages(limit, count):
@@ -245,11 +246,9 @@ class Request(object):
         return url
 
     def _set_base_url(self, url):
-        """ 
-        Replace base url (before '/api/') with base_url from 
-        pynetbox.api() instantiation.
+        """ calls set_base_url with self.base_url as base
         """
-        return self.base.split("/api/")[0] + "/api/" + url.split("/api/")[1]
+        return set_base_url(self.base_url, url)
 
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
         if verb in ("post", "put"):

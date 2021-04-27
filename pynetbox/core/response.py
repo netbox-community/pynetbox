@@ -19,6 +19,7 @@ from collections import OrderedDict
 import pynetbox.core.app
 from six.moves.urllib.parse import urlsplit
 from pynetbox.core.query import Request, RequestError
+from pynetbox.core.util import set_base_url
 from pynetbox.core.util import Hashabledict
 
 
@@ -231,7 +232,7 @@ class Record(object):
             # Replace base of values["url"] with api.base_url
             # if netbox is behind an external proxy
             self._endpoint_from_url(
-                api.base_url + values["url"].split("/api")[1]
+                set_base_url(api.base_url, values["url"])
                 )
             if values and "url" in values
             else endpoint
@@ -324,7 +325,7 @@ class Record(object):
                     setattr(self, k, v)
                     continue
                 elif k == "url":
-                    v = self.api.base_url + v.split("/api")[1]
+                    v = set_base_url(self.api.base_url, values["url"])
                 if lookup:
                     v = lookup(v, self.api, self.endpoint)
                 else:
@@ -338,7 +339,7 @@ class Record(object):
 
             else:
                 if k == "url":
-                    v = self.api.base_url + v.split("/api")[1]
+                    v = set_base_url(self.api.base_url, values["url"])
                 self._add_cache((k, v))
             setattr(self, k, v)
 
