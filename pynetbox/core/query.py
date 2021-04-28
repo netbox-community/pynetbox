@@ -137,6 +137,7 @@ class Request(object):
         private_key=None,
         session_key=None,
         threading=False,
+        external_proxy=False,
     ):
         """
         Instantiates a new Request object
@@ -161,6 +162,7 @@ class Request(object):
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
         self.limit = limit
+        self.external_proxy = external_proxy
 
     def get_openapi(self):
         """ Gets the OpenAPI Spec """
@@ -245,11 +247,6 @@ class Request(object):
 
         return url
 
-    def _set_base_url(self, url):
-        """ calls set_base_url with self.base_url as base
-        """
-        return set_base_url(self.base_url, url)
-
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
         if verb in ("post", "put"):
             headers = {"Content-Type": "application/json;"}
@@ -327,11 +324,17 @@ class Request(object):
                         increment * page_size for increment in range(1, pages)
                     ]
                     if pages == 1:
-                        req = self._make_call(
-                                url_override=self._set_base_url(
-                                    req.get("next")
+                        if self.external_proxy:
+                            req = self._make_call(
+                                    url_override=set_base_url(
+                                        self.base,
+                                        req.get("next")
                                     )
-                                )
+                                  )
+                        else:
+                            req = self._make_call(
+                                    url_override=req.get("next")
+                                  )
                         ret.extend(req["results"])
                     else:
                         self.concurrent_get(ret, page_size, page_offsets)
@@ -353,9 +356,17 @@ class Request(object):
                             }
                         )
                     else:
-                        req = self._make_call(
-                                url_override=self._set_base_url(req["next"])
-                                )
+                        if self.external_proxy:
+                            req = self._make_call(
+                                    url_override=set_base_url(
+                                        self.base,
+                                        req["next"]
+                                    )
+                                  )
+                        else:
+                            req = self._make_call(
+                                    url_override=req["next"]
+                                  )
                     first_run = False
                     for i in req["results"]:
                         yield i

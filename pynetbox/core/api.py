@@ -70,7 +70,8 @@ class Api(object):
     """
 
     def __init__(
-        self, url, token=None, private_key=None, private_key_file=None, threading=False,
+        self, url, token=None, private_key=None, private_key_file=None,
+        threading=False, external_proxy=False,
     ):
         if private_key and private_key_file:
             raise ValueError(
@@ -93,6 +94,11 @@ class Api(object):
             with open(self.private_key_file, "r") as kf:
                 private_key = kf.read()
                 self.private_key = private_key
+
+        if isinstance(external_proxy, bool):
+            self.external_proxy = external_proxy
+        else:
+            raise ValueError('"external_proxy" must be True or False.')
 
         self.dcim = App(self, "dcim")
         self.ipam = App(self, "ipam")

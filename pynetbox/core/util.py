@@ -6,11 +6,15 @@ def set_base_url(base, url):
     pynetbox.api() instantiation.
     """
     b = urlsplit(base)
-    base_url = f'{b.scheme}://{b.netloc}{b.path.split("/api/")[0]}'
+    base_path = b.path if b.path.endswith('/') else f'{b.path}/'
+    split_base_path = base_path.split("/api/")[0]
+    base_url = f'{b.scheme}://{b.netloc}{split_base_path}'
 
     u = urlsplit(url)
-    path = u.path.split("/api/")[1]
-    return f'{base_url}/{path}'
+    url_path = u.path.split("/api/")[1]
+
+    return f'{base_url}/api/{url_path}?{u.query}'
+
 
 
 class Hashabledict(dict):

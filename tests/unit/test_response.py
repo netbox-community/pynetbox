@@ -214,9 +214,10 @@ class RecordTestCase(unittest.TestCase):
         self.assertEqual(test1, test2)
 
     def test_nested_write(self):
-        app = Mock()
-        app.token = "abc123"
-        app.base_url = "http://localhost:8080/api"
+        api = Mock()
+        api.token = "abc123"
+        api.base_url = "http://localhost:8080/api"
+        api.external_proxy = False
         endpoint = Mock()
         endpoint.name = "test-endpoint"
         test = Record(
@@ -229,20 +230,21 @@ class RecordTestCase(unittest.TestCase):
                     "url": "http://localhost:8080/api/test-app/test-endpoint/321/",
                 },
             },
-            app,
+            api,
             endpoint,
         )
         test.child.name = "test321"
         test.child.save()
         self.assertEqual(
-            app.http_session.patch.call_args[0][0],
+            api.http_session.patch.call_args[0][0],
             "http://localhost:8080/api/test-app/test-endpoint/321/",
         )
 
     def test_nested_write_behind_external_proxy(self):
-        app = Mock()
-        app.token = "abc123"
-        app.base_url = "http://example.com/netbox/api"
+        api = Mock()
+        api.token = "abc123"
+        api.base_url = "http://example.com/netbox/api"
+        api.external_proxy = True
         endpoint = Mock()
         endpoint.name = "test-endpoint"
         test = Record(
@@ -255,20 +257,21 @@ class RecordTestCase(unittest.TestCase):
                     "url": "http://localhost:8080/api/test-app/test-endpoint/321/",
                 },
             },
-            app,
+            api,
             endpoint,
         )
         test.child.name = "test321"
         test.child.save()
         self.assertEqual(
-            app.http_session.patch.call_args[0][0],
+            api.http_session.patch.call_args[0][0],
             "http://example.com/netbox/api/test-app/test-endpoint/321/",
         )
 
     def test_nested_write_with_directory_in_base_url(self):
-        app = Mock()
-        app.token = "abc123"
-        app.base_url = "http://localhost:8080/testing/api"
+        api = Mock()
+        api.token = "abc123"
+        api.base_url = "http://localhost:8080/testing/api"
+        api.external_proxy = False
         endpoint = Mock()
         endpoint.name = "test-endpoint"
         test = Record(
@@ -281,20 +284,21 @@ class RecordTestCase(unittest.TestCase):
                     "url": "http://localhost:8080/testing/api/test-app/test-endpoint/321/",
                 },
             },
-            app,
+            api,
             endpoint,
         )
         test.child.name = "test321"
         test.child.save()
         self.assertEqual(
-            app.http_session.patch.call_args[0][0],
+            api.http_session.patch.call_args[0][0],
             "http://localhost:8080/testing/api/test-app/test-endpoint/321/",
         )
 
     def test_nested_write_with_directory_in_base_url_behind_external_proxy(self):
-        app = Mock()
-        app.token = "abc123"
-        app.base_url = "http://example.com/netbox/testing/api"
+        api = Mock()
+        api.token = "abc123"
+        api.base_url = "http://example.com/netbox/testing/api"
+        api.external_proxy = True
         endpoint = Mock()
         endpoint.name = "test-endpoint"
         test = Record(
@@ -307,19 +311,20 @@ class RecordTestCase(unittest.TestCase):
                     "url": "http://localhost:8080/testing/api/test-app/test-endpoint/321/",
                 },
             },
-            app,
+            api,
             endpoint,
         )
         test.child.name = "test321"
         test.child.save()
         self.assertEqual(
-            app.http_session.patch.call_args[0][0],
+            api.http_session.patch.call_args[0][0],
             "http://example.com/netbox/testing/api/test-app/test-endpoint/321/",
         )
 
     def test_endpoint_from_url(self):
         api = Mock()
         api.base_url = "http://localhost:8080/api"
+        api.external_proxy = False
         test = Record(
             {
                 "id": 123,
@@ -335,6 +340,7 @@ class RecordTestCase(unittest.TestCase):
     def test_endpoint_from_url_behind_external_proxy(self):
         api = Mock()
         api.base_url = "http://example.com/netbox/api"
+        api.external_proxy = True
         test = Record(
             {
                 "id": 123,
@@ -350,6 +356,7 @@ class RecordTestCase(unittest.TestCase):
     def test_endpoint_from_url_with_directory_in_base_url(self):
         api = Mock()
         api.base_url = "http://localhost:8080/testing/api"
+        api.external_proxy = False
         test = Record(
             {
                 "id": 123,
@@ -365,6 +372,7 @@ class RecordTestCase(unittest.TestCase):
     def test_endpoint_from_url_with_directory_in_base_url_behind_external_proxy(self):
         api = Mock()
         api.base_url = "http://example.com/netbox/testing/api"
+        api.external_proxy = True
         test = Record(
             {
                 "id": 123,
@@ -380,6 +388,7 @@ class RecordTestCase(unittest.TestCase):
     def test_endpoint_from_url_with_plugins(self):
         api = Mock()
         api.base_url = "http://localhost:8080/api"
+        api.external_proxy = False
         test = Record(
             {
                 "id": 123,
@@ -395,6 +404,7 @@ class RecordTestCase(unittest.TestCase):
     def test_endpoint_from_url_with_plugins_behind_external_proxy(self):
         api = Mock()
         api.base_url = "http://example.com/netbox/api"
+        api.external_proxy = True
         test = Record(
             {
                 "id": 123,
@@ -410,6 +420,7 @@ class RecordTestCase(unittest.TestCase):
     def test_endpoint_from_url_with_plugins_and_directory_in_base_url(self):
         api = Mock()
         api.base_url = "http://localhost:8080/testing/api"
+        api.external_proxy = False
         test = Record(
             {
                 "id": 123,
@@ -425,6 +436,7 @@ class RecordTestCase(unittest.TestCase):
     def test_endpoint_from_url_with_plugins_and_directory_in_base_url_behind_external_proxy(self):
         api = Mock()
         api.base_url = "http://example.com/testing/api"
+        api.external_proxy = True
         test = Record(
             {
                 "id": 123,

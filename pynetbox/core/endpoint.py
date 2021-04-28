@@ -99,6 +99,7 @@ class Endpoint(object):
             http_session=self.api.http_session,
             threading=self.api.threading,
             limit=limit,
+            external_proxy=self.api.external_proxy,
         )
 
         return RecordSet(self, req)
@@ -158,6 +159,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             http_session=self.api.http_session,
+            external_proxy=self.api.external_proxy,
         )
         try:
             return next(RecordSet(self, req), None)
@@ -247,6 +249,7 @@ class Endpoint(object):
             http_session=self.api.http_session,
             threading=self.api.threading,
             limit=kwargs.get("limit", 0),
+            external_proxy=self.api.external_proxy,
         )
 
         return RecordSet(self, req)
@@ -306,6 +309,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             http_session=self.api.http_session,
+            external_proxy=self.api.external_proxy,
         ).post(args[0] if args else kwargs)
 
         if isinstance(req, list):
@@ -349,6 +353,7 @@ class Endpoint(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
+            external_proxy=self.api.external_proxy,
         ).options()
         try:
             post_data = req["actions"]["POST"]
@@ -409,6 +414,7 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             http_session=self.api.http_session,
+            external_proxy=self.api.external_proxy,
         )
 
         return ret.get_count()

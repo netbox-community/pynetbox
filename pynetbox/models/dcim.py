@@ -30,6 +30,7 @@ class TraceableRecord(Record):
             token=self.api.token,
             session_key=self.api.session_key,
             http_session=self.api.http_session,
+            external_proxy=self.api.external_proxy,
         ).get()
         uri_to_obj_class_map = {
             "dcim/cables": Cables,

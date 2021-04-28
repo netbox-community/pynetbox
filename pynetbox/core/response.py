@@ -228,15 +228,18 @@ class Record(object):
         self._init_cache = []
         self.api = api
         self.default_ret = Record
-        self.endpoint = (
-            # Replace base of values["url"] with api.base_url
-            # if netbox is behind an external proxy
-            self._endpoint_from_url(
-                set_base_url(api.base_url, values["url"])
-                )
-            if values and "url" in values
-            else endpoint
-        )
+        if values and "url" in values:
+            if hasattr(self.api, 'external_proxy') and self.api.external_proxy:
+                # Replace base of values["url"] with api.base_url
+                # if netbox is behind an external proxy
+                url = set_base_url(api.base_url, values["url"])
+            else:
+                url = values["url"]
+            self.endpoint = (
+                self._endpoint_from_url(url)
+            )
+        else:
+            self.endpoint = endpoint
         if values:
             self._parse_values(values)
 
@@ -324,8 +327,10 @@ class Record(object):
                     self._add_cache((k, copy.deepcopy(v)))
                     setattr(self, k, v)
                     continue
-                elif k == "url":
-                    v = set_base_url(self.api.base_url, values["url"])
+                elif k == "url" \
+                        and hasattr(self.api, 'external_proxy') \
+                        and self.api.external_proxy:
+                    v = set_base_url(self.api.base_url, v)
                 if lookup:
                     v = lookup(v, self.api, self.endpoint)
                 else:
@@ -338,8 +343,10 @@ class Record(object):
                 self._add_cache((k, to_cache))
 
             else:
-                if k == "url":
-                    v = set_base_url(self.api.base_url, values["url"])
+                if k == "url" \
+                        and hasattr(self.api, 'external_proxy') \
+                        and self.api.external_proxy:
+                    v = set_base_url(self.api.base_url, v)
                 self._add_cache((k, v))
             setattr(self, k, v)
 
@@ -374,6 +381,7 @@ class Record(object):
                 token=self.api.token,
                 session_key=self.api.session_key,
                 http_session=self.api.http_session,
+                external_proxy=self.api.external_proxy,
             )
             self._parse_values(next(req.get()))
             self.has_details = True
@@ -465,6 +473,7 @@ class Record(object):
                     token=self.api.token,
                     session_key=self.api.session_key,
                     http_session=self.api.http_session,
+                    external_proxy=self.api.external_proxy,
                 )
                 if req.patch({i: serialized[i] for i in diff}):
                     return True
@@ -513,5 +522,6 @@ class Record(object):
             token=self.api.token,
             session_key=self.api.session_key,
             http_session=self.api.http_session,
+            external_proxy=self.api.external_proxy,
         )
         return True if req.delete() else False

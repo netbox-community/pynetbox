@@ -67,6 +67,7 @@ class App(object):
                 token=self.api.token,
                 private_key=self.api.private_key,
                 http_session=self.api.http_session,
+                external_proxy=self.api.external_proxy,
             ).get_session_key()
 
     def choices(self):
@@ -88,6 +89,7 @@ class App(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
+            external_proxy=self.api.external_proxy,
         ).get()
 
         return self._choices
@@ -108,6 +110,7 @@ class App(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
+            external_proxy=self.api.external_proxy,
         ).get()
         return custom_field_choices
 
@@ -132,6 +135,7 @@ class App(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
+            external_proxy=self.api.external_proxy,
         ).get()
         return config
 
@@ -177,5 +181,6 @@ class PluginsApp(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
+            external_proxy=self.api.external_proxy,
         ).get()
         return installed_plugins
