@@ -13,9 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.core.response import Record
+from pynetbox.core.response import Record, field_model_lookup
 
 
 class Users(Record):
     def __str__(self):
         return self.username
+
+
+# Add to lookup table
+field_model_lookup.update({"users": Users})
