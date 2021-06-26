@@ -18,7 +18,7 @@ try:
 except ImportError:
     pass
 import json
-from six.moves.urllib.parse import urlencode
+from six.moves.urllib.parse import urlencode  # pyright: reportMissingModuleSource=false
 
 
 def calc_pages(limit, count):
