@@ -309,10 +309,14 @@ class Record(object):
         values within.
         """
 
+        def get_model(field_name, value):
+            # Use custom model if defined, otherwise use the default model
+            field_model = field_model_lookup.get(field_name, self.default_ret)
+            return field_model(value, self.api, self.endpoint)
+
         def list_parser(key_name, list_item):
             if isinstance(list_item, dict):
-                field_model = field_model_lookup.get(key_name, self.default_ret)
-                return field_model(list_item, self.api, self.endpoint)
+                return get_model(key_name, list_item)
             return list_item
 
         for k, v in values.items():
@@ -327,8 +331,7 @@ class Record(object):
                 if lookup:
                     v = lookup(v, self.api, self.endpoint)
                 else:
-                    field_model = field_model_lookup.get(k, self.default_ret)
-                    v = field_model(v, self.api, self.endpoint)
+                    v = get_model(k, v)
                 self._add_cache((k, v))
 
             elif isinstance(v, list):
