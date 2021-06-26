@@ -95,3 +95,13 @@ class GroupsTestCase(Generic.Tests):
 
 class PermissionsTestCase(Generic.Tests):
     name = "permissions"
+
+    @patch(
+        "requests.sessions.Session.get",
+        return_value=Response(fixture="users/permission.json"),
+    )
+    def test_username(self, _):
+        permission = nb.permissions.get(1)
+        self.assertEqual(len(permission.users), 1)
+        user = permission.users[0]
+        self.assertEqual(str(user), "user1")
