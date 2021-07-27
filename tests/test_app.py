@@ -77,4 +77,4 @@ class PluginAppCustomChoicesTestCase(unittest.TestCase):
     def test_plugin_app_name(self, *_):
         api = pynetbox.api(host, **def_kwargs)
         test_plugin = api.plugins.test_plugin
-        self.assertEqual(test_plugin.name, 'plugins/test-plugin')
+        self.assertEqual(test_plugin.name, "plugins/test-plugin")
