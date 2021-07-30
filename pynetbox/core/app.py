@@ -161,7 +161,7 @@ class PluginsApp(object):
         self.__dict__.update(d)
 
     def __getattr__(self, name):
-        return App(self.api, "plugins/{}".format(name))
+        return App(self.api, "plugins/{}".format(name.replace("_", "-")))
 
     def installed_plugins(self):
         """ Returns raw response with installed plugins
