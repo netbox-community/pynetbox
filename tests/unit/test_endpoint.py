@@ -71,6 +71,54 @@ class EndPointTestCase(unittest.TestCase):
             test = test_obj.get(name="test")
             self.assertEqual(test.id, 123)
 
+    def test_delete_with_ids(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=Mock()
+        ) as mock:
+            ids = [1,3,5]
+            mock.return_value = True
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock(name="test")
+            test_obj = Endpoint(api, app, "test")
+            test = test_obj.delete(ids)
+            mock.assert_called_with(verb='delete', data=[{'id': i} for i in ids])
+            self.assertTrue(test)
+
+    def test_delete_with_objects(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=Mock()
+        ) as mock:
+            from pynetbox.core.response import Record
+            ids = [1, 3, 5]
+            mock.return_value = True
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock(name="test")
+            test_obj = Endpoint(api, app, "test")
+            objects = [Record({'id': i, 'name': 'dummy'+str(i)}, api, test_obj) for i in ids]
+            test = test_obj.delete(objects)
+            mock.assert_called_with(verb='delete', data=[{'id': i} for i in ids])
+            self.assertTrue(test)
+
+    def test_delete_with_recordset(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=Mock()
+        ) as mock:
+            from pynetbox.core.response import RecordSet
+            ids = [1, 3, 5]
+
+            class FakeRequest:
+                def get(self):
+                    return iter([{'id': i, 'name': 'dummy'+str(i)} for i in ids])
+
+            mock.return_value = True
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock(name="test")
+            test_obj = Endpoint(api, app, "test")
+            recordset = RecordSet(test_obj, FakeRequest())
+            test = test_obj.delete(recordset)
+            mock.assert_called_with(verb='delete', data=[{'id': i} for i in ids])
+            self.assertTrue(test)
+
     def test_get_greater_than_one(self):
         with patch(
             "pynetbox.core.query.Request._make_call", return_value=Mock()

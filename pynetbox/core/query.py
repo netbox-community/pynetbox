@@ -245,7 +245,7 @@ class Request(object):
         return url
 
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
-        if verb in ("post", "put"):
+        if verb in ("post", "put") or verb == 'delete' and data:
             headers = {"Content-Type": "application/json;"}
         else:
             headers = {"accept": "application/json;"}
@@ -386,18 +386,20 @@ class Request(object):
         """
         return self._make_call(verb="post", data=data)
 
-    def delete(self):
+    def delete(self, data=None):
         """Makes DELETE request.
 
         Makes a DELETE request to NetBox's API.
 
+        :param data: (list) Contains a dict that will be turned into a
+            json object and sent to the API.
         Returns:
             True if successful.
 
         Raises:
             RequestError if req.ok doesn't return True.
         """
-        return self._make_call(verb="delete")
+        return self._make_call(verb="delete", data=data)
 
     def patch(self, data):
         """Makes PATCH request.

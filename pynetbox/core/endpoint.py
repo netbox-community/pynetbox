@@ -312,6 +312,67 @@ class Endpoint(object):
             return [self.return_obj(i, self.api, self) for i in req]
         return self.return_obj(req, self.api, self)
 
+    def delete(self, objects):
+        r"""Bulk deletes objects on an endpoint.
+
+        Allows for batch deletion of multiple objects from
+        a single endpoint
+
+        :arg list objects: A list of either ids or Records or
+            a single RecordSet to delete.
+        :returns: True if bulk DELETE operation was successful.
+
+        :Examples:
+
+        Deleting all `devices`:
+
+        >>> netbox.dcim.devices.delete(netbox.dcim.devices.all(0))
+        >>>
+
+        Use bulk deletion by passing a list of ids:
+
+        >>> netbox.dcim.devices.delete([2, 243, 431, 700])
+        >>>
+
+        Use bulk deletion to delete objects eg. when filtering
+        on a `custom_field`:
+        >>> netbox.dcim.devices.delete([
+        >>>         d for d in netbox.dcim.devices.all(0) \
+        >>>             if d.custom_fields.get('field', False)
+        >>>     ])
+        >>>
+        """
+        cleaned_ids = []
+        if not isinstance(objects, list) and \
+                not isinstance(objects, RecordSet):
+            raise ValueError('objects must be list[str|int|Record]'
+                             '|RecordSet - was ' +
+                             str(type(objects)))
+        for o in objects:
+            if isinstance(o, int):
+                cleaned_ids.append(o)
+            elif isinstance(o, str) and o.isnumeric():
+                cleaned_ids.append(int(o))
+            elif isinstance(o, Record):
+                if not hasattr(o, 'id'):
+                    raise ValueError(
+                        'Record from \'' + o.url + '\' does '
+                        'not have an id and cannot be bulk '
+                        'deleted')
+                cleaned_ids.append(o.id)
+            else:
+                raise ValueError('Invalid object in list of '
+                                 'objects to delete: ' +
+                                 str(type(o)))
+
+        req = Request(
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            http_session=self.api.http_session,
+        )
+        return True if req.delete(data=[{'id': i} for i in cleaned_ids]) else False
+
     def choices(self):
         """ Returns all choices from the endpoint.
 
