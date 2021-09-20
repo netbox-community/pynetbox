@@ -429,6 +429,30 @@ class Record(object):
         )
         return set([i[0] for i in set(current.items()) ^ set(init.items())])
 
+    def updates(self):
+        """Compiles changes for an existing object into a dict.
+
+        Takes a diff between the objects current state and its state at init
+        and returns them as a dictionary, which will be empty if no changes.
+
+        :returns: dict.
+        :example:
+
+        >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
+        >>> x.serial
+        u''
+        >>> x.serial = '1234'
+        >>> x.get_updates()
+        {'serial': '1234'}
+        >>>
+        """
+        if self.id:
+            diff = self._diff()
+            if diff:
+                serialized = self.serialize()
+                return {i: serialized[i] for i in diff}
+        return {}
+
     def save(self):
         """Saves changes to an existing object.
 
@@ -446,20 +470,17 @@ class Record(object):
         True
         >>>
         """
-        if self.id:
-            diff = self._diff()
-            if diff:
-                serialized = self.serialize()
-                req = Request(
-                    key=self.id,
-                    base=self.endpoint.url,
-                    token=self.api.token,
-                    session_key=self.api.session_key,
-                    http_session=self.api.http_session,
-                )
-                if req.patch({i: serialized[i] for i in diff}):
-                    return True
-
+        updates = self.updates()
+        if updates:
+            req = Request(
+                key=self.id,
+                base=self.endpoint.url,
+                token=self.api.token,
+                session_key=self.api.session_key,
+                http_session=self.api.http_session,
+            )
+            if req.patch(updates):
+                return True
         return False
 
     def update(self, data):

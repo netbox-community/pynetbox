@@ -312,6 +312,65 @@ class Endpoint(object):
             return [self.return_obj(i, self.api, self) for i in req]
         return self.return_obj(req, self.api, self)
 
+    def update(self, objects):
+        r"""Bulk updates existing objects on an endpoint.
+
+        Allows for bulk updating of existing objects on an endpoint.
+        Objects is a list whic contain either json/dicts or Record
+        derived objects, which contain the updates to apply.
+        If json/dicts are used, then the id of the object *must* be
+        included
+
+        :arg list objects: A list of dicts or Record.
+
+        :returns: True if the update succeeded
+
+        :Examples:
+
+        Updating objects on the `devices` endpoint:
+
+        >>> device = netbox.dcim.devices.update([
+        ...    {'id': 1, 'name': 'test'},
+        ...    {'id': 2, 'name': 'test2'},
+        ... ])
+        >>> True
+
+        Use bulk update by passing a list of Records:
+
+        >>> devices = nb.dcim.devices.all()
+        >>> for d in devices:
+        >>>     d.name = d.name+'-test'
+        >>> nb.dcim.devices.update(devices)
+        >>> True
+        """
+        series = []
+        if not isinstance(objects, list):
+            raise ValueError('Objects passed must be list[dict|Record] '
+                             '- was ' + type(objects))
+        for o in objects:
+            if isinstance(o, Record):
+                data = o.updates()
+                if data:
+                    data['id'] = o.id
+                    series.append(data)
+            elif isinstance(o, dict):
+                if 'id' not in o:
+                    raise ValueError('id is missing from object: ' + str(o))
+                series.append(o)
+            else:
+                raise ValueError('Object passed must be dict|Record '
+                                 '- was ' + type(objects))
+        req = Request(
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            http_session=self.api.http_session,
+        ).patch(series)
+
+        if isinstance(req, list):
+            return [self.return_obj(i, self.api, self) for i in req]
+        return self.return_obj(req, self.api, self)
+
     def choices(self):
         """ Returns all choices from the endpoint.
 
