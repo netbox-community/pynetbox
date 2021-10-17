@@ -127,6 +127,50 @@ class RecordSet(object):
                 return 0
             return self.request.count
 
+    def update(self, **kwargs):
+        """Updates kwargs onto all Records in the RecordSet and saves these.
+
+        Updates are only sent to the API if a value were changed, and only for
+        the Records which were changed
+
+        :returns: True if the update succeeded, None if no update were required
+        :example:
+
+        >>> result = nb.dcim.devices.filter(site_id=1).update(status='active')
+        True
+        >>>
+        """
+        updates = []
+        for record in self:
+            # Update each record and determine if anything was updated
+            for k, v in kwargs.items():
+                setattr(record, k, v)
+            record_updates = record.updates()
+            if record_updates:
+                # if updated, add the id to the dict and append to list of updates
+                record_updates["id"] = record.id
+                updates.append(record_updates)
+        if updates:
+            return self.endpoint.update(updates)
+        else:
+            return None
+
+    def delete(self):
+        r"""Bulk deletes objects in a RecordSet.
+
+        Allows for batch deletion of multiple objects in a RecordSet
+
+        :returns: True if bulk DELETE operation was successful.
+
+        :Examples:
+
+        Deleting offline `devices` on site 1:
+
+        >>> netbox.dcim.devices.filter(site_id=1, status="offline").delete()
+        >>>
+        """
+        return self.endpoint.delete(self)
+
 
 class Record(object):
     """Create python objects from netbox API responses.
@@ -429,6 +473,30 @@ class Record(object):
         )
         return set([i[0] for i in set(current.items()) ^ set(init.items())])
 
+    def updates(self):
+        """Compiles changes for an existing object into a dict.
+
+        Takes a diff between the objects current state and its state at init
+        and returns them as a dictionary, which will be empty if no changes.
+
+        :returns: dict.
+        :example:
+
+        >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
+        >>> x.serial
+        u''
+        >>> x.serial = '1234'
+        >>> x.get_updates()
+        {'serial': '1234'}
+        >>>
+        """
+        if self.id:
+            diff = self._diff()
+            if diff:
+                serialized = self.serialize()
+                return {i: serialized[i] for i in diff}
+        return {}
+
     def save(self):
         """Saves changes to an existing object.
 
@@ -446,20 +514,17 @@ class Record(object):
         True
         >>>
         """
-        if self.id:
-            diff = self._diff()
-            if diff:
-                serialized = self.serialize()
-                req = Request(
-                    key=self.id,
-                    base=self.endpoint.url,
-                    token=self.api.token,
-                    session_key=self.api.session_key,
-                    http_session=self.api.http_session,
-                )
-                if req.patch({i: serialized[i] for i in diff}):
-                    return True
-
+        updates = self.updates()
+        if updates:
+            req = Request(
+                key=self.id,
+                base=self.endpoint.url,
+                token=self.api.token,
+                session_key=self.api.session_key,
+                http_session=self.api.http_session,
+            )
+            if req.patch(updates):
+                return True
         return False
 
     def update(self, data):
