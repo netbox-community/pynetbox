@@ -486,7 +486,7 @@ class Record(object):
         >>> x.serial
         u''
         >>> x.serial = '1234'
-        >>> x.get_updates()
+        >>> x.updates()
         {'serial': '1234'}
         >>>
         """
