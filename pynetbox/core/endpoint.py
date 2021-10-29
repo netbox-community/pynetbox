@@ -312,6 +312,129 @@ class Endpoint(object):
             return [self.return_obj(i, self.api, self) for i in req]
         return self.return_obj(req, self.api, self)
 
+    def update(self, objects):
+        r"""Bulk updates existing objects on an endpoint.
+
+        Allows for bulk updating of existing objects on an endpoint.
+        Objects is a list whic contain either json/dicts or Record
+        derived objects, which contain the updates to apply.
+        If json/dicts are used, then the id of the object *must* be
+        included
+
+        :arg list objects: A list of dicts or Record.
+
+        :returns: True if the update succeeded
+
+        :Examples:
+
+        Updating objects on the `devices` endpoint:
+
+        >>> device = netbox.dcim.devices.update([
+        ...    {'id': 1, 'name': 'test'},
+        ...    {'id': 2, 'name': 'test2'},
+        ... ])
+        >>> True
+
+        Use bulk update by passing a list of Records:
+
+        >>> devices = nb.dcim.devices.all()
+        >>> for d in devices:
+        >>>     d.name = d.name+'-test'
+        >>> nb.dcim.devices.update(devices)
+        >>> True
+        """
+        series = []
+        if not isinstance(objects, list):
+            raise ValueError(
+                "Objects passed must be list[dict|Record] - was " + type(objects)
+            )
+        for o in objects:
+            if isinstance(o, Record):
+                data = o.updates()
+                if data:
+                    data["id"] = o.id
+                    series.append(data)
+            elif isinstance(o, dict):
+                if "id" not in o:
+                    raise ValueError("id is missing from object: " + str(o))
+                series.append(o)
+            else:
+                raise ValueError(
+                    "Object passed must be dict|Record - was " + type(objects)
+                )
+        req = Request(
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            http_session=self.api.http_session,
+        ).patch(series)
+
+        if isinstance(req, list):
+            return [self.return_obj(i, self.api, self) for i in req]
+        return self.return_obj(req, self.api, self)
+
+    def delete(self, objects):
+        r"""Bulk deletes objects on an endpoint.
+
+        Allows for batch deletion of multiple objects from
+        a single endpoint
+
+        :arg list objects: A list of either ids or Records or
+            a single RecordSet to delete.
+        :returns: True if bulk DELETE operation was successful.
+
+        :Examples:
+
+        Deleting all `devices`:
+
+        >>> netbox.dcim.devices.delete(netbox.dcim.devices.all(0))
+        >>>
+
+        Use bulk deletion by passing a list of ids:
+
+        >>> netbox.dcim.devices.delete([2, 243, 431, 700])
+        >>>
+
+        Use bulk deletion to delete objects eg. when filtering
+        on a `custom_field`:
+        >>> netbox.dcim.devices.delete([
+        >>>         d for d in netbox.dcim.devices.all(0) \
+        >>>             if d.custom_fields.get('field', False)
+        >>>     ])
+        >>>
+        """
+        cleaned_ids = []
+        if not isinstance(objects, list) and not isinstance(objects, RecordSet):
+            raise ValueError(
+                "objects must be list[str|int|Record]"
+                "|RecordSet - was " + str(type(objects))
+            )
+        for o in objects:
+            if isinstance(o, int):
+                cleaned_ids.append(o)
+            elif isinstance(o, str) and o.isnumeric():
+                cleaned_ids.append(int(o))
+            elif isinstance(o, Record):
+                if not hasattr(o, "id"):
+                    raise ValueError(
+                        "Record from '"
+                        + o.url
+                        + "' does not have an id and cannot be bulk deleted"
+                    )
+                cleaned_ids.append(o.id)
+            else:
+                raise ValueError(
+                    "Invalid object in list of " "objects to delete: " + str(type(o))
+                )
+
+        req = Request(
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            http_session=self.api.http_session,
+        )
+        return True if req.delete(data=[{"id": i} for i in cleaned_ids]) else False
+
     def choices(self):
         """ Returns all choices from the endpoint.
 

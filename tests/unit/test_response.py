@@ -2,12 +2,13 @@ import unittest
 
 import six
 
-from pynetbox.core.response import Record
+from pynetbox.core.response import Record, RecordSet
+from pynetbox.core.endpoint import Endpoint
 
 if six.PY3:
-    from unittest.mock import Mock
+    from unittest.mock import patch, Mock, call
 else:
-    from mock import Mock
+    from mock import patch, Mock, call
 
 
 class RecordTestCase(unittest.TestCase):
@@ -346,3 +347,52 @@ class RecordTestCase(unittest.TestCase):
         ]
         test = Record({"id": 123, "tags": test_tags}, None, None).serialize()
         self.assertEqual(test["tags"], test_tags)
+
+
+class RecordSetTestCase(unittest.TestCase):
+    ids = [1, 3, 5]
+
+    @classmethod
+    def init_recordset(cls):
+        data = [
+            {"id": i, "name": "dummy" + str(i), "status": "active"} for i in cls.ids
+        ]
+        api = Mock(base_url="http://localhost:8000/api")
+        app = Mock(name="test")
+
+        class FakeRequest:
+            def get(self):
+                return iter(data)
+
+            def patch(self):
+                return iter(data)
+
+        return RecordSet(Endpoint(api, app, "test"), FakeRequest())
+
+    def test_delete(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=Mock()
+        ) as mock:
+            mock.return_value = True
+            test_obj = RecordSetTestCase.init_recordset()
+            test = test_obj.delete()
+            mock.assert_called_with(
+                verb="delete", data=[{"id": i} for i in RecordSetTestCase.ids]
+            )
+            self.assertTrue(test)
+
+    def test_update(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=Mock()
+        ) as mock:
+            mock.return_value = [
+                {"id": i, "name": "dummy" + str(i), "status": "offline"}
+                for i in RecordSetTestCase.ids
+            ]
+            test_obj = RecordSetTestCase.init_recordset()
+            test = test_obj.update(status="offline")
+            mock.assert_called_with(
+                verb="patch",
+                data=[{"id": i, "status": "offline"} for i in RecordSetTestCase.ids],
+            )
+            self.assertTrue(test)
