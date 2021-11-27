@@ -197,9 +197,9 @@ class Api(object):
         :Example:
 
         >>> import pynetbox
-        >>> netbox = pynetbox.api("https://netbox-server")
-        >>> token = netbox.create_token("admin", "netboxpassword")
-        >>> netbox.token
+        >>> nb = pynetbox.api("https://netbox-server")
+        >>> token = nb.create_token("admin", "netboxpassword")
+        >>> nb.token
         '96d02e13e3f1fdcd8b4c089094c0191dcb045bef'
         >>> from pprint import pprint
         >>> pprint(dict(token))
