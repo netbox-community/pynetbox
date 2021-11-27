@@ -19,6 +19,7 @@ import requests
 
 from pynetbox.core.query import Request
 from pynetbox.core.app import App, PluginsApp
+from pynetbox.core.response import Record
 
 
 class Api(object):
@@ -183,3 +184,44 @@ class Api(object):
             base=self.base_url, token=self.token, http_session=self.http_session,
         ).get_status()
         return status
+
+    def create_token(self, username, password):
+        """ Creates an API token using a valid NetBox username and password.
+        Saves the created token automatically in the API object.
+
+        Requires NetBox 3.0.0 or newer.
+
+        :Returns: The token as a ``Record`` object.
+        :Raises: :py:class:`.RequestError` if the request is not successful.
+
+        :Example:
+
+        >>> import pynetbox
+        >>> netbox = pynetbox.api("https://netbox-server")
+        >>> token = netbox.create_token("admin", "netboxpassword")
+        >>> netbox.token
+        '96d02e13e3f1fdcd8b4c089094c0191dcb045bef'
+        >>> from pprint import pprint
+        >>> pprint(dict(token))
+        {'created': '2021-11-27T11:26:49.360185+02:00',
+         'description': '',
+         'display': '045bef (admin)',
+         'expires': None,
+         'id': 2,
+         'key': '96d02e13e3f1fdcd8b4c089094c0191dcb045bef',
+         'url': 'https://netbox-server/api/users/tokens/2/',
+         'user': {'display': 'admin',
+                  'id': 1,
+                  'url': 'https://netbox-server/api/users/users/1/',
+                  'username': 'admin'},
+         'write_enabled': True}
+        >>>
+        """
+        resp = Request(
+            base="{}/users/tokens/provision/".format(self.base_url),
+            http_session=self.http_session,
+        ).post(data={"username": username, "password": password})
+        # Save the newly created API token, otherwise populating the Record
+        # object details will fail
+        self.token = resp["key"]
+        return Record(resp, self, None)
