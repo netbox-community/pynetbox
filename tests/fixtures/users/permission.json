@@ -3,6 +3,7 @@
     "name": "permission1",
     "users": [
         {
+            "display": "user1",
             "username": "user1"
         }
     ]

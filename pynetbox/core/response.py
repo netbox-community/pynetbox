@@ -272,7 +272,7 @@ class Record(object):
         return (
             getattr(self, "name", None)
             or getattr(self, "label", None)
-            or getattr(self, "username", None)
+            or getattr(self, "display", None)
             or ""
         )
 
