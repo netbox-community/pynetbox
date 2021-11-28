@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from pynetbox.core.response import Record, field_model_lookup
+from pynetbox.core.response import Record
 
 
 class Users(Record):
@@ -21,5 +21,5 @@ class Users(Record):
         return self.username
 
 
-# Add to lookup table
-field_model_lookup.update({"users": Users})
+class Permissions(Record):
+    users = [ Users ]

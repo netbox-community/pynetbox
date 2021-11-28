@@ -22,10 +22,6 @@ from pynetbox.core.query import Request, RequestError
 from pynetbox.core.util import Hashabledict
 
 
-# Custom models will fill this up as needed
-field_model_lookup = {}
-
-
 # List of fields that are lists but should be treated as sets.
 LIST_AS_SET = ("tags", "tagged_vlans")
 
@@ -309,14 +305,16 @@ class Record(object):
         values within.
         """
 
-        def get_model(field_name, value):
-            # Use custom model if defined, otherwise use the default model
-            field_model = field_model_lookup.get(field_name, self.default_ret)
-            return field_model(value, self.api, self.endpoint)
-
         def list_parser(key_name, list_item):
             if isinstance(list_item, dict):
-                return get_model(key_name, list_item)
+                lookup = getattr(self.__class__, key_name, None)
+                if not isinstance(lookup, list):
+                    # This is *list_parser*, so if the custom model field is not
+                    # a list (or is not defined), just return the default model
+                    return self.default_ret(list_item, self.api, self.endpoint)
+                else:
+                    model = lookup[0]
+                    return model(list_item, self.api, self.endpoint)
             return list_item
 
         for k, v in values.items():
@@ -331,7 +329,7 @@ class Record(object):
                 if lookup:
                     v = lookup(v, self.api, self.endpoint)
                 else:
-                    v = get_model(k, v)
+                    v = self.default_ret(v, self.api, self.endpoint)
                 self._add_cache((k, v))
 
             elif isinstance(v, list):
