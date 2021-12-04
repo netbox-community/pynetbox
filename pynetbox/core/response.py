@@ -349,9 +349,16 @@ class Record(object):
         values within.
         """
 
-        def list_parser(list_item):
+        def list_parser(key_name, list_item):
             if isinstance(list_item, dict):
-                return self.default_ret(list_item, self.api, self.endpoint)
+                lookup = getattr(self.__class__, key_name, None)
+                if not isinstance(lookup, list):
+                    # This is *list_parser*, so if the custom model field is not
+                    # a list (or is not defined), just return the default model
+                    return self.default_ret(list_item, self.api, self.endpoint)
+                else:
+                    model = lookup[0]
+                    return model(list_item, self.api, self.endpoint)
             return list_item
 
         for k, v in values.items():
@@ -370,7 +377,7 @@ class Record(object):
                 self._add_cache((k, v))
 
             elif isinstance(v, list):
-                v = [list_parser(i) for i in v]
+                v = [list_parser(k, i) for i in v]
                 to_cache = list(v)
                 self._add_cache((k, to_cache))
 

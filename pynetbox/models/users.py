@@ -22,4 +22,5 @@ class Users(Record):
 
 
 class Permissions(Record):
+    users = [Users]
     constraints = JsonField

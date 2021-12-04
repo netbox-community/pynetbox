@@ -1,4 +1,9 @@
 {
     "id": 1,
-    "name": "permission1"
+    "name": "permission1",
+    "users": [
+        {
+            "username": "user1"
+        }
+    ]
 }
