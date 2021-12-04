@@ -85,3 +85,16 @@ class ApiStatusTestCase(unittest.TestCase):
     def test_api_status(self, *_):
         api = pynetbox.api(host,)
         self.assertEqual(api.status()["netbox-version"], "0.9.9")
+
+
+class ApiCreateTokenTestCase(unittest.TestCase):
+    @patch(
+        "requests.sessions.Session.post",
+        return_value=Response(fixture="api/token_provision.json"),
+    )
+    def test_create_token(self, *_):
+        api = pynetbox.api(host)
+        token = api.create_token("user", "pass")
+        self.assertTrue(isinstance(token, pynetbox.core.response.Record))
+        self.assertEqual(token.key, "1234567890123456789012345678901234567890")
+        self.assertEqual(api.token, "1234567890123456789012345678901234567890")
