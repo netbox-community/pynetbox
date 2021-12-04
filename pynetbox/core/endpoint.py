@@ -16,7 +16,7 @@ limitations under the License.
 from pynetbox.core.query import Request, RequestError
 from pynetbox.core.response import Record, RecordSet
 
-RESERVED_KWARGS = ("offset",)
+RESERVED_KWARGS = ()
 
 
 class Endpoint(object):
@@ -71,13 +71,14 @@ class Endpoint(object):
             ret = Record
         return ret
 
-    def all(self, limit=0):
+    def all(self, limit=0, offset=None):
         """Queries the 'ListView' of a given endpoint.
 
         Returns all objects from an endpoint.
 
         :arg int,optional limit: Overrides the max page size on
             paginated returns.
+        :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
 
@@ -92,6 +93,8 @@ class Endpoint(object):
         test1-leaf3
         >>>
         """
+        if limit == 0 and offset is not None:
+            raise ValueError("offset requires a positive limit value")
         req = Request(
             base="{}/".format(self.url),
             token=self.token,
@@ -99,6 +102,7 @@ class Endpoint(object):
             http_session=self.api.http_session,
             threading=self.api.threading,
             limit=limit,
+            offset=offset,
         )
 
         return RecordSet(self, req)
@@ -180,6 +184,7 @@ class Endpoint(object):
             endpoint accepts can be added as a keyword arg.
         :arg int,optional limit: Overrides the max page size on
             paginated returns.
+        :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
 
@@ -231,14 +236,15 @@ class Endpoint(object):
         if args:
             kwargs.update({"q": args[0]})
 
-        if not kwargs:
-            raise ValueError("filter must be passed kwargs. Perhaps use all() instead.")
         if any(i in RESERVED_KWARGS for i in kwargs):
             raise ValueError(
                 "A reserved kwarg was passed ({}). Please remove it "
                 "and try again.".format(RESERVED_KWARGS)
             )
-
+        limit = kwargs.pop("limit") if "limit" in kwargs else 0
+        offset = kwargs.pop("offset") if "offset" in kwargs else None
+        if limit == 0 and offset is not None:
+            raise ValueError("offset requires a positive limit value")
         req = Request(
             filters=kwargs,
             base=self.url,
@@ -246,7 +252,8 @@ class Endpoint(object):
             session_key=self.session_key,
             http_session=self.api.http_session,
             threading=self.api.threading,
-            limit=kwargs.get("limit", 0),
+            limit=limit,
+            offset=offset,
         )
 
         return RecordSet(self, req)
@@ -311,6 +318,129 @@ class Endpoint(object):
         if isinstance(req, list):
             return [self.return_obj(i, self.api, self) for i in req]
         return self.return_obj(req, self.api, self)
+
+    def update(self, objects):
+        r"""Bulk updates existing objects on an endpoint.
+
+        Allows for bulk updating of existing objects on an endpoint.
+        Objects is a list whic contain either json/dicts or Record
+        derived objects, which contain the updates to apply.
+        If json/dicts are used, then the id of the object *must* be
+        included
+
+        :arg list objects: A list of dicts or Record.
+
+        :returns: True if the update succeeded
+
+        :Examples:
+
+        Updating objects on the `devices` endpoint:
+
+        >>> device = netbox.dcim.devices.update([
+        ...    {'id': 1, 'name': 'test'},
+        ...    {'id': 2, 'name': 'test2'},
+        ... ])
+        >>> True
+
+        Use bulk update by passing a list of Records:
+
+        >>> devices = nb.dcim.devices.all()
+        >>> for d in devices:
+        >>>     d.name = d.name+'-test'
+        >>> nb.dcim.devices.update(devices)
+        >>> True
+        """
+        series = []
+        if not isinstance(objects, list):
+            raise ValueError(
+                "Objects passed must be list[dict|Record] - was " + type(objects)
+            )
+        for o in objects:
+            if isinstance(o, Record):
+                data = o.updates()
+                if data:
+                    data["id"] = o.id
+                    series.append(data)
+            elif isinstance(o, dict):
+                if "id" not in o:
+                    raise ValueError("id is missing from object: " + str(o))
+                series.append(o)
+            else:
+                raise ValueError(
+                    "Object passed must be dict|Record - was " + type(objects)
+                )
+        req = Request(
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            http_session=self.api.http_session,
+        ).patch(series)
+
+        if isinstance(req, list):
+            return [self.return_obj(i, self.api, self) for i in req]
+        return self.return_obj(req, self.api, self)
+
+    def delete(self, objects):
+        r"""Bulk deletes objects on an endpoint.
+
+        Allows for batch deletion of multiple objects from
+        a single endpoint
+
+        :arg list objects: A list of either ids or Records or
+            a single RecordSet to delete.
+        :returns: True if bulk DELETE operation was successful.
+
+        :Examples:
+
+        Deleting all `devices`:
+
+        >>> netbox.dcim.devices.delete(netbox.dcim.devices.all(0))
+        >>>
+
+        Use bulk deletion by passing a list of ids:
+
+        >>> netbox.dcim.devices.delete([2, 243, 431, 700])
+        >>>
+
+        Use bulk deletion to delete objects eg. when filtering
+        on a `custom_field`:
+        >>> netbox.dcim.devices.delete([
+        >>>         d for d in netbox.dcim.devices.all(0) \
+        >>>             if d.custom_fields.get('field', False)
+        >>>     ])
+        >>>
+        """
+        cleaned_ids = []
+        if not isinstance(objects, list) and not isinstance(objects, RecordSet):
+            raise ValueError(
+                "objects must be list[str|int|Record]"
+                "|RecordSet - was " + str(type(objects))
+            )
+        for o in objects:
+            if isinstance(o, int):
+                cleaned_ids.append(o)
+            elif isinstance(o, str) and o.isnumeric():
+                cleaned_ids.append(int(o))
+            elif isinstance(o, Record):
+                if not hasattr(o, "id"):
+                    raise ValueError(
+                        "Record from '"
+                        + o.url
+                        + "' does not have an id and cannot be bulk deleted"
+                    )
+                cleaned_ids.append(o.id)
+            else:
+                raise ValueError(
+                    "Invalid object in list of " "objects to delete: " + str(type(o))
+                )
+
+        req = Request(
+            base=self.url,
+            token=self.token,
+            session_key=self.session_key,
+            http_session=self.api.http_session,
+        )
+        return True if req.delete(data=[{"id": i} for i in cleaned_ids]) else False
 
     def choices(self):
         """ Returns all choices from the endpoint.
@@ -472,9 +602,17 @@ class DetailEndpoint(object):
         data = data or {}
         req = Request(**self.request_kwargs).post(data)
         if self.custom_return:
-            return self.custom_return(
-                req, self.parent_obj.endpoint.api, self.parent_obj.endpoint
-            )
+            if isinstance(req, list):
+                return [
+                    self.custom_return(
+                        req_item, self.parent_obj.endpoint.api, self.parent_obj.endpoint
+                    )
+                    for req_item in req
+                ]
+            else:
+                return self.custom_return(
+                    req, self.parent_obj.endpoint.api, self.parent_obj.endpoint
+                )
         return req
 
 

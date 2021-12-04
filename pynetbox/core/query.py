@@ -131,6 +131,7 @@ class Request(object):
         http_session,
         filters=None,
         limit=None,
+        offset=None,
         key=None,
         token=None,
         private_key=None,
@@ -151,7 +152,7 @@ class Request(object):
                 string.
         """
         self.base = self.normalize_url(base)
-        self.filters = filters
+        self.filters = filters or None
         self.key = key
         self.token = token
         self.private_key = private_key
@@ -160,6 +161,7 @@ class Request(object):
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
         self.limit = limit
+        self.offset = offset
 
     def get_openapi(self):
         """ Gets the OpenAPI Spec """
@@ -245,7 +247,7 @@ class Request(object):
         return url
 
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
-        if verb in ("post", "put"):
+        if verb in ("post", "put") or verb == "delete" and data:
             headers = {"Content-Type": "application/json;"}
         else:
             headers = {"accept": "application/json;"}
@@ -309,10 +311,17 @@ class Request(object):
 
         if not add_params and self.limit is not None:
             add_params = {"limit": self.limit}
+            if self.limit and self.offset is not None:
+                # if non-zero limit and some offset -> add offset
+                add_params["offset"] = self.offset
         req = self._make_call(add_params=add_params)
         if isinstance(req, dict) and req.get("results") is not None:
             self.count = req["count"]
-            if self.threading:
+            if self.offset is not None:
+                # only yield requested page results if paginating
+                for i in req["results"]:
+                    yield i
+            elif self.threading:
                 ret = req["results"]
                 if req.get("next"):
                     page_size = len(req["results"])
@@ -386,18 +395,20 @@ class Request(object):
         """
         return self._make_call(verb="post", data=data)
 
-    def delete(self):
+    def delete(self, data=None):
         """Makes DELETE request.
 
         Makes a DELETE request to NetBox's API.
 
+        :param data: (list) Contains a dict that will be turned into a
+            json object and sent to the API.
         Returns:
             True if successful.
 
         Raises:
             RequestError if req.ok doesn't return True.
         """
-        return self._make_call(verb="delete")
+        return self._make_call(verb="delete", data=data)
 
     def patch(self, data):
         """Makes PATCH request.
