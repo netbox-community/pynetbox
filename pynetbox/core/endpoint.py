@@ -16,7 +16,7 @@ limitations under the License.
 from pynetbox.core.query import Request, RequestError
 from pynetbox.core.response import Record, RecordSet
 
-RESERVED_KWARGS = ("offset",)
+RESERVED_KWARGS = ()
 
 
 class Endpoint(object):
@@ -71,13 +71,14 @@ class Endpoint(object):
             ret = Record
         return ret
 
-    def all(self, limit=0):
+    def all(self, limit=0, offset=None):
         """Queries the 'ListView' of a given endpoint.
 
         Returns all objects from an endpoint.
 
         :arg int,optional limit: Overrides the max page size on
             paginated returns.
+        :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
 
@@ -92,6 +93,8 @@ class Endpoint(object):
         test1-leaf3
         >>>
         """
+        if limit == 0 and offset is not None:
+            raise ValueError("offset requires a positive limit value")
         req = Request(
             base="{}/".format(self.url),
             token=self.token,
@@ -99,6 +102,7 @@ class Endpoint(object):
             http_session=self.api.http_session,
             threading=self.api.threading,
             limit=limit,
+            offset=offset,
         )
 
         return RecordSet(self, req)
@@ -180,6 +184,7 @@ class Endpoint(object):
             endpoint accepts can be added as a keyword arg.
         :arg int,optional limit: Overrides the max page size on
             paginated returns.
+        :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
 
@@ -231,14 +236,15 @@ class Endpoint(object):
         if args:
             kwargs.update({"q": args[0]})
 
-        if not kwargs:
-            raise ValueError("filter must be passed kwargs. Perhaps use all() instead.")
         if any(i in RESERVED_KWARGS for i in kwargs):
             raise ValueError(
                 "A reserved kwarg was passed ({}). Please remove it "
                 "and try again.".format(RESERVED_KWARGS)
             )
-
+        limit = kwargs.pop("limit") if "limit" in kwargs else 0
+        offset = kwargs.pop("offset") if "offset" in kwargs else None
+        if limit == 0 and offset is not None:
+            raise ValueError("offset requires a positive limit value")
         req = Request(
             filters=kwargs,
             base=self.url,
@@ -246,7 +252,8 @@ class Endpoint(object):
             session_key=self.session_key,
             http_session=self.api.http_session,
             threading=self.api.threading,
-            limit=kwargs.get("limit", 0),
+            limit=limit,
+            offset=offset,
         )
 
         return RecordSet(self, req)

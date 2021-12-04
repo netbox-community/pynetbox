@@ -57,3 +57,31 @@ class RequestTestCase(unittest.TestCase):
             headers={"accept": "application/json;"},
             json=None,
         )
+
+    def test_get_manual_pagination(self):
+        test_obj = Request(
+            http_session=Mock(),
+            base="http://localhost:8001/api/dcim/devices",
+            limit=10,
+            offset=20,
+        )
+        test_obj.http_session.get.return_value.json.return_value = {
+            "count": 4,
+            "next": "http://localhost:8001/api/dcim/devices?limit=10&offset=30",
+            "previous": False,
+            "results": [1, 2, 3, 4],
+        }
+        expected = call(
+            "http://localhost:8001/api/dcim/devices/",
+            params={"offset": 20, "limit": 10},
+            headers={"accept": "application/json;"},
+        )
+        test_obj.http_session.get.ok = True
+        generator = test_obj.get()
+        self.assertEqual(len(list(generator)), 4)
+        test_obj.http_session.get.assert_called_with(
+            "http://localhost:8001/api/dcim/devices/",
+            params={"offset": 20, "limit": 10},
+            headers={"accept": "application/json;"},
+            json=None,
+        )

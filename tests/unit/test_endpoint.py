@@ -22,21 +22,21 @@ class EndPointTestCase(unittest.TestCase):
             test = test_obj.filter(test="test")
             self.assertEqual(len(test), 2)
 
-    def test_filter_empty_kwargs(self):
-
-        api = Mock(base_url="http://localhost:8000/api")
-        app = Mock(name="test")
-        test_obj = Endpoint(api, app, "test")
-        with self.assertRaises(ValueError) as _:
-            test_obj.filter()
-
-    def test_filter_reserved_kwargs(self):
+    def test_filter_invalid_pagination_args(self):
 
         api = Mock(base_url="http://localhost:8000/api")
         app = Mock(name="test")
         test_obj = Endpoint(api, app, "test")
         with self.assertRaises(ValueError) as _:
             test_obj.filter(offset=1)
+
+    def test_all_invalid_pagination_args(self):
+
+        api = Mock(base_url="http://localhost:8000/api")
+        app = Mock(name="test")
+        test_obj = Endpoint(api, app, "test")
+        with self.assertRaises(ValueError) as _:
+            test_obj.all(offset=1)
 
     def test_choices(self):
         with patch("pynetbox.core.query.Request.options", return_value=Mock()) as mock:
