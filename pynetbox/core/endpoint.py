@@ -595,9 +595,17 @@ class DetailEndpoint(object):
         data = data or {}
         req = Request(**self.request_kwargs).post(data)
         if self.custom_return:
-            return self.custom_return(
-                req, self.parent_obj.endpoint.api, self.parent_obj.endpoint
-            )
+            if isinstance(req, list):
+                return [
+                    self.custom_return(
+                        req_item, self.parent_obj.endpoint.api, self.parent_obj.endpoint
+                    )
+                    for req_item in req
+                ]
+            else:
+                return self.custom_return(
+                    req, self.parent_obj.endpoint.api, self.parent_obj.endpoint
+                )
         return req
 
 
