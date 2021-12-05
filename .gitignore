@@ -101,3 +101,6 @@ ENV/
 # Other git repos checked out locally
 .netbox-docker-*/
 .devicetype-library/
+
+# Visual Studio Code settings
+.vscode/
