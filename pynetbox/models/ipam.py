@@ -39,21 +39,21 @@ class Prefixes(Record):
 
         >>> prefix = nb.ipam.prefixes.get(24)
         >>> prefix.available_ips.list()
-        [{u'vrf': None, u'family': 4, u'address': u'10.1.1.49/30'}...]
+        [10.0.0.1/24, 10.0.0.2/24, 10.0.0.3/24, 10.0.0.4/24, 10.0.0.5/24, ...]
 
         To create a single IP:
 
         >>> prefix = nb.ipam.prefixes.get(24)
         >>> prefix.available_ips.create()
-        {u'status': 1, u'description': u'', u'nat_inside': None...}
+        10.0.0.1/24
 
 
         To create multiple IPs:
 
         >>> prefix = nb.ipam.prefixes.get(24)
         >>> create = prefix.available_ips.create([{} for i in range(2)])
-        >>> len(create)
-        2
+        >>> create
+        [10.0.0.2/24, 10.0.0.3/24]
         """
         return DetailEndpoint(self, "available-ips", custom_return=IpAddresses)
 
@@ -72,18 +72,23 @@ class Prefixes(Record):
 
         :Examples:
 
+        >>> prefix = nb.ipam.prefixes.get(3)
+        >>> prefix
+        10.0.0.0/16
         >>> prefix.available_prefixes.list()
-        [{u'prefix': u'10.1.1.44/30', u'vrf': None, u'family': 4}]
+        [10.0.1.0/24, 10.0.2.0/23, 10.0.4.0/22, 10.0.8.0/21, 10.0.16.0/20, 10.0.32.0/19, 10.0.64.0/18, 10.0.128.0/17]
 
 
         Creating a single child prefix:
 
         >>> prefix = nb.ipam.prefixes.get(1)
+        >>> prefix
+        10.0.0.0/24
         >>> new_prefix = prefix.available_prefixes.create(
-        ...    {'prefix_length': 29}
-        ...)
-        >>> new_prefix['prefix']
-        u'10.1.1.56/29'
+        ...     {"prefix_length": 29}
+        ... )
+        >>> new_prefix
+        10.0.0.16/29
 
         """
         return DetailEndpoint(self, "available-prefixes", custom_return=Prefixes)

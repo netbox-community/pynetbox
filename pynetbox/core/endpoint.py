@@ -545,7 +545,7 @@ class Endpoint(object):
 
 
 class DetailEndpoint(object):
-    """Enables read/write Operations on detail endpoints.
+    """Enables read/write operations on detail endpoints.
 
     Endpoints like ``available-ips`` that are detail routes off
     traditional endpoints are handled with this class.
@@ -572,8 +572,8 @@ class DetailEndpoint(object):
             E.g. ``.list(method='get_facts')`` would be converted to
             ``.../?method=get_facts``.
 
-        :returns: A dictionary or list of dictionaries retrieved from
-            NetBox.
+        :returns: A :py:class:`.Record` object or list of :py:class:`.Record` objects created
+            from data retrieved from NetBox.
         """
         req = Request(**self.request_kwargs).get(add_params=kwargs)
 
@@ -596,8 +596,8 @@ class DetailEndpoint(object):
             object. Defaults to empty dict which will create a single
             item with default values.
 
-        :returns: A dictionary or list of dictionaries its created in
-            NetBox.
+        :returns: A :py:class:`.Record` object or list of :py:class:`.Record` objects created
+            from data created in NetBox.
         """
         data = data or {}
         req = Request(**self.request_kwargs).post(data)
