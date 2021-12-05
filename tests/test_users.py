@@ -86,6 +86,7 @@ class UsersTestCase(Generic.Tests):
     )
     def test_repr(self, _):
         test = nb.users.get(1)
+        self.assertEqual(type(test), pynetbox.models.users.Users)
         self.assertEqual(str(test), "user1")
 
 
