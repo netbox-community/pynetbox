@@ -79,14 +79,14 @@ class RecordSet(object):
 
     :Examples:
 
-    To see how many results are in a query by calling ``len()``.
+    To see how many results are in a query by calling ``len()``:
 
     >>> x = nb.dcim.devices.all()
     >>> len(x)
     123
     >>>
 
-    Simple iteration of the results.
+    Simple iteration of the results:
 
     >>> devices = nb.dcim.devices.all()
     >>> for device in devices:
@@ -173,40 +173,40 @@ class RecordSet(object):
 
 
 class Record(object):
-    """Create python objects from netbox API responses.
+    """Create Python objects from NetBox API responses.
 
-    Creates an object from a NetBox response passed as `values`.
+    Creates an object from a NetBox response passed as ``values``.
     Nested dicts that represent other endpoints are also turned
-    into Record objects. All fields are then assigned to the
+    into ``Record`` objects. All fields are then assigned to the
     object's attributes. If a missing attr is requested
     (e.g. requesting a field that's only present on a full response on
-    a Record made from a nested response) the pynetbox will make a
-    request for the full object and return the requsted value.
+    a ``Record`` made from a nested response) then pynetbox will make a
+    request for the full object and return the requested value.
 
     :examples:
 
-    Default representation of the object is usually its name
+    Default representation of the object is usually its name:
 
     >>> x = nb.dcim.devices.get(1)
     >>> x
     test1-switch1
     >>>
 
-    Querying a string field.
+    Querying a string field:
 
     >>> x = nb.dcim.devices.get(1)
     >>> x.serial
     'ABC123'
     >>>
 
-    Querying a field on a nested object.
+    Querying a field on a nested object:
 
     >>> x = nb.dcim.devices.get(1)
     >>> x.device_type.model
     'QFX5100-24Q'
     >>>
 
-    Casting the object as a dictionary.
+    Casting the object as a dictionary:
 
     >>> from pprint import pprint
     >>> pprint(dict(x))
@@ -251,7 +251,7 @@ class Record(object):
      'virtual_chassis': None}
      >>>
 
-     Iterating over a Record object.
+     Iterating over a ``Record`` object:
 
     >>> for i in x:
     ...  print(i)
