@@ -8,6 +8,8 @@ class Response(object):
         self.ok = ok
 
     def load_fixture(self, path):
+        if not path:
+            return ""
         with open("tests/fixtures/{}".format(path), "r") as f:
             return f.read()
 
