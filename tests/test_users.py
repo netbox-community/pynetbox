@@ -86,6 +86,7 @@ class UsersTestCase(Generic.Tests):
     )
     def test_repr(self, _):
         test = nb.users.get(1)
+        self.assertEqual(type(test), pynetbox.models.users.Users)
         self.assertEqual(str(test), "user1")
 
 
@@ -105,3 +106,19 @@ class PermissionsTestCase(Generic.Tests):
         self.assertEqual(len(permission.users), 1)
         user = permission.users[0]
         self.assertEqual(str(user), "user1")
+
+
+class UnknownModelTestCase(unittest.TestCase):
+    """ This test validates that an unknown model is returned as Record object
+    and that the __str__() method correctly uses the 'display' field of the
+    object (introduced as a standard field in NetBox 2.11.0).
+    """
+
+    @patch(
+        "requests.sessions.Session.get",
+        return_value=Response(fixture="users/unknown_model.json"),
+    )
+    def test_unknown_model(self, _):
+        unknown_obj = nb.unknown_model.get(1)
+        self.assertEqual(type(unknown_obj), pynetbox.core.response.Record)
+        self.assertEqual(str(unknown_obj), "Unknown object")
