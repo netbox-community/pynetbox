@@ -268,7 +268,7 @@ class Request(object):
             url_override or self.url, headers=headers, params=params, json=data
         )
 
-        if req.status_code == 204 and verb == "post":
+        if req.status_code in [204, 409] and verb == "post":
             raise AllocationError(req)
         if verb == "delete":
             if req.ok:
