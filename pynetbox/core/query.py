@@ -73,7 +73,8 @@ class AllocationError(Exception):
     """Allocation Exception
 
     Used with available-ips/available-prefixes when there is no
-    room for allocation and NetBox returns 204 No Content.
+    room for allocation and NetBox returns 204 No Content (before
+    NetBox 3.1.1) or 409 Conflict (since NetBox 3.1.1+).
     """
 
     def __init__(self, message):
