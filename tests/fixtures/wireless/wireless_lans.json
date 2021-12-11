@@ -1,0 +1,15 @@
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "ssid": "SSID 1"
+        },
+        {
+            "id": 2,
+            "ssid": "SSID 2"
+        }
+    ]
+}
