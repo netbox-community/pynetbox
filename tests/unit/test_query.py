@@ -2,14 +2,12 @@ import unittest
 
 import six
 
-import pynetbox
-from pynetbox.core.query import AllocationError, Request
-from ..util import Response
+from pynetbox.core.query import Request
 
 if six.PY3:
-    from unittest.mock import patch, Mock, call
+    from unittest.mock import Mock, call
 else:
-    from mock import patch, Mock, call
+    from mock import Mock, call
 
 
 class RequestTestCase(unittest.TestCase):
@@ -87,29 +85,3 @@ class RequestTestCase(unittest.TestCase):
             headers={"accept": "application/json;"},
             json=None,
         )
-
-
-class AllocationErrorTestCase(unittest.TestCase):
-    @patch(
-        "requests.sessions.Session.get",
-        return_value=Response(fixture="ipam/prefix.json"),
-    )
-    @patch(
-        "requests.sessions.Session.post", return_value=Response(status_code=204),
-    )
-    def test_204_case(self, _, __):
-        nb = pynetbox.api("http://localhost:8000/")
-        with self.assertRaises(AllocationError):
-            _ = nb.ipam.prefixes.get(1).available_ips.create()
-
-    @patch(
-        "requests.sessions.Session.get",
-        return_value=Response(fixture="ipam/prefix.json"),
-    )
-    @patch(
-        "requests.sessions.Session.post", return_value=Response(status_code=409),
-    )
-    def test_409_case(self, _, __):
-        nb = pynetbox.api("http://localhost:8000/")
-        with self.assertRaises(AllocationError):
-            _ = nb.ipam.prefixes.get(1).available_ips.create()
