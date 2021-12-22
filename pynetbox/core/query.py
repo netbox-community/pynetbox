@@ -73,7 +73,8 @@ class AllocationError(Exception):
     """Allocation Exception
 
     Used with available-ips/available-prefixes when there is no
-    room for allocation and NetBox returns 204 No Content.
+    room for allocation and NetBox returns 204 No Content (before
+    NetBox 3.1.1) or 409 Conflict (since NetBox 3.1.1+).
     """
 
     def __init__(self, message):
@@ -268,7 +269,7 @@ class Request(object):
             url_override or self.url, headers=headers, params=params, json=data
         )
 
-        if req.status_code == 204 and verb == "post":
+        if req.status_code in [204, 409] and verb == "post":
             raise AllocationError(req)
         if verb == "delete":
             if req.ok:
