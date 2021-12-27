@@ -99,9 +99,13 @@ class Aggregates(Record):
         return str(self.prefix)
 
 
-class AvailableVlans(Record):
+class Vlans(Record):
     def __str__(self):
-        return str(self.vid)
+        return (
+            getattr(self, "display", None)
+            or getattr(self, "name", None)
+            or str(self.vid)
+        )
 
 
 class VlanGroups(Record):
@@ -127,4 +131,4 @@ class VlanGroups(Record):
         >>> vlan_group.available_vlans.create({"name": "NewVLAN"})
         10
         """
-        return DetailEndpoint(self, "available-vlans", custom_return=AvailableVlans)
+        return DetailEndpoint(self, "available-vlans", custom_return=Vlans)
