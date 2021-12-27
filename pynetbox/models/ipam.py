@@ -97,3 +97,34 @@ class Prefixes(Record):
 class Aggregates(Record):
     def __str__(self):
         return str(self.prefix)
+
+
+class AvailableVlans(Record):
+    def __str__(self):
+        return str(self.vid)
+
+
+class VlanGroups(Record):
+    @property
+    def available_vlans(self):
+        """ Represents the ``available-vlans`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing and creating VLANs inside a VLAN group.
+
+        Available since NetBox 3.2.0.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> vlan_group = nb.ipam.vlan_groups.get(1)
+        >>> vlan_group.available_vlans.list()
+        [10, 11, 12]
+
+        To create a new VLAN:
+
+        >>> vlan_group.available_vlans.create({"name": "NewVLAN"})
+        10
+        """
+        return DetailEndpoint(self, "available-vlans", custom_return=AvailableVlans)
