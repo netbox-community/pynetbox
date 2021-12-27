@@ -129,6 +129,6 @@ class VlanGroups(Record):
         To create a new VLAN:
 
         >>> vlan_group.available_vlans.create({"name": "NewVLAN"})
-        10
+        NewVLAN (10)
         """
         return DetailEndpoint(self, "available-vlans", custom_return=Vlans)
