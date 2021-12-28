@@ -76,7 +76,7 @@ class App(object):
                 token=self.api.token,
                 private_key=self.api.private_key,
                 http_session=self.api.http_session,
-            ).get_session_key()
+            ).get_session_key(provider=self.api.secrets_provider)
 
     def choices(self):
         """Returns _choices response from App

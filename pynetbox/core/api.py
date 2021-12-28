@@ -32,7 +32,7 @@ class Api(object):
         * dcim
         * ipam
         * circuits
-        * secrets (on NetBox 2.11 and older)
+        * secrets
         * tenancy
         * extras
         * virtualization
@@ -53,8 +53,9 @@ class Api(object):
         wish to connect to.
     :param str token: Your NetBox token.
     :param str,optional private_key_file: The path to your private
-        key file. (Usable only on NetBox 2.11 and older)
-    :param str,optional private_key: Your private key. (Usable only on NetBox 2.11 and older)
+        key file.
+    :param str,optional private_key: Your private key.
+    :param str,optional secrets_provider: Plugin to use instead of built-in secrets.
     :param bool,optional threading: Set to True to use threading in ``.all()``
         and ``.filter()`` requests.
     :raises ValueError: If *private_key* and *private_key_file* are both
@@ -78,6 +79,7 @@ class Api(object):
         private_key=None,
         private_key_file=None,
         threading=False,
+        secrets_provider=None,
     ):
         if private_key and private_key_file:
             raise ValueError(
@@ -87,6 +89,7 @@ class Api(object):
         self.token = token
         self.private_key = private_key
         self.private_key_file = private_key_file
+        self.secrets_provider = secrets_provider
         self.base_url = base_url
         self.session_key = None
         self.http_session = requests.Session()

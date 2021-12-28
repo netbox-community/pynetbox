@@ -200,16 +200,18 @@ class Request(object):
         else:
             raise RequestError(req)
 
-    def get_session_key(self):
+    def get_session_key(self, provider=None):
         """Requests session key
 
         Issues a GET request to the `get-session-key` endpoint for
         subsequent use in requests from the `secrets` endpoint.
 
+        :param provider: (str, optional) Plugin to use instead of built-in secrets.
         :Returns: String containing session key.
         """
+        session_provider = "secrets" if provider is None else "plugins/{}".format(provider)
         req = self.http_session.post(
-            "{}secrets/get-session-key/?preserve_key=True".format(self.base),
+            "{}{}/get-session-key/?preserve_key=True".format(self.base, session_provider),
             headers={
                 "accept": "application/json",
                 "authorization": "Token {}".format(self.token),
