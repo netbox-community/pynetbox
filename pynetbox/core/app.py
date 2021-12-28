@@ -162,6 +162,9 @@ class PluginsApp(object):
     Basically valid plugins api could be handled by same App class,
     but you need to add plugins to request url path.
 
+    If the plugin name includes an underscore, it can be accessed using the
+    dict access syntax.
+
     :returns: :py:class:`.App` with added plugins into path.
 
     """
@@ -174,6 +177,9 @@ class PluginsApp(object):
 
     def __setstate__(self, d):
         self.__dict__.update(d)
+
+    def __getitem__(self, name):
+        return App(self.api, "plugins/{}".format(name))
 
     def __getattr__(self, name):
         return App(self.api, "plugins/{}".format(name.replace("_", "-")))
