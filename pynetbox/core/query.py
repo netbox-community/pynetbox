@@ -209,9 +209,13 @@ class Request(object):
         :param provider: (str, optional) Plugin to use instead of built-in secrets.
         :Returns: String containing session key.
         """
-        session_provider = "secrets" if provider is None else "plugins/{}".format(provider)
+        session_provider = (
+            "secrets" if provider is None else "plugins/{}".format(provider)
+        )
         req = self.http_session.post(
-            "{}{}/get-session-key/?preserve_key=True".format(self.base, session_provider),
+            "{}{}/get-session-key/?preserve_key=True".format(
+                self.base, session_provider
+            ),
             headers={
                 "accept": "application/json",
                 "authorization": "Token {}".format(self.token),

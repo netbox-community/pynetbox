@@ -107,7 +107,10 @@ class Api(object):
         self.dcim = App(self, "dcim")
         self.ipam = App(self, "ipam")
         self.circuits = App(self, "circuits")
-        self.secrets = App(self, "secrets")
+        if self.secrets_provider is not None:
+            self.secrets = PluginsApp(self)[self.secrets_provider]
+        else:
+            self.secrets = App(self, "secrets")
         self.tenancy = App(self, "tenancy")
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
