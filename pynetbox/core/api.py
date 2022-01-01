@@ -67,7 +67,8 @@ class Api(object):
     ...     'http://localhost:8000',
     ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
     ... )
-    >>> nb.dcim.devices.all()
+    >>> list(nb.dcim.devices.all())
+    [test1-leaf1, test1-leaf2, test1-leaf3]
     """
 
     def __init__(
