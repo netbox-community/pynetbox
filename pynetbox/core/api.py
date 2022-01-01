@@ -32,11 +32,11 @@ class Api(object):
         * dcim
         * ipam
         * circuits
-        * secrets
+        * secrets (on NetBox 2.11 and older)
         * tenancy
         * extras
         * virtualization
-        * users
+        * users (since NetBox 2.9)
         * wireless (since NetBox 3.1)
 
     Calling any of these attributes will return
@@ -53,8 +53,8 @@ class Api(object):
         wish to connect to.
     :param str token: Your NetBox token.
     :param str,optional private_key_file: The path to your private
-        key file.
-    :param str,optional private_key: Your private key.
+        key file. (Usable only on NetBox 2.11 and older)
+    :param str,optional private_key: Your private key. (Usable only on NetBox 2.11 and older)
     :param bool,optional threading: Set to True to use threading in ``.all()``
         and ``.filter()`` requests.
     :raises ValueError: If *private_key* and *private_key_file* are both
@@ -65,7 +65,6 @@ class Api(object):
     >>> import pynetbox
     >>> nb = pynetbox.api(
     ...     'http://localhost:8000',
-    ...     private_key_file='/path/to/private-key.pem',
     ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
     ... )
     >>> nb.dcim.devices.all()
@@ -120,11 +119,10 @@ class Api(object):
         >>> import pynetbox
         >>> nb = pynetbox.api(
         ...     'http://localhost:8000',
-        ...     private_key_file='/path/to/private-key.pem',
         ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
         ... )
         >>> nb.version
-        '2.6'
+        '3.1'
         >>>
         """
         version = Request(
@@ -143,7 +141,6 @@ class Api(object):
         >>> import pynetbox
         >>> nb = pynetbox.api(
         ...     'http://localhost:8000',
-        ...     private_key_file='/path/to/private-key.pem',
         ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
         ... )
         >>> nb.openapi()
