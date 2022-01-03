@@ -1,3 +1,7 @@
+==============
+Advanced usage
+==============
+
 Custom Sessions
 ===============
 
@@ -73,3 +77,42 @@ Setting timeouts requires the use of Adapters.
     )
     nb.http_session = session
 
+.. _registering-models:
+
+Registering models
+==================
+
+When working with plugins, it can be useful to create custom models for data
+returned by the plugin’s API (for instance, to add a :py:class:`DetailEndpoint
+<.Endpoint.DetailEndpoint>` attribute).
+
+To do so, you need to create a module containing classes named after the plugin
+endpoints.
+
+Here is an example using `netbox-dns
+<https://github.com/auroraresearchlab/netbox-dns>`_:
+
+.. code-block:: python
+
+   # models.py
+   from pynetbox.core.response import Record
+   from pynetbox.core.endpoint import RODetailEndpoint
+
+
+   class Zones(Record):
+       @property
+       def records(self):
+           return RODetailEndpoint(self, "records", Record)
+
+   # cli.py
+   import pynetbox
+
+   from . import models
+
+   pynetbox.register_models("plugins/netbox-dns", models)
+
+   nb = pynetbox.api(...)
+
+   for zone in nb.plugins.netbox_dns.zones.all():
+       for rr in zone.records.list():
+           print(rr)

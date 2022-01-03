@@ -25,6 +25,16 @@ from pynetbox.models import (
     wireless,
 )
 
+_MODELS = {
+    "dcim": dcim,
+    "ipam": ipam,
+    "circuits": circuits,
+    "virtualization": virtualization,
+    "extras": extras,
+    "users": users,
+    "wireless": wireless,
+}
+
 
 class App(object):
     """ Represents apps in NetBox.
@@ -40,32 +50,18 @@ class App(object):
         self.api = api
         self.name = name
         self._choices = None
-        self._setmodel()
-
-    models = {
-        "dcim": dcim,
-        "ipam": ipam,
-        "circuits": circuits,
-        "virtualization": virtualization,
-        "extras": extras,
-        "users": users,
-        "wireless": wireless,
-    }
-
-    def _setmodel(self):
-        self.model = App.models[self.name] if self.name in App.models else None
 
     def __getstate__(self):
         return {"api": self.api, "name": self.name, "_choices": self._choices}
 
     def __setstate__(self, d):
         self.__dict__.update(d)
-        self._setmodel()
 
     def __getattr__(self, name):
         if name == "secrets":
             self._set_session_key()
-        return Endpoint(self.api, self, name, model=self.model)
+
+        return Endpoint(self.api, self, name, model=_MODELS.get(self.name, None))
 
     def _set_session_key(self):
         if getattr(self.api, "session_key"):
@@ -194,3 +190,15 @@ class PluginsApp(object):
             http_session=self.api.http_session,
         ).get()
         return installed_plugins
+
+
+def register_models(name, models):
+    """ Register an external model for application `name`.
+
+    See the :ref:`Advanced usage <registering-models>` doc for details.
+
+    :param str name: The name of the application to which those models apply to.
+    :param types.ModuleType models: A python module containing model classes.
+    """
+
+    _MODELS[name] = models
