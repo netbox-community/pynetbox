@@ -64,6 +64,55 @@ class TraceableRecord(Record):
         return ret
 
 
+class PathableRecord(Record):
+    def paths(self):
+        req = Request(
+            key=str(self.id) + "/paths",
+            base=self.endpoint.url,
+            token=self.api.token,
+            session_key=self.api.session_key,
+            http_session=self.api.http_session,
+        ).get()
+        uri_to_obj_class_map = {
+            "dcim/cables": Cables,
+            "dcim/front-ports": FrontPorts,
+            "dcim/interfaces": Interfaces,
+            "dcim/rear-ports": RearPorts,
+        }
+        ret = []
+        for related_path in req:
+            path = related_path['path']
+            origin = related_path['origin']
+            destination = related_path['destination']
+            this_path_ret = []
+            for hop_item_data in path:
+                app_endpoint = "/".join(
+                    urlsplit(hop_item_data["url"])
+                        .path[len(urlsplit(self.api.base_url).path):]
+                        .split("/")[1:3]
+                )
+                return_obj_class = uri_to_obj_class_map.get(app_endpoint, Record, )
+                this_path_ret.append(return_obj_class(hop_item_data, self.endpoint.api, self.endpoint))
+
+            origin_endpoint = "/".join(
+                    urlsplit(origin["url"])
+                        .path[len(urlsplit(self.api.base_url).path):]
+                        .split("/")[1:3]
+                )
+            origin = uri_to_obj_class_map.get(origin_endpoint, Record, )(origin, self.endpoint.api, self.endpoint)
+
+            destination_endpoint = "/".join(
+                urlsplit(destination["url"])
+                    .path[len(urlsplit(self.api.base_url).path):]
+                    .split("/")[1:3]
+            )
+            destination = uri_to_obj_class_map.get(destination_endpoint, Record, )(destination, self.endpoint.api, self.endpoint)
+
+            ret.append({'origin': origin, 'destination': destination, 'path': this_path_ret})
+
+        return ret
+
+
 class DeviceTypes(Record):
     def __str__(self):
         return self.model
@@ -160,11 +209,11 @@ class RUs(Record):
     device = Devices
 
 
-class FrontPorts(TraceableRecord):
+class FrontPorts(PathableRecord):
     device = Devices
 
 
-class RearPorts(TraceableRecord):
+class RearPorts(PathableRecord):
     device = Devices
 
 
