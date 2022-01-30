@@ -232,7 +232,9 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                 docker_netbox_version,
             )
             compose_data["networks"] = {
-                docker_network_name: {"name": docker_network_name,}
+                docker_network_name: {
+                    "name": docker_network_name,
+                }
             }
 
             # prepend the netbox version to each of the service names and anything else
@@ -265,7 +267,10 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                     ]:
                         new_service_dependencies.append(
                             "netbox_v%s_%s"
-                            % (docker_netbox_version, dependent_service_name,)
+                            % (
+                                docker_netbox_version,
+                                dependent_service_name,
+                            )
                         )
                     new_services[new_service_name][
                         "depends_on"
@@ -311,12 +316,17 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
             for volume_name, volume_config in compose_data["volumes"].items():
                 new_volumes[
                     "%s_v%s_%s"
-                    % (DOCKER_PROJECT_PREFIX, docker_netbox_version, volume_name,)
+                    % (
+                        DOCKER_PROJECT_PREFIX,
+                        docker_netbox_version,
+                        volume_name,
+                    )
                 ] = volume_config
             compose_data["volumes"] = new_volumes
 
             compose_output_fpath = os.path.join(
-                netbox_docker_repo_dirpath, "docker-compose-v%s.yml" % netbox_version,
+                netbox_docker_repo_dirpath,
+                "docker-compose-v%s.yml" % netbox_version,
             )
             with open(compose_output_fpath, "w") as fdesc:
                 fdesc.write(yaml.dump(compose_data))
@@ -358,7 +368,10 @@ def id_netbox_service(fixture_value):
 
 @pytest.fixture(scope="session")
 def docker_netbox_service(
-    pytestconfig, docker_ip, docker_services, request,
+    pytestconfig,
+    docker_ip,
+    docker_services,
+    request,
 ):
     """Get the netbox service to test against.
 
@@ -461,7 +474,9 @@ def device_type(api, manufacturer):
 @pytest.fixture(scope="session")
 def device_role(api):
     device_role = api.dcim.device_roles.create(
-        name="test-device-role", slug="test-device-role", color="000000",
+        name="test-device-role",
+        slug="test-device-role",
+        color="000000",
     )
     yield device_role
     device_role.delete()
