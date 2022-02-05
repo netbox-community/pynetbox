@@ -36,7 +36,14 @@ class AppConfigTestCase(unittest.TestCase):
         "pynetbox.core.query.Request.get",
         return_value={
             "tables": {
-                "DeviceTable": {"columns": ["name", "status", "tenant", "tags",],},
+                "DeviceTable": {
+                    "columns": [
+                        "name",
+                        "status",
+                        "tenant",
+                        "tags",
+                    ],
+                },
             },
         },
     )
@@ -66,7 +73,12 @@ class PluginAppCustomChoicesTestCase(unittest.TestCase):
 
     @patch(
         "pynetbox.core.query.Request.get",
-        return_value=[{"name": "test_plugin", "package": "netbox_test_plugin",}],
+        return_value=[
+            {
+                "name": "test_plugin",
+                "package": "netbox_test_plugin",
+            }
+        ],
     )
     def test_installed_plugins(self, *_):
         api = pynetbox.api(host, **def_kwargs)

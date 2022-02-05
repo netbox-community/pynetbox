@@ -54,7 +54,10 @@ class TraceableRecord(Record):
                     .path[len(urlsplit(self.api.base_url).path) :]
                     .split("/")[1:3]
                 )
-                return_obj_class = uri_to_obj_class_map.get(app_endpoint, Record,)
+                return_obj_class = uri_to_obj_class_map.get(
+                    app_endpoint,
+                    Record,
+                )
                 this_hop_ret.append(
                     return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
                 )
@@ -72,16 +75,16 @@ class DeviceTypes(Record):
 class Devices(Record):
     """Devices Object
 
-        Represents a device response from netbox.
+    Represents a device response from netbox.
 
-        Attributes:
-            primary_ip, ip4, ip6 (list): Tells __init__ in Record() to
-                take the `primary_ip` field's value from the API
-                response and return an initialized list of IpAddress
-                objects
-            device_type (obj): Tells __init__ in Record() to take the
-                `device_type` field's value from the API response and
-                return an initialized DeviceType object
+    Attributes:
+        primary_ip, ip4, ip6 (list): Tells __init__ in Record() to
+            take the `primary_ip` field's value from the API
+            response and return an initialized list of IpAddress
+            objects
+        device_type (obj): Tells __init__ in Record() to take the
+            `device_type` field's value from the API response and
+            return an initialized DeviceType object
     """
 
     has_details = True
@@ -94,7 +97,7 @@ class Devices(Record):
 
     @property
     def napalm(self):
-        """ Represents the ``napalm`` detail endpoint.
+        """Represents the ``napalm`` detail endpoint.
 
         Returns a DetailEndpoint object that is the interface for
         viewing response from the napalm endpoint.
@@ -171,7 +174,7 @@ class RearPorts(TraceableRecord):
 class Racks(Record):
     @property
     def units(self):
-        """ Represents the ``units`` detail endpoint.
+        """Represents the ``units`` detail endpoint.
 
         Returns a DetailEndpoint object that is the interface for
         viewing response from the units endpoint.
@@ -189,7 +192,7 @@ class Racks(Record):
 
     @property
     def elevation(self):
-        """ Represents the ``elevation`` detail endpoint.
+        """Represents the ``elevation`` detail endpoint.
 
         Returns a DetailEndpoint object that is the interface for
         viewing response from the elevation endpoint updated in
