@@ -10,9 +10,7 @@ else:
     from mock import patch
 
 
-api = pynetbox.api(
-    "http://localhost:8000",
-)
+api = pynetbox.api("http://localhost:8000",)
 
 nb = api.users
 
@@ -111,7 +109,7 @@ class PermissionsTestCase(Generic.Tests):
 
 
 class UnknownModelTestCase(unittest.TestCase):
-    """This test validates that an unknown model is returned as Record object
+    """ This test validates that an unknown model is returned as Record object
     and that the __str__() method correctly uses the 'display' field of the
     object (introduced as a standard field in NetBox 2.11.0).
     """

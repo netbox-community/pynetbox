@@ -22,7 +22,7 @@ from six.moves.urllib.parse import urlencode
 
 
 def calc_pages(limit, count):
-    """Calculate number of pages required for full results set."""
+    """ Calculate number of pages required for full results set. """
     return int(count / limit) + (limit % count > 0)
 
 
@@ -165,7 +165,7 @@ class Request(object):
         self.offset = offset
 
     def get_openapi(self):
-        """Gets the OpenAPI Spec"""
+        """ Gets the OpenAPI Spec """
         headers = {
             "Content-Type": "application/json;",
         }
@@ -179,7 +179,7 @@ class Request(object):
             raise RequestError(req)
 
     def get_version(self):
-        """Gets the API version of NetBox.
+        """ Gets the API version of NetBox.
 
         Issues a GET request to the base URL to read the API version from the
         response headers.
@@ -191,10 +191,7 @@ class Request(object):
         headers = {
             "Content-Type": "application/json;",
         }
-        req = self.http_session.get(
-            self.normalize_url(self.base),
-            headers=headers,
-        )
+        req = self.http_session.get(self.normalize_url(self.base), headers=headers,)
         if req.ok:
             return req.headers.get("API-Version", "")
         else:
@@ -226,7 +223,7 @@ class Request(object):
             raise RequestError(req)
 
     def get_status(self):
-        """Gets the status from /api/status/ endpoint in NetBox.
+        """ Gets the status from /api/status/ endpoint in NetBox.
 
         :Returns: Dictionary as returned by NetBox.
         :Raises: RequestError if request is not successful.
@@ -235,8 +232,7 @@ class Request(object):
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
         req = self.http_session.get(
-            "{}status/".format(self.normalize_url(self.base)),
-            headers=headers,
+            "{}status/".format(self.normalize_url(self.base)), headers=headers,
         )
         if req.ok:
             return req.json()
@@ -244,7 +240,8 @@ class Request(object):
             raise RequestError(req)
 
     def normalize_url(self, url):
-        """Builds a url for POST actions."""
+        """ Builds a url for POST actions.
+        """
         if url[-1] != "/":
             return "{}/".format(url)
 

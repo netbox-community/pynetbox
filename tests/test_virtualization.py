@@ -10,9 +10,7 @@ else:
     from mock import patch
 
 
-api = pynetbox.api(
-    "http://localhost:8000",
-)
+api = pynetbox.api("http://localhost:8000",)
 
 nb = api.virtualization
 

@@ -47,9 +47,9 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "pynetbox"
-copyright = "2017, DigitalOcean"
-author = "Zach Moody"
+project = u"pynetbox"
+copyright = u"2017, DigitalOcean"
+author = u"Zach Moody"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -128,7 +128,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "pynetbox.tex", "pynetbox Documentation", "Zach Moody", "manual"),
+    (master_doc, "pynetbox.tex", u"pynetbox Documentation", u"Zach Moody", "manual"),
 ]
 
 
@@ -136,7 +136,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "pynetbox", "pynetbox Documentation", [author], 1)]
+man_pages = [(master_doc, "pynetbox", u"pynetbox Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -148,7 +148,7 @@ texinfo_documents = [
     (
         master_doc,
         "pynetbox",
-        "pynetbox Documentation",
+        u"pynetbox Documentation",
         author,
         "pynetbox",
         "A python library for NetBox.",

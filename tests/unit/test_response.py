@@ -81,18 +81,9 @@ class RecordTestCase(unittest.TestCase):
         test_values = {
             "id": 123,
             "tags": [
-                {
-                    "id": 1,
-                    "name": "foo",
-                },
-                {
-                    "id": 2,
-                    "name": "bar",
-                },
-                {
-                    "id": 3,
-                    "name": "baz",
-                },
+                {"id": 1, "name": "foo",},
+                {"id": 2, "name": "bar",},
+                {"id": 3, "name": "baz",},
             ],
         }
         test = Record(test_values, None, None).serialize()
@@ -171,10 +162,7 @@ class RecordTestCase(unittest.TestCase):
     def test_choices_idempotence_prev27(self):
         test_values = {
             "id": 123,
-            "choices_test": {
-                "value": 1,
-                "label": "test",
-            },
+            "choices_test": {"value": 1, "label": "test",},
         }
         test = Record(test_values, None, None)
         test.choices_test = 1
@@ -183,11 +171,7 @@ class RecordTestCase(unittest.TestCase):
     def test_choices_idempotence_v27(self):
         test_values = {
             "id": 123,
-            "choices_test": {
-                "value": "test",
-                "label": "test",
-                "id": 1,
-            },
+            "choices_test": {"value": "test", "label": "test", "id": 1,},
         }
         test = Record(test_values, None, None)
         test.choices_test = "test"
@@ -196,10 +180,7 @@ class RecordTestCase(unittest.TestCase):
     def test_choices_idempotence_v28(self):
         test_values = {
             "id": 123,
-            "choices_test": {
-                "value": "test",
-                "label": "test",
-            },
+            "choices_test": {"value": "test", "label": "test",},
         }
         test = Record(test_values, None, None)
         test.choices_test = "test"

@@ -40,8 +40,7 @@ class RequestTestCase(unittest.TestCase):
 
     def test_get_count_no_filters(self):
         test_obj = Request(
-            http_session=Mock(),
-            base="http://localhost:8001/api/dcim/devices",
+            http_session=Mock(), base="http://localhost:8001/api/dcim/devices",
         )
         test_obj.http_session.get.return_value.json.return_value = {
             "count": 42,
