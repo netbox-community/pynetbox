@@ -30,4 +30,4 @@ jobs:
         run: black --diff --check pynetbox tests
           
       - name: Run Tests
-        run: pytest --netbox-version=${{ matrix.netbox }}
+        run: pytest --netbox-versions=${{ matrix.netbox }}
