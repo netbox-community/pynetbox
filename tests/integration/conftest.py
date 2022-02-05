@@ -28,14 +28,12 @@ def get_netbox_docker_version_tag(netbox_version):
     """
     major, minor = netbox_version.major, netbox_version.minor
 
-    if (major, minor) == (2, 10):
+    if (major, minor) == (3, 1):
+        tag = "1.5.1"
+    elif (major, minor) == (3, 0):
+        tag = "1.5.1"
+    elif (major, minor) == (2, 10):
         tag = "1.0.1"
-    elif (major, minor) == (2, 9):
-        tag = "0.26.2"
-    elif (major, minor) == (2, 8):
-        tag = "0.24.1"
-    elif (major, minor) == (2, 7):
-        tag = "0.24.0"
     else:
         raise NotImplementedError(
             "Version %s is not currently supported" % netbox_version
@@ -231,9 +229,12 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                 DOCKER_PROJECT_PREFIX,
                 docker_netbox_version,
             )
-            compose_data["networks"] = {
-                docker_network_name: {"name": docker_network_name,}
-            }
+            compose_data["networks"] = {docker_network_name: {}}
+            # https://docs.docker.com/compose/compose-file/compose-file-v3/#network-configuration-reference
+            if compose_data["version"] >= "3.5":
+                compose_data["networks"][docker_network_name][
+                    "name"
+                ] = docker_network_name
 
             # prepend the netbox version to each of the service names and anything else
             # needed to make the continers unique to the netbox version
@@ -251,6 +252,10 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                         "netboxcommunity/netbox:v%s" % netbox_version
                     )
 
+                if service_name == "netbox":
+                    # ensure the netbox container listens on a random port
+                    new_services[new_service_name]["ports"] = ["8080"]
+
                 # set the network and an alias to the proper short name of the container
                 # within that network
                 new_services[new_service_name]["networks"] = {
@@ -265,7 +270,10 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                     ]:
                         new_service_dependencies.append(
                             "netbox_v%s_%s"
-                            % (docker_netbox_version, dependent_service_name,)
+                            % (
+                                docker_netbox_version,
+                                dependent_service_name,
+                            )
                         )
                     new_services[new_service_name][
                         "depends_on"
@@ -311,12 +319,17 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
             for volume_name, volume_config in compose_data["volumes"].items():
                 new_volumes[
                     "%s_v%s_%s"
-                    % (DOCKER_PROJECT_PREFIX, docker_netbox_version, volume_name,)
+                    % (
+                        DOCKER_PROJECT_PREFIX,
+                        docker_netbox_version,
+                        volume_name,
+                    )
                 ] = volume_config
             compose_data["volumes"] = new_volumes
 
             compose_output_fpath = os.path.join(
-                netbox_docker_repo_dirpath, "docker-compose-v%s.yml" % netbox_version,
+                netbox_docker_repo_dirpath,
+                "docker-compose-v%s.yml" % netbox_version,
             )
             with open(compose_output_fpath, "w") as fdesc:
                 fdesc.write(yaml.dump(compose_data))
@@ -358,7 +371,10 @@ def id_netbox_service(fixture_value):
 
 @pytest.fixture(scope="session")
 def docker_netbox_service(
-    pytestconfig, docker_ip, docker_services, request,
+    pytestconfig,
+    docker_ip,
+    docker_services,
+    request,
 ):
     """Get the netbox service to test against.
 
@@ -461,7 +477,9 @@ def device_type(api, manufacturer):
 @pytest.fixture(scope="session")
 def device_role(api):
     device_role = api.dcim.device_roles.create(
-        name="test-device-role", slug="test-device-role", color="000000",
+        name="test-device-role",
+        slug="test-device-role",
+        color="000000",
     )
     yield device_role
     device_role.delete()
