@@ -155,8 +155,7 @@ class RackReservations(Record):
 
 
 class VirtualChassis(Record):
-    def __str__(self):
-        return self.master.display_name
+    master = Devices
 
 
 class RUs(Record):
