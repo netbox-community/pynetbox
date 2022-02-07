@@ -8,7 +8,11 @@ from pynetbox.models.extras import ConfigContexts
 class ExtrasTestCase(unittest.TestCase):
     def test_config_contexts(self):
         test_values = {
-            "data": {"test_int": 123, "test_str": "testing", "test_list": [1, 2, 3],}
+            "data": {
+                "test_int": 123,
+                "test_str": "testing",
+                "test_list": [1, 2, 3],
+            }
         }
         test = ConfigContexts(test_values, None, None)
         self.assertTrue(test)
