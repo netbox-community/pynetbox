@@ -23,7 +23,7 @@ def get_netbox_docker_version_tag(netbox_version):
 
     Returns:
         str: The release tag for the netbox-docker repo that should be able to build
-            the requested version of netbox.
+            the rgequested version of netbox.
 
     """
     major, minor = netbox_version.major, netbox_version.minor
@@ -33,7 +33,7 @@ def get_netbox_docker_version_tag(netbox_version):
     elif (major, minor) == (3, 0):
         tag = "1.5.1"
     elif (major, minor) == (2, 11):
-        tag = "1.0.1"
+        tag = "1.2.0"
     else:
         raise NotImplementedError(
             "Version %s is not currently supported" % netbox_version
