@@ -225,7 +225,7 @@ class Endpoint(object):
         Passing a list as a named argument adds multiple filters of the
         same value.
 
-        >>> device = nb.dcim.devices.filter(role=['leaf-switch', 'spine-switch'])
+        >>> devices = nb.dcim.devices.filter(role=['leaf-switch', 'spine-switch'])
         >>> for device in devices:
         ...     print(device.name)
         ...
