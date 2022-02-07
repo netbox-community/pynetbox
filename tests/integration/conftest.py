@@ -32,7 +32,7 @@ def get_netbox_docker_version_tag(netbox_version):
         tag = "1.5.1"
     elif (major, minor) == (3, 0):
         tag = "1.5.1"
-    elif (major, minor) == (2, 10):
+    elif (major, minor) == (2, 11):
         tag = "1.0.1"
     else:
         raise NotImplementedError(
