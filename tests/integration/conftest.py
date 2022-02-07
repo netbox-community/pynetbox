@@ -23,7 +23,7 @@ def get_netbox_docker_version_tag(netbox_version):
 
     Returns:
         str: The release tag for the netbox-docker repo that should be able to build
-            the rgequested version of netbox.
+            the requested version of netbox.
 
     """
     major, minor = netbox_version.major, netbox_version.minor
