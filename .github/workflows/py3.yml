@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.7, 3.8, 3.9]
+        python: [3.7, 3.10]
+        netbox: ["2.11", "3.0", "3.1"]
 
     steps:
       - uses: actions/checkout@v2
@@ -29,4 +30,4 @@ jobs:
         run: black --diff --check pynetbox tests
           
       - name: Run Tests
-        run: pytest
+        run: pytest --netbox-versions=${{ matrix.netbox }}
