@@ -28,14 +28,12 @@ def get_netbox_docker_version_tag(netbox_version):
     """
     major, minor = netbox_version.major, netbox_version.minor
 
-    if (major, minor) == (2, 10):
-        tag = "1.0.1"
-    elif (major, minor) == (2, 9):
-        tag = "0.26.2"
-    elif (major, minor) == (2, 8):
-        tag = "0.24.1"
-    elif (major, minor) == (2, 7):
-        tag = "0.24.0"
+    if (major, minor) == (3, 1):
+        tag = "1.5.1"
+    elif (major, minor) == (3, 0):
+        tag = "1.5.1"
+    elif (major, minor) == (2, 11):
+        tag = "1.2.0"
     else:
         raise NotImplementedError(
             "Version %s is not currently supported" % netbox_version
@@ -231,11 +229,12 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                 DOCKER_PROJECT_PREFIX,
                 docker_netbox_version,
             )
-            compose_data["networks"] = {
-                docker_network_name: {
-                    "name": docker_network_name,
-                }
-            }
+            compose_data["networks"] = {docker_network_name: {}}
+            # https://docs.docker.com/compose/compose-file/compose-file-v3/#network-configuration-reference
+            if compose_data["version"] >= "3.5":
+                compose_data["networks"][docker_network_name][
+                    "name"
+                ] = docker_network_name
 
             # prepend the netbox version to each of the service names and anything else
             # needed to make the continers unique to the netbox version
@@ -252,6 +251,10 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                     new_services[new_service_name]["image"] = (
                         "netboxcommunity/netbox:v%s" % netbox_version
                     )
+
+                if service_name == "netbox":
+                    # ensure the netbox container listens on a random port
+                    new_services[new_service_name]["ports"] = ["8080"]
 
                 # set the network and an alias to the proper short name of the container
                 # within that network
