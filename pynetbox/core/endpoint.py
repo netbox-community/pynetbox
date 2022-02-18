@@ -86,7 +86,7 @@ class Endpoint(object):
 
         :Examples:
 
-        >>> devices = nb.dcim.devices.all()
+        >>> devices = list(nb.dcim.devices.all())
         >>> for device in devices:
         ...     print(device.name)
         ...
