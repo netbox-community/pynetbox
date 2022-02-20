@@ -101,7 +101,7 @@ class Aggregates(Record):
 
 class Vlans(Record):
     def __str__(self):
-        return super().__str__(self) or str(self.vid)
+        return super().__str__() or str(self.vid)
 
 
 class VlanGroups(Record):
