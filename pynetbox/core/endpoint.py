@@ -433,7 +433,7 @@ class Endpoint:
                 cleaned_ids.append(o.id)
             else:
                 raise ValueError(
-                    "Invalid object in list of " "objects to delete: " + str(type(o))
+                    "Invalid object in list of objects to delete: " + str(type(o))
                 )
 
         req = Request(

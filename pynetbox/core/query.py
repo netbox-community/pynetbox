@@ -98,7 +98,7 @@ class ContentError(Exception):
         req = message
 
         message = (
-            "The server returned invalid (non-json) data. Maybe not " "a NetBox server?"
+            "The server returned invalid (non-json) data. Maybe not a NetBox server?"
         )
 
         super().__init__(message)
