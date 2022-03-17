@@ -59,7 +59,7 @@ class RequestError(Exception):
                     )
                 )
 
-        super(RequestError, self).__init__(message)
+        super().__init__(message)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
@@ -79,7 +79,7 @@ class AllocationError(Exception):
 
         message = "The requested allocation could not be fulfilled."
 
-        super(AllocationError, self).__init__(message)
+        super().__init__(message)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
@@ -101,7 +101,7 @@ class ContentError(Exception):
             "The server returned invalid (non-json) data. Maybe not " "a NetBox server?"
         )
 
-        super(ContentError, self).__init__(message)
+        super().__init__(message)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
