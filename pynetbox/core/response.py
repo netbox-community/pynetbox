@@ -18,7 +18,7 @@ from collections import OrderedDict
 
 import pynetbox.core.app
 from urllib.parse import urlsplit
-from pynetbox.core.query import Request, RequestError
+from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
 
