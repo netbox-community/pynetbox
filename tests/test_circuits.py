@@ -1,13 +1,9 @@
 import unittest
-import six
+from unittest.mock import patch
 
 from .util import Response
 import pynetbox
 
-if six.PY3:
-    from unittest.mock import patch
-else:
-    from mock import patch
 
 api = pynetbox.api(
     "http://localhost:8000",

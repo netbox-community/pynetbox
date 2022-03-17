@@ -18,7 +18,7 @@ try:
 except ImportError:
     pass
 import json
-from six.moves.urllib.parse import urlencode
+from urllib.parse import urlencode
 
 
 def calc_pages(limit, count):

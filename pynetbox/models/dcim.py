@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from six.moves.urllib.parse import urlsplit
+from urllib.parse import urlsplit
 
 from pynetbox.core.query import Request
 from pynetbox.core.response import Record, JsonField
