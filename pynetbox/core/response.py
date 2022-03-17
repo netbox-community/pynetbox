@@ -496,7 +496,7 @@ class Record:
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
         >>> x.serial
-        u''
+        ''
         >>> x.serial = '1234'
         >>> x.updates()
         {'serial': '1234'}
@@ -520,7 +520,7 @@ class Record:
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
         >>> x.serial
-        u''
+        ''
         >>> x.serial = '1234'
         >>> x.save()
         True
