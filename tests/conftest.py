@@ -58,7 +58,7 @@ def pytest_configure(config):
 
         url_parse = parse.urlparse(config.option.url_override)
 
-        class DockerServicesMock(object):
+        class DockerServicesMock:
             def __init__(self, ports):
                 self.ports = ports
 

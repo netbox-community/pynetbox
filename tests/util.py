@@ -1,7 +1,7 @@
 import json
 
 
-class Response(object):
+class Response:
     def __init__(self, fixture=None, status_code=200, ok=True, content=None):
         self.status_code = status_code
         self.content = json.dumps(content) if content else self.load_fixture(fixture)

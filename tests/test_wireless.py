@@ -12,7 +12,7 @@ nb_app = api.wireless
 HEADERS = {"accept": "application/json;"}
 
 
-class Generic(object):
+class Generic:
     class Tests(unittest.TestCase):
         name = ""
         ret = pynetbox.core.response.Record

@@ -108,7 +108,7 @@ class ContentError(Exception):
         self.error = message
 
 
-class Request(object):
+class Request:
     """Creates requests to the Netbox API
 
     Responsible for building the url and making the HTTP(S) requests to

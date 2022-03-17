@@ -20,7 +20,7 @@ from pynetbox.core.app import App, PluginsApp
 from pynetbox.core.response import Record
 
 
-class Api(object):
+class Api:
     """The API object is the point of entry to pynetbox.
 
     After instantiating the Api() with the appropriate named arguments

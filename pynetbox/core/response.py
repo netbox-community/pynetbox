@@ -63,14 +63,14 @@ def flatten_custom(custom_dict):
     }
 
 
-class JsonField(object):
+class JsonField:
     """Explicit field type for values that are not to be converted
     to a Record object"""
 
     _json_field = True
 
 
-class RecordSet(object):
+class RecordSet:
     """Iterator containing Record objects.
 
     Returned by :py:meth:`.Endpoint.all()` and :py:meth:`.Endpoint.filter()` methods.
@@ -172,7 +172,7 @@ class RecordSet(object):
         return self.endpoint.delete(self)
 
 
-class Record(object):
+class Record:
     """Create Python objects from NetBox API responses.
 
     Creates an object from a NetBox response passed as ``values``.
