@@ -43,18 +43,16 @@ class RequestError(Exception):
 
     """
 
-    def __init__(self, message):
-        req = message
-
+    def __init__(self, req):
         if req.status_code == 404:
-            message = "The requested url: {} could not be found.".format(req.url)
+            self.message = "The requested url: {} could not be found.".format(req.url)
         else:
             try:
-                message = "The request failed with code {} {}: {}".format(
+                self.message = "The request failed with code {} {}: {}".format(
                     req.status_code, req.reason, req.json()
                 )
             except ValueError:
-                message = (
+                self.message = (
                     "The request failed with code {} {} but more specific "
                     "details were not returned in json. Check the NetBox Logs "
                     "or investigate this exception's error attribute.".format(
@@ -62,11 +60,14 @@ class RequestError(Exception):
                     )
                 )
 
-        super(RequestError, self).__init__(message)
+        super(RequestError, self).__init__(req)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
         self.error = req.text
+
+    def __str__(self):
+        return self.message
 
 
 class AllocationError(Exception):
@@ -77,16 +78,15 @@ class AllocationError(Exception):
     NetBox 3.1.1) or 409 Conflict (since NetBox 3.1.1+).
     """
 
-    def __init__(self, message):
-        req = message
-
-        message = "The requested allocation could not be fulfilled."
-
-        super(AllocationError, self).__init__(message)
+    def __init__(self, req):
+        super(AllocationError, self).__init__(req)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
-        self.error = message
+        self.error = "The requested allocation could not be fulfilled."
+
+    def __str__(self):
+        return self.error
 
 
 class ContentError(Exception):
@@ -97,18 +97,15 @@ class ContentError(Exception):
     exception is raised in those cases.
     """
 
-    def __init__(self, message):
-        req = message
-
-        message = (
-            "The server returned invalid (non-json) data. Maybe not " "a NetBox server?"
-        )
-
-        super(ContentError, self).__init__(message)
+    def __init__(self, req):
+        super(ContentError, self).__init__(req)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
-        self.error = message
+        self.error = "The server returned invalid (non-json) data. Maybe not a NetBox server?"
+
+    def __str__(self):
+        return self.error
 
 
 class Request(object):
