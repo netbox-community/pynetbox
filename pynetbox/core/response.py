@@ -18,7 +18,7 @@ from collections import OrderedDict
 
 import pynetbox.core.app
 from six.moves.urllib.parse import urlsplit
-from pynetbox.core.query import Request, RequestError
+from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
 
@@ -421,6 +421,8 @@ class Record(object):
                 token=self.api.token,
                 session_key=self.api.session_key,
                 http_session=self.api.http_session,
+                retry_transient_errors=self.api.retry_transient_errors,
+                max_retries=self.api.max_retries,
             )
             self._parse_values(next(req.get()))
             self.has_details = True
@@ -534,6 +536,8 @@ class Record(object):
                 token=self.api.token,
                 session_key=self.api.session_key,
                 http_session=self.api.http_session,
+                retry_transient_errors=self.api.retry_transient_errors,
+                max_retries=self.api.max_retries,
             )
             if req.patch(updates):
                 return True
@@ -581,5 +585,7 @@ class Record(object):
             token=self.api.token,
             session_key=self.api.session_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         )
         return True if req.delete() else False

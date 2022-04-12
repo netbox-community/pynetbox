@@ -76,6 +76,8 @@ class App(object):
                 token=self.api.token,
                 private_key=self.api.private_key,
                 http_session=self.api.http_session,
+                retry_transient_errors=self.api.retry_transient_errors,
+                max_retries=self.api.max_retries,
             ).get_session_key()
 
     def choices(self):
@@ -97,6 +99,8 @@ class App(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         ).get()
 
         return self._choices
@@ -126,6 +130,8 @@ class App(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         ).get()
         return custom_field_choices
 
@@ -153,6 +159,8 @@ class App(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         ).get()
         return config
 
@@ -200,5 +208,7 @@ class PluginsApp(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         ).get()
         return installed_plugins

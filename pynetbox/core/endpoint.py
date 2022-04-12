@@ -103,6 +103,8 @@ class Endpoint(object):
             session_key=self.session_key,
             http_session=self.api.http_session,
             threading=self.api.threading,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
             limit=limit,
             offset=offset,
         )
@@ -164,6 +166,8 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         )
         try:
             return next(RecordSet(self, req), None)
@@ -254,6 +258,8 @@ class Endpoint(object):
             session_key=self.session_key,
             http_session=self.api.http_session,
             threading=self.api.threading,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
             limit=limit,
             offset=offset,
         )
@@ -315,6 +321,8 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         ).post(args[0] if args else kwargs)
 
         if isinstance(req, list):
@@ -376,6 +384,8 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         ).patch(series)
 
         if isinstance(req, list):
@@ -441,6 +451,8 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         )
         return True if req.delete(data=[{"id": i} for i in cleaned_ids]) else False
 
@@ -481,6 +493,8 @@ class Endpoint(object):
             token=self.api.token,
             private_key=self.api.private_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         ).options()
         try:
             post_data = req["actions"]["POST"]
@@ -541,6 +555,8 @@ class Endpoint(object):
             token=self.token,
             session_key=self.session_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         )
 
         return ret.get_count()
@@ -562,6 +578,8 @@ class DetailEndpoint(object):
             token=parent_obj.api.token,
             session_key=parent_obj.api.session_key,
             http_session=parent_obj.api.http_session,
+            retry_transient_errors=parent_obj.api.retry_transient_errors,
+            max_retries=parent_obj.api.max_retries,
         )
 
     def list(self, **kwargs):

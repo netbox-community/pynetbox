@@ -17,6 +17,7 @@ import sys
 
 import requests
 
+from pynetbox.core.query import RETRYABLE_TRANSIENT_MAX_RETRIES
 from pynetbox.core.query import Request
 from pynetbox.core.app import App, PluginsApp
 from pynetbox.core.response import Record
@@ -57,6 +58,9 @@ class Api(object):
     :param str,optional private_key: Your private key. (Usable only on NetBox 2.11 and older)
     :param bool,optional threading: Set to True to use threading in ``.all()``
         and ``.filter()`` requests.
+    :param bool,optional retry_transient_errors: Set to True to retry requests on transient errors
+    :param int,optional max_retries: Maximum number of retries for retry_transient_errors
+        (Set to -1 for unlimited, default is 10)
     :raises ValueError: If *private_key* and *private_key_file* are both
         specified.
     :raises AttributeError: If app doesn't exist.
@@ -78,6 +82,8 @@ class Api(object):
         private_key=None,
         private_key_file=None,
         threading=False,
+        retry_transient_errors=False,
+        max_retries=RETRYABLE_TRANSIENT_MAX_RETRIES,
     ):
         if private_key and private_key_file:
             raise ValueError(
@@ -95,6 +101,8 @@ class Api(object):
                 "Threaded pynetbox calls not supported                 in Python 2"
             )
         self.threading = threading
+        self.retry_transient_errors = retry_transient_errors
+        self.max_retries = max_retries
 
         if self.private_key_file:
             with open(self.private_key_file, "r") as kf:
@@ -134,6 +142,8 @@ class Api(object):
         version = Request(
             base=self.base_url,
             http_session=self.http_session,
+            retry_transient_errors=self.retry_transient_errors,
+            max_retries=self.max_retries,
         ).get_version()
         return version
 
@@ -157,6 +167,8 @@ class Api(object):
         return Request(
             base=self.base_url,
             http_session=self.http_session,
+            retry_transient_errors=self.retry_transient_errors,
+            max_retries=self.max_retries,
         ).get_openapi()
 
     def status(self):
@@ -191,6 +203,8 @@ class Api(object):
             base=self.base_url,
             token=self.token,
             http_session=self.http_session,
+            retry_transient_errors=self.retry_transient_errors,
+            max_retries=self.max_retries,
         ).get_status()
         return status
 
@@ -229,6 +243,8 @@ class Api(object):
         resp = Request(
             base="{}/users/tokens/provision/".format(self.base_url),
             http_session=self.http_session,
+            retry_transient_errors=self.retry_transient_errors,
+            max_retries=self.max_retries,
         ).post(data={"username": username, "password": password})
         # Save the newly created API token, otherwise populating the Record
         # object details will fail

@@ -18,7 +18,13 @@ try:
 except ImportError:
     pass
 import json
+import time
 from six.moves.urllib.parse import urlencode
+
+import requests
+
+RETRYABLE_TRANSIENT_ERROR_CODES = [500, 502, 503, 504] + list(range(520, 531))
+RETRYABLE_TRANSIENT_MAX_RETRIES = 10
 
 
 def calc_pages(limit, count):
@@ -138,6 +144,8 @@ class Request(object):
         private_key=None,
         session_key=None,
         threading=False,
+        retry_transient_errors=False,
+        max_retries=RETRYABLE_TRANSIENT_MAX_RETRIES,
     ):
         """
         Instantiates a new Request object
@@ -163,6 +171,8 @@ class Request(object):
         self.threading = threading
         self.limit = limit
         self.offset = offset
+        self.retry_transient_errors = retry_transient_errors
+        self.max_retries = max_retries
 
     def get_openapi(self):
         """Gets the OpenAPI Spec"""
@@ -268,24 +278,48 @@ class Request(object):
             if add_params:
                 params.update(add_params)
 
-        req = getattr(self.http_session, verb)(
-            url_override or self.url, headers=headers, params=params, json=data
-        )
+        cur_retries = 0
+        while True:
+            try:
+                req = getattr(self.http_session, verb)(
+                    url_override or self.url, headers=headers, params=params, json=data
+                )
+            except requests.ConnectionError:
+                if self.retry_transient_errors and (
+                    self.max_retries == -1 or cur_retries < self.max_retries
+                ):
+                    wait_time = 2**cur_retries * 0.1
+                    cur_retries += 1
+                    time.sleep(wait_time)
+                    continue
+                raise
 
-        if req.status_code in [204, 409] and verb == "post":
-            raise AllocationError(req)
-        if verb == "delete":
-            if req.ok:
-                return True
+            if (429 == req.status_code or
+                    (req.status_code in RETRYABLE_TRANSIENT_ERROR_CODES and self.retry_transient_errors)):
+                if self.max_retries == -1 or cur_retries < self.max_retries:
+                    wait_time = 2**cur_retries * 0.1
+                    if "Retry-After" in req.headers:
+                        wait_time = int(req.headers["Retry-After"])
+                    elif "RateLimit-Reset" in req.headers:
+                        wait_time = int(req.headers["RateLimit-Reset"]) - time.time()
+                    cur_retries += 1
+                    time.sleep(wait_time)
+                    continue
+
+            if req.status_code in [204, 409] and verb == "post":
+                raise AllocationError(req)
+            if verb == "delete":
+                if req.ok:
+                    return True
+                else:
+                    raise RequestError(req)
+            elif req.ok:
+                try:
+                    return req.json()
+                except json.JSONDecodeError:
+                    raise ContentError(req)
             else:
                 raise RequestError(req)
-        elif req.ok:
-            try:
-                return req.json()
-            except json.JSONDecodeError:
-                raise ContentError(req)
-        else:
-            raise RequestError(req)
 
     def concurrent_get(self, ret, page_size, page_offsets):
         futures_to_results = []

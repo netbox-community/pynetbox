@@ -30,6 +30,8 @@ class TraceableRecord(Record):
             token=self.api.token,
             session_key=self.api.session_key,
             http_session=self.api.http_session,
+            retry_transient_errors=self.api.retry_transient_errors,
+            max_retries=self.api.max_retries,
         ).get()
         uri_to_obj_class_map = {
             "dcim/cables": Cables,
