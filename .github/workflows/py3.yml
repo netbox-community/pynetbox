@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.6, 3.8]
+        python: ["3.7", "3.10"]
         netbox: ["2.11", "3.0", "3.1"]
 
     steps:
