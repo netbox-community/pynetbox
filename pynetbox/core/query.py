@@ -102,7 +102,9 @@ class ContentError(Exception):
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
-        self.error = "The server returned invalid (non-json) data. Maybe not a NetBox server?"
+        self.error = (
+            "The server returned invalid (non-json) data. Maybe not a NetBox server?"
+        )
 
     def __str__(self):
         return self.error
