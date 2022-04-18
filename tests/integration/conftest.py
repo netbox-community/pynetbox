@@ -28,9 +28,9 @@ def get_netbox_docker_version_tag(netbox_version):
     """
     major, minor = netbox_version.major, netbox_version.minor
 
-    if (major, minor) == (3, 1):
-        tag = "1.5.1"
-    elif (major, minor) == (3, 0):
+    if (major, minor) == (3, 2):
+        tag = "1.6.1"
+    elif (major, minor) == (3, 1):
         tag = "1.5.1"
     elif (major, minor) == (2, 11):
         tag = "1.2.0"
