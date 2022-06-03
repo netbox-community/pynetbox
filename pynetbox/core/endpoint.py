@@ -338,19 +338,25 @@ class Endpoint(object):
 
         Updating objects on the `devices` endpoint:
 
-        >>> device = netbox.dcim.devices.update([
+        >>> devices = nb.dcim.devices.update([
         ...    {'id': 1, 'name': 'test'},
         ...    {'id': 2, 'name': 'test2'},
         ... ])
-        >>> True
+        >>> devices
+        [test2, test]
+        >>>
 
         Use bulk update by passing a list of Records:
 
-        >>> devices = nb.dcim.devices.all()
+        >>> devices = list(nb.dcim.devices.filter())
+        >>> devices
+        [Device1, Device2, Device3]
         >>> for d in devices:
-        >>>     d.name = d.name+'-test'
+        ...     d.name = d.name+'-test'
+        ...
         >>> nb.dcim.devices.update(devices)
-        >>> True
+        [Device1-test, Device2-test, Device3-test]
+        >>>
         """
         series = []
         if not isinstance(objects, list):
