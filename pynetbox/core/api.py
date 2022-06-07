@@ -20,6 +20,7 @@ import requests
 from pynetbox.core.query import Request
 from pynetbox.core.app import App, PluginsApp
 from pynetbox.core.response import Record
+from pynetbox.core.graphql import GraphQLQuery
 
 
 class Api(object):
@@ -83,6 +84,7 @@ class Api(object):
             raise ValueError(
                 '"private_key" and "private_key_file" cannot be used together.'
             )
+        self.url = url
         base_url = "{}/api".format(url if url[-1] != "/" else url[:-1])
         self.token = token
         self.private_key = private_key
@@ -111,6 +113,7 @@ class Api(object):
         self.users = App(self, "users")
         self.wireless = App(self, "wireless")
         self.plugins = PluginsApp(self)
+        self.graphql = GraphQLQuery(self)
 
     @property
     def version(self):

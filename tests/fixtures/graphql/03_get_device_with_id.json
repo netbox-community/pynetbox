@@ -1,0 +1,13 @@
+{
+    "data": {
+        "devices": [
+            {
+                "name": "grb-rtr01",
+                "id": 1,
+                "primary_ip4": {
+                    "address": "192.0.2.10/32"
+                }
+            }
+        ]
+    }
+}

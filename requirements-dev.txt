@@ -1,3 +1,4 @@
 black~=22.0
 pytest==6.2.*
 pytest-docker==0.10.*
+requests-mock==1.9.*

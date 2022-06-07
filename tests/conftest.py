@@ -3,6 +3,8 @@ from urllib import parse
 import pytest
 from packaging import version
 
+from pynetbox.core.api import Api
+from pynetbox.core.graphql import GraphQLQuery
 
 DEFAULT_NETBOX_VERSIONS = "2.11, 3.0, 3.1"
 
@@ -78,3 +80,16 @@ def pytest_configure(config):
                 return DockerServicesMock(url_parse.port)
 
         config.pluginmanager.register(Plugin())
+
+
+@pytest.fixture
+def pynetbox_api():
+    """Factory to create pynetbox api instance."""
+    return Api(url="https://mocknetbox.example.com", token="1234567890abcdefg")
+
+
+@pytest.fixture
+def graphql_test_class(pynetbox_api):
+    """Factory to create test class to be used as base."""
+    test_class = GraphQLQuery(pynetbox_api)
+    return test_class

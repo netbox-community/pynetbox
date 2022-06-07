@@ -1,0 +1,22 @@
+{
+    "errors": [
+        {
+            "message": "Cannot query field \"nae\" on type \"DeviceType\". Did you mean \"name\" or \"face\"?",
+            "locations": [
+                {
+                    "line": 3,
+                    "column": 5
+                }
+            ]
+        },
+        {
+            "message": "Cannot query field \"nme\" on type \"SiteType\". Did you mean \"name\"?",
+            "locations": [
+                {
+                    "line": 10,
+                    "column": 5
+                }
+            ]
+        }
+    ]
+}

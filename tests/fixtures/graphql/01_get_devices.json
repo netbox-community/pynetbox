@@ -1,0 +1,27 @@
+{
+    "data": {
+        "devices": [
+            {
+                "name": "grb-rtr01",
+                "id": 1,
+                "primary_ip4": {
+                    "address": "192.0.2.10/32"
+                }
+            },
+            {
+                "name": "msp-rtr01",
+                "id": 2,
+                "primary_ip4": {
+                    "address": "192.0.2.11/32"
+                }
+            },
+            {
+                "name": "msp-rtr02",
+                "id": 4,
+                "primary_ip4": {
+                    "address": "192.0.2.12/32"
+                }
+            }
+        ]
+    }
+}
