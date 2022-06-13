@@ -94,6 +94,7 @@ class Endpoint(object):
         test1-leaf2
         test1-leaf3
         >>>
+        
         """
         if limit == 0 and offset is not None:
             raise ValueError("offset requires a positive limit value")
@@ -136,6 +137,11 @@ class Endpoint(object):
         >>> nb.dcim.devices.get(1)
         test1-edge1
         >>>
+        
+        Using multiple named arguments. For example, retriving the location when the location name is not unique and used in multiple sites.
+        
+        >>> nb.locations.get(site='site-1', name='Row 1')
+        Row 1
         """
 
         try:
@@ -202,7 +208,24 @@ class Endpoint(object):
         test1-leaf2
         test1-leaf3
         >>>
-
+        
+        >>> devices = nb.dcim.devices.filter(site='site-1')
+        >>> for device in devices:
+        ...     print(device.name)
+        ...
+        test1-a2-leaf1
+        test2-a2-leaf2
+        >>>
+        
+        If we want to filter by site, location, tenant, or fields which have a display name and a slug, the slug has to be used for filtering. 
+        
+        .. note::
+        
+          If a keyword argument is incorrect a `TypeError` will not be returned by pynetbox. 
+          Instead, all records filtered up to the last correct keyword argument. For example, if we used `site="Site 1"` instead of `site=site-1` when using filter on  
+          the devices endpoint, then pynetbox will return **all** devices across all sites instead of devices at Site 1.
+        
+            
         Using a freeform query along with a named argument.
 
         >>> devices = nb.dcim.devices.filter('a3', role='leaf-switch')
@@ -212,6 +235,7 @@ class Endpoint(object):
         test1-a3-leaf1
         test1-a3-leaf2
         >>>
+        
 
         Chaining multiple named arguments.
 
@@ -289,6 +313,18 @@ class Endpoint(object):
         ...    device_role=1,
         ... )
         >>>
+        
+        Creating an object on the 'devices' endpoint using `.get()` to get ids.
+        
+        >>> device = netbox.dcim.devices.create(
+        ...     name = 'test1',
+        ...     site = netbox.dcim.devices.get(name='site1').id,
+        ...     location = netbox.dcim.locations.get(name='Row 1').id,
+        ...     rack = netbox.dcim.racks.get(facility_id=1).id,
+        ...     device_type = netbox.dcim.device_types.get(slug='server-type-1').id,
+        ...     status='active',
+        ...     )
+        >>>
 
         Use bulk creation by passing a list of dictionaries:
 
@@ -308,6 +344,55 @@ class Endpoint(object):
         ...         "status": 1
         ...     }
         ... ])
+        
+        Create a new device type.
+        
+        >>> device_type = netbox.dcim.devices.create(
+        ...     manufacturer = netbox.dcim.manufacturers.get(name='manufacturer-name').id,
+        ...     model = 'device-type-name',
+        ...     slug = 'device-type-slug',
+        ...     subdevice_role = 'child or parent', #optional field - requred if creating a device type to be used by child devices
+        ...     u_height = unit_height, #can only equal 0 if the device type is for a child device - requires subdevice_role='child' if that is the case 
+        ...     custom_fields = {'cf_1' : 'custom data 1'}
+        ...     )
+
+        Create a device bay and child device.
+        
+        >>> device_bay = netbox.dcim.device_bays.create(
+        ...     device = netbox.dcim.devices.get(name='parent device').id, # device the device bay is located
+        ...     name = 'Bay 1'
+        ...     )
+        >>> child_device = netbox.dcim.devices.create(
+        ...     name = 'child device',
+        ...     site = netbox.dcim.devices.get(name='test-site').id,
+        ...     location = netbox.dcim.locations.get(name='row-1').id,
+        ...     tenant = netbox.tenancy.tenants.get(name='tenant-1').id,
+        ...     manufactuer = netbox.dcim.manufacturers.get(name='test-m').id,
+        ...     rack = netbox.dcim.racks.get(name='Test Rack').id,
+        ...     device_type = netbox.dcim.device.types.get(slug='test-server').id, #easier to get device_type id by search by its slug rather than by its name
+        ...     )
+        >>> get_device_bay = netbox.dcim.device_bays.get(name='Bay 1')
+        >>> get_child_device = netbox.dcim.devices.get(name='child device')
+        >>> get_device_bay.installed_device = get_child_device
+        >>> get_device_bay.save()
+        
+        Create a network interface 
+        
+        >>> interface = netbox.dcim.interfaces.get(name="interface-test", device="test-device")
+        >>> netbox_ip = netbox.ipam.ip_addresses.create(
+        ... address = "ip-address",
+        ... tenant = netbox.tenancy.tenants.get(name='tenant-1').id,
+        ... tags = [{'name':'Tag 1'}],
+        ... )
+        >>> #assign IP Address to device's network interface
+        >>> netbox_ip.assigned_object = interface
+        >>> netbox_ip.assigned_object_id = interface.id
+        >>> netbox_ip.assigned_object_type = 'dcim.interface'
+        >>> # add dns name to IP Address (optional)
+        >>> netbox_ip.dns_name = "test.dns.local"
+        >>> # save changes to IP Address
+        >>> netbox_ip.save()
+        
         """
 
         req = Request(
