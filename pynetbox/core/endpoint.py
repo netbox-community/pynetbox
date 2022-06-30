@@ -79,7 +79,9 @@ class Endpoint(object):
         Returns all objects from an endpoint.
 
         :arg int,optional limit: Overrides the max page size on
-            paginated returns.
+            paginated returns.  This defines the number of records that will
+            be returned with each query to the Netbox server.  The queries
+            will be made as you iterate through the result set.
         :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
@@ -98,6 +100,9 @@ class Endpoint(object):
         If you want to iterate over the results multiple times then
         encapsulate them in a list like this:
         >>> devices = list(nb.dcim.devices.all())
+        
+        This will cause the entire result set
+        to be fetched from the server.
 
         """
         if limit == 0 and offset is not None:
@@ -190,7 +195,9 @@ class Endpoint(object):
         :arg str,optional \**kwargs: Any search argument the
             endpoint accepts can be added as a keyword arg.
         :arg int,optional limit: Overrides the max page size on
-            paginated returns.
+            paginated returns.  This defines the number of records that will
+            be returned with each query to the Netbox server.  The queries
+            will be made as you iterate through the result set.
         :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
@@ -240,7 +247,8 @@ class Endpoint(object):
         >>>
 
         To have the ability to iterate over the results multiple times then
-        encapsulate them in a list.
+        encapsulate them in a list.  This will cause the entire result set
+        to be fetched from the server.
 
         >>> devices = list(nb.dcim.devices.filter(role='leaf-switch'))
         """
