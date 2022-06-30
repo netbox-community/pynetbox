@@ -94,6 +94,11 @@ class Endpoint(object):
         test1-leaf2
         test1-leaf3
         >>>
+        
+        If you want to iterate over the results multiple times then
+        encapsulate them in a list like this:
+        >>> devices = list(nb.dcim.devices.all())
+
         """
         if limit == 0 and offset is not None:
             raise ValueError("offset requires a positive limit value")
@@ -233,6 +238,11 @@ class Endpoint(object):
         test1-a3-spine2
         test1-a3-leaf1
         >>>
+
+        To have the ability to iterate over the results multiple times then
+        encapsulate them in a list.
+
+        >>> devices = list(nb.dcim.devices.filter(role='leaf-switch'))
         """
 
         if args:
