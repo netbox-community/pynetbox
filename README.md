@@ -32,7 +32,7 @@ The first argument the .api() method takes is the NetBox URL. There are a handfu
 The pynetbox API is setup so that NetBox's apps are attributes of the `.api()` object, and in turn those apps have attribute representing each endpoint. Each endpoint has a handful of methods available to carry out actions on the endpoint. For example, in order to query all the objects in the `devices` endpoint you would do the following:
 
 ```
->>> devices = list(nb.dcim.devices.all())
+>>> devices = nb.dcim.devices.all()
 >>> for device in devices:
 ...     print(device.name)
 ...
@@ -40,6 +40,11 @@ test1-leaf1
 test1-leaf2
 test1-leaf3
 >>>
+```
+
+Note that the all() and filter() methods are generators and return an object that can be iterated over only once.  If you are going to be iterating over it repeatedly you need to either call the all() method again, or encapsulate the results in a `list` object like this:
+```
+>>> devices = list(nb.dcim.devices.all())
 ```
 
 ### Threading
