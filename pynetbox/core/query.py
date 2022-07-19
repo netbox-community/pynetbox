@@ -18,7 +18,7 @@ try:
 except ImportError:
     pass
 import json
-from six.moves.urllib.parse import urlencode
+from six.moves.urllib.parse import urlencode, urlsplit, urlunsplit
 
 
 def calc_pages(limit, count):
@@ -266,6 +266,16 @@ class Request(object):
                 params.update(self.filters)
             if add_params:
                 params.update(add_params)
+        else:
+            base_split = urlsplit(self.base)
+            override_split = urlsplit(url_override)
+            url_override = urlunsplit((
+                base_split.scheme,
+                base_split.netloc,
+                override_split.path,
+                override_split.query,
+                override_split.fragment
+            ))
 
         req = getattr(self.http_session, verb)(
             url_override or self.url, headers=headers, params=params, json=data
