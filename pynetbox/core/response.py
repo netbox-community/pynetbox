@@ -17,7 +17,7 @@ import copy
 from collections import OrderedDict
 
 import pynetbox.core.app
-from six.moves.urllib.parse import urlsplit
+from six.moves.urllib.parse import urlsplit, urlunsplit
 from pynetbox.core.query import Request, RequestError
 from pynetbox.core.util import Hashabledict
 
@@ -388,6 +388,16 @@ class Record(object):
 
             else:
                 self._add_cache((k, v))
+            if k == "url":
+                base_split = urlsplit(self.api.base_url)
+                over_split = urlsplit(v)
+                v = urlunsplit((
+                    base_split.scheme,
+                    base_split.netloc,
+                    over_split.path,
+                    over_split.query,
+                    over_split.fragment
+                ))
             setattr(self, k, v)
 
     def _endpoint_from_url(self, url):
