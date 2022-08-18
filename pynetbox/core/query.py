@@ -320,8 +320,9 @@ class Request(object):
         req = self._make_call(add_params=add_params)
         if isinstance(req, dict) and req.get("results") is not None:
             self.count = req["count"]
-            if self.offset is not None:
+            if self.limit or self.offset is not None:
                 # only yield requested page results if paginating
+                # or requesting a limited set
                 for i in req["results"]:
                     yield i
             elif self.threading:
