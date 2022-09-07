@@ -58,10 +58,13 @@ def get_return(lookup, return_fields=None):
 
 
 def flatten_custom(custom_dict):
-    return {
-        k: v if not isinstance(v, dict) else v["value"] for k, v in custom_dict.items()
-    }
+    # ORIGINAL
+    #return {
+    #    k: v if not isinstance(v, dict) else v["value"] for k, v in custom_dict.items()
+    #}
 
+    # EDITED
+    return {k: v for k, v in custom_dict.items()}
 
 class JsonField(object):
     """Explicit field type for values that are not to be converted
@@ -400,7 +403,13 @@ class Record(object):
         split_url_path = url_path.split("/")
         if split_url_path[2] == "plugins":
             # Skip plugins from the path
-            app, name = split_url_path[3:5]
+
+            # ORIGINAL
+            # app, name = split_url_path[3:5]
+
+            # EDITED
+            app = "plugins/{}".format(split_url_path[3])
+            name = split_url_path[4]
         else:
             app, name = split_url_path[2:4]
         return getattr(pynetbox.core.app.App(self.api, app), name)
