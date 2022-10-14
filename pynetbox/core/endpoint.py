@@ -19,7 +19,7 @@ from pynetbox.core.response import Record, RecordSet
 RESERVED_KWARGS = ()
 
 
-class Endpoint(object):
+class Endpoint:
     """Represent actions available on endpoints in the Netbox API.
 
     Takes ``name`` and ``app`` passed from App() and builds the correct
@@ -433,7 +433,7 @@ class Endpoint(object):
                 cleaned_ids.append(o.id)
             else:
                 raise ValueError(
-                    "Invalid object in list of " "objects to delete: " + str(type(o))
+                    "Invalid object in list of objects to delete: " + str(type(o))
                 )
 
         req = Request(
@@ -546,7 +546,7 @@ class Endpoint(object):
         return ret.get_count()
 
 
-class DetailEndpoint(object):
+class DetailEndpoint:
     """Enables read/write operations on detail endpoints.
 
     Endpoints like ``available-ips`` that are detail routes off

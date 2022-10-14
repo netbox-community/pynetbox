@@ -13,12 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-try:
-    import concurrent.futures as cf
-except ImportError:
-    pass
+import concurrent.futures as cf
 import json
-from six.moves.urllib.parse import urlencode
+from urllib.parse import urlencode
 
 
 def calc_pages(limit, count):
@@ -60,7 +57,7 @@ class RequestError(Exception):
                     )
                 )
 
-        super(RequestError, self).__init__(req)
+        super().__init__(message)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
@@ -79,7 +76,7 @@ class AllocationError(Exception):
     """
 
     def __init__(self, req):
-        super(AllocationError, self).__init__(req)
+        super().__init__(req)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
@@ -98,7 +95,7 @@ class ContentError(Exception):
     """
 
     def __init__(self, req):
-        super(ContentError, self).__init__(req)
+        super().__init__(req)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
@@ -110,7 +107,7 @@ class ContentError(Exception):
         return self.error
 
 
-class Request(object):
+class Request:
     """Creates requests to the Netbox API
 
     Responsible for building the url and making the HTTP(S) requests to

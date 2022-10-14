@@ -13,8 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import sys
-
 import requests
 
 from pynetbox.core.query import Request
@@ -22,7 +20,7 @@ from pynetbox.core.app import App, PluginsApp
 from pynetbox.core.response import Record
 
 
-class Api(object):
+class Api:
     """The API object is the point of entry to pynetbox.
 
     After instantiating the Api() with the appropriate named arguments
@@ -90,10 +88,6 @@ class Api(object):
         self.base_url = base_url
         self.session_key = None
         self.http_session = requests.Session()
-        if threading and sys.version_info.major == 2:
-            raise NotImplementedError(
-                "Threaded pynetbox calls not supported                 in Python 2"
-            )
         self.threading = threading
 
         if self.private_key_file:

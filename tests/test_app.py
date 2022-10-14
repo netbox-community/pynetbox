@@ -1,13 +1,8 @@
 import unittest
-
-import six
+from unittest.mock import patch
 
 import pynetbox
 
-if six.PY3:
-    from unittest.mock import patch
-else:
-    from mock import patch
 
 host = "http://localhost:8000"
 

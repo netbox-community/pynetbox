@@ -26,7 +26,7 @@ from pynetbox.models import (
 )
 
 
-class App(object):
+class App:
     """Represents apps in NetBox.
 
     Calls to attributes are returned as Endpoint objects.
@@ -157,7 +157,7 @@ class App(object):
         return config
 
 
-class PluginsApp(object):
+class PluginsApp:
     """
     Basically valid plugins api could be handled by same App class,
     but you need to add plugins to request url path.
