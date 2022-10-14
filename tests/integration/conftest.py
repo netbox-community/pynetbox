@@ -82,6 +82,7 @@ def netbox_docker_repo_dirpaths(pytestconfig, git_toplevel):
     netbox_versions_by_repo_dirpaths = {}
     for netbox_version in pytestconfig.option.netbox_versions:
         repo_version_tag = get_netbox_docker_version_tag(netbox_version=netbox_version)
+        print("top: ", git_toplevel)
         repo_fpath = os.path.join(
             git_toplevel, ".netbox-docker-%s" % str(repo_version_tag)
         )
