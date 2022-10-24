@@ -4,7 +4,7 @@ import pytest
 from packaging import version
 
 
-DEFAULT_NETBOX_VERSIONS = "3.1"
+DEFAULT_NETBOX_VERSIONS = "3.1, 3.2"
 
 
 def pytest_addoption(parser):
