@@ -173,6 +173,39 @@ class Endpoint:
             else:
                 raise e
 
+    def get_or_raise(self, *args, **kwargs):
+        r"""Queries the DetailsView of a given endpoint but raises an error if no object is returned
+        :arg int,optional key: id for the item to be
+            retrieved.
+
+        :arg str,optional \**kwargs: Accepts the same keyword args as
+            filter(). Any search argument the endpoint accepts can
+            be added as a keyword arg.
+
+        :returns: A single :py:class:`.Record` object
+
+        :raises ValueError: if kwarg search returns zero or more than one item
+
+        :Examples:
+
+        Referencing with a kwarg that only returns one value.
+
+        >>> nb.dcim.devices.get_or_raise(name='test1-a3-tor1b')
+        test1-a3-tor1b
+        >>>
+
+        Referencing with an id.
+
+        >>> nb.dcim.devices.get_or_raise(1)
+        test1-edge1
+        >>>
+        """
+
+        resp = self.get(*args, **kwargs)
+        if resp is None:
+            raise ValueError(f"{self.name} not found: {kwargs}")
+        return resp
+
     def filter(self, *args, **kwargs):
         r"""Queries the 'ListView' of a given endpoint.
 
