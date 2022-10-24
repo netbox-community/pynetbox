@@ -52,3 +52,7 @@ nb = pynetbox.api(
     threading=True,
 )
 ```
+
+### Testing
+
+Mypy stubs are available for pynetbox at the following repo and PRs are welcome: https://github.com/interdotlink/pynetbox-stubs
