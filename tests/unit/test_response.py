@@ -1,14 +1,8 @@
 import unittest
-
-import six
+from unittest.mock import patch, Mock
 
 from pynetbox.core.response import Record, RecordSet
 from pynetbox.core.endpoint import Endpoint
-
-if six.PY3:
-    from unittest.mock import patch, Mock, call
-else:
-    from mock import patch, Mock, call
 
 
 class RecordTestCase(unittest.TestCase):

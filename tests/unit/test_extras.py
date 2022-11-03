@@ -1,7 +1,5 @@
 import unittest
 
-import six
-
 from pynetbox.models.extras import ConfigContexts
 
 

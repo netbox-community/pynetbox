@@ -17,8 +17,8 @@ import copy
 from collections import OrderedDict
 
 import pynetbox.core.app
-from six.moves.urllib.parse import urlsplit
-from pynetbox.core.query import Request, RequestError
+from urllib.parse import urlsplit
+from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
 
@@ -61,14 +61,14 @@ def flatten_custom(custom_dict):
     return {k: v for k, v in custom_dict.items()}
 
 
-class JsonField(object):
+class JsonField:
     """Explicit field type for values that are not to be converted
     to a Record object"""
 
     _json_field = True
 
 
-class RecordSet(object):
+class RecordSet:
     """Iterator containing Record objects.
 
     Returned by :py:meth:`.Endpoint.all()` and :py:meth:`.Endpoint.filter()` methods.
@@ -170,7 +170,7 @@ class RecordSet(object):
         return self.endpoint.delete(self)
 
 
-class Record(object):
+class Record:
     """Create Python objects from NetBox API responses.
 
     Creates an object from a NetBox response passed as ``values``.
@@ -397,8 +397,8 @@ class Record(object):
             url_path = url_path[len(extra_path) :]
         split_url_path = url_path.split("/")
         if split_url_path[2] == "plugins":
-            # Skip plugins from the path
-            app, name = split_url_path[3:5]
+            app = "plugins/{}".format(split_url_path[3])
+            name = split_url_path[4]
         else:
             app, name = split_url_path[2:4]
         return getattr(pynetbox.core.app.App(self.api, app), name)
@@ -494,7 +494,7 @@ class Record(object):
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
         >>> x.serial
-        u''
+        ''
         >>> x.serial = '1234'
         >>> x.updates()
         {'serial': '1234'}
@@ -518,7 +518,7 @@ class Record(object):
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
         >>> x.serial
-        u''
+        ''
         >>> x.serial = '1234'
         >>> x.save()
         True

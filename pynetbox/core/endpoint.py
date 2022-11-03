@@ -19,7 +19,7 @@ from pynetbox.core.response import Record, RecordSet
 RESERVED_KWARGS = ()
 
 
-class Endpoint(object):
+class Endpoint:
     """Represent actions available on endpoints in the Netbox API.
 
     Takes ``name`` and ``app`` passed from App() and builds the correct
@@ -338,19 +338,25 @@ class Endpoint(object):
 
         Updating objects on the `devices` endpoint:
 
-        >>> device = netbox.dcim.devices.update([
+        >>> devices = nb.dcim.devices.update([
         ...    {'id': 1, 'name': 'test'},
         ...    {'id': 2, 'name': 'test2'},
         ... ])
-        >>> True
+        >>> devices
+        [test2, test]
+        >>>
 
         Use bulk update by passing a list of Records:
 
-        >>> devices = nb.dcim.devices.all()
+        >>> devices = list(nb.dcim.devices.filter())
+        >>> devices
+        [Device1, Device2, Device3]
         >>> for d in devices:
-        >>>     d.name = d.name+'-test'
+        ...     d.name = d.name+'-test'
+        ...
         >>> nb.dcim.devices.update(devices)
-        >>> True
+        [Device1-test, Device2-test, Device3-test]
+        >>>
         """
         series = []
         if not isinstance(objects, list):
@@ -433,7 +439,7 @@ class Endpoint(object):
                 cleaned_ids.append(o.id)
             else:
                 raise ValueError(
-                    "Invalid object in list of " "objects to delete: " + str(type(o))
+                    "Invalid object in list of objects to delete: " + str(type(o))
                 )
 
         req = Request(
@@ -546,7 +552,7 @@ class Endpoint(object):
         return ret.get_count()
 
 
-class DetailEndpoint(object):
+class DetailEndpoint:
     """Enables read/write operations on detail endpoints.
 
     Endpoints like ``available-ips`` that are detail routes off
