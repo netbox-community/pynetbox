@@ -1,15 +1,16 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="pynetbox",
+    version='6.6.2.test',
+    name="kani-fork-pynetbox",
     description="NetBox API client library",
-    url="https://github.com/digitalocean/pynetbox",
+    url="https://github.com/kani999/pynetbox",
     author="Zach Moody",
     author_email="zmoody@do.co",
     license="Apache2",
     include_package_data=True,
-    use_scm_version=True,
-    setup_requires=["setuptools_scm"],
+    #use_scm_version=True,
+    #setup_requires=["setuptools_scm"],
     packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=[
         "requests>=2.20.0,<3.0",

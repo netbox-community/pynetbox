@@ -58,8 +58,13 @@ def get_return(lookup, return_fields=None):
 
 
 def flatten_custom(custom_dict):
-    return {k: v for k, v in custom_dict.items()}
+    # ORIGINAL
+    #return {
+    #    k: v if not isinstance(v, dict) else v["value"] for k, v in custom_dict.items()
+    #}
 
+    # EDITED
+    return {k: v for k, v in custom_dict.items()}
 
 class JsonField:
     """Explicit field type for values that are not to be converted
