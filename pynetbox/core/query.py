@@ -163,7 +163,7 @@ class Request:
     def get_openapi(self):
         """Gets the OpenAPI Spec"""
         headers = {
-            "Content-Type": "application/json;",
+            "Content-Type": "application/json",
         }
         req = self.http_session.get(
             "{}docs/?format=openapi".format(self.normalize_url(self.base)),
@@ -185,7 +185,7 @@ class Request:
         present in the headers.
         """
         headers = {
-            "Content-Type": "application/json;",
+            "Content-Type": "application/json",
         }
         req = self.http_session.get(
             self.normalize_url(self.base),
@@ -227,7 +227,7 @@ class Request:
         :Returns: Dictionary as returned by NetBox.
         :Raises: RequestError if request is not successful.
         """
-        headers = {"Content-Type": "application/json;"}
+        headers = {"Content-Type": "application/json"}
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
         req = self.http_session.get(
