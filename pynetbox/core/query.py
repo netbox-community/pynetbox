@@ -248,7 +248,7 @@ class Request:
 
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
         if verb in ("post", "put") or verb == "delete" and data:
-            headers = {"Content-Type": "application/json;"}
+            headers = {"Content-Type": "application/json"}
         else:
             headers = {"accept": "application/json;"}
 
