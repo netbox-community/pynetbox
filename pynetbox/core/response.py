@@ -354,6 +354,18 @@ class Record:
         values within.
         """
 
+        def generic_list_parser(key_name, list_item):
+            from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
+
+            if isinstance(list_item, dict) and "object_type" in list_item and "object" in list_item:
+                lookup = list_item["object_type"]
+                model = None
+                model = CONTENT_TYPE_MAPPER.get(lookup)
+                if model:
+                    return model(list_item["object"], self.api, self.endpoint)
+
+            return list_item
+
         def list_parser(key_name, list_item):
             if isinstance(list_item, dict):
                 lookup = getattr(self.__class__, key_name, None)
@@ -364,6 +376,7 @@ class Record:
                 else:
                     model = lookup[0]
                     return model(list_item, self.api, self.endpoint)
+
             return list_item
 
         for k, v in values.items():
@@ -382,8 +395,13 @@ class Record:
                 self._add_cache((k, v))
 
             elif isinstance(v, list):
-                v = [list_parser(k, i) for i in v]
-                to_cache = list(v)
+                # check if GFK
+                if len(v) and isinstance(v[0], dict) and "object_type" in v[0]:
+                    v = [generic_list_parser(k, i) for i in v]
+                    to_cache = list(v)
+                else:
+                    v = [list_parser(k, i) for i in v]
+                    to_cache = list(v)
                 self._add_cache((k, to_cache))
 
             else:

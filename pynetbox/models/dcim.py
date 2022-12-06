@@ -225,14 +225,11 @@ class Termination(Record):
 
 class Cables(Record):
     def __str__(self):
-        if all(
-            [
-                isinstance(i, Termination)
-                for i in (self.termination_a, self.termination_b)
-            ]
-        ):
-            return "{} <> {}".format(self.termination_a, self.termination_b)
+        # if all(
+        #     [
+        #         isinstance(i, Termination)
+        #         for i in (self.a_terminations, self.b_terminations)
+        #     ]
+        # ):
+        #     return "{} <> {}".format(self.a_terminations, self.b_terminations)
         return "Cable #{}".format(self.id)
-
-    termination_a = Termination
-    termination_b = Termination

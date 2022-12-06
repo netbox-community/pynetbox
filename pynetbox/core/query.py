@@ -315,6 +315,7 @@ class Request:
                 # if non-zero limit and some offset -> add offset
                 add_params["offset"] = self.offset
         req = self._make_call(add_params=add_params)
+        # print(f"req: {req}")
         if isinstance(req, dict) and req.get("results") is not None:
             self.count = req["count"]
             if self.offset is not None:
