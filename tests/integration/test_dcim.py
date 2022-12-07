@@ -322,4 +322,4 @@ class TestInterfaceCable(BaseTest):
         test = interface_a.trace()
         assert test
         assert test[0][0].name == "Ethernet1"
-        assert test[0][2].name == "Ethernet1"
+        assert test[2][0].name == "Ethernet1"
