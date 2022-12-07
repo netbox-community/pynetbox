@@ -357,7 +357,11 @@ class Record:
         def generic_list_parser(key_name, list_item):
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
-            if isinstance(list_item, dict) and "object_type" in list_item and "object" in list_item:
+            if (
+                isinstance(list_item, dict)
+                and "object_type" in list_item
+                and "object" in list_item
+            ):
                 lookup = list_item["object_type"]
                 model = None
                 model = CONTENT_TYPE_MAPPER.get(lookup)

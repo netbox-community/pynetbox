@@ -381,9 +381,9 @@ def docker_netbox_service(
     """
     netbox_integration_version = request.param
 
-    netbox_service_name = "netbox_v%s_netbox" % str(
-        netbox_integration_version
-    ).replace(".", "_")
+    netbox_service_name = "netbox_v%s_netbox" % str(netbox_integration_version).replace(
+        ".", "_"
+    )
 
     netbox_service_port = 8080
     try:
