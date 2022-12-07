@@ -23,6 +23,36 @@ from pynetbox.models.circuits import Circuits
 
 
 class TraceableRecord(Record):
+    def _get_obj_class(self, url):
+        uri_to_obj_class_map = {
+            "dcim/cables": Cables,
+            "dcim/front-ports": FrontPorts,
+            "dcim/interfaces": Interfaces,
+            "dcim/rear-ports": RearPorts,
+        }
+
+        # the url for this item will be something like:
+        #     https://netbox/api/dcim/rear-ports/12761/
+        # TODO: Move this to a more general function.
+        app_endpoint = "/".join(
+            urlsplit(url)
+            .path[len(urlsplit(self.api.base_url).path) :]
+            .split("/")[1:3]
+        )
+        return uri_to_obj_class_map.get(
+            app_endpoint,
+            Record,
+        )
+
+    def _build_termination_data(self, termination_list):
+        terminations_data = []
+        for hop_item_data in termination_list:
+            return_obj_class = self._get_obj_class(hop_item_data["url"])
+            terminations_data.append(
+                return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
+            )
+
+
     def trace(self):
         req = Request(
             key=str(self.id) + "/trace",
@@ -31,36 +61,20 @@ class TraceableRecord(Record):
             session_key=self.api.session_key,
             http_session=self.api.http_session,
         ).get()
-        uri_to_obj_class_map = {
-            "dcim/cables": Cables,
-            "dcim/front-ports": FrontPorts,
-            "dcim/interfaces": Interfaces,
-            "dcim/rear-ports": RearPorts,
-        }
-        ret = []
-        for (termination_a_data, cable_data, termination_b_data) in req:
-            this_hop_ret = []
-            for hop_item_data in (termination_a_data, cable_data, termination_b_data):
-                # if not fully terminated then some items will be None
-                if not hop_item_data:
-                    this_hop_ret.append(hop_item_data)
-                    continue
 
-                # the url for this item will be something like:
-                #     https://netbox/api/dcim/rear-ports/12761/
-                # TODO: Move this to a more general function.
-                app_endpoint = "/".join(
-                    urlsplit(hop_item_data["url"])
-                    .path[len(urlsplit(self.api.base_url).path) :]
-                    .split("/")[1:3]
-                )
-                return_obj_class = uri_to_obj_class_map.get(
-                    app_endpoint,
-                    Record,
-                )
+        ret = []
+        for (a_terminations_data, cable_data, b_terminations_data) in req:
+            this_hop_ret = []
+
+            this_hop_ret.append(self._build_termination_data(a_terminations_data))
+            if not cable_data:
+                this_hop_ret.append(cable_data)
+            else:
+                return_obj_class = self._get_obj_class(cable_data["url"])
                 this_hop_ret.append(
-                    return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
+                    return_obj_class(cable_data, self.endpoint.api, self.endpoint)
                 )
+            this_hop_ret.append(self._build_termination_data(b_terminations_data))
 
             ret.append(this_hop_ret)
 
