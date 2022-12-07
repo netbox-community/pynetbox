@@ -35,9 +35,7 @@ class TraceableRecord(Record):
         #     https://netbox/api/dcim/rear-ports/12761/
         # TODO: Move this to a more general function.
         app_endpoint = "/".join(
-            urlsplit(url)
-            .path[len(urlsplit(self.api.base_url).path) :]
-            .split("/")[1:3]
+            urlsplit(url).path[len(urlsplit(self.api.base_url).path) :].split("/")[1:3]
         )
         return uri_to_obj_class_map.get(
             app_endpoint,
@@ -51,7 +49,6 @@ class TraceableRecord(Record):
             terminations_data.append(
                 return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
             )
-
 
     def trace(self):
         req = Request(
