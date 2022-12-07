@@ -50,6 +50,8 @@ class TraceableRecord(Record):
                 return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
             )
 
+        return terminations_data
+
     def trace(self):
         req = Request(
             key=str(self.id) + "/trace",
@@ -61,19 +63,15 @@ class TraceableRecord(Record):
 
         ret = []
         for (a_terminations_data, cable_data, b_terminations_data) in req:
-            this_hop_ret = []
-
-            this_hop_ret.append(self._build_termination_data(a_terminations_data))
+            ret.append(self._build_termination_data(a_terminations_data))
             if not cable_data:
-                this_hop_ret.append(cable_data)
+                ret.append(cable_data)
             else:
                 return_obj_class = self._get_obj_class(cable_data["url"])
-                this_hop_ret.append(
+                ret.append(
                     return_obj_class(cable_data, self.endpoint.api, self.endpoint)
                 )
-            this_hop_ret.append(self._build_termination_data(b_terminations_data))
-
-            ret.append(this_hop_ret)
+            ret.append(self._build_termination_data(b_terminations_data))
 
         return ret
 
