@@ -207,14 +207,12 @@ class TestPowerCable(BaseTest):
     @pytest.fixture(scope="class")
     def power_cable(self, api, power_outlet, power_port):
         cable = api.dcim.cables.create(
-            a_terminations=[{
-                "object_type": "dcim.powerport",
-                "object_id": power_port.id
-            }, ],
-            b_terminations=[{
-                "object_type": "dcim.poweroutlet",
-                "object_id": power_outlet.id
-            }, ],
+            a_terminations=[
+                {"object_type": "dcim.powerport", "object_id": power_port.id},
+            ],
+            b_terminations=[
+                {"object_type": "dcim.poweroutlet", "object_id": power_outlet.id},
+            ],
         )
         yield cable
         cable.delete()
@@ -251,14 +249,15 @@ class TestConsoleCable(BaseTest):
     @pytest.fixture(scope="class")
     def console_cable(self, api, console_port, console_server_port):
         ret = api.dcim.cables.create(
-            a_terminations=[{
-                "object_type": "dcim.consoleport",
-                "object_id": console_port.id
-            }, ],
-            b_terminations=[{
-                "object_type": "dcim.consoleserverport",
-                "object_id": console_server_port.id
-            }, ],
+            a_terminations=[
+                {"object_type": "dcim.consoleport", "object_id": console_port.id},
+            ],
+            b_terminations=[
+                {
+                    "object_type": "dcim.consoleserverport",
+                    "object_id": console_server_port.id,
+                },
+            ],
         )
         yield ret
         ret.delete()
@@ -299,14 +298,12 @@ class TestInterfaceCable(BaseTest):
     @pytest.fixture(scope="class")
     def interface_cable(self, api, interface_a, interface_b):
         ret = api.dcim.cables.create(
-            a_terminations=[{
-                "object_type": "dcim.interface",
-                "object_id": interface_a.id
-            }, ],
-            b_terminations=[{
-                "object_type": "dcim.interface",
-                "object_id": interface_b.id
-            }, ],
+            a_terminations=[
+                {"object_type": "dcim.interface", "object_id": interface_a.id},
+            ],
+            b_terminations=[
+                {"object_type": "dcim.interface", "object_id": interface_b.id},
+            ],
         )
         yield ret
         ret.delete()
