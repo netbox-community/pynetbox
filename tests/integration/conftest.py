@@ -28,12 +28,8 @@ def get_netbox_docker_version_tag(netbox_version):
     """
     major, minor = netbox_version.major, netbox_version.minor
 
-    if (major, minor) == (3, 1):
-        tag = "1.5.1"
-    elif (major, minor) == (3, 0):
-        tag = "1.5.1"
-    elif (major, minor) == (2, 11):
-        tag = "1.2.0"
+    if (major, minor) == (3, 3):
+        tag = "2.2.0"
     else:
         raise NotImplementedError(
             "Version %s is not currently supported" % netbox_version
@@ -385,14 +381,10 @@ def docker_netbox_service(
     """
     netbox_integration_version = request.param
 
-    if netbox_integration_version >= version.Version("2.10"):
-        netbox_service_name = "netbox_v%s_netbox" % str(
-            netbox_integration_version
-        ).replace(".", "_")
-    else:
-        netbox_service_name = "netbox_v%s_nginx" % str(
-            netbox_integration_version
-        ).replace(".", "_")
+    netbox_service_name = "netbox_v%s_netbox" % str(netbox_integration_version).replace(
+        ".", "_"
+    )
+
     netbox_service_port = 8080
     try:
         # `port_for` takes a container port and returns the corresponding host port

@@ -57,7 +57,7 @@ class RequestError(Exception):
                     )
                 )
 
-        super().__init__(message)
+        super().__init__(self.message)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
