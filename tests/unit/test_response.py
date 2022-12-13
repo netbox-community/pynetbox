@@ -162,32 +162,7 @@ class RecordTestCase(unittest.TestCase):
         test = Record(test_values, None, None)
         self.assertEqual(dict(test), test_values)
 
-    def test_choices_idempotence_prev27(self):
-        test_values = {
-            "id": 123,
-            "choices_test": {
-                "value": 1,
-                "label": "test",
-            },
-        }
-        test = Record(test_values, None, None)
-        test.choices_test = 1
-        self.assertFalse(test._diff())
-
-    def test_choices_idempotence_v27(self):
-        test_values = {
-            "id": 123,
-            "choices_test": {
-                "value": "test",
-                "label": "test",
-                "id": 1,
-            },
-        }
-        test = Record(test_values, None, None)
-        test.choices_test = "test"
-        self.assertFalse(test._diff())
-
-    def test_choices_idempotence_v28(self):
+    def test_choices_idempotence(self):
         test_values = {
             "id": 123,
             "choices_test": {

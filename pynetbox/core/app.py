@@ -39,7 +39,6 @@ class App:
     def __init__(self, api, name):
         self.api = api
         self.name = name
-        self._choices = None
         self._setmodel()
 
     models = {
@@ -56,7 +55,7 @@ class App:
         self.model = App.models[self.name] if self.name in App.models else None
 
     def __getstate__(self):
-        return {"api": self.api, "name": self.name, "_choices": self._choices}
+        return {"api": self.api, "name": self.name}
 
     def __setstate__(self, d):
         self.__dict__.update(d)
@@ -64,28 +63,6 @@ class App:
 
     def __getattr__(self, name):
         return Endpoint(self.api, self, name, model=self.model)
-
-    def choices(self):
-        """Returns _choices response from App
-
-        .. note::
-
-            This method is deprecated and only works with NetBox version 2.7.x
-            or older. The ``choices()`` method in :py:class:`.Endpoint` is
-            compatible with all NetBox versions.
-
-        :Returns: Raw response from NetBox's _choices endpoint.
-        """
-        if self._choices:
-            return self._choices
-
-        self._choices = Request(
-            base="{}/{}/_choices/".format(self.api.base_url, self.name),
-            token=self.api.token,
-            http_session=self.api.http_session,
-        ).get()
-
-        return self._choices
 
     def config(self):
         """Returns config response from app
