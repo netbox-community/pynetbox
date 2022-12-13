@@ -134,8 +134,6 @@ class Api:
     def status(self):
         """Gets the status information from NetBox.
 
-        Available in NetBox 2.10.0 or newer.
-
         :Returns: Dictionary as returned by NetBox.
         :Raises: :py:class:`.RequestError` if the request is not successful.
         :Example:
@@ -169,8 +167,6 @@ class Api:
     def create_token(self, username, password):
         """Creates an API token using a valid NetBox username and password.
         Saves the created token automatically in the API object.
-
-        Requires NetBox 3.0.0 or newer.
 
         :Returns: The token as a ``Record`` object.
         :Raises: :py:class:`.RequestError` if the request is not successful.
