@@ -1,6 +1,5 @@
 import os
 
-from packaging import version
 import subprocess as subp
 import time
 import yaml

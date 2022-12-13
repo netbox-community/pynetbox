@@ -15,7 +15,6 @@ limitations under the License.
 """
 import concurrent.futures as cf
 import json
-from urllib.parse import urlencode
 
 
 def calc_pages(limit, count):
