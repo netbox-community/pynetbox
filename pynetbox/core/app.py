@@ -87,33 +87,6 @@ class App:
 
         return self._choices
 
-    def custom_choices(self):
-        """Returns _custom_field_choices response from app
-
-        .. note::
-
-            This method only works with NetBox version 2.9.x or older. NetBox
-            2.10.0 introduced the ``/extras/custom-fields/`` endpoint that can
-            be used f.ex. like ``nb.extras.custom_fields.all()``.
-
-        :Returns: Raw response from NetBox's _custom_field_choices endpoint.
-        :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
-        :Example:
-
-        >>> nb.extras.custom_choices()
-        {'Testfield1': {'Testvalue2': 2, 'Testvalue1': 1},
-         'Testfield2': {'Othervalue2': 4, 'Othervalue1': 3}}
-        """
-        custom_field_choices = Request(
-            base="{}/{}/_custom_field_choices/".format(
-                self.api.base_url,
-                self.name,
-            ),
-            token=self.api.token,
-            http_session=self.api.http_session,
-        ).get()
-        return custom_field_choices
-
     def config(self):
         """Returns config response from app
 
