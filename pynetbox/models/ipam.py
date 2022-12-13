@@ -148,8 +148,6 @@ class VlanGroups(Record):
         Returns a DetailEndpoint object that is the interface for
         viewing and creating VLANs inside a VLAN group.
 
-        Available since NetBox 3.2.0.
-
         :returns: :py:class:`.DetailEndpoint`
 
         :Examples:
