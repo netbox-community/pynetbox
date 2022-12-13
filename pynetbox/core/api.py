@@ -30,7 +30,6 @@ class Api:
         * dcim
         * ipam
         * circuits
-        * secrets (on NetBox 2.11 and older)
         * tenancy
         * extras
         * virtualization
@@ -73,13 +72,11 @@ class Api:
         base_url = "{}/api".format(url if url[-1] != "/" else url[:-1])
         self.token = token
         self.base_url = base_url
-        self.session_key = None
         self.http_session = requests.Session()
         self.threading = threading
         self.dcim = App(self, "dcim")
         self.ipam = App(self, "ipam")
         self.circuits = App(self, "circuits")
-        self.secrets = App(self, "secrets")
         self.tenancy = App(self, "tenancy")
         self.extras = App(self, "extras")
         self.virtualization = App(self, "virtualization")
