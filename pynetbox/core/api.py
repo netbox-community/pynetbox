@@ -33,8 +33,8 @@ class Api:
         * tenancy
         * extras
         * virtualization
-        * users (since NetBox 2.9)
-        * wireless (since NetBox 3.1)
+        * users
+        * wireless
 
     Calling any of these attributes will return
     :py:class:`.App` which exposes endpoints as attributes.
