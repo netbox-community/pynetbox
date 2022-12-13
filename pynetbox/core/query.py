@@ -71,8 +71,7 @@ class AllocationError(Exception):
     """Allocation Exception
 
     Used with available-ips/available-prefixes when there is no
-    room for allocation and NetBox returns 204 No Content (before
-    NetBox 3.1.1) or 409 Conflict (since NetBox 3.1.1+).
+    room for allocation and NetBox returns 409 Conflict.
     """
 
     def __init__(self, req):
@@ -233,7 +232,7 @@ class Request:
             url_override or self.url, headers=headers, params=params, json=data
         )
 
-        if req.status_code in [204, 409] and verb == "post":
+        if req.status_code == 409 and verb == "post":
             raise AllocationError(req)
         if verb == "delete":
             if req.ok:
@@ -350,7 +349,7 @@ class Request:
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.
         :raises: RequestError if req.ok returns false.
-        :raises: AllocationError if req.status_code is 204 (No Content)
+        :raises: AllocationError if req.status_code is 409 (Conflict)
             as with available-ips and available-prefixes when there is
             no room for the requested allocation.
         :raises: ContentError if response is not json.
