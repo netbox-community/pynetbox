@@ -46,7 +46,6 @@ class Endpoint:
         self.api = api
         self.base_url = api.base_url
         self.token = api.token
-        self.session_key = api.session_key
         self.url = "{base_url}/{app}/{endpoint}".format(
             base_url=self.base_url,
             app=app.name,
@@ -100,7 +99,6 @@ class Endpoint:
         req = Request(
             base="{}/".format(self.url),
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
             threading=self.api.threading,
             limit=limit,
@@ -162,7 +160,6 @@ class Endpoint:
             key=key,
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
         )
         try:
@@ -251,7 +248,6 @@ class Endpoint:
             filters=kwargs,
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
             threading=self.api.threading,
             limit=limit,
@@ -313,7 +309,6 @@ class Endpoint:
         req = Request(
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
         ).post(args[0] if args else kwargs)
 
@@ -380,7 +375,6 @@ class Endpoint:
         req = Request(
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
         ).patch(series)
 
@@ -445,7 +439,6 @@ class Endpoint:
         req = Request(
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
         )
         return True if req.delete(data=[{"id": i} for i in cleaned_ids]) else False
@@ -485,7 +478,6 @@ class Endpoint:
         req = Request(
             base=self.url,
             token=self.api.token,
-            private_key=self.api.private_key,
             http_session=self.api.http_session,
         ).options()
         try:
@@ -545,7 +537,6 @@ class Endpoint:
             filters=kwargs,
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
         )
 
@@ -566,7 +557,6 @@ class DetailEndpoint:
         self.request_kwargs = dict(
             base=self.url,
             token=parent_obj.api.token,
-            session_key=parent_obj.api.session_key,
             http_session=parent_obj.api.http_session,
         )
 

@@ -118,8 +118,6 @@ class Request:
         correlate to the filters a given endpoint accepts.
         In (e.g. /api/dcim/devices/?name='test') 'name': 'test'
         would be in the filters dict.
-    :param private_key: (str, optional) The user's private key as a
-        string.
     """
 
     def __init__(
@@ -131,8 +129,6 @@ class Request:
         offset=None,
         key=None,
         token=None,
-        private_key=None,
-        session_key=None,
         threading=False,
     ):
         """
@@ -145,15 +141,11 @@ class Request:
                 In (e.g. /api/dcim/devices/?name='test') 'name': 'test'
                 would be in the filters dict.
             key (int, optional): database id of the item being queried.
-            private_key (string, optional): The user's private key as a
-                string.
         """
         self.base = self.normalize_url(base)
         self.filters = filters or None
         self.key = key
         self.token = token
-        self.private_key = private_key
-        self.session_key = session_key
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
@@ -196,31 +188,6 @@ class Request:
         else:
             raise RequestError(req)
 
-    def get_session_key(self):
-        """Requests session key
-
-        Issues a GET request to the `get-session-key` endpoint for
-        subsequent use in requests from the `secrets` endpoint.
-
-        :Returns: String containing session key.
-        """
-        req = self.http_session.post(
-            "{}secrets/get-session-key/?preserve_key=True".format(self.base),
-            headers={
-                "accept": "application/json",
-                "authorization": "Token {}".format(self.token),
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            data=urlencode({"private_key": self.private_key.strip("\n")}),
-        )
-        if req.ok:
-            try:
-                return req.json()["session_key"]
-            except json.JSONDecodeError:
-                raise ContentError(req)
-        else:
-            raise RequestError(req)
-
     def get_status(self):
         """Gets the status from /api/status/ endpoint in NetBox.
 
@@ -254,8 +221,6 @@ class Request:
 
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
-        if self.session_key:
-            headers["X-Session-Key"] = self.session_key
 
         params = {}
         if not url_override:
@@ -367,8 +332,7 @@ class Request:
     def put(self, data):
         """Makes PUT request.
 
-        Makes a PUT request to NetBox's API. Adds the session key to
-        headers if the `private_key` attribute was populated.
+        Makes a PUT request to NetBox's API.
 
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.
@@ -381,8 +345,7 @@ class Request:
     def post(self, data):
         """Makes POST request.
 
-        Makes a POST request to NetBox's API. Adds the session key to
-        headers if the `private_key` attribute was populated.
+        Makes a POST request to NetBox's API.
 
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.

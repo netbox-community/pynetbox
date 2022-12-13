@@ -50,13 +50,8 @@ class Api:
     :param str url: The base URL to the instance of NetBox you
         wish to connect to.
     :param str token: Your NetBox token.
-    :param str,optional private_key_file: The path to your private
-        key file. (Usable only on NetBox 2.11 and older)
-    :param str,optional private_key: Your private key. (Usable only on NetBox 2.11 and older)
     :param bool,optional threading: Set to True to use threading in ``.all()``
         and ``.filter()`` requests.
-    :raises ValueError: If *private_key* and *private_key_file* are both
-        specified.
     :raises AttributeError: If app doesn't exist.
     :Examples:
 
@@ -73,28 +68,14 @@ class Api:
         self,
         url,
         token=None,
-        private_key=None,
-        private_key_file=None,
         threading=False,
     ):
-        if private_key and private_key_file:
-            raise ValueError(
-                '"private_key" and "private_key_file" cannot be used together.'
-            )
         base_url = "{}/api".format(url if url[-1] != "/" else url[:-1])
         self.token = token
-        self.private_key = private_key
-        self.private_key_file = private_key_file
         self.base_url = base_url
         self.session_key = None
         self.http_session = requests.Session()
         self.threading = threading
-
-        if self.private_key_file:
-            with open(self.private_key_file, "r") as kf:
-                private_key = kf.read()
-                self.private_key = private_key
-
         self.dcim = App(self, "dcim")
         self.ipam = App(self, "ipam")
         self.circuits = App(self, "circuits")

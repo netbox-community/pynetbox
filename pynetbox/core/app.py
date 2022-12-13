@@ -63,20 +63,7 @@ class App:
         self._setmodel()
 
     def __getattr__(self, name):
-        if name == "secrets":
-            self._set_session_key()
         return Endpoint(self.api, self, name, model=self.model)
-
-    def _set_session_key(self):
-        if getattr(self.api, "session_key"):
-            return
-        if self.api.token and self.api.private_key:
-            self.api.session_key = Request(
-                base=self.api.base_url,
-                token=self.api.token,
-                private_key=self.api.private_key,
-                http_session=self.api.http_session,
-            ).get_session_key()
 
     def choices(self):
         """Returns _choices response from App
@@ -95,7 +82,6 @@ class App:
         self._choices = Request(
             base="{}/{}/_choices/".format(self.api.base_url, self.name),
             token=self.api.token,
-            private_key=self.api.private_key,
             http_session=self.api.http_session,
         ).get()
 
@@ -124,7 +110,6 @@ class App:
                 self.name,
             ),
             token=self.api.token,
-            private_key=self.api.private_key,
             http_session=self.api.http_session,
         ).get()
         return custom_field_choices
@@ -151,7 +136,6 @@ class App:
                 self.name,
             ),
             token=self.api.token,
-            private_key=self.api.private_key,
             http_session=self.api.http_session,
         ).get()
         return config
@@ -198,7 +182,6 @@ class PluginsApp:
                 self.api.base_url,
             ),
             token=self.api.token,
-            private_key=self.api.private_key,
             http_session=self.api.http_session,
         ).get()
         return installed_plugins
