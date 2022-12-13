@@ -454,7 +454,7 @@ class Endpoint:
 
         :Returns: Dict containing the available choices.
 
-        :Example (from NetBox 2.8.x):
+        :Example:
 
         >>> from pprint import pprint
         >>> pprint(nb.ipam.ip_addresses.choices())
@@ -469,7 +469,8 @@ class Endpoint:
          'status': [{'display_name': 'Active', 'value': 'active'},
                     {'display_name': 'Reserved', 'value': 'reserved'},
                     {'display_name': 'Deprecated', 'value': 'deprecated'},
-                    {'display_name': 'DHCP', 'value': 'dhcp'}]}
+                    {'display_name': 'DHCP', 'value': 'dhcp'},
+                    {'display_name': 'SLAAC', 'value': 'slaac'}]}
         >>>
         """
         if self._choices:
