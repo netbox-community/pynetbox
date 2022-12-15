@@ -9,7 +9,6 @@ host = "http://localhost:8000"
 
 def_kwargs = {
     "token": "abc123",
-    "private_key_file": "tests/fixtures/api/get_session_key.json",
 }
 
 # Keys are app names, values are arbitrarily selected endpoints
@@ -26,7 +25,7 @@ endpoints = {
 class ApiTestCase(unittest.TestCase):
     @patch(
         "requests.sessions.Session.post",
-        return_value=Response(fixture="api/get_session_key.json"),
+        return_value=Response(),
     )
     def test_get(self, *_):
         api = pynetbox.api(host, **def_kwargs)
@@ -34,7 +33,7 @@ class ApiTestCase(unittest.TestCase):
 
     @patch(
         "requests.sessions.Session.post",
-        return_value=Response(fixture="api/get_session_key.json"),
+        return_value=Response(),
     )
     def test_sanitize_url(self, *_):
         api = pynetbox.api("http://localhost:8000/", **def_kwargs)

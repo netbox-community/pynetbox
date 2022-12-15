@@ -20,12 +20,11 @@ To begin, import pynetbox and instantiate the API.
 import pynetbox
 nb = pynetbox.api(
     'http://localhost:8000',
-    private_key_file='/path/to/private-key.pem',
     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
 )
 ```
 
-The first argument the .api() method takes is the NetBox URL. There are a handful of named arguments you can provide, but in most cases none are required to simply pull data. In order to write, the `token` argument should to be provided. To decrypt information from the `secrets` endpoint either the `private_key_file` or `private_key` argument needs to be provided.
+The first argument the .api() method takes is the NetBox URL. There are a handful of named arguments you can provide, but in most cases none are required to simply pull data. In order to write, the `token` argument should to be provided.
 
 
 ## Queries

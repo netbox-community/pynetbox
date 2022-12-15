@@ -57,7 +57,6 @@ class TraceableRecord(Record):
             key=str(self.id) + "/trace",
             base=self.endpoint.url,
             token=self.api.token,
-            session_key=self.api.session_key,
             http_session=self.api.http_session,
         ).get()
 
