@@ -95,11 +95,11 @@ class Endpoint:
         test1-leaf2
         test1-leaf3
         >>>
-        
+
         If you want to iterate over the results multiple times then
         encapsulate them in a list like this:
         >>> devices = list(nb.dcim.devices.all())
-        
+
         This will cause the entire result set
         to be fetched from the server.
 
