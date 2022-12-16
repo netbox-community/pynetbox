@@ -26,7 +26,7 @@ from pynetbox.models import (
 )
 
 
-class App(object):
+class App:
     """Represents apps in NetBox.
 
     Calls to attributes are returned as Endpoint objects.
@@ -39,7 +39,6 @@ class App(object):
     def __init__(self, api, name):
         self.api = api
         self.name = name
-        self._choices = None
         self._setmodel()
 
     models = {
@@ -56,78 +55,14 @@ class App(object):
         self.model = App.models[self.name] if self.name in App.models else None
 
     def __getstate__(self):
-        return {"api": self.api, "name": self.name, "_choices": self._choices}
+        return {"api": self.api, "name": self.name}
 
     def __setstate__(self, d):
         self.__dict__.update(d)
         self._setmodel()
 
     def __getattr__(self, name):
-        if name == "secrets":
-            self._set_session_key()
         return Endpoint(self.api, self, name, model=self.model)
-
-    def _set_session_key(self):
-        if getattr(self.api, "session_key"):
-            return
-        if self.api.token and self.api.private_key:
-            self.api.session_key = Request(
-                base=self.api.base_url,
-                token=self.api.token,
-                private_key=self.api.private_key,
-                http_session=self.api.http_session,
-            ).get_session_key()
-
-    def choices(self):
-        """Returns _choices response from App
-
-        .. note::
-
-            This method is deprecated and only works with NetBox version 2.7.x
-            or older. The ``choices()`` method in :py:class:`.Endpoint` is
-            compatible with all NetBox versions.
-
-        :Returns: Raw response from NetBox's _choices endpoint.
-        """
-        if self._choices:
-            return self._choices
-
-        self._choices = Request(
-            base="{}/{}/_choices/".format(self.api.base_url, self.name),
-            token=self.api.token,
-            private_key=self.api.private_key,
-            http_session=self.api.http_session,
-        ).get()
-
-        return self._choices
-
-    def custom_choices(self):
-        """Returns _custom_field_choices response from app
-
-        .. note::
-
-            This method only works with NetBox version 2.9.x or older. NetBox
-            2.10.0 introduced the ``/extras/custom-fields/`` endpoint that can
-            be used f.ex. like ``nb.extras.custom_fields.all()``.
-
-        :Returns: Raw response from NetBox's _custom_field_choices endpoint.
-        :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
-        :Example:
-
-        >>> nb.extras.custom_choices()
-        {'Testfield1': {'Testvalue2': 2, 'Testvalue1': 1},
-         'Testfield2': {'Othervalue2': 4, 'Othervalue1': 3}}
-        """
-        custom_field_choices = Request(
-            base="{}/{}/_custom_field_choices/".format(
-                self.api.base_url,
-                self.name,
-            ),
-            token=self.api.token,
-            private_key=self.api.private_key,
-            http_session=self.api.http_session,
-        ).get()
-        return custom_field_choices
 
     def config(self):
         """Returns config response from app
@@ -151,13 +86,12 @@ class App(object):
                 self.name,
             ),
             token=self.api.token,
-            private_key=self.api.private_key,
             http_session=self.api.http_session,
         ).get()
         return config
 
 
-class PluginsApp(object):
+class PluginsApp:
     """
     Basically valid plugins api could be handled by same App class,
     but you need to add plugins to request url path.
@@ -198,7 +132,6 @@ class PluginsApp(object):
                 self.api.base_url,
             ),
             token=self.api.token,
-            private_key=self.api.private_key,
             http_session=self.api.http_session,
         ).get()
         return installed_plugins

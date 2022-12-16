@@ -17,8 +17,8 @@ import copy
 from collections import OrderedDict
 
 import pynetbox.core.app
-from six.moves.urllib.parse import urlsplit
-from pynetbox.core.query import Request, RequestError
+from urllib.parse import urlsplit
+from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
 
@@ -63,14 +63,14 @@ def flatten_custom(custom_dict):
     }
 
 
-class JsonField(object):
+class JsonField:
     """Explicit field type for values that are not to be converted
     to a Record object"""
 
     _json_field = True
 
 
-class RecordSet(object):
+class RecordSet:
     """Iterator containing Record objects.
 
     Returned by :py:meth:`.Endpoint.all()` and :py:meth:`.Endpoint.filter()` methods.
@@ -172,7 +172,7 @@ class RecordSet(object):
         return self.endpoint.delete(self)
 
 
-class Record(object):
+class Record:
     """Create Python objects from NetBox API responses.
 
     Creates an object from a NetBox response passed as ``values``.
@@ -354,6 +354,22 @@ class Record(object):
         values within.
         """
 
+        def generic_list_parser(key_name, list_item):
+            from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
+
+            if (
+                isinstance(list_item, dict)
+                and "object_type" in list_item
+                and "object" in list_item
+            ):
+                lookup = list_item["object_type"]
+                model = None
+                model = CONTENT_TYPE_MAPPER.get(lookup)
+                if model:
+                    return model(list_item["object"], self.api, self.endpoint)
+
+            return list_item
+
         def list_parser(key_name, list_item):
             if isinstance(list_item, dict):
                 lookup = getattr(self.__class__, key_name, None)
@@ -364,6 +380,7 @@ class Record(object):
                 else:
                     model = lookup[0]
                     return model(list_item, self.api, self.endpoint)
+
             return list_item
 
         for k, v in values.items():
@@ -382,8 +399,13 @@ class Record(object):
                 self._add_cache((k, v))
 
             elif isinstance(v, list):
-                v = [list_parser(k, i) for i in v]
-                to_cache = list(v)
+                # check if GFK
+                if len(v) and isinstance(v[0], dict) and "object_type" in v[0]:
+                    v = [generic_list_parser(k, i) for i in v]
+                    to_cache = list(v)
+                else:
+                    v = [list_parser(k, i) for i in v]
+                    to_cache = list(v)
                 self._add_cache((k, to_cache))
 
             else:
@@ -399,8 +421,8 @@ class Record(object):
             url_path = url_path[len(extra_path) :]
         split_url_path = url_path.split("/")
         if split_url_path[2] == "plugins":
-            # Skip plugins from the path
-            app, name = split_url_path[3:5]
+            app = "plugins/{}".format(split_url_path[3])
+            name = split_url_path[4]
         else:
             app, name = split_url_path[2:4]
         return getattr(pynetbox.core.app.App(self.api, app), name)
@@ -419,7 +441,6 @@ class Record(object):
             req = Request(
                 base=self.url,
                 token=self.api.token,
-                session_key=self.api.session_key,
                 http_session=self.api.http_session,
             )
             self._parse_values(next(req.get()))
@@ -496,7 +517,7 @@ class Record(object):
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
         >>> x.serial
-        u''
+        ''
         >>> x.serial = '1234'
         >>> x.updates()
         {'serial': '1234'}
@@ -520,7 +541,7 @@ class Record(object):
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
         >>> x.serial
-        u''
+        ''
         >>> x.serial = '1234'
         >>> x.save()
         True
@@ -532,7 +553,6 @@ class Record(object):
                 key=self.id,
                 base=self.endpoint.url,
                 token=self.api.token,
-                session_key=self.api.session_key,
                 http_session=self.api.http_session,
             )
             if req.patch(updates):
@@ -579,7 +599,6 @@ class Record(object):
             key=self.id,
             base=self.endpoint.url,
             token=self.api.token,
-            session_key=self.api.session_key,
             http_session=self.api.http_session,
         )
         return True if req.delete() else False

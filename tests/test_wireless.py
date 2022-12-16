@@ -1,13 +1,8 @@
 import unittest
-import six
+from unittest.mock import patch
 
 import pynetbox
 from .util import Response
-
-if six.PY3:
-    from unittest.mock import patch
-else:
-    from mock import patch
 
 
 api = pynetbox.api("http://localhost:8000")
@@ -17,7 +12,7 @@ nb_app = api.wireless
 HEADERS = {"accept": "application/json;"}
 
 
-class Generic(object):
+class Generic:
     class Tests(unittest.TestCase):
         name = ""
         ret = pynetbox.core.response.Record

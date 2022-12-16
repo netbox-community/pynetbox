@@ -22,6 +22,42 @@ class IpAddresses(Record):
         return str(self.address)
 
 
+class IpRanges(Record):
+    def __str__(self):
+        return str(self.display)
+
+    @property
+    def available_ips(self):
+        """Represents the ``available-ips`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing and creating IP addresses inside an ip range .
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> ip_range = nb.ipam.ip_ranges.get(24)
+        >>> ip_range.available_ips.list()
+        [10.0.0.1/24, 10.0.0.2/24, 10.0.0.3/24, 10.0.0.4/24, 10.0.0.5/24, ...]
+
+        To create a single IP:
+
+        >>> ip_range = nb.ipam.ip_ranges.get(24)
+        >>> ip_range.available_ips.create()
+        10.0.0.1/24
+
+
+        To create multiple IPs:
+
+        >>> ip_range = nb.ipam.ip_ranges.get(24)
+        >>> create = ip_range.available_ips.create([{} for i in range(2)])
+        >>> create
+        [10.0.0.2/24, 10.0.0.3/24]
+        """
+        return DetailEndpoint(self, "available-ips", custom_return=IpAddresses)
+
+
 class Prefixes(Record):
     def __str__(self):
         return str(self.prefix)
@@ -101,7 +137,7 @@ class Aggregates(Record):
 
 class Vlans(Record):
     def __str__(self):
-        return super().__str__(self) or str(self.vid)
+        return super().__str__() or str(self.vid)
 
 
 class VlanGroups(Record):
@@ -111,8 +147,6 @@ class VlanGroups(Record):
 
         Returns a DetailEndpoint object that is the interface for
         viewing and creating VLANs inside a VLAN group.
-
-        Available since NetBox 3.2.0.
 
         :returns: :py:class:`.DetailEndpoint`
 
