@@ -42,6 +42,11 @@ test1-leaf3
 >>>
 ```
 
+Note that the all() and filter() methods are generators and return an object that can be iterated over only once.  If you are going to be iterating over it repeatedly you need to either call the all() method again, or encapsulate the results in a `list` object like this:
+```
+>>> devices = list(nb.dcim.devices.all())
+```
+
 ### Threading
 
 pynetbox supports multithreaded calls for `.filter()` and `.all()` queries. It is **highly recommended** you have `MAX_PAGE_SIZE` in your Netbox install set to anything *except* `0` or `None`. The default value of `1000` is usually a good value to use. To enable threading, add `threading=True` parameter to the `.api`:

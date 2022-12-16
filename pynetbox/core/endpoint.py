@@ -78,14 +78,16 @@ class Endpoint:
         Returns all objects from an endpoint.
 
         :arg int,optional limit: Overrides the max page size on
-            paginated returns.
+            paginated returns.  This defines the number of records that will
+            be returned with each query to the Netbox server.  The queries
+            will be made as you iterate through the result set.
         :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
 
         :Examples:
 
-        >>> devices = nb.dcim.devices.all()
+        >>> devices = list(nb.dcim.devices.all())
         >>> for device in devices:
         ...     print(device.name)
         ...
@@ -94,6 +96,13 @@ class Endpoint:
         test1-leaf3
         >>>
         
+        If you want to iterate over the results multiple times then
+        encapsulate them in a list like this:
+        >>> devices = list(nb.dcim.devices.all())
+        
+        This will cause the entire result set
+        to be fetched from the server.
+
         """
         if limit == 0 and offset is not None:
             raise ValueError("offset requires a positive limit value")
@@ -135,9 +144,9 @@ class Endpoint:
         >>> nb.dcim.devices.get(1)
         test1-edge1
         >>>
-        
+
         Using multiple named arguments. For example, retriving the location when the location name is not unique and used in multiple sites.
-        
+
         >>> nb.locations.get(site='site-1', name='Row 1')
         Row 1
         """
@@ -188,7 +197,9 @@ class Endpoint:
         :arg str,optional \**kwargs: Any search argument the
             endpoint accepts can be added as a keyword arg.
         :arg int,optional limit: Overrides the max page size on
-            paginated returns.
+            paginated returns.  This defines the number of records that will
+            be returned with each query to the Netbox server.  The queries
+            will be made as you iterate through the result set.
         :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
@@ -205,7 +216,7 @@ class Endpoint:
         test1-leaf2
         test1-leaf3
         >>>
-        
+
         >>> devices = nb.dcim.devices.filter(site='site-1')
         >>> for device in devices:
         ...     print(device.name)
@@ -213,16 +224,16 @@ class Endpoint:
         test1-a2-leaf1
         test2-a2-leaf2
         >>>
-        
-        If we want to filter by site, location, tenant, or fields which have a display name and a slug, the slug has to be used for filtering. 
-        
+
+        If we want to filter by site, location, tenant, or fields which have a display name and a slug, the slug has to be used for filtering.
+
         .. note::
-        
-          If a keyword argument is incorrect a `TypeError` will not be returned by pynetbox. 
-          Instead, all records filtered up to the last correct keyword argument. For example, if we used `site="Site 1"` instead of `site=site-1` when using filter on  
+
+          If a keyword argument is incorrect a `TypeError` will not be returned by pynetbox.
+          Instead, all records filtered up to the last correct keyword argument. For example, if we used `site="Site 1"` instead of `site=site-1` when using filter on
           the devices endpoint, then pynetbox will return **all** devices across all sites instead of devices at Site 1.
-        
-            
+
+
         Using a freeform query along with a named argument.
 
         >>> devices = nb.dcim.devices.filter('a3', role='leaf-switch')
@@ -232,7 +243,7 @@ class Endpoint:
         test1-a3-leaf1
         test1-a3-leaf2
         >>>
-        
+
 
         Chaining multiple named arguments.
 
@@ -254,6 +265,12 @@ class Endpoint:
         test1-a3-spine2
         test1-a3-leaf1
         >>>
+
+        To have the ability to iterate over the results multiple times then
+        encapsulate them in a list.  This will cause the entire result set
+        to be fetched from the server.
+
+        >>> devices = list(nb.dcim.devices.filter(role='leaf-switch'))
         """
 
         if args:
@@ -309,9 +326,9 @@ class Endpoint:
         ...    device_role=1,
         ... )
         >>>
-        
+
         Creating an object on the 'devices' endpoint using `.get()` to get ids.
-        
+
         >>> device = netbox.dcim.devices.create(
         ...     name = 'test1',
         ...     site = netbox.dcim.devices.get(name='site1').id,
@@ -340,20 +357,20 @@ class Endpoint:
         ...         "status": 1
         ...     }
         ... ])
-        
+
         Create a new device type.
-        
+
         >>> device_type = netbox.dcim.devices.create(
         ...     manufacturer = netbox.dcim.manufacturers.get(name='manufacturer-name').id,
         ...     model = 'device-type-name',
         ...     slug = 'device-type-slug',
         ...     subdevice_role = 'child or parent', #optional field - requred if creating a device type to be used by child devices
-        ...     u_height = unit_height, #can only equal 0 if the device type is for a child device - requires subdevice_role='child' if that is the case 
+        ...     u_height = unit_height, #can only equal 0 if the device type is for a child device - requires subdevice_role='child' if that is the case
         ...     custom_fields = {'cf_1' : 'custom data 1'}
         ...     )
 
         Create a device bay and child device.
-        
+
         >>> device_bay = netbox.dcim.device_bays.create(
         ...     device = netbox.dcim.devices.get(name='parent device').id, # device the device bay is located
         ...     name = 'Bay 1'
@@ -371,9 +388,9 @@ class Endpoint:
         >>> get_child_device = netbox.dcim.devices.get(name='child device')
         >>> get_device_bay.installed_device = get_child_device
         >>> get_device_bay.save()
-        
-        Create a network interface 
-        
+
+        Create a network interface
+
         >>> interface = netbox.dcim.interfaces.get(name="interface-test", device="test-device")
         >>> netbox_ip = netbox.ipam.ip_addresses.create(
         ... address = "ip-address",
@@ -388,7 +405,7 @@ class Endpoint:
         >>> netbox_ip.dns_name = "test.dns.local"
         >>> # save changes to IP Address
         >>> netbox_ip.save()
-        
+
         """
 
         req = Request(
