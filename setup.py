@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="pynetbox",
     description="NetBox API client library",
-    url="https://github.com/netbox-community/netbox",
+    url="https://github.com/netbox-community/pynetbox",
     author="Zach Moody",
     author_email="zmoody@do.co",
     license="Apache2",
