@@ -58,9 +58,21 @@ def get_return(lookup, return_fields=None):
 
 
 def flatten_custom(custom_dict):
-    return {
-        k: v if not isinstance(v, dict) else v["value"] for k, v in custom_dict.items()
-    }
+    ret = {}
+
+    for k, val in custom_dict.items():
+       current_val = val
+
+       if isinstance(val, dict):
+           current_val = val.get('id', val)
+
+       if isinstance(val, list):
+           current_val = [
+               v.get("id") if isinstance(v, dict) else v for v in val
+           ]
+
+       ret[k] = current_val
+    return ret
 
 
 class JsonField:
