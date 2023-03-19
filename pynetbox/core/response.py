@@ -323,7 +323,7 @@ class Record:
         return dict(self)[k]
 
     def __str__(self):
-        return (
+        return str(
             getattr(self, "name", None)
             or getattr(self, "label", None)
             or getattr(self, "display", None)
