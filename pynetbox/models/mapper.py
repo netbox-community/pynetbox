@@ -59,7 +59,7 @@ CONTENT_TYPE_MAPPER = {
     "dcim.poweroutlet": PowerOutlets,
     "dcim.poweroutlettemplate": None,
     "dcim.powerpanel": None,
-    "dcim.powerport": ConsolePorts,
+    "dcim.powerport": PowerPorts,
     "dcim.powerporttemplate": None,
     "dcim.rack": Racks,
     "dcim.rackreservation": RackReservations,
