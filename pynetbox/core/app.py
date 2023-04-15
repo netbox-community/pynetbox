@@ -23,6 +23,7 @@ from pynetbox.models import (
     extras,
     users,
     wireless,
+    core,
 )
 
 
@@ -49,6 +50,7 @@ class App:
         "extras": extras,
         "users": users,
         "wireless": wireless,
+        "core": core,
     }
 
     def _setmodel(self):

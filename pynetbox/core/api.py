@@ -35,6 +35,7 @@ class Api:
         * virtualization
         * users
         * wireless
+        * core (with NetBox 3.5+)
 
     Calling any of these attributes will return
     :py:class:`.App` which exposes endpoints as attributes.
@@ -82,6 +83,7 @@ class Api:
         self.virtualization = App(self, "virtualization")
         self.users = App(self, "users")
         self.wireless = App(self, "wireless")
+        self.core = App(self, "core")
         self.plugins = PluginsApp(self)
 
     @property
