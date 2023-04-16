@@ -75,15 +75,9 @@ class Api:
         self.base_url = base_url
         self.http_session = requests.Session()
         self.threading = threading
-        self.dcim = App(self, "dcim")
-        self.ipam = App(self, "ipam")
-        self.circuits = App(self, "circuits")
-        self.tenancy = App(self, "tenancy")
-        self.extras = App(self, "extras")
-        self.virtualization = App(self, "virtualization")
-        self.users = App(self, "users")
-        self.wireless = App(self, "wireless")
-        self.core = App(self, "core")
+        # Add all the models listed in App class
+        for model in App.MODELS:
+            setattr(self, model, App(self, model))
         self.plugins = PluginsApp(self)
 
     @property
