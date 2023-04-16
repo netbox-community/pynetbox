@@ -60,7 +60,7 @@ class Api:
     ...     'http://localhost:8000',
     ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
     ... )
-    >>> list(nb.dcim.devices.all())
+    >>> list(nb.dcim.devices.filter())
     [test1-leaf1, test1-leaf2, test1-leaf3]
     """
 
