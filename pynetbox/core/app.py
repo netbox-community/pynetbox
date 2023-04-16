@@ -18,6 +18,7 @@ from pynetbox.core.query import Request
 from pynetbox.models import (
     dcim,
     ipam,
+    tenancy,
     virtualization,
     circuits,
     extras,
@@ -45,6 +46,7 @@ class App:
     MODELS = {
         "dcim": dcim,
         "ipam": ipam,
+        "tenancy": tenancy,
         "circuits": circuits,
         "virtualization": virtualization,
         "extras": extras,
