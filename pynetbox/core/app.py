@@ -42,7 +42,7 @@ class App:
         self.name = name
         self._setmodel()
 
-    models = {
+    MODELS = {
         "dcim": dcim,
         "ipam": ipam,
         "circuits": circuits,
@@ -54,7 +54,7 @@ class App:
     }
 
     def _setmodel(self):
-        self.model = App.models[self.name] if self.name in App.models else None
+        self.model = App.MODELS[self.name] if self.name in App.MODELS else None
 
     def __getstate__(self):
         return {"api": self.api, "name": self.name}
