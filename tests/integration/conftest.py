@@ -73,7 +73,7 @@ def netbox_docker_repo_dirpaths(pytestconfig, git_toplevel):
     try:
         subp.check_call(["which", "docker"])
     except subp.CalledProcessError:
-        pytest.skip(msg="docker executable was not found on the host")
+        pytest.skip(reason="docker executable was not found on the host")
     netbox_versions_by_repo_dirpaths = {}
     for netbox_version in pytestconfig.option.netbox_versions:
         repo_version_tag = get_netbox_docker_version_tag(netbox_version=netbox_version)
