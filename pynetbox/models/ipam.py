@@ -17,6 +17,49 @@ from pynetbox.core.response import Record
 from pynetbox.core.endpoint import DetailEndpoint
 
 
+class Asns(Record):
+    def __str__(self):
+        return super().__str__() or str(self.asn)
+
+
+class AsnRanges(Record):
+    def __str__(self):
+        return str(self.display)
+
+    @property
+    def available_asns(self):
+        """Represents the ``available-asns`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing and creating ASNs inside an ASN range.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> asn_range = nb.ipam.asn_ranges.get(5)
+        >>> asn_range
+        TestRange (65510-65512)
+        >>> asn_range.available_asns.list()
+        [65510, 65511, 65512]
+
+        To create a single ASN:
+
+        >>> asn_range = nb.ipam.asn_ranges.get(5)
+        >>> new_asn = asn_range.available_asns.create()
+        >>> new_asn
+        AS65510
+
+        To create multiple ASNs:
+
+        >>> asn_range = nb.ipam.asn_ranges.get(5)
+        >>> asns = asn_range.available_asns.create([{} for _ in range(2)])
+        >>> asns
+        [AS65510, AS65511]
+        """
+        return DetailEndpoint(self, "available-asns", custom_return=Asns)
+
+
 class IpAddresses(Record):
     def __str__(self):
         return str(self.address)
