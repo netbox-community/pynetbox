@@ -409,5 +409,5 @@ class Request:
         """
 
         if not hasattr(self, "count"):
-            self.count = self._make_call(add_params={"limit": 1})["count"]
+            self.count = self._make_call(add_params={"limit": 1, "brief": 1})["count"]
         return self.count
