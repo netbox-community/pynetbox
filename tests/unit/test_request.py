@@ -1,13 +1,7 @@
 import unittest
-
-import six
+from unittest.mock import Mock
 
 from pynetbox.core.query import Request
-
-if six.PY3:
-    from unittest.mock import Mock
-else:
-    from mock import Mock
 
 
 class RequestTestCase(unittest.TestCase):

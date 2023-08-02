@@ -13,12 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-try:
-    import concurrent.futures as cf
-except ImportError:
-    pass
+import concurrent.futures as cf
 import json
-from six.moves.urllib.parse import urlencode, urlsplit, urlunsplit
+from urllib.parse import urlsplit, urlunsplit
 
 
 def calc_pages(limit, count):
@@ -60,7 +57,7 @@ class RequestError(Exception):
                     )
                 )
 
-        super(RequestError, self).__init__(req)
+        super().__init__(self.message)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
@@ -74,12 +71,11 @@ class AllocationError(Exception):
     """Allocation Exception
 
     Used with available-ips/available-prefixes when there is no
-    room for allocation and NetBox returns 204 No Content (before
-    NetBox 3.1.1) or 409 Conflict (since NetBox 3.1.1+).
+    room for allocation and NetBox returns 409 Conflict.
     """
 
     def __init__(self, req):
-        super(AllocationError, self).__init__(req)
+        super().__init__(req)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
@@ -98,7 +94,7 @@ class ContentError(Exception):
     """
 
     def __init__(self, req):
-        super(ContentError, self).__init__(req)
+        super().__init__(req)
         self.req = req
         self.request_body = req.request.body
         self.base = req.url
@@ -110,7 +106,7 @@ class ContentError(Exception):
         return self.error
 
 
-class Request(object):
+class Request:
     """Creates requests to the Netbox API
 
     Responsible for building the url and making the HTTP(S) requests to
@@ -121,8 +117,6 @@ class Request(object):
         correlate to the filters a given endpoint accepts.
         In (e.g. /api/dcim/devices/?name='test') 'name': 'test'
         would be in the filters dict.
-    :param private_key: (str, optional) The user's private key as a
-        string.
     """
 
     def __init__(
@@ -134,8 +128,6 @@ class Request(object):
         offset=None,
         key=None,
         token=None,
-        private_key=None,
-        session_key=None,
         threading=False,
     ):
         """
@@ -148,15 +140,11 @@ class Request(object):
                 In (e.g. /api/dcim/devices/?name='test') 'name': 'test'
                 would be in the filters dict.
             key (int, optional): database id of the item being queried.
-            private_key (string, optional): The user's private key as a
-                string.
         """
         self.base = self.normalize_url(base)
         self.filters = filters or None
         self.key = key
         self.token = token
-        self.private_key = private_key
-        self.session_key = session_key
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
@@ -199,31 +187,6 @@ class Request(object):
         else:
             raise RequestError(req)
 
-    def get_session_key(self):
-        """Requests session key
-
-        Issues a GET request to the `get-session-key` endpoint for
-        subsequent use in requests from the `secrets` endpoint.
-
-        :Returns: String containing session key.
-        """
-        req = self.http_session.post(
-            "{}secrets/get-session-key/?preserve_key=True".format(self.base),
-            headers={
-                "accept": "application/json",
-                "authorization": "Token {}".format(self.token),
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            data=urlencode({"private_key": self.private_key.strip("\n")}),
-        )
-        if req.ok:
-            try:
-                return req.json()["session_key"]
-            except json.JSONDecodeError:
-                raise ContentError(req)
-        else:
-            raise RequestError(req)
-
     def get_status(self):
         """Gets the status from /api/status/ endpoint in NetBox.
 
@@ -257,8 +220,6 @@ class Request(object):
 
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
-        if self.session_key:
-            headers["X-Session-Key"] = self.session_key
 
         params = {}
         if not url_override:
@@ -281,7 +242,7 @@ class Request(object):
             url_override or self.url, headers=headers, params=params, json=data
         )
 
-        if req.status_code in [204, 409] and verb == "post":
+        if req.status_code == 409 and verb == "post":
             raise AllocationError(req)
         if verb == "delete":
             if req.ok:
@@ -380,8 +341,7 @@ class Request(object):
     def put(self, data):
         """Makes PUT request.
 
-        Makes a PUT request to NetBox's API. Adds the session key to
-        headers if the `private_key` attribute was populated.
+        Makes a PUT request to NetBox's API.
 
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.
@@ -394,13 +354,12 @@ class Request(object):
     def post(self, data):
         """Makes POST request.
 
-        Makes a POST request to NetBox's API. Adds the session key to
-        headers if the `private_key` attribute was populated.
+        Makes a POST request to NetBox's API.
 
         :param data: (dict) Contains a dict that will be turned into a
             json object and sent to the API.
         :raises: RequestError if req.ok returns false.
-        :raises: AllocationError if req.status_code is 204 (No Content)
+        :raises: AllocationError if req.status_code is 409 (Conflict)
             as with available-ips and available-prefixes when there is
             no room for the requested allocation.
         :raises: ContentError if response is not json.

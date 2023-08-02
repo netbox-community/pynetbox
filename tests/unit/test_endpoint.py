@@ -1,13 +1,7 @@
 import unittest
-
-import six
+from unittest.mock import patch, Mock
 
 from pynetbox.core.endpoint import Endpoint
-
-if six.PY3:
-    from unittest.mock import patch, Mock, call
-else:
-    from mock import patch, Mock, call
 
 
 class EndPointTestCase(unittest.TestCase):

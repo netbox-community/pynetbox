@@ -19,7 +19,7 @@ from pynetbox.core.response import Record, RecordSet
 RESERVED_KWARGS = ()
 
 
-class Endpoint(object):
+class Endpoint:
     """Represent actions available on endpoints in the Netbox API.
 
     Takes ``name`` and ``app`` passed from App() and builds the correct
@@ -46,7 +46,6 @@ class Endpoint(object):
         self.api = api
         self.base_url = api.base_url
         self.token = api.token
-        self.session_key = api.session_key
         self.url = "{base_url}/{app}/{endpoint}".format(
             base_url=self.base_url,
             app=app.name,
@@ -79,14 +78,16 @@ class Endpoint(object):
         Returns all objects from an endpoint.
 
         :arg int,optional limit: Overrides the max page size on
-            paginated returns.
+            paginated returns.  This defines the number of records that will
+            be returned with each query to the Netbox server.  The queries
+            will be made as you iterate through the result set.
         :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
 
         :Examples:
 
-        >>> devices = nb.dcim.devices.all()
+        >>> devices = list(nb.dcim.devices.all())
         >>> for device in devices:
         ...     print(device.name)
         ...
@@ -94,13 +95,20 @@ class Endpoint(object):
         test1-leaf2
         test1-leaf3
         >>>
+
+        If you want to iterate over the results multiple times then
+        encapsulate them in a list like this:
+        >>> devices = list(nb.dcim.devices.all())
+
+        This will cause the entire result set
+        to be fetched from the server.
+
         """
         if limit == 0 and offset is not None:
             raise ValueError("offset requires a positive limit value")
         req = Request(
             base="{}/".format(self.url),
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
             threading=self.api.threading,
             limit=limit,
@@ -136,6 +144,11 @@ class Endpoint(object):
         >>> nb.dcim.devices.get(1)
         test1-edge1
         >>>
+
+        Using multiple named arguments. For example, retriving the location when the location name is not unique and used in multiple sites.
+
+        >>> nb.locations.get(site='site-1', name='Row 1')
+        Row 1
         """
 
         try:
@@ -162,7 +175,6 @@ class Endpoint(object):
             key=key,
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
         )
         try:
@@ -185,7 +197,9 @@ class Endpoint(object):
         :arg str,optional \**kwargs: Any search argument the
             endpoint accepts can be added as a keyword arg.
         :arg int,optional limit: Overrides the max page size on
-            paginated returns.
+            paginated returns.  This defines the number of records that will
+            be returned with each query to the Netbox server.  The queries
+            will be made as you iterate through the result set.
         :arg int,optional offset: Overrides the offset on paginated returns.
 
         :Returns: A :py:class:`.RecordSet` object.
@@ -203,6 +217,23 @@ class Endpoint(object):
         test1-leaf3
         >>>
 
+        >>> devices = nb.dcim.devices.filter(site='site-1')
+        >>> for device in devices:
+        ...     print(device.name)
+        ...
+        test1-a2-leaf1
+        test2-a2-leaf2
+        >>>
+
+        If we want to filter by site, location, tenant, or fields which have a display name and a slug, the slug has to be used for filtering.
+
+        .. note::
+
+          If a keyword argument is incorrect a `TypeError` will not be returned by pynetbox.
+          Instead, all records filtered up to the last correct keyword argument. For example, if we used `site="Site 1"` instead of `site=site-1` when using filter on
+          the devices endpoint, then pynetbox will return **all** devices across all sites instead of devices at Site 1.
+
+
         Using a freeform query along with a named argument.
 
         >>> devices = nb.dcim.devices.filter('a3', role='leaf-switch')
@@ -212,6 +243,7 @@ class Endpoint(object):
         test1-a3-leaf1
         test1-a3-leaf2
         >>>
+
 
         Chaining multiple named arguments.
 
@@ -233,6 +265,12 @@ class Endpoint(object):
         test1-a3-spine2
         test1-a3-leaf1
         >>>
+
+        To have the ability to iterate over the results multiple times then
+        encapsulate them in a list.  This will cause the entire result set
+        to be fetched from the server.
+
+        >>> devices = list(nb.dcim.devices.filter(role='leaf-switch'))
         """
 
         if args:
@@ -251,7 +289,6 @@ class Endpoint(object):
             filters=kwargs,
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
             threading=self.api.threading,
             limit=limit,
@@ -290,6 +327,18 @@ class Endpoint(object):
         ... )
         >>>
 
+        Creating an object on the 'devices' endpoint using `.get()` to get ids.
+
+        >>> device = netbox.dcim.devices.create(
+        ...     name = 'test1',
+        ...     site = netbox.dcim.devices.get(name='site1').id,
+        ...     location = netbox.dcim.locations.get(name='Row 1').id,
+        ...     rack = netbox.dcim.racks.get(facility_id=1).id,
+        ...     device_type = netbox.dcim.device_types.get(slug='server-type-1').id,
+        ...     status='active',
+        ...     )
+        >>>
+
         Use bulk creation by passing a list of dictionaries:
 
         >>> nb.dcim.devices.create([
@@ -308,12 +357,60 @@ class Endpoint(object):
         ...         "status": 1
         ...     }
         ... ])
+
+        Create a new device type.
+
+        >>> device_type = netbox.dcim.devices.create(
+        ...     manufacturer = netbox.dcim.manufacturers.get(name='manufacturer-name').id,
+        ...     model = 'device-type-name',
+        ...     slug = 'device-type-slug',
+        ...     subdevice_role = 'child or parent', #optional field - requred if creating a device type to be used by child devices
+        ...     u_height = unit_height, #can only equal 0 if the device type is for a child device - requires subdevice_role='child' if that is the case
+        ...     custom_fields = {'cf_1' : 'custom data 1'}
+        ...     )
+
+        Create a device bay and child device.
+
+        >>> device_bay = netbox.dcim.device_bays.create(
+        ...     device = netbox.dcim.devices.get(name='parent device').id, # device the device bay is located
+        ...     name = 'Bay 1'
+        ...     )
+        >>> child_device = netbox.dcim.devices.create(
+        ...     name = 'child device',
+        ...     site = netbox.dcim.devices.get(name='test-site').id,
+        ...     location = netbox.dcim.locations.get(name='row-1').id,
+        ...     tenant = netbox.tenancy.tenants.get(name='tenant-1').id,
+        ...     manufactuer = netbox.dcim.manufacturers.get(name='test-m').id,
+        ...     rack = netbox.dcim.racks.get(name='Test Rack').id,
+        ...     device_type = netbox.dcim.device.types.get(slug='test-server').id, #easier to get device_type id by search by its slug rather than by its name
+        ...     )
+        >>> get_device_bay = netbox.dcim.device_bays.get(name='Bay 1')
+        >>> get_child_device = netbox.dcim.devices.get(name='child device')
+        >>> get_device_bay.installed_device = get_child_device
+        >>> get_device_bay.save()
+
+        Create a network interface
+
+        >>> interface = netbox.dcim.interfaces.get(name="interface-test", device="test-device")
+        >>> netbox_ip = netbox.ipam.ip_addresses.create(
+        ... address = "ip-address",
+        ... tenant = netbox.tenancy.tenants.get(name='tenant-1').id,
+        ... tags = [{'name':'Tag 1'}],
+        ... )
+        >>> #assign IP Address to device's network interface
+        >>> netbox_ip.assigned_object = interface
+        >>> netbox_ip.assigned_object_id = interface.id
+        >>> netbox_ip.assigned_object_type = 'dcim.interface'
+        >>> # add dns name to IP Address (optional)
+        >>> netbox_ip.dns_name = "test.dns.local"
+        >>> # save changes to IP Address
+        >>> netbox_ip.save()
+
         """
 
         req = Request(
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
         ).post(args[0] if args else kwargs)
 
@@ -338,19 +435,25 @@ class Endpoint(object):
 
         Updating objects on the `devices` endpoint:
 
-        >>> device = netbox.dcim.devices.update([
+        >>> devices = nb.dcim.devices.update([
         ...    {'id': 1, 'name': 'test'},
         ...    {'id': 2, 'name': 'test2'},
         ... ])
-        >>> True
+        >>> devices
+        [test2, test]
+        >>>
 
         Use bulk update by passing a list of Records:
 
-        >>> devices = nb.dcim.devices.all()
+        >>> devices = list(nb.dcim.devices.filter())
+        >>> devices
+        [Device1, Device2, Device3]
         >>> for d in devices:
-        >>>     d.name = d.name+'-test'
+        ...     d.name = d.name+'-test'
+        ...
         >>> nb.dcim.devices.update(devices)
-        >>> True
+        [Device1-test, Device2-test, Device3-test]
+        >>>
         """
         series = []
         if not isinstance(objects, list):
@@ -374,7 +477,6 @@ class Endpoint(object):
         req = Request(
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
         ).patch(series)
 
@@ -433,13 +535,12 @@ class Endpoint(object):
                 cleaned_ids.append(o.id)
             else:
                 raise ValueError(
-                    "Invalid object in list of " "objects to delete: " + str(type(o))
+                    "Invalid object in list of objects to delete: " + str(type(o))
                 )
 
         req = Request(
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
         )
         return True if req.delete(data=[{"id": i} for i in cleaned_ids]) else False
@@ -455,7 +556,7 @@ class Endpoint(object):
 
         :Returns: Dict containing the available choices.
 
-        :Example (from NetBox 2.8.x):
+        :Example:
 
         >>> from pprint import pprint
         >>> pprint(nb.ipam.ip_addresses.choices())
@@ -470,7 +571,8 @@ class Endpoint(object):
          'status': [{'display_name': 'Active', 'value': 'active'},
                     {'display_name': 'Reserved', 'value': 'reserved'},
                     {'display_name': 'Deprecated', 'value': 'deprecated'},
-                    {'display_name': 'DHCP', 'value': 'dhcp'}]}
+                    {'display_name': 'DHCP', 'value': 'dhcp'},
+                    {'display_name': 'SLAAC', 'value': 'slaac'}]}
         >>>
         """
         if self._choices:
@@ -479,7 +581,6 @@ class Endpoint(object):
         req = Request(
             base=self.url,
             token=self.api.token,
-            private_key=self.api.private_key,
             http_session=self.api.http_session,
         ).options()
         try:
@@ -539,14 +640,13 @@ class Endpoint(object):
             filters=kwargs,
             base=self.url,
             token=self.token,
-            session_key=self.session_key,
             http_session=self.api.http_session,
         )
 
         return ret.get_count()
 
 
-class DetailEndpoint(object):
+class DetailEndpoint:
     """Enables read/write operations on detail endpoints.
 
     Endpoints like ``available-ips`` that are detail routes off
@@ -560,7 +660,6 @@ class DetailEndpoint(object):
         self.request_kwargs = dict(
             base=self.url,
             token=parent_obj.api.token,
-            session_key=parent_obj.api.session_key,
             http_session=parent_obj.api.http_session,
         )
 

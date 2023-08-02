@@ -16,7 +16,6 @@ To set a custom header on all requests. These headers are automatically merged w
 >>> session.headers = {"mycustomheader": "test"}
 >>> nb = pynetbox.api(
 ...     'http://localhost:8000',
-...     private_key_file='/path/to/private-key.pem',
 ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
 ... )
 >>> nb.http_session = session
@@ -35,7 +34,6 @@ To disable SSL verification. See `the docs <https://requests.readthedocs.io/en/s
 >>> session.verify = False
 >>> nb = pynetbox.api(
 ...     'http://localhost:8000',
-...     private_key_file='/path/to/private-key.pem',
 ...     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
 ... )
 >>> nb.http_session = session
@@ -68,7 +66,6 @@ Setting timeouts requires the use of Adapters.
 
     nb = pynetbox.api(
         'http://localhost:8000',
-        private_key_file='/path/to/private-key.pem',
         token='d6f4e314a5b5fefd164995169f28ae32d987704f'
     )
     nb.http_session = session
