@@ -27,6 +27,7 @@ class Api:
     you can specify which app and endpoint you wish to interact with.
 
     Valid attributes currently are:
+        * core (NetBox 3.5+)
         * dcim
         * ipam
         * circuits
@@ -74,6 +75,7 @@ class Api:
         self.base_url = base_url
         self.http_session = requests.Session()
         self.threading = threading
+        self.core = App(self, "core")
         self.dcim = App(self, "dcim")
         self.ipam = App(self, "ipam")
         self.circuits = App(self, "circuits")
