@@ -252,6 +252,14 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                         "netboxcommunity/netbox:v%s" % netbox_version
                     )
 
+                    new_services[new_service_name]["environment"] = {
+                        "SKIP_SUPERUSER": "false",
+                        "SUPERUSER_API_TOKEN": "0123456789abcdef0123456789abcdef01234567",
+                        "SUPERUSER_EMAIL": "admin@example.com",
+                        "SUPERUSER_NAME": "admin",
+                        "SUPERUSER_PASSWORD": "admin",
+                    }
+
                 if service_name == "netbox":
                     # ensure the netbox container listens on a random port
                     new_services[new_service_name]["ports"] = ["8080"]
@@ -345,7 +353,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
 
 
 def netbox_is_responsive(url):
-    """Chack if the HTTP service is up and responsive."""
+    """Check if the HTTP service is up and responsive."""
     try:
         response = requests.get(url)
         if response.status_code == 200:
