@@ -15,6 +15,7 @@ limitations under the License.
 """
 import concurrent.futures as cf
 import json
+from packaging import version
 
 
 def calc_pages(limit, count):
@@ -153,12 +154,22 @@ class Request:
     def get_openapi(self):
         """Gets the OpenAPI Spec"""
         headers = {
+            "Accept": "application/json",
             "Content-Type": "application/json;",
         }
-        req = self.http_session.get(
-            "{}docs/?format=openapi".format(self.normalize_url(self.base)),
-            headers=headers,
-        )
+
+        current_version = version.parse(self.get_version())
+        if current_version >= version.parse("3.5"):
+            req = self.http_session.get(
+                "{}schema/".format(self.normalize_url(self.base)),
+                headers=headers,
+            )
+        else:
+            req = self.http_session.get(
+                "{}docs/?format=openapi".format(self.normalize_url(self.base)),
+                headers=headers,
+            )
+
         if req.ok:
             return req.json()
         else:
