@@ -123,6 +123,19 @@ class Devices(Record):
 
     @property
     def render_config(self):
+        """
+        Represents the ``render-config`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing response from the render-config endpoint.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> device = nb.ipam.devices.get(123)
+        >>> device.render_config.create()
+        """
         return DetailEndpoint(self, "render-config")
 
 
