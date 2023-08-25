@@ -17,7 +17,7 @@ from urllib.parse import urlsplit
 
 from pynetbox.core.query import Request
 from pynetbox.core.response import Record, JsonField
-from pynetbox.core.endpoint import RODetailEndpoint
+from pynetbox.core.endpoint import RODetailEndpoint, DetailEndpoint
 from pynetbox.models.ipam import IpAddresses
 from pynetbox.models.circuits import Circuits
 
@@ -120,6 +120,23 @@ class Devices(Record):
 
         """
         return RODetailEndpoint(self, "napalm")
+
+    @property
+    def render_config(self):
+        """
+        Represents the ``render-config`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing response from the render-config endpoint.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> device = nb.ipam.devices.get(123)
+        >>> device.render_config.create()
+        """
+        return DetailEndpoint(self, "render-config")
 
 
 class InterfaceConnections(Record):

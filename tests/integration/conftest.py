@@ -28,7 +28,11 @@ def get_netbox_docker_version_tag(netbox_version):
     major, minor = netbox_version.major, netbox_version.minor
 
     if (major, minor) == (3, 3):
-        tag = "2.2.0"
+        tag = "2.3.0"
+    elif (major, minor) == (3, 4):
+        tag = "2.5.3"
+    elif (major, minor) == (3, 5):
+        tag = "2.6.1"
     else:
         raise NotImplementedError(
             "Version %s is not currently supported" % netbox_version
@@ -48,7 +52,7 @@ def git_toplevel():
     try:
         subp.check_call(["which", "git"])
     except subp.CalledProcessError:
-        pytest.skip(msg="git executable was not found on the host")
+        pytest.skip(reason="git executable was not found on the host")
     return (
         subp.check_output(["git", "rev-parse", "--show-toplevel"])
         .decode("utf-8")
@@ -73,7 +77,7 @@ def netbox_docker_repo_dirpaths(pytestconfig, git_toplevel):
     try:
         subp.check_call(["which", "docker"])
     except subp.CalledProcessError:
-        pytest.skip(msg="docker executable was not found on the host")
+        pytest.skip(reason="docker executable was not found on the host")
     netbox_versions_by_repo_dirpaths = {}
     for netbox_version in pytestconfig.option.netbox_versions:
         repo_version_tag = get_netbox_docker_version_tag(netbox_version=netbox_version)
@@ -248,6 +252,14 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                         "netboxcommunity/netbox:v%s" % netbox_version
                     )
 
+                    new_services[new_service_name]["environment"] = {
+                        "SKIP_SUPERUSER": "false",
+                        "SUPERUSER_API_TOKEN": "0123456789abcdef0123456789abcdef01234567",
+                        "SUPERUSER_EMAIL": "admin@example.com",
+                        "SUPERUSER_NAME": "admin",
+                        "SUPERUSER_PASSWORD": "admin",
+                    }
+
                 if service_name == "netbox":
                     # ensure the netbox container listens on a random port
                     new_services[new_service_name]["ports"] = ["8080"]
@@ -341,7 +353,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
 
 
 def netbox_is_responsive(url):
-    """Chack if the HTTP service is up and responsive."""
+    """Check if the HTTP service is up and responsive."""
     try:
         response = requests.get(url)
         if response.status_code == 200:

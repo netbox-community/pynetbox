@@ -15,6 +15,7 @@ limitations under the License.
 """
 import concurrent.futures as cf
 import json
+from packaging import version
 
 
 def calc_pages(limit, count):
@@ -153,12 +154,22 @@ class Request:
     def get_openapi(self):
         """Gets the OpenAPI Spec"""
         headers = {
-            "Content-Type": "application/json;",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         }
-        req = self.http_session.get(
-            "{}docs/?format=openapi".format(self.normalize_url(self.base)),
-            headers=headers,
-        )
+
+        current_version = version.parse(self.get_version())
+        if current_version >= version.parse("3.5"):
+            req = self.http_session.get(
+                "{}schema/".format(self.normalize_url(self.base)),
+                headers=headers,
+            )
+        else:
+            req = self.http_session.get(
+                "{}docs/?format=openapi".format(self.normalize_url(self.base)),
+                headers=headers,
+            )
+
         if req.ok:
             return req.json()
         else:
@@ -175,7 +186,7 @@ class Request:
         present in the headers.
         """
         headers = {
-            "Content-Type": "application/json;",
+            "Content-Type": "application/json",
         }
         req = self.http_session.get(
             self.normalize_url(self.base),
@@ -192,7 +203,7 @@ class Request:
         :Returns: Dictionary as returned by NetBox.
         :Raises: RequestError if request is not successful.
         """
-        headers = {"Content-Type": "application/json;"}
+        headers = {"Content-Type": "application/json"}
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
         req = self.http_session.get(
@@ -213,9 +224,9 @@ class Request:
 
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
         if verb in ("post", "put") or verb == "delete" and data:
-            headers = {"Content-Type": "application/json;"}
+            headers = {"Content-Type": "application/json"}
         else:
-            headers = {"accept": "application/json;"}
+            headers = {"accept": "application/json"}
 
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)

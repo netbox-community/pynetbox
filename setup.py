@@ -13,6 +13,7 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=[
         "requests>=2.20.0,<3.0",
+        "packaging<24.0"
     ],
     zip_safe=False,
     keywords=["netbox"],

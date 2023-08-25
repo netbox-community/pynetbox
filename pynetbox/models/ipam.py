@@ -162,3 +162,33 @@ class VlanGroups(Record):
         NewVLAN (10)
         """
         return DetailEndpoint(self, "available-vlans", custom_return=Vlans)
+
+
+class AsnRanges(Record):
+    @property
+    def available_asns(self):
+        """
+        Represents the ``available-asns`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing and creating ASNs inside an ASN range.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> asn_range = nb.ipam.asn_ranges.get(1)
+        >>> asn_range.available_asns.list()
+        [64512, 64513, 64514]
+
+        To create a new ASN:
+
+        >>> asn_range.available_asns.create()
+        64512
+
+        To create multiple ASNs:
+
+        >>> asn_range.available_asns.create([{} for i in range(2)])
+        [64513, 64514]
+        """
+        return DetailEndpoint(self, "available-asns")
