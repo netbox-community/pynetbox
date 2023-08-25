@@ -459,7 +459,8 @@ class Endpoint:
         if not isinstance(objects, list):
             raise ValueError(
                 "Objects passed must be list[dict|Record] - was {}".format(
-                    type(objects))
+                    type(objects)
+                )
             )
         for o in objects:
             if isinstance(o, Record):
@@ -473,8 +474,7 @@ class Endpoint:
                 series.append(o)
             else:
                 raise ValueError(
-                    "Object passed must be dict|Record - was {}".format(
-                        type(objects))
+                    "Object passed must be dict|Record - was {}".format(type(objects))
                 )
         req = Request(
             base=self.url,
