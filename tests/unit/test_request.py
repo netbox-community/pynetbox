@@ -17,7 +17,7 @@ class RequestTestCase(unittest.TestCase):
         test.get_openapi()
         test.http_session.get.assert_called_with(
             "http://localhost:8080/api/docs/?format=openapi",
-            headers={"Accept": "application/json", "Content-Type": "application/json;"},
+            headers={"Accept": "application/json", "Content-Type": "application/json"},
         )
 
     def test_get_openapi_version_3_5_or_greater(self):
@@ -32,5 +32,5 @@ class RequestTestCase(unittest.TestCase):
         test.get_openapi()
         test.http_session.get.assert_called_with(
             "http://localhost:8080/api/schema/",
-            headers={"Accept": "application/json", "Content-Type": "application/json;"},
+            headers={"Accept": "application/json", "Content-Type": "application/json"},
         )
