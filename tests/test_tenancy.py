@@ -11,7 +11,7 @@ api = pynetbox.api(
 
 nb = api.tenancy
 
-HEADERS = {"accept": "application/json;"}
+HEADERS = {"accept": "application/json"}
 
 
 class Generic:

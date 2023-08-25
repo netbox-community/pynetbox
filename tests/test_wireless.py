@@ -9,7 +9,7 @@ api = pynetbox.api("http://localhost:8000")
 
 nb_app = api.wireless
 
-HEADERS = {"accept": "application/json;"}
+HEADERS = {"accept": "application/json"}
 
 
 class Generic:
