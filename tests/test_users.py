@@ -110,6 +110,7 @@ class PermissionsTestCase(Generic.Tests):
     )
     def test_constraints(self, _):
         permission = nb.permissions.get(1)
+        self.assertTrue(isinstance(permission.constraints, list))
         self.assertTrue(isinstance(permission.constraints[0], dict))
 
 
