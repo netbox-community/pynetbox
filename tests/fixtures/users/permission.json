@@ -5,5 +5,13 @@
         {
             "username": "user1"
         }
+    ],
+    "constraints": [
+        {
+            "status": "active"
+        },
+        {
+            "region__name": "Europe"
+        }
     ]
 }

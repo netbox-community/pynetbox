@@ -104,6 +104,15 @@ class PermissionsTestCase(Generic.Tests):
         user = permission.users[0]
         self.assertEqual(str(user), "user1")
 
+    @patch(
+        "requests.sessions.Session.get",
+        return_value=Response(fixture="users/permission.json"),
+    )
+    def test_constraints(self, _):
+        permission = nb.permissions.get(1)
+        self.assertIsInstance(permission.constraints, list)
+        self.assertIsInstance(permission.constraints[0], dict)
+
 
 class UnknownModelTestCase(unittest.TestCase):
     """This test validates that an unknown model is returned as Record object
