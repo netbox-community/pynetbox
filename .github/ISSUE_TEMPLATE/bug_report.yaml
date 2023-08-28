@@ -36,12 +36,20 @@ body:
     attributes:
       label: Steps to Reproduce
       description: >
-        Describe in detail the exact steps that someone else can take to
-        reproduce this bug using the current stable release of NetBox. Begin with the
-        creation of any necessary database objects and call out every operation being
-        performed explicitly. Additionally, **do not rely on the demo instance** for 
-        reproducing suspected bugs, as its data is prone to modification or deletion 
-        at any time.
+        Please provide a minimal working example to demonstrate the bug. Begin with the 
+        initialization of any necessary database objects and clearly enumerate each 
+        operation carried out. Ensure that your example is as concise as possible 
+        while adequately illustrating the issue. For example:
+        ```python
+        >>> import pynetbox
+        >>> nb = pynebox.api('https://netbox.example.com', token='my-token')
+        
+        ```
+        Note: **do not utilize the demo instance** for replicating suspected bugs, 
+        as its data is subject to change or removal at any time.
+        
+        _Please refrain from including any confidential or sensitive 
+        information in your example._
     validations:
       required: true
   - type: textarea

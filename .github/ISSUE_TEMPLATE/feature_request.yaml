@@ -47,7 +47,7 @@ body:
     attributes:
       label: Use case
       description: >
-        Explain how adding this functionality would benefit NetBox users. What need does it address?
+        Explain how adding this functionality would benefit pynetbox users. What need does it address?
     validations:
       required: true
   - type: textarea
