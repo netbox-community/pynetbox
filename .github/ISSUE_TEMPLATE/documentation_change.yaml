@@ -19,11 +19,10 @@ body:
       label: Area
       description: To what section of the documentation does this change primarily pertain?
       options:
-        - Features
-        - Installation/upgrade
-        - Getting started
-        - Configuration
-        - Development
+        - Endpoint
+        - Response
+        - Request
+        - IPAM
         - Other
     validations:
       required: true
