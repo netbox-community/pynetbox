@@ -323,7 +323,7 @@ class Endpoint:
 
         >>> device = netbox.dcim.devices.create(
         ...    name='test',
-        ...    device_role=1,
+        ...    role=1,
         ... )
         >>>
 
@@ -344,14 +344,14 @@ class Endpoint:
         >>> nb.dcim.devices.create([
         ...     {
         ...         "name": "test1-core3",
-        ...         "device_role": 3,
+        ...         "role": 3,
         ...         "site": 1,
         ...         "device_type": 1,
         ...         "status": 1
         ...     },
         ...     {
         ...         "name": "test1-core4",
-        ...         "device_role": 3,
+        ...         "role": 3,
         ...         "site": 1,
         ...         "device_type": 1,
         ...         "status": 1

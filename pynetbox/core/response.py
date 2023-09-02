@@ -226,7 +226,7 @@ class Record:
      'config_context': {},
      'created': '2018-04-01',
      'custom_fields': {},
-     'device_role': {'id': 1,
+     'role': {'id': 1,
                      'name': 'Test Switch',
                      'slug': 'test-switch',
                      'url': 'http://localhost:8000/api/dcim/device-roles/1/'},

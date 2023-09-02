@@ -12,10 +12,10 @@ def rack(api, site):
 
 
 @pytest.fixture(scope="module")
-def device(api, site, device_type, device_role):
+def device(api, site, device_type, role):
     device = api.dcim.devices.create(
         name="test-device",
-        device_role=device_role.id,
+        role=role.id,
         device_type=device_type.id,
         site=site.id,
         color="000000",
@@ -188,10 +188,10 @@ class TestInterface(BaseTest):
 
 class TestPowerCable(BaseTest):
     @pytest.fixture(scope="class")
-    def power_outlet(self, api, device_type, device_role, site):
+    def power_outlet(self, api, device_type, role, site):
         pdu = api.dcim.devices.create(
             name="test-pdu",
-            device_role=device_role.id,
+            role=role.id,
             device_type=device_type.id,
             site=site.id,
         )
@@ -230,10 +230,10 @@ class TestPowerCable(BaseTest):
 
 class TestConsoleCable(BaseTest):
     @pytest.fixture(scope="class")
-    def console_server_port(self, api, device_type, device_role, site):
+    def console_server_port(self, api, device_type, role, site):
         device = api.dcim.devices.create(
             name="test-console-server",
-            device_role=device_role.id,
+            role=role.id,
             device_type=device_type.id,
             site=site.id,
         )
@@ -275,10 +275,10 @@ class TestConsoleCable(BaseTest):
 
 class TestInterfaceCable(BaseTest):
     @pytest.fixture(scope="class")
-    def interface_b(self, api, device_type, device_role, site):
+    def interface_b(self, api, device_type, role, site):
         device = api.dcim.devices.create(
             name="test-device-2",
-            device_role=device_role.id,
+            role=role.id,
             device_type=device_type.id,
             site=site.id,
         )
