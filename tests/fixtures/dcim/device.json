@@ -14,7 +14,7 @@
         "model": "MX960",
         "slug": "mx960"
     },
-    "device_role": {
+    "role": {
         "id": 1,
         "url": "http://localhost:8000/api/dcim/device-roles/1/",
         "name": "Router",

@@ -12,14 +12,23 @@ def rack(api, site):
 
 
 @pytest.fixture(scope="module")
-def device(api, site, device_type, device_role):
-    device = api.dcim.devices.create(
-        name="test-device",
-        device_role=device_role.id,
-        device_type=device_type.id,
-        site=site.id,
-        color="000000",
-    )
+def device(api, site, device_type, role):
+    if version.parse(api.version) >= version.parse("3.6"):
+        device = api.dcim.devices.create(
+            name="test-device",
+            role=role.id,
+            device_type=device_type.id,
+            site=site.id,
+            color="000000",
+        )
+    else:
+        device = api.dcim.devices.create(
+            name="test-device",
+            device_role=role.id,
+            device_type=device_type.id,
+            site=site.id,
+            color="000000",
+        )
     yield device
     device.delete()
 
@@ -188,13 +197,21 @@ class TestInterface(BaseTest):
 
 class TestPowerCable(BaseTest):
     @pytest.fixture(scope="class")
-    def power_outlet(self, api, device_type, device_role, site):
-        pdu = api.dcim.devices.create(
-            name="test-pdu",
-            device_role=device_role.id,
-            device_type=device_type.id,
-            site=site.id,
-        )
+    def power_outlet(self, api, device_type, role, site):
+        if version.parse(api.version) >= version.parse("3.6"):
+            pdu = api.dcim.devices.create(
+                name="test-pdu",
+                role=role.id,
+                device_type=device_type.id,
+                site=site.id,
+            )
+        else:
+            pdu = api.dcim.devices.create(
+                name="test-pdu",
+                device_role=role.id,
+                device_type=device_type.id,
+                site=site.id,
+            )
         outlet = api.dcim.power_outlets.create(name="outlet", device=pdu.id)
         yield outlet
         pdu.delete()
@@ -230,13 +247,21 @@ class TestPowerCable(BaseTest):
 
 class TestConsoleCable(BaseTest):
     @pytest.fixture(scope="class")
-    def console_server_port(self, api, device_type, device_role, site):
-        device = api.dcim.devices.create(
-            name="test-console-server",
-            device_role=device_role.id,
-            device_type=device_type.id,
-            site=site.id,
-        )
+    def console_server_port(self, api, device_type, role, site):
+        if version.parse(api.version) >= version.parse("3.6"):
+            device = api.dcim.devices.create(
+                name="test-console-server",
+                role=role.id,
+                device_type=device_type.id,
+                site=site.id,
+            )
+        else:
+            device = api.dcim.devices.create(
+                name="test-console-server",
+                device_role=role.id,
+                device_type=device_type.id,
+                site=site.id,
+            )
         ret = api.dcim.console_server_ports.create(name="Port 1", device=device.id)
         yield ret
         device.delete()
@@ -275,13 +300,21 @@ class TestConsoleCable(BaseTest):
 
 class TestInterfaceCable(BaseTest):
     @pytest.fixture(scope="class")
-    def interface_b(self, api, device_type, device_role, site):
-        device = api.dcim.devices.create(
-            name="test-device-2",
-            device_role=device_role.id,
-            device_type=device_type.id,
-            site=site.id,
-        )
+    def interface_b(self, api, device_type, role, site):
+        if version.parse(api.version) >= version.parse("3.6"):
+            device = api.dcim.devices.create(
+                name="test-device-2",
+                role=role.id,
+                device_type=device_type.id,
+                site=site.id,
+            )
+        else:
+            device = api.dcim.devices.create(
+                name="test-device-2",
+                device_role=role.id,
+                device_type=device_type.id,
+                site=site.id,
+            )
         ret = api.dcim.interfaces.create(
             name="Ethernet1", type="1000base-t", device=device.id
         )

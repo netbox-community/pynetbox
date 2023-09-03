@@ -75,7 +75,7 @@ class App:
         {'tables': {'DeviceTable': {'columns': ['name',
                                                 'status',
                                                 'tenant',
-                                                'device_role',
+                                                'role',
                                                 'site',
                                                 'primary_ip',
                                                 'tags']}}}

@@ -481,14 +481,14 @@ def device_type(api, manufacturer):
 
 
 @pytest.fixture(scope="session")
-def device_role(api):
-    device_role = api.dcim.device_roles.create(
+def role(api):
+    role = api.dcim.device_roles.create(
         name="test-device-role",
         slug="test-device-role",
         color="000000",
     )
-    yield device_role
-    device_role.delete()
+    yield role
+    role.delete()
 
 
 def pytest_generate_tests(metafunc):
