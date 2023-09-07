@@ -33,6 +33,8 @@ def get_netbox_docker_version_tag(netbox_version):
         tag = "2.5.3"
     elif (major, minor) == (3, 5):
         tag = "2.6.1"
+    elif (major, minor) == (3, 6):
+        tag = "2.7.0"
     else:
         raise NotImplementedError(
             "Version %s is not currently supported" % netbox_version
@@ -479,14 +481,14 @@ def device_type(api, manufacturer):
 
 
 @pytest.fixture(scope="session")
-def device_role(api):
-    device_role = api.dcim.device_roles.create(
+def role(api):
+    role = api.dcim.device_roles.create(
         name="test-device-role",
         slug="test-device-role",
         color="000000",
     )
-    yield device_role
-    device_role.delete()
+    yield role
+    role.delete()
 
 
 def pytest_generate_tests(metafunc):

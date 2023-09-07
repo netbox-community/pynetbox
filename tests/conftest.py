@@ -4,7 +4,7 @@ import pytest
 from packaging import version
 
 
-DEFAULT_NETBOX_VERSIONS = "3.3"
+DEFAULT_NETBOX_VERSIONS = "3.6"
 
 
 def pytest_addoption(parser):
@@ -39,7 +39,7 @@ def pytest_addoption(parser):
         action="store",
         help=(
             "Overrides the URL to run tests to. This allows for testing to the same"
-            " containers for seperate runs."
+            " containers for separate runs."
         ),
     )
 

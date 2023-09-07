@@ -19,7 +19,7 @@
                 "model": "EX9214",
                 "slug": "ex9214"
             },
-            "device_role": {
+            "role": {
                 "id": 3,
                 "url": "http://localhost:8000/api/dcim/device-roles/3/",
                 "name": "Core Switch",
@@ -88,7 +88,7 @@
                 "model": "EX9214",
                 "slug": "ex9214"
             },
-            "device_role": {
+            "role": {
                 "id": 3,
                 "url": "http://localhost:8000/api/dcim/device-roles/3/",
                 "name": "Core Switch",
@@ -157,7 +157,7 @@
                 "model": "MX960",
                 "slug": "mx960"
             },
-            "device_role": {
+            "role": {
                 "id": 1,
                 "url": "http://localhost:8000/api/dcim/device-roles/1/",
                 "name": "Router",
@@ -226,7 +226,7 @@
                 "model": "MX960",
                 "slug": "mx960"
             },
-            "device_role": {
+            "role": {
                 "id": 1,
                 "url": "http://localhost:8000/api/dcim/device-roles/1/",
                 "name": "Router",
@@ -295,7 +295,7 @@
                 "model": "QFX5100-48S",
                 "slug": "qfx5100-48s"
             },
-            "device_role": {
+            "role": {
                 "id": 4,
                 "url": "http://localhost:8000/api/dcim/device-roles/4/",
                 "name": "Leaf Switch",
@@ -354,7 +354,7 @@
                 "model": "QFX5100-48S",
                 "slug": "qfx5100-48s"
             },
-            "device_role": {
+            "role": {
                 "id": 4,
                 "url": "http://localhost:8000/api/dcim/device-roles/4/",
                 "name": "Leaf Switch",
@@ -413,7 +413,7 @@
                 "model": "CM4148",
                 "slug": "cm4148"
             },
-            "device_role": {
+            "role": {
                 "id": 5,
                 "url": "http://localhost:8000/api/dcim/device-roles/5/",
                 "name": "OOB Switch",
@@ -472,7 +472,7 @@
                 "model": "CWG-24VYM415C9",
                 "slug": "cwg-24vym415c9"
             },
-            "device_role": {
+            "role": {
                 "id": 6,
                 "url": "http://localhost:8000/api/dcim/device-roles/6/",
                 "name": "PDU",
@@ -523,7 +523,7 @@
                 "model": "CWG-24VYM415C9",
                 "slug": "cwg-24vym415c9"
             },
-            "device_role": {
+            "role": {
                 "id": 6,
                 "url": "http://localhost:8000/api/dcim/device-roles/6/",
                 "name": "PDU",
@@ -574,7 +574,7 @@
                 "model": "QFX5100-24Q",
                 "slug": "qfx5100-24q"
             },
-            "device_role": {
+            "role": {
                 "id": 2,
                 "url": "http://localhost:8000/api/dcim/device-roles/2/",
                 "name": "Spine Switch",
@@ -633,7 +633,7 @@
                 "model": "QFX5100-24Q",
                 "slug": "qfx5100-24q"
             },
-            "device_role": {
+            "role": {
                 "id": 2,
                 "url": "http://localhost:8000/api/dcim/device-roles/2/",
                 "name": "Spine Switch",
