@@ -18,7 +18,7 @@
 #
 import os
 import sys
-from pkg_resources import get_distribution
+from importlib.metadata import metadata
 
 sys.path.insert(0, os.path.abspath("../"))
 
@@ -55,7 +55,8 @@ author = "Zach Moody"
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 # The full version, including alpha/beta/rc tags.
-release = get_distribution("pynetbox").version
+release = metadata(__name__).get("Version")
+
 #
 # The short X.Y version.
 version = ".".join(release.split(".")[:2])
