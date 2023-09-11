@@ -1,0 +1,4 @@
+sphinx<8.0.0
+sphinx_rtd_theme<2.0.0
+readthedocs-sphinx-search<0.4.0
+pynetbox
