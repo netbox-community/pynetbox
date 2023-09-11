@@ -11,7 +11,7 @@ from importlib.metadata import version
 project = 'pynetbox'
 copyright = '2023, NetBox'
 author = 'Abhimanyu Saharan'
-release = 'MIT'
+release = 'Apache2'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
