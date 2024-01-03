@@ -55,7 +55,6 @@ def pytest_configure(config):
         for version_string in config.option.netbox_versions.split(",")
     ]
     if "no:docker" in config.option.plugins and config.option.url_override:
-
         url_parse = parse.urlparse(config.option.url_override)
 
         class DockerServicesMock:

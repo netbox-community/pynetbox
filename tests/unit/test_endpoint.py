@@ -17,7 +17,6 @@ class EndPointTestCase(unittest.TestCase):
             self.assertEqual(len(test), 2)
 
     def test_filter_invalid_pagination_args(self):
-
         api = Mock(base_url="http://localhost:8000/api")
         app = Mock(name="test")
         test_obj = Endpoint(api, app, "test")
@@ -25,7 +24,6 @@ class EndPointTestCase(unittest.TestCase):
             test_obj.filter(offset=1)
 
     def test_all_invalid_pagination_args(self):
-
         api = Mock(base_url="http://localhost:8000/api")
         app = Mock(name="test")
         test_obj = Endpoint(api, app, "test")

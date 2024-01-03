@@ -61,7 +61,7 @@ class TraceableRecord(Record):
         ).get()
 
         ret = []
-        for (a_terminations_data, cable_data, b_terminations_data) in req:
+        for a_terminations_data, cable_data, b_terminations_data in req:
             ret.append(self._build_termination_data(a_terminations_data))
             if not cable_data:
                 ret.append(cable_data)
