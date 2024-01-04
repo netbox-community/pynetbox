@@ -140,7 +140,7 @@ def docker_compose_project_name(pytestconfig):
     This will return a consistently generated project name so we can kill stale
     containers after the test run is finished.
     """
-    return "%s_%s" % (DOCKER_PROJECT_PREFIX, time.time_ns())
+    return "%s_%s" % (DOCKER_PROJECT_PREFIX, int(time.time()))
 
 
 def clean_netbox_docker_tmpfiles():
