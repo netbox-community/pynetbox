@@ -11,14 +11,14 @@ body:
     attributes:
       label: pynetbox version
       description: What version of pynetbox are you currently running?
-      placeholder: v7.1.0
+      placeholder: v7.3.0
     validations:
       required: true
   - type: input
     attributes:
       label: NetBox version
       description: What version of NetBox are you currently running?
-      placeholder: v3.6.0
+      placeholder: v3.7.0
     validations:
       required: true
   - type: dropdown
@@ -30,6 +30,8 @@ body:
         - "3.9"
         - "3.10"
         - "3.11"
+        - "3.12"
+        - "3.13alpha/beta"
     validations:
       required: true
   - type: textarea
@@ -42,7 +44,7 @@ body:
         while adequately illustrating the issue. For example:
         ```python
         >>> import pynetbox
-        >>> nb = pynebox.api('https://netbox.example.com', token='my-token')
+        >>> nb = pynetbox.api('https://netbox.example.com', token='my-token')
         
         ```
         Note: **do not utilize the demo instance** for replicating suspected bugs, 
