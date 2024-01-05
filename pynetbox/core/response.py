@@ -67,7 +67,7 @@ def flatten_custom(custom_dict):
             current_val = val.get("id", val)
 
         if isinstance(val, list):
-            current_val = [v.get("id") if isinstance(v, dict) else v for v in val]
+            current_val = [v.get("id", v) if isinstance(v, dict) else v for v in val]
 
         ret[k] = current_val
     return ret
