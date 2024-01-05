@@ -11,6 +11,8 @@ setup(
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
     packages=find_packages(exclude=["tests", "tests.*"]),
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     install_requires=[
         "requests>=2.20.0,<3.0",
         "packaging<24.0"
