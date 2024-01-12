@@ -373,7 +373,6 @@ class Record:
                 and "object" in list_item
             ):
                 lookup = list_item["object_type"]
-                model = None
                 model = CONTENT_TYPE_MAPPER.get(lookup)
                 if model:
                     return model(list_item["object"], self.api, self.endpoint)
@@ -495,7 +494,7 @@ class Record:
 
                 if isinstance(current_val, list):
                     current_val = [
-                        v.id if isinstance(v, Record) else v for v in current_val
+                        v.serialize() if isinstance(v, Record) else v for v in current_val
                     ]
                     if i in LIST_AS_SET and (
                         all([isinstance(v, str) for v in current_val])
