@@ -185,9 +185,9 @@ class Request:
         :Returns: Version number as a string. Empty string if version is not
         present in the headers.
         """
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {"Content-Type": "application/json"}
+        if self.token:
+            headers["authorization"] = "Token {}".format(self.token)
         req = self.http_session.get(
             self.normalize_url(self.base),
             headers=headers,
