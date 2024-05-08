@@ -157,7 +157,8 @@ class Request:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
+        if self.token:
+            headers["authorization"] = "Token {}".format(self.token)
         current_version = version.parse(self.get_version())
         if current_version >= version.parse("3.5"):
             req = self.http_session.get(
