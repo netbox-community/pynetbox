@@ -192,7 +192,7 @@ class Request:
             self.normalize_url(self.base),
             headers=headers,
         )
-        if req.ok:
+        if req.ok or req.status_code == 403:
             return req.headers.get("API-Version", "")
         else:
             raise RequestError(req)
