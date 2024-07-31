@@ -284,7 +284,7 @@ class Record:
         self.default_ret = Record
         self.endpoint = (
             self._endpoint_from_url(values["url"])
-            if values and "url" in values
+            if values and "url" in values and values["url"]
             else endpoint
         )
         if values:
