@@ -3,6 +3,19 @@ Python API client library for [NetBox](https://github.com/netbox-community/netbo
 
 > **Note:** Version 6.7 and later of the library only supports NetBox 3.3 and above.
 
+## Compatibility
+
+Each pyNetBox Version listed below has been tested with its corresponding NetBox Version.
+
+| NetBox Version | Plugin Version |
+|:--------------:|:--------------:|
+|      4.0.6     |     7.3.5      |
+|      4.0.0     |     7.3.4      |
+|      3.7       |     7.3.0      |
+|      3.6       |     7.2.0      |
+|      3.5       |     7.1.0      |
+|      3.3       |     7.0.0      |
+
 ## Installation
 
 To install run `pip install pynetbox`.
