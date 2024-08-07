@@ -231,7 +231,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
             )
             compose_data["networks"] = {docker_network_name: {}}
             # https://docs.docker.com/compose/compose-file/compose-file-v3/#network-configuration-reference
-            if compose_data["version"] >= "3.5":
+            if "version" not in compose_data or compose_data["version"] >= "3.5":
                 compose_data["networks"][docker_network_name][
                     "name"
                 ] = docker_network_name
