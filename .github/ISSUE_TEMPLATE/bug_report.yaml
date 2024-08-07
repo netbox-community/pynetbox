@@ -11,14 +11,14 @@ body:
     attributes:
       label: pynetbox version
       description: What version of pynetbox are you currently running?
-      placeholder: v7.1.0
+      placeholder: v7.3.5
     validations:
       required: true
   - type: input
     attributes:
       label: NetBox version
       description: What version of NetBox are you currently running?
-      placeholder: v3.6.0
+      placeholder: v4.0.8
     validations:
       required: true
   - type: dropdown
@@ -26,10 +26,9 @@ body:
       label: Python version
       description: What version of Python are you currently running?
       options:
-        - "3.8"
-        - "3.9"
         - "3.10"
         - "3.11"
+        - "3.12"
     validations:
       required: true
   - type: textarea
