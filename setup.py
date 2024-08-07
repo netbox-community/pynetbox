@@ -15,7 +15,7 @@ setup(
     long_description_content_type='text/markdown',
     install_requires=[
         "requests>=2.20.0,<3.0",
-        "packaging<24.0"
+        "packaging"
     ],
     zip_safe=False,
     keywords=["netbox"],
