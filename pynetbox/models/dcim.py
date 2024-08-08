@@ -150,13 +150,8 @@ class InterfaceConnection(Record):
         return self.interface.name
 
 
-class ConnectedEndpoint(Record):
-    device = Devices
-
-
 class Interfaces(TraceableRecord):
     interface_connection = InterfaceConnection
-    connected_endpoint = ConnectedEndpoint
 
 
 class PowerOutlets(TraceableRecord):

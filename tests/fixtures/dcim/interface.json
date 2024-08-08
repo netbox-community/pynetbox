@@ -22,22 +22,16 @@
     "mgmt_only": false,
     "description": "",
     "is_connected": true,
-    "connected_endpoint": {
-        "id": 1,
-        "url": "http://localhost:8000/api/dcim/interfaces/1/",
-        "device": {
+    "connected_endpoints": [
+        {
             "id": 1,
             "url": "http://localhost:8000/api/dcim/devices/1/",
-            "name": "tst-endpoint",
-            "display_name": "tst-endpoint"
-        },
-        "name": "eth0",
-        "cable": 1
-    },
-    "connection_status": {
-        "value": true,
-        "label": "Connected"
-    },
+            "display": "tst-endpoint",
+            "name": "tst-endpoint"
+        }
+    ],
+    "connected_endpoints_type": "dcim.device",
+    "connected_endpoints_reachable": true,
     "cable": {
         "id": 1,
         "url": "http://localhost:8000/api/dcim/cables/1/",
