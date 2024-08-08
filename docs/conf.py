@@ -8,10 +8,10 @@ from importlib.metadata import version
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'pynetbox'
-copyright = '2023, NetBox'
-author = 'Abhimanyu Saharan'
-release = 'Apache2'
+project = "pynetbox"
+copyright = "2023, NetBox"
+author = "Abhimanyu Saharan"
+release = "Apache2"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

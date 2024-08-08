@@ -16,12 +16,11 @@ limitations under the License.
 
 import copy
 from collections import OrderedDict
+from urllib.parse import urlsplit
 
 import pynetbox.core.app
-from urllib.parse import urlsplit
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
-
 
 # List of fields that are lists but should be treated as sets.
 LIST_AS_SET = ("tags", "tagged_vlans")
@@ -68,7 +67,7 @@ def flatten_custom(custom_dict):
             current_val = val.get("id", val)
 
         if isinstance(val, list):
-            current_val = [v.get("id") if isinstance(v, dict) else v for v in val]
+            current_val = [v.get("id", v) if isinstance(v, dict) else v for v in val]
 
         ret[k] = current_val
     return ret

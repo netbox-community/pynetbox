@@ -1,15 +1,14 @@
+import atexit
 import os
-
 import subprocess as subp
 import time
-import yaml
 from http.client import RemoteDisconnected
 
-import atexit
-import pynetbox
 import pytest
 import requests
+import yaml
 
+import pynetbox
 
 DOCKER_PROJECT_PREFIX = "pytest_pynetbox"
 
@@ -27,16 +26,12 @@ def get_netbox_docker_version_tag(netbox_version):
     """
     major, minor = netbox_version.major, netbox_version.minor
 
-    if (major, minor) == (3, 3):
-        tag = "2.3.0"
-    elif (major, minor) == (3, 4):
-        tag = "2.5.3"
-    elif (major, minor) == (3, 5):
-        tag = "2.6.1"
-    elif (major, minor) == (3, 6):
+    if (major, minor) == (3, 6):
         tag = "2.7.0"
     elif (major, minor) == (3, 7):
         tag = "2.8.0"
+    elif (major, minor) == (4, 0):
+        tag = "2.9.1"
     else:
         raise NotImplementedError(
             "Version %s is not currently supported" % netbox_version
@@ -235,7 +230,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
             )
             compose_data["networks"] = {docker_network_name: {}}
             # https://docs.docker.com/compose/compose-file/compose-file-v3/#network-configuration-reference
-            if compose_data["version"] >= "3.5":
+            if "version" not in compose_data or compose_data["version"] >= "3.5":
                 compose_data["networks"][docker_network_name][
                     "name"
                 ] = docker_network_name

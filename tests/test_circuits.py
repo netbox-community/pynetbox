@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import patch
 
-from .util import Response
 import pynetbox
 
+from .util import Response
 
 api = pynetbox.api(
     "http://localhost:8000",

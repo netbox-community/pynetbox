@@ -17,12 +17,12 @@ limitations under the License.
 from pynetbox.core.endpoint import Endpoint
 from pynetbox.core.query import Request
 from pynetbox.models import (
-    dcim,
-    ipam,
-    virtualization,
     circuits,
+    dcim,
     extras,
+    ipam,
     users,
+    virtualization,
     wireless,
 )
 

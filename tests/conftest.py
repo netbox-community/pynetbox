@@ -3,8 +3,7 @@ from urllib import parse
 import pytest
 from packaging import version
 
-
-DEFAULT_NETBOX_VERSIONS = "3.7"
+DEFAULT_NETBOX_VERSIONS = "4.0"
 
 
 def pytest_addoption(parser):

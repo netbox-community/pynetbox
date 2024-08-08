@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
 from pynetbox.core.endpoint import Endpoint
 
@@ -22,6 +22,14 @@ class EndPointTestCase(unittest.TestCase):
         test_obj = Endpoint(api, app, "test")
         with self.assertRaises(ValueError) as _:
             test_obj.filter(offset=1)
+
+    def test_filter_replace_none_with_null(self):
+        api = Mock(base_url="http://localhost:8000/api")
+        app = Mock(name="test")
+        test_obj = Endpoint(api, app, "test")
+        test = test_obj.filter(name=None, id=0)
+
+        self.assertEqual(test.request.filters, {"name": "null", "id": 0})
 
     def test_all_invalid_pagination_args(self):
         api = Mock(base_url="http://localhost:8000/api")

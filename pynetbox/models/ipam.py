@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pynetbox.core.response import Record
 from pynetbox.core.endpoint import DetailEndpoint
+from pynetbox.core.response import Record
 
 
 class IpAddresses(Record):
