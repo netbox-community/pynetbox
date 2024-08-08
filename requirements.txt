@@ -1,2 +1,2 @@
 requests>=2.20.0,<3.0
-packaging<24.0
+packaging<=24.1
