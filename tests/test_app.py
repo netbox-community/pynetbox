@@ -3,7 +3,6 @@ from unittest.mock import patch
 
 import pynetbox
 
-
 host = "http://localhost:8000"
 
 def_kwargs = {

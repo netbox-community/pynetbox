@@ -16,12 +16,11 @@ limitations under the License.
 
 import copy
 from collections import OrderedDict
+from urllib.parse import urlsplit
 
 import pynetbox.core.app
-from urllib.parse import urlsplit
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
-
 
 # List of fields that are lists but should be treated as sets.
 LIST_AS_SET = ("tags", "tagged_vlans")

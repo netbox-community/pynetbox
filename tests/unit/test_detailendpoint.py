@@ -3,7 +3,6 @@ from unittest.mock import patch
 
 import pynetbox
 
-
 nb = pynetbox.api("http://localhost:8000")
 
 

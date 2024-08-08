@@ -1,30 +1,11 @@
 from .circuits import Circuits, CircuitTerminations
-from .dcim import (
-    DeviceTypes,
-    Devices,
-    Interfaces,
-    PowerOutlets,
-    PowerPorts,
-    ConsolePorts,
-    ConsoleServerPorts,
-    RackReservations,
-    VirtualChassis,
-    FrontPorts,
-    RearPorts,
-    Racks,
-    Termination,
-    Cables,
-)
-from .ipam import (
-    IpAddresses,
-    Prefixes,
-    Aggregates,
-    Vlans,
-    VlanGroups,
-)
+from .dcim import (Cables, ConsolePorts, ConsoleServerPorts, Devices,
+                   DeviceTypes, FrontPorts, Interfaces, PowerOutlets,
+                   PowerPorts, RackReservations, Racks, RearPorts, Termination,
+                   VirtualChassis)
+from .ipam import Aggregates, IpAddresses, Prefixes, VlanGroups, Vlans
 from .virtualization import VirtualMachines
 from .wireless import WirelessLans
-
 
 CONTENT_TYPE_MAPPER = {
     "circuits.circuit": Circuits,

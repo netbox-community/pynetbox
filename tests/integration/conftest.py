@@ -1,15 +1,14 @@
+import atexit
 import os
-
 import subprocess as subp
 import time
-import yaml
 from http.client import RemoteDisconnected
 
-import atexit
-import pynetbox
 import pytest
 import requests
+import yaml
 
+import pynetbox
 
 DOCKER_PROJECT_PREFIX = "pytest_pynetbox"
 

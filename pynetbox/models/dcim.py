@@ -16,11 +16,11 @@ limitations under the License.
 
 from urllib.parse import urlsplit
 
+from pynetbox.core.endpoint import DetailEndpoint, RODetailEndpoint
 from pynetbox.core.query import Request
-from pynetbox.core.response import Record, JsonField
-from pynetbox.core.endpoint import RODetailEndpoint, DetailEndpoint
-from pynetbox.models.ipam import IpAddresses
+from pynetbox.core.response import JsonField, Record
 from pynetbox.models.circuits import Circuits
+from pynetbox.models.ipam import IpAddresses
 
 
 class TraceableRecord(Record):

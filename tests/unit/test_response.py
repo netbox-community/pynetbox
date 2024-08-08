@@ -1,8 +1,8 @@
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
-from pynetbox.core.response import Record, RecordSet
 from pynetbox.core.endpoint import Endpoint
+from pynetbox.core.response import Record, RecordSet
 
 
 class RecordTestCase(unittest.TestCase):
