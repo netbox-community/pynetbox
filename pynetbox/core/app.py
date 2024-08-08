@@ -16,8 +16,15 @@ limitations under the License.
 
 from pynetbox.core.endpoint import Endpoint
 from pynetbox.core.query import Request
-from pynetbox.models import (circuits, dcim, extras, ipam, users,
-                             virtualization, wireless)
+from pynetbox.models import (
+    circuits,
+    dcim,
+    extras,
+    ipam,
+    users,
+    virtualization,
+    wireless,
+)
 
 
 class App:

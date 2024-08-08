@@ -1,8 +1,20 @@
 from .circuits import Circuits, CircuitTerminations
-from .dcim import (Cables, ConsolePorts, ConsoleServerPorts, Devices,
-                   DeviceTypes, FrontPorts, Interfaces, PowerOutlets,
-                   PowerPorts, RackReservations, Racks, RearPorts, Termination,
-                   VirtualChassis)
+from .dcim import (
+    Cables,
+    ConsolePorts,
+    ConsoleServerPorts,
+    Devices,
+    DeviceTypes,
+    FrontPorts,
+    Interfaces,
+    PowerOutlets,
+    PowerPorts,
+    RackReservations,
+    Racks,
+    RearPorts,
+    Termination,
+    VirtualChassis,
+)
 from .ipam import Aggregates, IpAddresses, Prefixes, VlanGroups, Vlans
 from .virtualization import VirtualMachines
 from .wireless import WirelessLans
