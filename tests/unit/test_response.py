@@ -2,7 +2,23 @@ import unittest
 from unittest.mock import Mock, patch
 
 from pynetbox.core.endpoint import Endpoint
-from pynetbox.core.response import Record, RecordSet
+from pynetbox.core.response import Record, RecordSet, flatten_custom
+
+
+class FlattenCustomTest(unittest.TestCase):
+    def test_flatten_custom(self):
+        test_dicts = [
+            {"foo0": []},
+            {"foo1": [{"a": "b"}]},
+            {"foo2": [{"a": "b", "c": "d"}]},
+            {"foo3": 123},
+            {"foo4": "a"},
+            {"foo5": {"a": "b"}},
+            {"foo6": [{"a": "b", "c": "d"}]},
+        ]
+        for test_dict in test_dicts:
+            ret = flatten_custom(test_dict)
+            assert ret == test_dict
 
 
 class RecordTestCase(unittest.TestCase):
