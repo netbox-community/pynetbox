@@ -16,6 +16,11 @@ limitations under the License.
 
 from pynetbox.core.response import Record
 
+__all__ = (
+    'Circuits',
+    'CircuitTerminations',
+)
+
 
 class Circuits(Record):
     def __str__(self):
