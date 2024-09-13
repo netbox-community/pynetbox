@@ -71,10 +71,12 @@ class Api:
         url,
         token=None,
         threading=False,
+        extra_headers={},
     ):
         base_url = "{}/api".format(url if url[-1] != "/" else url[:-1])
         self.token = token
         self.base_url = base_url
+        self.extra_headers = extra_headers
         self.http_session = requests.Session()
         self.threading = threading
         self.circuits = App(self, "circuits")

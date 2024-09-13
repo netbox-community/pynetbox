@@ -114,6 +114,7 @@ class Endpoint:
             threading=self.api.threading,
             limit=limit,
             offset=offset,
+            extra_headers=self.api.extra_headers,
         )
 
         return RecordSet(self, req)
@@ -177,6 +178,7 @@ class Endpoint:
             base=self.url,
             token=self.token,
             http_session=self.api.http_session,
+            extra_headers=self.api.extra_headers,
         )
         try:
             return next(RecordSet(self, req), None)
@@ -295,6 +297,7 @@ class Endpoint:
             threading=self.api.threading,
             limit=limit,
             offset=offset,
+            extra_headers=self.api.extra_headers,
         )
 
         return RecordSet(self, req)
@@ -414,6 +417,7 @@ class Endpoint:
             base=self.url,
             token=self.token,
             http_session=self.api.http_session,
+            extra_headers=self.api.extra_headers,
         ).post(args[0] if args else kwargs)
 
         if isinstance(req, list):
@@ -482,6 +486,7 @@ class Endpoint:
             base=self.url,
             token=self.token,
             http_session=self.api.http_session,
+            extra_headers=self.api.extra_headers,
         ).patch(series)
 
         if isinstance(req, list):
@@ -546,6 +551,7 @@ class Endpoint:
             base=self.url,
             token=self.token,
             http_session=self.api.http_session,
+            extra_headers=self.api.extra_headers,
         )
         return True if req.delete(data=[{"id": i} for i in cleaned_ids]) else False
 
@@ -586,6 +592,7 @@ class Endpoint:
             base=self.url,
             token=self.api.token,
             http_session=self.api.http_session,
+            extra_headers=self.api.extra_headers,
         ).options()
         try:
             post_data = req["actions"]["POST"]
@@ -645,6 +652,7 @@ class Endpoint:
             base=self.url,
             token=self.token,
             http_session=self.api.http_session,
+            extra_headers=self.api.extra_headers,
         )
 
         return ret.get_count()
@@ -665,6 +673,7 @@ class DetailEndpoint:
             base=self.url,
             token=parent_obj.api.token,
             http_session=parent_obj.api.http_session,
+            extra_headers=parent_obj.extra_headers,
         )
 
     def list(self, **kwargs):

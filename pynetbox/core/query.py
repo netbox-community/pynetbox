@@ -131,6 +131,7 @@ class Request:
         key=None,
         token=None,
         threading=False,
+        extra_headers={},
     ):
         """
         Instantiates a new Request object
@@ -152,13 +153,14 @@ class Request:
         self.threading = threading
         self.limit = limit
         self.offset = offset
+        self.extra_headers = extra_headers
 
     def get_openapi(self):
         """Gets the OpenAPI Spec"""
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
-        }
+        } | self.extra_headers
 
         current_version = version.parse(self.get_version())
         if current_version >= version.parse("3.5"):
@@ -189,7 +191,7 @@ class Request:
         """
         headers = {
             "Content-Type": "application/json",
-        }
+        } | self.extra_headers
         req = self.http_session.get(
             self.normalize_url(self.base),
             headers=headers,
@@ -205,7 +207,7 @@ class Request:
         :Returns: Dictionary as returned by NetBox.
         :Raises: RequestError if request is not successful.
         """
-        headers = {"Content-Type": "application/json"}
+        headers = {"Content-Type": "application/json"} | self.extra_headers
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
         req = self.http_session.get(
@@ -232,6 +234,8 @@ class Request:
 
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
+
+        headers = headers | self.extra_headers
 
         params = {}
         if not url_override:

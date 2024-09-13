@@ -455,6 +455,7 @@ class Record:
                 base=self.url,
                 token=self.api.token,
                 http_session=self.api.http_session,
+                extra_headers=self.api.extra_headers,
             )
             self._parse_values(next(req.get()))
             self.has_details = True
@@ -567,6 +568,7 @@ class Record:
                 base=self.endpoint.url,
                 token=self.api.token,
                 http_session=self.api.http_session,
+                extra_headers=self.api.extra_headers,
             )
             if req.patch(updates):
                 return True
@@ -613,5 +615,6 @@ class Record:
             base=self.endpoint.url,
             token=self.api.token,
             http_session=self.api.http_session,
+            extra_headers=self.api.extra_headers,
         )
         return True if req.delete() else False
