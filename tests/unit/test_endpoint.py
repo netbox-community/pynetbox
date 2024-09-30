@@ -60,6 +60,59 @@ class EndPointTestCase(unittest.TestCase):
             self.assertEqual(choices["letter"][1]["display_name"], "B")
             self.assertEqual(choices["letter"][1]["value"], 2)
 
+    def test_choices_put(self):
+        with patch("pynetbox.core.query.Request.options", return_value=Mock()) as mock:
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock(name="test")
+            mock.return_value = {
+                "actions": {
+                    "PUT": {
+                        "letter": {
+                            "choices": [
+                                {"display_name": "A", "value": 1},
+                                {"display_name": "B", "value": 2},
+                                {"display_name": "C", "value": 3},
+                            ]
+                        }
+                    }
+                }
+            }
+            test_obj = Endpoint(api, app, "test")
+            choices = test_obj.choices()
+            self.assertEqual(choices["letter"][0]["display_name"], "A")
+            self.assertEqual(choices["letter"][0]["value"], 1)
+
+    def test_choices_precedence(self):
+        with patch("pynetbox.core.query.Request.options", return_value=Mock()) as mock:
+            api = Mock(base_url="http://localhost:8000/api")
+            app = Mock(name="test")
+            mock.return_value = {
+                "actions": {
+                    "POST": {
+                        "letter": {
+                            "choices": [
+                                {"display_name": "A", "value": 1},
+                                {"display_name": "B", "value": 2},
+                                {"display_name": "C", "value": 3},
+                            ]
+                        }
+                    },
+                    "PUT": {
+                        "letter": {
+                            "choices": [
+                                {"display_name": "D", "value": 4},
+                                {"display_name": "E", "value": 5},
+                                {"display_name": "F", "value": 6},
+                            ]
+                        }
+                    },
+                }
+            }
+            test_obj = Endpoint(api, app, "test")
+            choices = test_obj.choices()
+            self.assertEqual(choices["letter"][2]["display_name"], "C")
+            self.assertEqual(choices["letter"][2]["value"], 3)
+
     def test_get_with_filter(self):
         with patch(
             "pynetbox.core.query.Request._make_call", return_value=Mock()
