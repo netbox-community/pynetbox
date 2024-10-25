@@ -110,6 +110,7 @@ class Api:
         """
         version = Request(
             base=self.base_url,
+            token=self.token,
             http_session=self.http_session,
         ).get_version()
         return version
