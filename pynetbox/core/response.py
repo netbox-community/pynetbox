@@ -14,9 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import copy
+import marshal
 from collections import OrderedDict
-from urllib.parse import urlsplit
 
 import pynetbox.core.app
 from pynetbox.core.query import Request
@@ -26,35 +25,20 @@ from pynetbox.core.util import Hashabledict
 LIST_AS_SET = ("tags", "tagged_vlans")
 
 
-def get_return(lookup, return_fields=None):
-    """Returns simple representations for items passed to lookup.
-
-    Used to return a "simple" representation of objects and collections
-    sent to it via lookup. Otherwise, we look to see if
-    lookup is a "choices" field (dict with only 'id' and 'value')
-    or a nested_return. Finally, we check if it's a Record, if
-    so simply return a string. Order is important due to nested_return
-    being self-referential.
-
-    :arg list,optional return_fields: A list of fields to reference when
-        calling values on lookup.
+def get_return(record):
     """
+    Used to return a "simple" representation of objects and collections.
+    """
+    return_fields = ["id", "value"]
 
-    for i in return_fields or ["id", "value", "nested_return"]:
-        if isinstance(lookup, dict) and lookup.get(i):
-            return lookup[i]
-        else:
-            if hasattr(lookup, i):
-                # check if this is a "choices" field record
-                # from a NetBox 2.7 server.
-                if sorted(dict(lookup)) == sorted(["id", "value", "label"]):
-                    return getattr(lookup, "value")
-                return getattr(lookup, i)
+    if not isinstance(record, Record):
+        raise ValueError
 
-    if isinstance(lookup, Record):
-        return str(lookup)
+    for i in return_fields:
+        if value := getattr(record, i, None):
+            return value
     else:
-        return lookup
+        return str(record)
 
 
 def flatten_custom(custom_dict):
@@ -277,7 +261,6 @@ class Record:
 
     def __init__(self, values, api, endpoint):
         self.has_details = False
-        self._full_cache = []
         self._init_cache = []
         self.api = api
         self.default_ret = Record
@@ -308,16 +291,16 @@ class Record:
         raise AttributeError('object has no attribute "{}"'.format(k))
 
     def __iter__(self):
-        for i in dict(self._init_cache):
-            cur_attr = getattr(self, i)
+        for k, _ in self._init_cache:
+            cur_attr = getattr(self, k)
             if isinstance(cur_attr, Record):
-                yield i, dict(cur_attr)
+                yield k, dict(cur_attr)
             elif isinstance(cur_attr, list) and all(
                 isinstance(i, Record) for i in cur_attr
             ):
-                yield i, [dict(x) for x in cur_attr]
+                yield k, [dict(x) for x in cur_attr]
             else:
-                yield i, cur_attr
+                yield k, cur_attr
 
     def __getitem__(self, k):
         return dict(self)[k]
@@ -353,10 +336,6 @@ class Record:
             return self.__key__() == other.__key__()
         return NotImplemented
 
-    def _add_cache(self, item):
-        key, value = item
-        self._init_cache.append((key, get_return(value)))
-
     def _parse_values(self, values):
         """Parses values init arg.
 
@@ -364,81 +343,70 @@ class Record:
         values within.
         """
 
-        def generic_list_parser(key_name, list_item):
+        def dict_parser(key_name, value):
+            # We keep must keep some specific fields as dictionaries
+            if key_name not in ["custom_fields", "local_context_data"]:
+                lookup = getattr(self.__class__, key_name, None)
+                if lookup is None or not issubclass(lookup, JsonField):
+                    # If we have a custom model field, use it, otherwise use a default Record model
+                    args = [value, self.api, self.endpoint]
+                    value = lookup(*args) if lookup else self.default_ret(*args)
+                    return value, get_return(value)
+            return value, marshal.loads(marshal.dumps(value))
+
+        def list_item_parser(list_item):
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
-            if (
-                isinstance(list_item, dict)
-                and "object_type" in list_item
-                and "object" in list_item
-            ):
-                lookup = list_item["object_type"]
-                model = None
-                model = CONTENT_TYPE_MAPPER.get(lookup)
-                if model:
-                    return model(list_item["object"], self.api, self.endpoint)
-
+            lookup = list_item["object_type"]
+            if model := CONTENT_TYPE_MAPPER.get(lookup, None):
+                return model(list_item["object"], self.api, self.endpoint)
             return list_item
 
-        def list_parser(key_name, list_item):
-            if isinstance(list_item, dict):
-                lookup = getattr(self.__class__, key_name, None)
-                if not isinstance(lookup, list):
-                    # This is *list_parser*, so if the custom model field is not
-                    # a list (or is not defined), just return the default model
-                    return self.default_ret(list_item, self.api, self.endpoint)
+        def list_parser(key_name, value):
+            if not value:
+                return value, []
+
+            if key_name in ["constraints"]:
+                return value, marshal.loads(marshal.dumps(value))
+
+            sample_item = value[0]
+            if isinstance(sample_item, dict):
+                if "object_type" in sample_item and "object" in sample_item:
+                    value = [list_item_parser(item) for item in value]
                 else:
-                    model = lookup[0]
-                    return model(list_item, self.api, self.endpoint)
+                    lookup = getattr(self.__class__, key_name, None)
+                    if not isinstance(lookup, list):
+                        # This is *list_parser*, so if the custom model field is not
+                        # a list (or is not defined), just return the default model
+                        value = [
+                            self.default_ret(i, self.api, self.endpoint) for i in value
+                        ]
+                    else:
+                        model = lookup[0]
+                        value = [model(i, self.api, self.endpoint) for i in value]
+            return value, [*value]
 
-            return list_item
+        def parse_value(key_name, value):
+            if not isinstance(value, (dict, list)):
+                to_cache = value
+            elif isinstance(value, dict):
+                value, to_cache = dict_parser(key_name, value)
+            elif isinstance(value, list):
+                value, to_cache = list_parser(key_name, value)
+            setattr(self, key_name, value)
+            return to_cache
 
-        for k, v in values.items():
-            if isinstance(v, dict):
-                lookup = getattr(self.__class__, k, None)
-                if k in ["custom_fields", "local_context_data"] or hasattr(
-                    lookup, "_json_field"
-                ):
-                    self._add_cache((k, copy.deepcopy(v)))
-                    setattr(self, k, v)
-                    continue
-                if lookup:
-                    v = lookup(v, self.api, self.endpoint)
-                else:
-                    v = self.default_ret(v, self.api, self.endpoint)
-                self._add_cache((k, v))
-
-            elif isinstance(v, list):
-                # check if GFK
-                if len(v) and isinstance(v[0], dict) and "object_type" in v[0]:
-                    v = [generic_list_parser(k, i) for i in v]
-                    to_cache = list(v)
-                elif k == "constraints":
-                    # Permissions constraints can be either dict or list
-                    to_cache = copy.deepcopy(v)
-                else:
-                    v = [list_parser(k, i) for i in v]
-                    to_cache = list(v)
-                self._add_cache((k, to_cache))
-
-            else:
-                self._add_cache((k, v))
-            setattr(self, k, v)
+        self._init_cache = [(k, parse_value(k, v)) for k, v in values.items()]
 
     def _endpoint_from_url(self, url):
-        url_path = urlsplit(url).path
-        base_url_path_parts = urlsplit(self.api.base_url).path.split("/")
-        if len(base_url_path_parts) > 2:
-            # There are some extra directories in the path, remove them from url
-            extra_path = "/".join(base_url_path_parts[:-1])
-            url_path = url_path[len(extra_path) :]
+        url_path = url.replace(self.api.base_url, "")
         split_url_path = url_path.split("/")
-        if split_url_path[2] == "plugins":
-            app = "plugins/{}".format(split_url_path[3])
-            name = split_url_path[4]
-        else:
+        if split_url_path[1] == "plugins":
             app, name = split_url_path[2:4]
-        return getattr(pynetbox.core.app.App(self.api, app), name)
+            return getattr(getattr(getattr(self.api, "plugins"), app), name)
+        else:
+            app, name = split_url_path[1:3]
+            return getattr(getattr(self.api, app), name)
 
     def full_details(self):
         """Queries the hyperlinked endpoint if 'url' is defined.

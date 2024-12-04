@@ -41,6 +41,7 @@ class App:
         self.api = api
         self.name = name
         self._setmodel()
+        self._cached_endpoints = {}
 
     models = {
         "dcim": dcim,
@@ -63,7 +64,11 @@ class App:
         self._setmodel()
 
     def __getattr__(self, name):
-        return Endpoint(self.api, self, name, model=self.model)
+        if name not in self._cached_endpoints:
+            self._cached_endpoints[name] = Endpoint(
+                self.api, self, name, model=self.model
+            )
+        return self._cached_endpoints[name]
 
     def config(self):
         """Returns config response from app
@@ -103,6 +108,7 @@ class PluginsApp:
 
     def __init__(self, api):
         self.api = api
+        self._cached_apps = {}
 
     def __getstate__(self):
         return self.__dict__
@@ -111,7 +117,11 @@ class PluginsApp:
         self.__dict__.update(d)
 
     def __getattr__(self, name):
-        return App(self.api, "plugins/{}".format(name.replace("_", "-")))
+        if name not in self._cached_apps:
+            self._cached_apps[name] = App(
+                self.api, "plugins/{}".format(name.replace("_", "-"))
+            )
+        return self._cached_apps[name]
 
     def installed_plugins(self):
         """Returns raw response with installed plugins
