@@ -17,7 +17,6 @@ limitations under the License.
 import marshal
 from collections import OrderedDict
 
-import pynetbox.core.app
 from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
@@ -29,16 +28,7 @@ def get_return(record):
     """
     Used to return a "simple" representation of objects and collections.
     """
-    return_fields = ["id", "value"]
-
-    if not isinstance(record, Record):
-        raise ValueError
-
-    for i in return_fields:
-        if value := getattr(record, i, None):
-            return value
-    else:
-        return str(record)
+    return getattr(record, "id", None) or getattr(record, "value", None) or str(record)
 
 
 def flatten_custom(custom_dict):
