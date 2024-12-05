@@ -291,7 +291,7 @@ class RecordTestCase(unittest.TestCase):
             api,
             None,
         )
-        ret = test._endpoint_from_url(test.url)
+        ret = test._endpoint_from_url()
         self.assertEqual(ret.name, "test-endpoint")
 
     def test_endpoint_from_url_with_directory_in_base_url(self):
@@ -309,7 +309,7 @@ class RecordTestCase(unittest.TestCase):
             api,
             None,
         )
-        ret = test._endpoint_from_url(test.url)
+        ret = test._endpoint_from_url()
         self.assertEqual(ret.name, "test-endpoint")
 
     def test_endpoint_from_url_with_plugins(self):
@@ -328,7 +328,7 @@ class RecordTestCase(unittest.TestCase):
             api,
             None,
         )
-        ret = test._endpoint_from_url(test.url)
+        ret = test._endpoint_from_url()
         self.assertEqual(ret.name, "test-endpoint")
 
     def test_endpoint_from_url_with_plugins_and_directory_in_base_url(self):
@@ -347,7 +347,7 @@ class RecordTestCase(unittest.TestCase):
             api,
             None,
         )
-        ret = test._endpoint_from_url(test.url)
+        ret = test._endpoint_from_url()
         self.assertEqual(ret.name, "test-endpoint")
 
     def test_serialize_tag_list_order(self):

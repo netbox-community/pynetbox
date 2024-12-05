@@ -264,11 +264,8 @@ class Record:
         self._init_cache = []
         self.api = api
         self.default_ret = Record
-        self.endpoint = (
-            self._endpoint_from_url(values["url"])
-            if values and "url" in values and values["url"]
-            else endpoint
-        )
+        self.url = values.get("url", None) if values else None
+        self._endpoint = endpoint
         if values:
             self._parse_values(values)
 
@@ -336,6 +333,22 @@ class Record:
             return self.__key__() == other.__key__()
         return NotImplemented
 
+    @property
+    def endpoint(self):
+        if self._endpoint is None:
+            self._endpoint = self._endpoint_from_url()
+        return self._endpoint
+
+    def _endpoint_from_url(self):
+        url_path = self.url.replace(self.api.base_url, "").split("/")
+        is_plugin = url_path and url_path[1] == "plugins"
+        start = 2 if is_plugin else 1
+        app, name = [i.replace("-", "_") for i in url_path[start : start + 2]]
+        if is_plugin:
+            return getattr(getattr(self.api.plugins, app), name)
+        else:
+            return getattr(getattr(self.api, app), name)
+
     def _parse_values(self, values):
         """Parses values init arg.
 
@@ -349,7 +362,7 @@ class Record:
                 lookup = getattr(self.__class__, key_name, None)
                 if lookup is None or not issubclass(lookup, JsonField):
                     # If we have a custom model field, use it, otherwise use a default Record model
-                    args = [value, self.api, self.endpoint]
+                    args = [value, self.api, None]
                     value = lookup(*args) if lookup else self.default_ret(*args)
                     return value, get_return(value)
             return value, marshal.loads(marshal.dumps(value))
@@ -359,7 +372,7 @@ class Record:
 
             lookup = list_item["object_type"]
             if model := CONTENT_TYPE_MAPPER.get(lookup, None):
-                return model(list_item["object"], self.api, self.endpoint)
+                return model(list_item["object"], self.api, None)
             return list_item
 
         def list_parser(key_name, value):
@@ -378,12 +391,10 @@ class Record:
                     if not isinstance(lookup, list):
                         # This is *list_parser*, so if the custom model field is not
                         # a list (or is not defined), just return the default model
-                        value = [
-                            self.default_ret(i, self.api, self.endpoint) for i in value
-                        ]
+                        value = [self.default_ret(i, self.api, None) for i in value]
                     else:
                         model = lookup[0]
-                        value = [model(i, self.api, self.endpoint) for i in value]
+                        value = [model(i, self.api, None) for i in value]
             return value, [*value]
 
         def parse_value(key_name, value):
@@ -397,16 +408,6 @@ class Record:
             return to_cache
 
         self._init_cache = [(k, parse_value(k, v)) for k, v in values.items()]
-
-    def _endpoint_from_url(self, url):
-        url_path = url.replace(self.api.base_url, "").split("/")
-        is_plugin = url_path and url_path[1] == "plugins"
-        start = 2 if is_plugin else 1
-        app, name = [i.replace("-", "_") for i in url_path[start : start + 2]]
-        if is_plugin:
-            return getattr(getattr(self.api.plugins, app), name)
-        else:
-            return getattr(getattr(self.api, app), name)
 
     def full_details(self):
         """Queries the hyperlinked endpoint if 'url' is defined.
