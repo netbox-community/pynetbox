@@ -378,13 +378,10 @@ class Record:
                     value = [list_item_parser(item) for item in value]
                 else:
                     lookup = getattr(self.__class__, key_name, None)
-                    if not isinstance(lookup, list):
-                        # This is *list_parser*, so if the custom model field is not
-                        # a list (or is not defined), just return the default model
-                        value = [self.default_ret(i, self.api, None) for i in value]
-                    else:
-                        model = lookup[0]
-                        value = [model(i, self.api, None) for i in value]
+                    # This is *list_parser*, so if the custom model field is not
+                    # a list (or is not defined), just return the default model
+                    model = lookup[0] if isinstance(lookup, list) else self.default_ret
+                    value = [model(i, self.api, None) for i in value]
             return value, [*value]
 
         def parse_value(key_name, value):
