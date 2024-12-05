@@ -399,13 +399,13 @@ class Record:
         self._init_cache = [(k, parse_value(k, v)) for k, v in values.items()]
 
     def _endpoint_from_url(self, url):
-        url_path = url.replace(self.api.base_url, "")
-        split_url_path = url_path.split("/")
-        if split_url_path[1] == "plugins":
-            app, name = split_url_path[2:4]
-            return getattr(getattr(getattr(self.api, "plugins"), app), name)
+        url_path = url.replace(self.api.base_url, "").split("/")
+        is_plugin = url_path and url_path[1] == "plugins"
+        start = 2 if is_plugin else 1
+        app, name = [i.replace("-", "_") for i in url_path[start : start + 2]]
+        if is_plugin:
+            return getattr(getattr(self.api.plugins, app), name)
         else:
-            app, name = split_url_path[1:3]
             return getattr(getattr(self.api, app), name)
 
     def full_details(self):
@@ -569,7 +569,7 @@ class Record:
         """Deletes an existing object.
 
         :returns: True if DELETE operation was successful.
-        :example:
+        :examples:
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
         >>> x.delete()
