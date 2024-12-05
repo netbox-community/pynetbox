@@ -388,12 +388,12 @@ class Record:
             return value, [*value]
 
         def parse_value(key_name, value):
-            if not isinstance(value, (dict, list)):
-                to_cache = value
-            elif isinstance(value, dict):
+            if isinstance(value, dict):
                 value, to_cache = dict_parser(key_name, value)
             elif isinstance(value, list):
                 value, to_cache = list_parser(key_name, value)
+            else:
+                to_cache = value
             setattr(self, key_name, value)
             return to_cache
 
