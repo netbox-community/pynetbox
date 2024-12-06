@@ -32,10 +32,6 @@ def get_foreign_key(record):
         gfk = getattr(record, "id", None) or getattr(record, "value", None)
     elif isinstance(record, dict):
         gfk = record.get("id", None) or record.get("value", None)
-
-    if gfk is None:
-        raise ValueError("Unable to find a foreign key for the record.")
-
     return gfk
 
 
@@ -416,14 +412,23 @@ class Record:
 
         non_record_fields = ["custom_fields", "local_context_data"]
 
+        def deep_copy(value):
+            return marshal.loads(marshal.dumps(value))
+
         def dict_parser(key_name, value):
-            if key_name not in non_record_fields:
-                lookup = getattr(self.__class__, key_name, None)
-                if lookup is None or not issubclass(lookup, JsonField):
-                    fkey = get_foreign_key(value)
-                    value = self._get_or_init(key_name, value, lookup)
-                    return value, fkey
-            return value, marshal.loads(marshal.dumps(value))
+            if key_name in non_record_fields:
+                return value, deep_copy(value)
+
+            lookup = getattr(self.__class__, key_name, None)
+
+            if lookup and issubclass(lookup, JsonField):
+                return value, deep_copy(value)
+
+            if fkey := get_foreign_key(value):
+                value = self._get_or_init(key_name, value, lookup)
+                return value, fkey
+
+            return value, deep_copy(value)
 
         def generic_list_item_parser(list_item):
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
@@ -439,7 +444,7 @@ class Record:
                 return value, []
 
             if key_name in ["constraints"]:
-                return value, marshal.loads(marshal.dumps(value))
+                return value, deep_copy(value)
 
             sample_item = value[0]
             if isinstance(sample_item, dict):
