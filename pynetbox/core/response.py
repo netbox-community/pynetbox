@@ -144,9 +144,6 @@ class RecordSet:
             self._clear_endpoint_cache()
             raise
 
-    def __del__(self):
-        self._clear_endpoint_cache()
-
     def _init_endpoint_cache(self):
         self.endpoint._cache = CachedRecordRegistry(self.endpoint.api)
 
