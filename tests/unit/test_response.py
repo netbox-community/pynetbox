@@ -225,6 +225,7 @@ class RecordTestCase(unittest.TestCase):
         endpoint = Mock()
         endpoint.name = "test-endpoint"
         endpoint.url = "http://localhost:8080/api/test-app/test-endpoint/"
+        endpoint._cache = None
         api.test_app = Mock()
         api.test_app.test_endpoint = endpoint
         test = Record(
@@ -254,6 +255,7 @@ class RecordTestCase(unittest.TestCase):
         endpoint = Mock()
         endpoint.name = "test-endpoint"
         endpoint.url = "http://localhost:8080/testing/api/test-app/test-endpoint/"
+        endpoint._cache = None
         api.test_app = Mock()
         api.test_app.test_endpoint = endpoint
         test = Record(

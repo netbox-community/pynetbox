@@ -24,11 +24,19 @@ from pynetbox.core.util import Hashabledict
 LIST_AS_SET = ("tags", "tagged_vlans")
 
 
-def get_return(record):
+def get_foreign_key(record):
     """
-    Used to return a "simple" representation of objects and collections.
+    Get the foreign key for Record objects and dictionaries.
     """
-    return getattr(record, "id", None) or getattr(record, "value", None) or str(record)
+    if isinstance(record, Record):
+        gfk = getattr(record, "id", None) or getattr(record, "value", None)
+    elif isinstance(record, dict):
+        gfk = record.get("id", None) or record.get("value", None)
+
+    if gfk is None:
+        raise ValueError("Unable to find a foreign key for the record.")
+
+    return gfk
 
 
 def flatten_custom(custom_dict):
@@ -52,6 +60,30 @@ class JsonField:
     to a Record object"""
 
     _json_field = True
+
+
+class CachedRecordRegistry:
+    """
+    A cache for Record objects.
+    """
+
+    def __init__(self, api):
+        self.api = api
+        self._cache = {}
+
+    def get(self, object_type, key):
+        """
+        Retrieves a record from the cache
+        """
+        return self._cache.get(object_type, {}).get(key, None)
+
+    def set(self, object_type, key, value):
+        """
+        Stores a record in the cache
+        """
+        if object_type not in self._cache:
+            self._cache[object_type] = {}
+        self._cache[object_type][key] = value
 
 
 class RecordSet:
@@ -88,18 +120,36 @@ class RecordSet:
         self.request = request
         self.response = self.request.get()
         self._response_cache = []
+        self._init_endpoint_cache()
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self._response_cache:
+        try:
+            if self._response_cache:
+                return self.endpoint.return_obj(
+                    self._response_cache.pop(),
+                    self.endpoint.api,
+                    self.endpoint,
+                )
             return self.endpoint.return_obj(
-                self._response_cache.pop(), self.endpoint.api, self.endpoint
+                next(self.response),
+                self.endpoint.api,
+                self.endpoint,
             )
-        return self.endpoint.return_obj(
-            next(self.response), self.endpoint.api, self.endpoint
-        )
+        except StopIteration:
+            self._clear_endpoint_cache()
+            raise
+
+    # def __del__(self):
+    #     self._clear_endpoint_cache()
+
+    def _init_endpoint_cache(self):
+        self.endpoint._cache = CachedRecordRegistry(self.endpoint.api)
+
+    def _clear_endpoint_cache(self):
+        self.endpoint._cache = None
 
     def __len__(self):
         try:
@@ -339,6 +389,20 @@ class Record:
         else:
             return getattr(getattr(self.api, app), name)
 
+    def _get_or_init(self, object_type, key, value, model):
+        """
+        Returns a record from the endpoint cache if it exists, otherwise
+        initializes a new record, store it in the cache, and return it.
+        """
+        if self._endpoint and self._endpoint._cache:
+            if cached := self._endpoint._cache.get(object_type, key):
+                return cached
+        model = model or Record
+        record = model(value, self.api, None)
+        if self._endpoint and self._endpoint._cache:
+            self._endpoint._cache.set(object_type, key, record)
+        return record
+
     def _parse_values(self, values):
         """Parses values init arg.
 
@@ -346,23 +410,25 @@ class Record:
         values within.
         """
 
+        non_record_fields = ["custom_fields", "local_context_data"]
+
         def dict_parser(key_name, value):
-            # We keep must keep some specific fields as dictionaries
-            if key_name not in ["custom_fields", "local_context_data"]:
+            if key_name not in non_record_fields:
                 lookup = getattr(self.__class__, key_name, None)
                 if lookup is None or not issubclass(lookup, JsonField):
-                    # If we have a custom model field, use it, otherwise use a default Record model
-                    args = [value, self.api, None]
-                    value = lookup(*args) if lookup else self.default_ret(*args)
-                    return value, get_return(value)
+                    fkey = get_foreign_key(value)
+                    value = self._get_or_init(key_name, fkey, value, lookup)
+                    return value, fkey
             return value, marshal.loads(marshal.dumps(value))
 
-        def list_item_parser(list_item):
+        def generic_list_item_parser(list_item):
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
             lookup = list_item["object_type"]
             if model := CONTENT_TYPE_MAPPER.get(lookup, None):
-                return model(list_item["object"], self.api, None)
+                fkey = get_foreign_key(list_item["object"])
+                value = self._get_or_init(lookup, fkey, list_item["object"], model)
+                return value
             return list_item
 
         def list_parser(key_name, value):
@@ -375,13 +441,16 @@ class Record:
             sample_item = value[0]
             if isinstance(sample_item, dict):
                 if "object_type" in sample_item and "object" in sample_item:
-                    value = [list_item_parser(item) for item in value]
+                    value = [generic_list_item_parser(item) for item in value]
                 else:
                     lookup = getattr(self.__class__, key_name, None)
                     # This is *list_parser*, so if the custom model field is not
                     # a list (or is not defined), just return the default model
                     model = lookup[0] if isinstance(lookup, list) else self.default_ret
-                    value = [model(i, self.api, None) for i in value]
+                    value = [
+                        self._get_or_init(key_name, get_foreign_key(i), i, model)
+                        for i in value
+                    ]
             return value, [*value]
 
         def parse_value(key_name, value):
@@ -435,7 +504,7 @@ class Record:
         :returns: dict.
         """
         if nested:
-            return get_return(self)
+            return get_foreign_key(self)
 
         if init:
             init_vals = dict(self._init_cache)
@@ -557,7 +626,7 @@ class Record:
         """Deletes an existing object.
 
         :returns: True if DELETE operation was successful.
-        :examples:
+        :example:
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
         >>> x.delete()

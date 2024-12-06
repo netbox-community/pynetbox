@@ -3,6 +3,7 @@
     "name": "permission1",
     "users": [
         {
+            "id": 1,
             "username": "user1"
         }
     ],

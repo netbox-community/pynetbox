@@ -53,6 +53,7 @@ class Endpoint:
             endpoint=self.name,
         )
         self._choices = None
+        self._cache = None
 
     def _lookup_ret_obj(self, name, model):
         """Loads unique Response objects.
@@ -636,8 +637,9 @@ class Endpoint:
 
         if any(i in RESERVED_KWARGS for i in kwargs):
             raise ValueError(
-                "A reserved {} kwarg was passed. Please remove it "
-                "try again.".format(RESERVED_KWARGS)
+                "A reserved {} kwarg was passed. Please remove it " "try again.".format(
+                    RESERVED_KWARGS
+                )
             )
 
         ret = Request(
