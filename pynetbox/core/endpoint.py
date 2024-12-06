@@ -637,8 +637,8 @@ class Endpoint:
 
         if any(i in RESERVED_KWARGS for i in kwargs):
             raise ValueError(
-                "A reserved {} kwarg was passed. Please remove it " 
-                "try again.".format(RESERVED_KWARGS)
+                "A reserved kwarg was passed ({}). Please remove it "
+                "and try again.".format(RESERVED_KWARGS)
             )
 
         ret = Request(
