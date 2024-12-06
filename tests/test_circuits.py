@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 
 import pynetbox
+import pynetbox.models.circuits
 
 from .util import Response
 
@@ -76,6 +77,7 @@ class Generic:
 
 class CircuitsTestCase(Generic.Tests):
     name = "circuits"
+    ret = pynetbox.models.circuits.Circuits
 
     @patch(
         "requests.sessions.Session.get",
@@ -96,6 +98,7 @@ class CircuitTypeTestCase(Generic.Tests):
 
 class CircuitTerminationsTestCase(Generic.Tests):
     name = "circuit_terminations"
+    ret = pynetbox.models.circuits.CircuitTerminations
 
     @patch(
         "requests.sessions.Session.get",

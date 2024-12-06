@@ -2,6 +2,8 @@ import unittest
 from unittest.mock import patch
 
 import pynetbox
+import pynetbox.models
+import pynetbox.models.virtualization
 
 from .util import Response
 
@@ -88,6 +90,7 @@ class ClustersTestCase(Generic.Tests):
 
 class VirtualMachinesTestCase(Generic.Tests):
     name = "virtual_machines"
+    ret = pynetbox.models.virtualization.VirtualMachines
 
 
 class InterfacesTestCase(Generic.Tests):

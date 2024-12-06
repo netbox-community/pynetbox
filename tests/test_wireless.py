@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 
 import pynetbox
+import pynetbox.models.wireless
 
 from .util import Response
 
@@ -74,6 +75,7 @@ class Generic:
 
 class WirelessLansTestCase(Generic.Tests):
     name = "wireless_lans"
+    ret = pynetbox.models.wireless.WirelessLans
 
     @patch(
         "requests.sessions.Session.get",
