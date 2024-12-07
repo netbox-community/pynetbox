@@ -410,13 +410,13 @@ class Record:
         values within.
         """
 
-        non_record_fields = ["custom_fields", "local_context_data"]
+        non_record_dict_fields = ["custom_fields", "local_context_data"]
 
         def deep_copy(value):
             return marshal.loads(marshal.dumps(value))
 
         def dict_parser(key_name, value):
-            if key_name in non_record_fields:
+            if key_name in non_record_dict_fields:
                 return value, deep_copy(value)
 
             lookup = getattr(self.__class__, key_name, None)
@@ -430,32 +430,41 @@ class Record:
 
             return value, deep_copy(value)
 
-        def generic_list_item_parser(list_item):
+        def mixed_list_parser(value):
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
-            lookup = list_item["object_type"]
-            if model := CONTENT_TYPE_MAPPER.get(lookup, None):
-                value = self._get_or_init(lookup, list_item["object"], model)
-                return value
-            return list_item
+            parsed_list = []
+            for item in value:
+                lookup = item["object_type"]
+                if model := CONTENT_TYPE_MAPPER.get(lookup, None):
+                    item = self._get_or_init(lookup, item["object"], model)
+                parsed_list.append(item)
+            return parsed_list
+
+        def uniform_list_parser(key_name, value):
+            lookup = getattr(self.__class__, key_name, None)
+            model = lookup[0] if isinstance(lookup, list) else self.default_ret
+            value = [self._get_or_init(key_name, i, model) for i in value]
+            return value
 
         def list_parser(key_name, value):
             if not value:
-                return value, []
+                return [], []
 
             if key_name in ["constraints"]:
                 return value, deep_copy(value)
 
             sample_item = value[0]
-            if isinstance(sample_item, dict):
-                if "object_type" in sample_item and "object" in sample_item:
-                    value = [generic_list_item_parser(item) for item in value]
-                else:
-                    lookup = getattr(self.__class__, key_name, None)
-                    # This is *list_parser*, so if the custom model field is not
-                    # a list (or is not defined), just return the default model
-                    model = lookup[0] if isinstance(lookup, list) else self.default_ret
-                    value = [self._get_or_init(key_name, i, model) for i in value]
+            if not isinstance(sample_item, dict):
+                return value, [*value]
+
+            is_mixed_list = "object_type" in sample_item and "object" in sample_item
+            value = (
+                mixed_list_parser(value)
+                if is_mixed_list
+                else uniform_list_parser(key_name, value)
+            )
+
             return value, [*value]
 
         def parse_value(key_name, value):
