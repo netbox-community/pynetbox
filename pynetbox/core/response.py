@@ -28,10 +28,10 @@ def get_foreign_key(record):
     """
     Get the foreign key for Record objects and dictionaries.
     """
-    if isinstance(record, Record):
-        gfk = getattr(record, "id", None) or getattr(record, "value", None)
-    elif isinstance(record, dict):
+    if isinstance(record, dict):
         gfk = record.get("id", None) or record.get("value", None)
+    elif isinstance(record, Record):
+        gfk = getattr(record, "id", None) or getattr(record, "value", None)
     return gfk
 
 
@@ -415,17 +415,18 @@ class Record:
         def deep_copy(value):
             return marshal.loads(marshal.dumps(value))
 
-        def dict_parser(key_name, value):
+        def dict_parser(key_name, value, model=None):
             if key_name in non_record_dict_fields:
                 return value, deep_copy(value)
 
-            lookup = getattr(self.__class__, key_name, None)
+            if model is None:
+                model = getattr(self.__class__, key_name, None)
 
-            if lookup and issubclass(lookup, JsonField):
+            if model and issubclass(model, JsonField):
                 return value, deep_copy(value)
 
             if fkey := get_foreign_key(value):
-                value = self._get_or_init(key_name, value, lookup)
+                value = self._get_or_init(key_name, value, model)
                 return value, fkey
 
             return value, deep_copy(value)
@@ -441,12 +442,6 @@ class Record:
                 parsed_list.append(item)
             return parsed_list
 
-        def uniform_list_parser(key_name, value):
-            lookup = getattr(self.__class__, key_name, None)
-            model = lookup[0] if isinstance(lookup, list) else self.default_ret
-            value = [self._get_or_init(key_name, i, model) for i in value]
-            return value
-
         def list_parser(key_name, value):
             if not value:
                 return [], []
@@ -459,11 +454,12 @@ class Record:
                 return value, [*value]
 
             is_mixed_list = "object_type" in sample_item and "object" in sample_item
-            value = (
-                mixed_list_parser(value)
-                if is_mixed_list
-                else uniform_list_parser(key_name, value)
-            )
+            if is_mixed_list:
+                value = mixed_list_parser(value)
+            else:
+                lookup = getattr(self.__class__, key_name, None)
+                model = lookup[0] if isinstance(lookup, list) else self.default_ret
+                value = [dict_parser(key_name, i, model=model)[0] for i in value]
 
             return value, [*value]
 
