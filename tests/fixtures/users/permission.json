@@ -4,7 +4,8 @@
     "users": [
         {
             "id": 1,
-            "username": "user1"
+            "username": "user1",
+            "url": "http://localhost:8000/api/users/users/1/"
         }
     ],
     "constraints": [

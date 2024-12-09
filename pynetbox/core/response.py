@@ -201,7 +201,56 @@ class RecordSet:
         return self.endpoint.delete(self)
 
 
-class Record:
+class BaseRecord:
+    def __init__(self):
+        self._init_cache = []
+
+    def __getitem__(self, k):
+        return dict(self)[k]
+
+    def __repr__(self):
+        return str(self)
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, d):
+        self.__dict__.update(d)
+
+
+class ValueRecord(BaseRecord):
+    def __init__(self, values, *args, **kwargs):
+        super().__init__()
+        if values:
+            self._parse_values(values)
+
+    def __iter__(self):
+        for k, _ in self._init_cache:
+            cur_attr = getattr(self, k)
+            yield k, cur_attr
+
+    def __repr__(self):
+        return getattr(self, "label", "")
+
+    @property
+    def _key(self):
+        return getattr(self, "value")
+
+    def __eq__(self, other):
+        if isinstance(other, ValueRecord):
+            return self._foreign_key == other._foreign_key
+        return NotImplemented
+
+    def _parse_values(self, values):
+        for k, v in values.items():
+            self._init_cache.append((k, v))
+            setattr(self, k, v)
+
+    def serialize(self, nested=False):
+        return self._key if nested else dict(self)
+
+
+class Record(BaseRecord):
     """Create Python objects from NetBox API responses.
 
     Creates an object from a NetBox response passed as ``values``.
@@ -292,11 +341,9 @@ class Record:
 
     """
 
-    url = None
-
     def __init__(self, values, api, endpoint):
         self.has_details = False
-        self._init_cache = []
+        super().__init__()
         self.api = api
         self.default_ret = Record
         self.url = values.get("url", None) if values else None
@@ -334,9 +381,6 @@ class Record:
             else:
                 yield k, cur_attr
 
-    def __getitem__(self, k):
-        return dict(self)[k]
-
     def __str__(self):
         return (
             getattr(self, "name", None)
@@ -344,15 +388,6 @@ class Record:
             or getattr(self, "display", None)
             or ""
         )
-
-    def __repr__(self):
-        return str(self)
-
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, d):
-        self.__dict__.update(d)
 
     def __key__(self):
         if hasattr(self, "id"):
@@ -384,19 +419,15 @@ class Record:
         else:
             return getattr(getattr(self.api, app), name)
 
-    def _get_or_init(self, object_type, value, model):
+    def _get_or_init(self, object_type, key, value, model):
         """
         Returns a record from the endpoint cache if it exists, otherwise
         initializes a new record, store it in the cache, and return it.
         """
-        key = (
-            value.get("url", None) or value.get("id", None) or value.get("value", None)
-        )
         if key and self._endpoint and self._endpoint._cache:
             if cached := self._endpoint._cache.get(object_type, key):
                 self._endpoint._cache._hit += 1
                 return cached
-        model = model or Record
         record = model(value, self.api, None)
         if key and self._endpoint and self._endpoint._cache:
             self._endpoint._cache._miss += 1
@@ -425,9 +456,18 @@ class Record:
             if model and issubclass(model, JsonField):
                 return value, deep_copy(value)
 
-            if fkey := get_foreign_key(value):
-                value = self._get_or_init(key_name, value, model)
-                return value, fkey
+            if id := value.get("id", None):
+                # if model or "url" in value:
+                if url := value.get("url", None):
+                    model = model or Record
+                    value = self._get_or_init(key_name, url, value, model)
+                    return value, id
+
+            if record_value := value.get("value", None):
+                # if set(value.keys()) == {"value", "label"}:
+                # value = ValueRecord(values)
+                value = self._get_or_init(key_name, record_value, value, ValueRecord)
+                return value, record_value
 
             return value, deep_copy(value)
 
@@ -438,7 +478,9 @@ class Record:
             for item in value:
                 lookup = item["object_type"]
                 if model := CONTENT_TYPE_MAPPER.get(lookup, None):
-                    item = self._get_or_init(lookup, item["object"], model)
+                    item = self._get_or_init(
+                        lookup, item["object"]["url"], item["object"], model
+                    )
                 parsed_list.append(item)
             return parsed_list
 
@@ -514,7 +556,7 @@ class Record:
         :returns: dict.
         """
         if nested:
-            return get_foreign_key(self)
+            return getattr(self, "id")
 
         if init:
             init_vals = dict(self._init_cache)
@@ -525,7 +567,7 @@ class Record:
             if i == "custom_fields":
                 ret[i] = flatten_custom(current_val)
             else:
-                if isinstance(current_val, Record):
+                if isinstance(current_val, BaseRecord):
                     current_val = getattr(current_val, "serialize")(nested=True)
 
                 if isinstance(current_val, list):

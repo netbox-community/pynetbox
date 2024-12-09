@@ -26,8 +26,13 @@ class RecordTestCase(unittest.TestCase):
         test_values = {
             "id": 123,
             "units": 12,
-            "nested_dict": {"id": 222, "name": "bar"},
+            "nested_dict": {
+                "id": 222,
+                "name": "bar",
+                "url": "http://localhost:8000/api/test-app/test-endpoint/222/",
+            },
             "int_list": [123, 321, 231],
+            "url": "http://localhost:8000/api/test-app/test-endpoint/123/",
         }
         test_obj = Record(test_values, None, None)
         self.assertEqual(test_obj.id, 123)
