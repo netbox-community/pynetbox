@@ -643,7 +643,7 @@ class GenericListObject:
         return getattr(self.object, k)
 
     def __iter__(self):
-        for i in dir(self):
+        for i in ["object_id", "object_type", "object"]:
             cur_attr = getattr(self, i)
             if isinstance(cur_attr, Record):
                 cur_attr = dict(cur_attr)
