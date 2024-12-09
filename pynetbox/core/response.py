@@ -313,7 +313,7 @@ class Record:
             if isinstance(cur_attr, Record):
                 yield i, dict(cur_attr)
             elif isinstance(cur_attr, list) and all(
-                isinstance(i, Record) for i in cur_attr
+                isinstance(i, (Record, GenericListObject)) for i in cur_attr
             ):
                 yield i, [dict(x) for x in cur_attr]
             else:
@@ -373,10 +373,9 @@ class Record:
                 and "object" in list_item
             ):
                 lookup = list_item["object_type"]
-                model = None
-                model = CONTENT_TYPE_MAPPER.get(lookup)
-                if model:
-                    return model(list_item["object"], self.api, self.endpoint)
+                if model := CONTENT_TYPE_MAPPER.get(lookup, None):
+                    record = model(list_item["object"], self.api, self.endpoint)
+                    return GenericListObject(record)
 
             return list_item
 
@@ -412,7 +411,7 @@ class Record:
                 # check if GFK
                 if len(v) and isinstance(v[0], dict) and "object_type" in v[0]:
                     v = [generic_list_parser(k, i) for i in v]
-                    to_cache = list(v)
+                    to_cache = [i.serialize() for i in v]
                 elif k == "constraints":
                     # Permissions constraints can be either dict or list
                     to_cache = copy.deepcopy(v)
@@ -470,6 +469,7 @@ class Record:
         If an attribute's value is a ``Record`` type it's replaced with
         the ``id`` field of that object.
 
+
         .. note::
 
             Using this to get a dictionary representation of the record
@@ -485,6 +485,7 @@ class Record:
             init_vals = dict(self._init_cache)
 
         ret = {}
+
         for i in dict(self):
             current_val = getattr(self, i) if not init else init_vals.get(i)
             if i == "custom_fields":
@@ -494,15 +495,21 @@ class Record:
                     current_val = getattr(current_val, "serialize")(nested=True)
 
                 if isinstance(current_val, list):
-                    current_val = [
-                        v.id if isinstance(v, Record) else v for v in current_val
-                    ]
+                    serialized_list = []
+                    for v in current_val:
+                        if isinstance(v, GenericListObject):
+                            v = v.serialize()
+                        elif isinstance(v, Record):
+                            v = v.id
+                        serialized_list.append(v)
+                    current_val = serialized_list
                     if i in LIST_AS_SET and (
                         all([isinstance(v, str) for v in current_val])
                         or all([isinstance(v, int) for v in current_val])
                     ):
                         current_val = list(OrderedDict.fromkeys(current_val))
                 ret[i] = current_val
+
         return ret
 
     def _diff(self):
@@ -615,3 +622,29 @@ class Record:
             http_session=self.api.http_session,
         )
         return True if req.delete() else False
+
+
+class GenericListObject:
+    def __init__(self, record):
+        from pynetbox.models.mapper import TYPE_CONTENT_MAPPER
+
+        self.object = record
+        self.object_id = record.id
+        self.object_type = TYPE_CONTENT_MAPPER.get(record.__class__)
+
+    def __repr__(self):
+        return str(self.object)
+
+    def serialize(self):
+        ret = {k: getattr(self, k) for k in ["object_id", "object_type"]}
+        return ret
+
+    def __getattr__(self, k):
+        return getattr(self.object, k)
+
+    def __iter__(self):
+        for i in dir(self):
+            cur_attr = getattr(self, i)
+            if isinstance(cur_attr, Record):
+                cur_attr = dict(cur_attr)
+            yield i, cur_attr
