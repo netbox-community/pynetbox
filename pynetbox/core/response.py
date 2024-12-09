@@ -24,17 +24,6 @@ from pynetbox.core.util import Hashabledict
 LIST_AS_SET = ("tags", "tagged_vlans")
 
 
-def get_foreign_key(record):
-    """
-    Get the foreign key for Record objects and dictionaries.
-    """
-    if isinstance(record, dict):
-        gfk = record.get("id", None) or record.get("value", None)
-    elif isinstance(record, Record):
-        gfk = getattr(record, "id", None) or getattr(record, "value", None)
-    return gfk
-
-
 def flatten_custom(custom_dict):
     ret = {}
 
@@ -372,10 +361,10 @@ class Record(BaseRecord):
     def __iter__(self):
         for k, _ in self._init_cache:
             cur_attr = getattr(self, k)
-            if isinstance(cur_attr, Record):
+            if isinstance(cur_attr, BaseRecord):
                 yield k, dict(cur_attr)
             elif isinstance(cur_attr, list) and all(
-                isinstance(i, Record) for i in cur_attr
+                isinstance(i, BaseRecord) for i in cur_attr
             ):
                 yield k, [dict(x) for x in cur_attr]
             else:
@@ -456,16 +445,12 @@ class Record(BaseRecord):
             if model and issubclass(model, JsonField):
                 return value, deep_copy(value)
 
-            if id := value.get("id", None):
-                # if model or "url" in value:
-                if url := value.get("url", None):
-                    model = model or Record
-                    value = self._get_or_init(key_name, url, value, model)
-                    return value, id
+            if (id := value.get("id", None)) and (url := value.get("url", None)):
+                model = model or Record
+                value = self._get_or_init(key_name, url, value, model)
+                return value, id
 
             if record_value := value.get("value", None):
-                # if set(value.keys()) == {"value", "label"}:
-                # value = ValueRecord(values)
                 value = self._get_or_init(key_name, record_value, value, ValueRecord)
                 return value, record_value
 
@@ -572,7 +557,7 @@ class Record(BaseRecord):
 
                 if isinstance(current_val, list):
                     current_val = [
-                        v.id if isinstance(v, Record) else v for v in current_val
+                        v.id if isinstance(v, BaseRecord) else v for v in current_val
                     ]
                     if i in LIST_AS_SET and (
                         all([isinstance(v, str) for v in current_val])
