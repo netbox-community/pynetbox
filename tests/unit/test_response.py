@@ -230,7 +230,8 @@ class RecordTestCase(unittest.TestCase):
         endpoint = Mock()
         endpoint.name = "test-endpoint"
         endpoint.url = "http://localhost:8080/api/test-app/test-endpoint/"
-        endpoint._cache = None
+        endpoint._cache = Mock()
+        endpoint._cache.get = Mock(return_value=None)
         api.test_app = Mock()
         api.test_app.test_endpoint = endpoint
         test = Record(
@@ -248,6 +249,8 @@ class RecordTestCase(unittest.TestCase):
         )
         test.child.name = "test321"
         test.child.save()
+        print(api)
+        print(api.http_session)
         self.assertEqual(
             api.http_session.patch.call_args[0][0],
             "http://localhost:8080/api/test-app/test-endpoint/321/",
@@ -260,7 +263,8 @@ class RecordTestCase(unittest.TestCase):
         endpoint = Mock()
         endpoint.name = "test-endpoint"
         endpoint.url = "http://localhost:8080/testing/api/test-app/test-endpoint/"
-        endpoint._cache = None
+        endpoint._cache = Mock()
+        endpoint._cache.get = Mock(return_value=None)
         api.test_app = Mock()
         api.test_app.test_endpoint = endpoint
         test = Record(

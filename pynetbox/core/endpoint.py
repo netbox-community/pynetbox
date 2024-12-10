@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from collections import OrderedDict
-
 from pynetbox.core.query import Request, RequestError
 from pynetbox.core.response import Record, RecordSet
 
@@ -36,10 +34,13 @@ class CachedRecordRegistry:
         """
         Retrieves a record from the cache
         """
-        object_cache = self._cache.get(object_type)
-        if object_cache is None:
+        if not (object_cache := self._cache.get(object_type)):
             return None
-        return object_cache.get(key, None)
+        if object := object_cache.get(key, None):
+            self._hit += 1
+            return object
+        self._miss += 1
+        return None
 
     def set(self, object_type, key, value):
         """
@@ -83,8 +84,6 @@ class Endpoint:
             endpoint=self.name,
         )
         self._choices = None
-        self._attribute_type_map = {}
-        self._attribute_endpoint_map = {}
         self._init_cache()
 
     def _init_cache(self):

@@ -47,32 +47,6 @@ class JsonField:
     _json_field = True
 
 
-class CachedRecordRegistry:
-    """
-    A cache for Record objects.
-    """
-
-    def __init__(self, api):
-        self.api = api
-        self._cache = {}
-        self._hit = 0
-        self._miss = 0
-
-    def get(self, object_type, key):
-        """
-        Retrieves a record from the cache
-        """
-        return self._cache.get(object_type, {}).get(key, None)
-
-    def set(self, object_type, key, value):
-        """
-        Stores a record in the cache
-        """
-        if object_type not in self._cache:
-            self._cache[object_type] = {}
-        self._cache[object_type][key] = value
-
-
 class RecordSet:
     """Iterator containing Record objects.
 
@@ -107,7 +81,6 @@ class RecordSet:
         self.request = request
         self.response = self.request.get()
         self._response_cache = []
-        self._init_endpoint_cache()
 
     def __iter__(self):
         return self
@@ -126,14 +99,8 @@ class RecordSet:
                 self.endpoint,
             )
         except StopIteration:
-            self._clear_endpoint_cache()
+            self.endpoint._init_cache()
             raise
-
-    def _init_endpoint_cache(self):
-        self.endpoint._cache = CachedRecordRegistry(self.endpoint.api)
-
-    def _clear_endpoint_cache(self):
-        self.endpoint._cache = None
 
     def __len__(self):
         try:
@@ -413,13 +380,11 @@ class Record(BaseRecord):
         Returns a record from the endpoint cache if it exists, otherwise
         initializes a new record, store it in the cache, and return it.
         """
-        if key and self._endpoint and self._endpoint._cache:
+        if self._endpoint:
             if cached := self._endpoint._cache.get(object_type, key):
-                self._endpoint._cache._hit += 1
                 return cached
         record = model(value, self.api, None)
-        if key and self._endpoint and self._endpoint._cache:
-            self._endpoint._cache._miss += 1
+        if self._endpoint:
             self._endpoint._cache.set(object_type, key, record)
         return record
 
@@ -456,15 +421,15 @@ class Record(BaseRecord):
 
             return value, deep_copy(value)
 
-        def mixed_list_parser(value):
+        def generic_list_parser(value):
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
             parsed_list = []
             for item in value:
-                lookup = item["object_type"]
-                if model := CONTENT_TYPE_MAPPER.get(lookup, None):
+                object_type = item["object_type"]
+                if model := CONTENT_TYPE_MAPPER.get(object_type, None):
                     item = self._get_or_init(
-                        lookup, item["object"]["url"], item["object"], model
+                        object_type, item["object"]["url"], item["object"], model
                     )
                 parsed_list.append(GenericListObject(item))
             return parsed_list
@@ -480,9 +445,9 @@ class Record(BaseRecord):
             if not isinstance(sample_item, dict):
                 return value, [*value]
 
-            is_mixed_list = "object_type" in sample_item and "object" in sample_item
-            if is_mixed_list:
-                value = mixed_list_parser(value)
+            is_generic_list = "object_type" in sample_item and "object" in sample_item
+            if is_generic_list:
+                value = generic_list_parser(value)
             else:
                 lookup = getattr(self.__class__, key_name, None)
                 model = lookup[0] if isinstance(lookup, list) else self.default_ret
