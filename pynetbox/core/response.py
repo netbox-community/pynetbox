@@ -364,7 +364,7 @@ class Record(BaseRecord):
             if isinstance(cur_attr, BaseRecord):
                 yield k, dict(cur_attr)
             elif isinstance(cur_attr, list) and all(
-                isinstance(i, BaseRecord) for i in cur_attr
+                isinstance(i, (BaseRecord, GenericListObject)) for i in cur_attr
             ):
                 yield k, [dict(x) for x in cur_attr]
             else:
@@ -466,7 +466,7 @@ class Record(BaseRecord):
                     item = self._get_or_init(
                         lookup, item["object"]["url"], item["object"], model
                     )
-                parsed_list.append(item)
+                parsed_list.append(GenericListObject(item))
             return parsed_list
 
         def list_parser(key_name, value):
@@ -532,6 +532,7 @@ class Record(BaseRecord):
         If an attribute's value is a ``Record`` type it's replaced with
         the ``id`` field of that object.
 
+
         .. note::
 
             Using this to get a dictionary representation of the record
@@ -547,6 +548,7 @@ class Record(BaseRecord):
             init_vals = dict(self._init_cache)
 
         ret = {}
+
         for i in dict(self):
             current_val = getattr(self, i) if not init else init_vals.get(i)
             if i == "custom_fields":
@@ -556,15 +558,21 @@ class Record(BaseRecord):
                     current_val = getattr(current_val, "serialize")(nested=True)
 
                 if isinstance(current_val, list):
-                    current_val = [
-                        v.id if isinstance(v, BaseRecord) else v for v in current_val
-                    ]
+                    serialized_list = []
+                    for v in current_val:
+                        if isinstance(v, BaseRecord):
+                            v = v.id
+                        elif isinstance(v, GenericListObject):
+                            v = v.serialize()
+                        serialized_list.append(v)
+                    current_val = serialized_list
                     if i in LIST_AS_SET and (
                         all([isinstance(v, str) for v in current_val])
                         or all([isinstance(v, int) for v in current_val])
                     ):
                         current_val = list(OrderedDict.fromkeys(current_val))
                 ret[i] = current_val
+
         return ret
 
     def _diff(self):
@@ -677,3 +685,29 @@ class Record(BaseRecord):
             http_session=self.api.http_session,
         )
         return True if req.delete() else False
+
+
+class GenericListObject:
+    def __init__(self, record):
+        from pynetbox.models.mapper import TYPE_CONTENT_MAPPER
+
+        self.object = record
+        self.object_id = record.id
+        self.object_type = TYPE_CONTENT_MAPPER.get(record.__class__)
+
+    def __repr__(self):
+        return str(self.object)
+
+    def serialize(self):
+        ret = {k: getattr(self, k) for k in ["object_id", "object_type"]}
+        return ret
+
+    def __getattr__(self, k):
+        return getattr(self.object, k)
+
+    def __iter__(self):
+        for i in ["object_id", "object_type", "object"]:
+            cur_attr = getattr(self, i)
+            if isinstance(cur_attr, Record):
+                cur_attr = dict(cur_attr)
+            yield i, cur_attr
