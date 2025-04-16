@@ -87,7 +87,9 @@ pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ```
 
-Run pytest:
+The test suite requires Docker to be installed and running, as it will download and launch netbox-docker containers during test execution.
+
+With Docker installed and running, execute the following command to run the test suite:
 
 ```python
 pytest
