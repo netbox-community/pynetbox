@@ -32,6 +32,7 @@ class TraceableRecord(Record):
             "dcim/console-server-ports": ConsoleServerPorts,
             "dcim/front-ports": FrontPorts,
             "dcim/interfaces": Interfaces,
+            "dcim/power-feeds": PowerFeeds,
             "dcim/power-outlets": PowerOutlets,
             "dcim/power-ports": PowerPorts,
             "dcim/rear-ports": RearPorts,
@@ -157,6 +158,10 @@ class InterfaceConnection(Record):
 
 class Interfaces(TraceableRecord):
     interface_connection = InterfaceConnection
+
+
+class PowerFeeds(TraceableRecord):
+    pass
 
 
 class PowerOutlets(TraceableRecord):
