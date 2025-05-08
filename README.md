@@ -71,6 +71,30 @@ nb = pynetbox.api(
 )
 ```
 
+## Running Tests
+
+First, create and activate a Python virtual environment in the pynetbox directory to isolate the project dependencies:
+
+```python
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install both requirements files:
+
+```python
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+The test suite requires Docker to be installed and running, as it will download and launch netbox-docker containers during test execution.
+
+With Docker installed and running, execute the following command to run the test suite:
+
+```python
+pytest
+```
+
 ## Alternative Library
 
 > **Note:** For those interested in a different approach, there is an alternative Python API client library available for NetBox called [netbox-python](https://github.com/netbox-community/netbox-python). This library provides a thin Python wrapper over the NetBox API.
