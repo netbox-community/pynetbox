@@ -19,16 +19,22 @@ from urllib.parse import urlsplit
 from pynetbox.core.endpoint import DetailEndpoint, RODetailEndpoint
 from pynetbox.core.query import Request
 from pynetbox.core.response import JsonField, Record
-from pynetbox.models.circuits import Circuits
+from pynetbox.models.circuits import Circuits, CircuitTerminations
 from pynetbox.models.ipam import IpAddresses
 
 
 class TraceableRecord(Record):
     def _get_obj_class(self, url):
         uri_to_obj_class_map = {
+            "circuits/circuit-terminations": CircuitTerminations,
             "dcim/cables": Cables,
+            "dcim/console-ports": ConsolePorts,
+            "dcim/console-server-ports": ConsoleServerPorts,
             "dcim/front-ports": FrontPorts,
             "dcim/interfaces": Interfaces,
+            "dcim/power-feeds": PowerFeeds,
+            "dcim/power-outlets": PowerOutlets,
+            "dcim/power-ports": PowerPorts,
             "dcim/rear-ports": RearPorts,
         }
 
@@ -152,6 +158,10 @@ class InterfaceConnection(Record):
 
 class Interfaces(TraceableRecord):
     interface_connection = InterfaceConnection
+
+
+class PowerFeeds(TraceableRecord):
+    pass
 
 
 class PowerOutlets(TraceableRecord):
