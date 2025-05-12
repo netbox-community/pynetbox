@@ -151,6 +151,7 @@ class InterfaceConnection(Record):
 
 
 class Interfaces(TraceableRecord):
+    device = Devices
     interface_connection = InterfaceConnection
 
 
