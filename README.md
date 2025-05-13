@@ -9,7 +9,7 @@ Each pyNetBox Version listed below has been tested with its corresponding NetBox
 
 | NetBox Version | Plugin Version |
 |:--------------:|:--------------:|
-|      4.0.6     |     7.4.0      |
+|      4.0.6     |     7.4.1      |
 |      4.0.0     |     7.3.4      |
 |      3.7       |     7.3.0      |
 |      3.6       |     7.2.0      |
@@ -69,6 +69,30 @@ nb = pynetbox.api(
     'http://localhost:8000',
     threading=True,
 )
+```
+
+## Running Tests
+
+First, create and activate a Python virtual environment in the pynetbox directory to isolate the project dependencies:
+
+```python
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install both requirements files:
+
+```python
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+The test suite requires Docker to be installed and running, as it will download and launch netbox-docker containers during test execution.
+
+With Docker installed and running, execute the following command to run the test suite:
+
+```python
+pytest
 ```
 
 ## Alternative Library
