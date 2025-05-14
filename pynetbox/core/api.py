@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 import contextlib
+
 import requests
 
 from pynetbox.core.app import App, PluginsApp
@@ -210,7 +211,6 @@ class Api:
         self.token = resp["key"]
         return Record(resp, self, None)
 
-
     @contextlib.contextmanager
     def activate_branch(self, branch):
         """
@@ -219,7 +219,9 @@ class Api:
         :raises ValueError: If the branch does not have a schema_id.
         """
         if not isinstance(branch, Record) or not "schema_id" in dict(branch):
-            raise ValueError(f"The specified branch is not a valid NetBox branch: {branch}.")
+            raise ValueError(
+                f"The specified branch is not a valid NetBox branch: {branch}."
+            )
 
         self.http_session.headers["X-NetBox-Branch"] = branch.schema_id
 
