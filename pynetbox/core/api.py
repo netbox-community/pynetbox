@@ -216,7 +216,16 @@ class Api:
         """
         Context manager to activate the branch by setting the schema ID in the headers.
 
-        :raises ValueError: If the branch does not have a schema_id.
+        :Raises: ValueError if the branch is not a valid NetBox branch.
+
+        :Example:
+
+        >>> import pynetbox
+        >>> nb = pynetbox.api("https://netbox-server")
+        >>> branch = nb.plugins.branching.branches.create(name="testbranch")
+        >>> with nb.activate_branch(branch):
+        ...     sites = nb.dcim.sites.all()
+        ...     # All operations within this block will use the branch's schema
         """
         if not isinstance(branch, Record) or not "schema_id" in dict(branch):
             raise ValueError(
