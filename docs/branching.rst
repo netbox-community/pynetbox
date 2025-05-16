@@ -64,7 +64,7 @@ Here's how to use tenacity to wait for branch status changes:
     
     # Or wait for a merge operation to complete
     merge_result = nb.plugins.branching.branches.merge(branch)
-    branch = wait_for_branch_status(merge_result, "Ready")
+    branch = wait_for_branch_status(merge_result, "Merged")
 
 The retry configuration:
 - Tries up to 30 times
