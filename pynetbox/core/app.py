@@ -113,6 +113,10 @@ class PluginsApp:
     def __getattr__(self, name):
         return App(self.api, "plugins/{}".format(name.replace("_", "-")))
 
+    def __getitem__(self, name):
+        """Allows access to endpoint by dictionary-style indexing."""
+        return App(self.api, f"plugins/{name}")
+
     def installed_plugins(self):
         """Returns raw response with installed plugins
 
