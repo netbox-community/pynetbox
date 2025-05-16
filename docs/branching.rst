@@ -39,38 +39,44 @@ First, install tenacity:
 
     pip install tenacity
 
-Here's how to use tenacity to wait for branch status changes:
+Here's how to create a reusable function to wait for branch status changes:
 
 .. code-block:: python
 
-    from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_result
-    
-    def is_branch_status(branch, target_status):
-        return str(branch.status) == target_status
-    
+    from tenacity import retry, retry_if_result, stop_after_attempt, wait_exponential
+    import pynetbox
+
     @retry(
-        stop=stop_after_attempt(30),
-        wait=wait_exponential(multiplier=1, min=4, max=60),
-        retry=retry_if_result(lambda x: not is_branch_status(x, target_status))
+        stop=stop_after_attempt(30),  # Try for up to 30 attempts
+        wait=wait_exponential(
+            multiplier=1, min=4, max=60
+        ),  # Wait between 4-60 seconds, increasing exponentially
+        retry=retry_if_result(lambda x: not x),  # Retry if the status check returns False
     )
     def wait_for_branch_status(branch, target_status):
         """Wait for branch to reach a specific status, with exponential backoff."""
         branch = nb.plugins.branching.branches.get(branch.id)
-        return branch
-    
-    # Wait for a newly created branch to be ready
-    branch = nb.plugins.branching.branches.create(name="testbranch")
-    branch = wait_for_branch_status(branch, "Ready")
-    
-    # Or wait for a merge operation to complete
-    merge_result = nb.plugins.branching.branches.merge(branch)
-    branch = wait_for_branch_status(merge_result, "Merged")
+        return str(branch.status) == target_status
 
-The retry configuration:
-- Tries up to 30 times
-- Uses exponential backoff starting at 4 seconds, up to 60 seconds
-- Checks the branch status by fetching the latest branch data
-- Continues retrying until the branch reaches the target status
+    # Example usage:
+    branch = nb.plugins.branching.branches.create(name="my-branch")
+    
+    # Wait for branch to be ready
+    wait_for_branch_status(branch, "Ready")
+    
+    # Get the latest branch status
+    branch = nb.plugins.branching.branches.get(branch.id)
+    print(f"Branch is now ready! Status: {branch.status}")
+
+The function will:
+1. Check the current status of the branch
+2. If the status doesn't match the target status, it will retry with exponential backoff
+3. Continue retrying until either:
+   - The branch reaches the target status
+   - The maximum number of attempts (30) is reached
+   - The maximum wait time (60 seconds) is exceeded
+
+The exponential backoff ensures that we don't overwhelm the server with requests while still checking frequently enough to catch status changes quickly.
 
 .. _tenacity: https://github.com/jd/tenacity
 
