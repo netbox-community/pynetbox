@@ -10,8 +10,8 @@ pynetbox is maintained on GitHub. GitHub also serves as one of our primary discu
 
 There are two permanent branches in the repository:
 
-* `main` - Active development for the upcoming patch release. Pull requests will typically be based on this branch unless they introduce breaking changes that must be deferred until the next minor release.
-* `feature` - New feature work to be introduced in the next minor release.
+* `master` - Active development for the upcoming patch release. Pull requests will typically be based on this branch unless they introduce breaking changes that must be deferred until the next major release.
+* `feature` - New feature work to be introduced in the next major release.
 
 pynetbox components are arranged into modules:
 
