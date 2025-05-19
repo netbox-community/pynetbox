@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         python: ["3.10", "3.11", "3.12"]
-        netbox: ["4.0", "4.1", "4.2"]
+        netbox: ["4.1", "4.2", "4.3"]
 
     steps:
       - uses: actions/checkout@v4

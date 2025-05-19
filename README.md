@@ -9,6 +9,7 @@ Each pyNetBox Version listed below has been tested with its corresponding NetBox
 
 | NetBox Version | Plugin Version |
 |:--------------:|:--------------:|
+|      4.3       |     7.5.0      |
 |      4.0.6     |     7.4.1      |
 |      4.0.0     |     7.3.4      |
 |      3.7       |     7.3.0      |
