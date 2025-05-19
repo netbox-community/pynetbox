@@ -18,7 +18,7 @@ The `activate_branch` context manager allows you to perform operations within a 
         token="your-token-here"
     )
     
-    # Get a new branch
+    # Get an existing branch
     branch = nb.plugins.branching.branches.get(id=1)
     
     # Activate the branch for operations
