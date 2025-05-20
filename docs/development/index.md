@@ -32,7 +32,7 @@ To submit a new feature request or bug report for pynetbox, select and complete 
 There are two primary forums for getting assistance with pynetbox development:
 
 * GitHub discussions - The preferred forum for general discussion and support issues. Ideal for shaping a feature requests prior to submitting an issue.
-* #netbox on NetDev Community Slack - Good for quick chats. Avoid any discussion that might need to be referenced later on, as the chat history is not retained indefinitely.
+* \#netbox on NetDev Community Slack - Good for quick chats. Avoid any discussion that might need to be referenced later on, as the chat history is not retained indefinitely.
 
 !!! note
     Don't use GitHub issues to ask for help: These are reserved for proposed code changes only.

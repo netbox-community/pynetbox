@@ -132,7 +132,7 @@ class Endpoint:
         ## Parameters
 
         * **key** (int, optional): id for the item to be retrieved.
-        * **\*\*kwargs**: Accepts the same keyword args as filter(). Any search argument the endpoint accepts can
+        * **kwargs**: Accepts the same keyword args as filter(). Any search argument the endpoint accepts can
             be added as a keyword arg.
 
         ## Returns
@@ -295,8 +295,8 @@ class Endpoint:
 
         ## Parameters
 
-        * **\*args**: Not used.
-        * **\*\*kwargs**: Fields and values to create the object with.
+        * **args**: Not used.
+        * **kwargs**: Fields and values to create the object with.
 
         ## Returns
         A Record object.

@@ -30,6 +30,8 @@ nav:
     - Advanced Usage: advanced.md
   - Development:
     - Development Guide: development/index.md
+    - Getting Started: development/getting-started.md
+    - Release Checklist: development/release-checklist.md
 
 extra_css:
   - stylesheets/extra.css
