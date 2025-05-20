@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import contextlib
+
 import requests
 
 from pynetbox.core.app import App, PluginsApp
@@ -208,3 +210,31 @@ class Api:
         # object details will fail
         self.token = resp["key"]
         return Record(resp, self, None)
+
+    @contextlib.contextmanager
+    def activate_branch(self, branch):
+        """
+        Context manager to activate the branch by setting the schema ID in the headers.
+
+        :Raises: ValueError if the branch is not a valid NetBox branch.
+
+        :Example:
+
+        >>> import pynetbox
+        >>> nb = pynetbox.api("https://netbox-server")
+        >>> branch = nb.plugins.branching.branches.create(name="testbranch")
+        >>> with nb.activate_branch(branch):
+        ...     sites = nb.dcim.sites.all()
+        ...     # All operations within this block will use the branch's schema
+        """
+        if not isinstance(branch, Record) or not "schema_id" in dict(branch):
+            raise ValueError(
+                f"The specified branch is not a valid NetBox branch: {branch}."
+            )
+
+        self.http_session.headers["X-NetBox-Branch"] = branch.schema_id
+
+        try:
+            yield
+        finally:
+            self.http_session.headers.pop("X-NetBox-Branch", None)
