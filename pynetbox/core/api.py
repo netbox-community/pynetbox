@@ -186,26 +186,26 @@ class Api:
         ```python
         from pprint import pprint
         pprint(nb.status())
-        # {
-        #     'django-version': '3.1.3',
-        #     'installed-apps': {
-        #         'cacheops': '5.0.1',
-        #         'debug_toolbar': '3.1.1',
-        #         'django_filters': '2.4.0',
-        #         'django_prometheus': '2.1.0',
-        #         'django_rq': '2.4.0',
-        #         'django_tables2': '2.3.3',
-        #         'drf_yasg': '1.20.0',
-        #         'mptt': '0.11.0',
-        #         'rest_framework': '3.12.2',
-        #         'taggit': '1.3.0',
-        #         'timezone_field': '4.0'
-        #     },
-        #     'netbox-version': '2.10.2',
-        #     'plugins': {},
-        #     'python-version': '3.7.3',
-        #     'rq-workers-running': 1
-        # }
+        {
+            'django-version': '3.1.3',
+            'installed-apps': {
+                'cacheops': '5.0.1',
+                'debug_toolbar': '3.1.1',
+                'django_filters': '2.4.0',
+                'django_prometheus': '2.1.0',
+                'django_rq': '2.4.0',
+                'django_tables2': '2.3.3',
+                'drf_yasg': '1.20.0',
+                'mptt': '0.11.0',
+                'rest_framework': '3.12.2',
+                'taggit': '1.3.0',
+                'timezone_field': '4.0'
+            },
+            'netbox-version': '2.10.2',
+            'plugins': {},
+            'python-version': '3.7.3',
+            'rq-workers-running': 1
+        }
         ```
         """
         status = Request(
@@ -240,22 +240,22 @@ class Api:
 
         from pprint import pprint
         pprint(dict(token))
-        # {
-        #     'created': '2021-11-27T11:26:49.360185+02:00',
-        #     'description': '',
-        #     'display': '045bef (admin)',
-        #     'expires': None,
-        #     'id': 2,
-        #     'key': '96d02e13e3f1fdcd8b4c089094c0191dcb045bef',
-        #     'url': 'https://netbox-server/api/users/tokens/2/',
-        #     'user': {
-        #         'display': 'admin',
-        #         'id': 1,
-        #         'url': 'https://netbox-server/api/users/users/1/',
-        #         'username': 'admin'
-        #     },
-        #     'write_enabled': True
-        # }
+        {
+            'created': '2021-11-27T11:26:49.360185+02:00',
+            'description': '',
+            'display': '045bef (admin)',
+            'expires': None,
+            'id': 2,
+            'key': '96d02e13e3f1fdcd8b4c089094c0191dcb045bef',
+            'url': 'https://netbox-server/api/users/tokens/2/',
+            'user': {
+                'display': 'admin',
+                'id': 1,
+                'url': 'https://netbox-server/api/users/users/1/',
+                'username': 'admin'
+            },
+            'write_enabled': True
+        }
         ```
         """
         resp = Request(

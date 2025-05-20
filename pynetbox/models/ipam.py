@@ -32,29 +32,34 @@ class IpRanges(Record):
         """Represents the ``available-ips`` detail endpoint.
 
         Returns a DetailEndpoint object that is the interface for
-        viewing and creating IP addresses inside an ip range .
+        viewing and creating IP addresses inside an ip range.
 
-        :returns: :py:class:`.DetailEndpoint`
+        ## Returns
+        DetailEndpoint object.
 
-        :Examples:
+        ## Examples
 
-        >>> ip_range = nb.ipam.ip_ranges.get(24)
-        >>> ip_range.available_ips.list()
-        [10.0.0.1/24, 10.0.0.2/24, 10.0.0.3/24, 10.0.0.4/24, 10.0.0.5/24, ...]
+        ```python
+        ip_range = nb.ipam.ip_ranges.get(24)
+        ip_range.available_ips.list()
+        # [10.0.0.1/24, 10.0.0.2/24, 10.0.0.3/24, 10.0.0.4/24, 10.0.0.5/24, ...]
+        ```
 
         To create a single IP:
 
-        >>> ip_range = nb.ipam.ip_ranges.get(24)
-        >>> ip_range.available_ips.create()
-        10.0.0.1/24
-
+        ```python
+        ip_range = nb.ipam.ip_ranges.get(24)
+        ip_range.available_ips.create()
+        # 10.0.0.1/24
+        ```
 
         To create multiple IPs:
 
-        >>> ip_range = nb.ipam.ip_ranges.get(24)
-        >>> create = ip_range.available_ips.create([{} for i in range(2)])
-        >>> create
-        [10.0.0.2/24, 10.0.0.3/24]
+        ```python
+        ip_range = nb.ipam.ip_ranges.get(24)
+        create = ip_range.available_ips.create([{} for i in range(2)])
+        # [10.0.0.2/24, 10.0.0.3/24]
+        ```
         """
         return DetailEndpoint(self, "available-ips", custom_return=IpAddresses)
 
@@ -70,27 +75,32 @@ class Prefixes(Record):
         Returns a DetailEndpoint object that is the interface for
         viewing and creating IP addresses inside a prefix.
 
-        :returns: :py:class:`.DetailEndpoint`
+        ## Returns
+        DetailEndpoint object.
 
-        :Examples:
+        ## Examples
 
-        >>> prefix = nb.ipam.prefixes.get(24)
-        >>> prefix.available_ips.list()
-        [10.0.0.1/24, 10.0.0.2/24, 10.0.0.3/24, 10.0.0.4/24, 10.0.0.5/24, ...]
+        ```python
+        prefix = nb.ipam.prefixes.get(24)
+        prefix.available_ips.list()
+        # [10.0.0.1/24, 10.0.0.2/24, 10.0.0.3/24, 10.0.0.4/24, 10.0.0.5/24, ...]
+        ```
 
         To create a single IP:
 
-        >>> prefix = nb.ipam.prefixes.get(24)
-        >>> prefix.available_ips.create()
-        10.0.0.1/24
-
+        ```python
+        prefix = nb.ipam.prefixes.get(24)
+        prefix.available_ips.create()
+        # 10.0.0.1/24
+        ```
 
         To create multiple IPs:
 
-        >>> prefix = nb.ipam.prefixes.get(24)
-        >>> create = prefix.available_ips.create([{} for i in range(2)])
-        >>> create
-        [10.0.0.2/24, 10.0.0.3/24]
+        ```python
+        prefix = nb.ipam.prefixes.get(24)
+        create = prefix.available_ips.create([{} for i in range(2)])
+        # [10.0.0.2/24, 10.0.0.3/24]
+        ```
         """
         return DetailEndpoint(self, "available-ips", custom_return=IpAddresses)
 
@@ -101,32 +111,33 @@ class Prefixes(Record):
         Returns a DetailEndpoint object that is the interface for
         viewing and creating prefixes inside a parent prefix.
 
-        Very similar to :py:meth:`~pynetbox.ipam.Prefixes.available_ips`
-        , except that dict (or list of dicts) passed to ``.create()``
-        needs to have a ``prefix_length`` key/value specifed.
+        Very similar to `available_ips`, except that dict (or list of dicts) passed to `.create()`
+        needs to have a `prefix_length` key/value specified.
 
-        :returns: :py:class:`.DetailEndpoint`
+        ## Returns
+        DetailEndpoint object.
 
-        :Examples:
+        ## Examples
 
-        >>> prefix = nb.ipam.prefixes.get(3)
-        >>> prefix
-        10.0.0.0/16
-        >>> prefix.available_prefixes.list()
-        [10.0.1.0/24, 10.0.2.0/23, 10.0.4.0/22, 10.0.8.0/21, 10.0.16.0/20, 10.0.32.0/19, 10.0.64.0/18, 10.0.128.0/17]
-
+        ```python
+        prefix = nb.ipam.prefixes.get(3)
+        prefix
+        # 10.0.0.0/16
+        prefix.available_prefixes.list()
+        # [10.0.1.0/24, 10.0.2.0/23, 10.0.4.0/22, 10.0.8.0/21, 10.0.16.0/20, 10.0.32.0/19, 10.0.64.0/18, 10.0.128.0/17]
+        ```
 
         Creating a single child prefix:
 
-        >>> prefix = nb.ipam.prefixes.get(1)
-        >>> prefix
-        10.0.0.0/24
-        >>> new_prefix = prefix.available_prefixes.create(
-        ...     {"prefix_length": 29}
-        ... )
-        >>> new_prefix
-        10.0.0.16/29
-
+        ```python
+        prefix = nb.ipam.prefixes.get(1)
+        prefix
+        # 10.0.0.0/24
+        new_prefix = prefix.available_prefixes.create(
+            {"prefix_length": 29}
+        )
+        # 10.0.0.16/29
+        ```
         """
         return DetailEndpoint(self, "available-prefixes", custom_return=Prefixes)
 
@@ -149,18 +160,23 @@ class VlanGroups(Record):
         Returns a DetailEndpoint object that is the interface for
         viewing and creating VLANs inside a VLAN group.
 
-        :returns: :py:class:`.DetailEndpoint`
+        ## Returns
+        DetailEndpoint object.
 
-        :Examples:
+        ## Examples
 
-        >>> vlan_group = nb.ipam.vlan_groups.get(1)
-        >>> vlan_group.available_vlans.list()
-        [10, 11, 12]
+        ```python
+        vlan_group = nb.ipam.vlan_groups.get(1)
+        vlan_group.available_vlans.list()
+        # [10, 11, 12]
+        ```
 
         To create a new VLAN:
 
-        >>> vlan_group.available_vlans.create({"name": "NewVLAN"})
-        NewVLAN (10)
+        ```python
+        vlan_group.available_vlans.create({"name": "NewVLAN"})
+        # NewVLAN (10)
+        ```
         """
         return DetailEndpoint(self, "available-vlans", custom_return=Vlans)
 
@@ -168,28 +184,34 @@ class VlanGroups(Record):
 class AsnRanges(Record):
     @property
     def available_asns(self):
-        """
-        Represents the ``available-asns`` detail endpoint.
+        """Represents the ``available-asns`` detail endpoint.
 
         Returns a DetailEndpoint object that is the interface for
         viewing and creating ASNs inside an ASN range.
 
-        :returns: :py:class:`.DetailEndpoint`
+        ## Returns
+        DetailEndpoint object.
 
-        :Examples:
+        ## Examples
 
-        >>> asn_range = nb.ipam.asn_ranges.get(1)
-        >>> asn_range.available_asns.list()
-        [64512, 64513, 64514]
+        ```python
+        asn_range = nb.ipam.asn_ranges.get(1)
+        asn_range.available_asns.list()
+        # [64512, 64513, 64514]
+        ```
 
         To create a new ASN:
 
-        >>> asn_range.available_asns.create()
-        64512
+        ```python
+        asn_range.available_asns.create()
+        # 64512
+        ```
 
         To create multiple ASNs:
 
-        >>> asn_range.available_asns.create([{} for i in range(2)])
-        [64513, 64514]
+        ```python
+        asn_range.available_asns.create([{} for i in range(2)])
+        # [64513, 64514]
+        ```
         """
         return DetailEndpoint(self, "available-asns")

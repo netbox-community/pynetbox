@@ -8,11 +8,22 @@ Instantiate the `Api` class. Use the methods available on `Endpoint` to return `
 ::: pynetbox.core.api.Api
     handler: python
     options:
-        members: true
+        members:
+            - __init__
+            - create_token
+            - openapi
+            - status
+            - version
+            - activate_branch
+        show_source: true
+        show_root_heading: true
 
 ## App Reference
 
 ::: pynetbox.core.app.App
     handler: python
     options:
-        members: true 
+        members:
+            - config
+        show_source: true
+        show_root_heading: true 

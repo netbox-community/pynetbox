@@ -32,9 +32,11 @@ class App:
 
     Calls to attributes are returned as Endpoint objects.
 
-    :returns: :py:class:`.Endpoint` matching requested attribute.
-    :raises: :py:class:`.RequestError`
-        if requested endpoint doesn't exist.
+    ## Returns
+    Endpoint matching requested attribute.
+
+    ## Raises
+    RequestError if requested endpoint doesn't exist.
     """
 
     def __init__(self, api, name):
@@ -66,20 +68,34 @@ class App:
         return Endpoint(self.api, self, name, model=self.model)
 
     def config(self):
-        """Returns config response from app
+        """Returns config response from app.
 
-        :Returns: Raw response from NetBox's config endpoint.
-        :Raises: :py:class:`.RequestError` if called for an invalid endpoint.
-        :Example:
+        ## Returns
+        Raw response from NetBox's config endpoint.
 
-        >>> pprint.pprint(nb.users.config())
-        {'tables': {'DeviceTable': {'columns': ['name',
-                                                'status',
-                                                'tenant',
-                                                'role',
-                                                'site',
-                                                'primary_ip',
-                                                'tags']}}}
+        ## Raises
+        RequestError if called for an invalid endpoint.
+
+        ## Examples
+
+        ```python
+        pprint.pprint(nb.users.config())
+        {
+            'tables': {
+                'DeviceTable': {
+                    'columns': [
+                        'name',
+                        'status',
+                        'tenant',
+                        'role',
+                        'site',
+                        'primary_ip',
+                        'tags'
+                    ]
+                }
+            }
+        }
+        ```
         """
         config = Request(
             base="{}/{}/config/".format(
@@ -93,12 +109,11 @@ class App:
 
 
 class PluginsApp:
-    """
-    Basically valid plugins api could be handled by same App class,
+    """Basically valid plugins api could be handled by same App class,
     but you need to add plugins to request url path.
 
-    :returns: :py:class:`.App` with added plugins into path.
-
+    ## Returns
+    App with added plugins into path.
     """
 
     def __init__(self, api):
@@ -114,19 +129,25 @@ class PluginsApp:
         return App(self.api, "plugins/{}".format(name.replace("_", "-")))
 
     def installed_plugins(self):
-        """Returns raw response with installed plugins
+        """Returns raw response with installed plugins.
 
-        :returns: Raw response NetBox's installed plugins.
-        :Example:
+        ## Returns
+        Raw response NetBox's installed plugins.
 
-        >>> nb.plugins.installed_plugins()
-        [{
-            'name': 'test_plugin',
-            'package': 'test_plugin',
-            'author': 'Dmitry',
-            'description': 'Netbox test plugin',
-            'verison': '0.10'
-        }]
+        ## Examples
+
+        ```python
+        nb.plugins.installed_plugins()
+        [
+            {
+                'name': 'test_plugin',
+                'package': 'test_plugin',
+                'author': 'Dmitry',
+                'description': 'Netbox test plugin',
+                'verison': '0.10'
+            }
+        ]
+        ```
         """
         installed_plugins = Request(
             base="{}/plugins/installed-plugins".format(
