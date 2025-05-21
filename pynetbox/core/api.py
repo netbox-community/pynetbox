@@ -30,7 +30,7 @@ class Api:
     you can specify which app and endpoint you wish to interact with.
 
     Valid attributes currently are:
-    
+
     * circuits
     * core (NetBox 3.5+)
     * dcim
@@ -72,19 +72,6 @@ class Api:
     list(nb.dcim.devices.all())
     # [test1-leaf1, test1-leaf2, test1-leaf3]
     ```
-
-    .. mkdocstrings:ignore:
-        circuits
-        core
-        dcim
-        extras
-        ipam
-        tenancy
-        users
-        virtualization
-        vpn
-        wireless
-        plugins
     """
 
     def __init__(

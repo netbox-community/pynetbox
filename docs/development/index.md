@@ -4,7 +4,7 @@ Thanks for your interest in contributing to pynetbox! This introduction covers a
 
 ## The Code
 
-pynetbox is maintained on GitHub. GitHub also serves as one of our primary discussion forums. While all the code and discussion is publicly accessible, you'll need to register for a free GitHub account to engage in participation. Most people begin by forking the pynetbox repository under their own GitHub account to begin working on the code.
+pynetbox is maintained on [GitHub](https://github.com/netbox-community/pynetbox). GitHub also serves as one of our primary discussion forums. While all the code and discussion is publicly accessible, you'll need to register for a free GitHub account to engage in participation. Most people begin by forking the pynetbox repository under their own GitHub account to begin working on the code.
 
 There are two permanent branches in the repository:
 
@@ -31,8 +31,8 @@ To submit a new feature request or bug report for pynetbox, select and complete 
 
 There are two primary forums for getting assistance with pynetbox development:
 
-* GitHub discussions - The preferred forum for general discussion and support issues. Ideal for shaping a feature requests prior to submitting an issue.
-* \#netbox on NetDev Community Slack - Good for quick chats. Avoid any discussion that might need to be referenced later on, as the chat history is not retained indefinitely.
+* [GitHub discussions](https://github.com/netbox-community/pynetbox/discussions) - The preferred forum for general discussion and support issues. Ideal for shaping a feature requests prior to submitting an issue.
+* [#netbox on NetDev Community Slack](https://netdev.chat) - Good for quick chats. Avoid any discussion that might need to be referenced later on, as the chat history is not retained indefinitely.
 
 !!! note
     Don't use GitHub issues to ask for help: These are reserved for proposed code changes only.
