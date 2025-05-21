@@ -247,7 +247,7 @@ class Endpoint:
         ## Note
 
         If a keyword argument is incorrect a `TypeError` will not be returned by pynetbox.
-        Instead, all records filtered up to the last correct keyword argument. For example, if we used `site="Site 1"` instead of `site=site-1` when using filter on
+        Instead, pynetbox will return all records filtered up to the last correct keyword argument. For example, if we used `site="Site 1"` instead of `site=site-1` when using filter on
         the devices endpoint, then pynetbox will return **all** devices across all sites instead of devices at Site 1.
 
         Using a freeform query along with a named argument:
