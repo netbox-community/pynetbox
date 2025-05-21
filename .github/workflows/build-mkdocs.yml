@@ -1,4 +1,4 @@
-name: ci
+name: Build MkDocs
 on:
   push:
     branches:
@@ -14,5 +14,5 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: 3.x
-      - run: pip install mkdocs-material mkdocs-autorefs mkdocs-material-extensions mkdocstrings mkdocstrings-python-legacy mkdocs-include-markdown-plugin
+      - run: pip install mkdocs-material mkdocs-autorefs mkdocs-material-extensions mkdocstrings mkdocstrings-python-legacy mkdocs-include-markdown-plugin pymdown-extensions
       - run: mkdocs gh-deploy --force
