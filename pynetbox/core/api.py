@@ -30,6 +30,7 @@ class Api:
     you can specify which app and endpoint you wish to interact with.
 
     Valid attributes currently are:
+    
     * circuits
     * core (NetBox 3.5+)
     * dcim
@@ -270,6 +271,8 @@ class Api:
     @contextlib.contextmanager
     def activate_branch(self, branch):
         """Context manager to activate the branch by setting the schema ID in the headers.
+
+        **Note**: The NetBox branching plugin must be installed and enabled in your NetBox instance for this functionality to work.
 
         ## Parameters
         * **branch** (Record): The NetBox branch to activate

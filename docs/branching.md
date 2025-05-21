@@ -66,6 +66,7 @@ print(f"Branch is now ready! Status: {branch.status}")
 ```
 
 The function will:
+
 1. Check the current status of the branch
 2. If the status doesn't match the target status, it will retry with exponential backoff
 3. Continue retrying until either:

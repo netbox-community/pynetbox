@@ -21,7 +21,6 @@ This document outlines the steps required to prepare and publish a new release o
 ## Release Tasks
 
 1. Create a new release branch from `master`:
-
    ```bash
    git checkout master
    git pull
@@ -29,21 +28,21 @@ This document outlines the steps required to prepare and publish a new release o
    ```
 
 2. Commit version and changelog updates:
-
    ```bash
    git commit -m "Prepare release vX.Y.Z"
    ```
 
 3. Create a pull request to merge the release branch into `master`
-4. Once merged, use github to create a new release:
-   - Go to the GitHub repository
-   - Click "Releases" in the right sidebar
-   - Click "Create a new release"
-   - Create a new tag (e.g., vX.Y.Z)
-   - Use the changelog content as the release description
-   - Publish the release
 
-   The GitHub release will automatically trigger the workflow to publish to PyPI.
+4. Once merged, use github to create a new release:
+    1. Go to the GitHub repository
+    2. Click "Releases" in the right sidebar
+    3. Click "Create a new release"
+    4. Create a new tag (e.g., vX.Y.Z)
+    5. Use the changelog content as the release description
+    6. Publish the release
+
+    The GitHub release will automatically trigger the workflow to publish to PyPI.
 
 ## Supported NetBox Versions
 
