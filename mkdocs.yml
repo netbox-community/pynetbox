@@ -44,3 +44,6 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.emoji

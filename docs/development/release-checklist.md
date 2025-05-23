@@ -13,10 +13,10 @@ This document outlines the steps required to prepare and publish a new release o
 2. Update version number in `pynetbox/__init__.py`
 3. Update documentation for any new features or changes
 4. Check NetBox Docker releases:
-   - Visit https://github.com/netbox-community/netbox-docker/releases
-   - Review the latest NetBox Docker releases and their corresponding NetBox versions
-   - Update supported NetBox versions in `tests/integration/conftest.py` if needed
-   - Ensure the `get_netbox_docker_version_tag` function in `tests/integration/conftest.py` is updated with any new version mappings
+    - Visit https://github.com/netbox-community/netbox-docker/releases
+    - Review the latest NetBox Docker releases and their corresponding NetBox versions
+    - Update supported NetBox versions in `tests/integration/conftest.py` if needed
+    - Ensure the `get_netbox_docker_version_tag` function in `tests/integration/conftest.py` is updated with any new version mappings
 
 ## Release Tasks
 
