@@ -1,0 +1,49 @@
+site_name: pynetbox
+site_description: Python API client library for NetBox
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_root_heading: true
+
+nav:
+  - Home: index.md
+  - API Reference:
+    - Endpoint: endpoint.md
+    - Response: response.md
+    - Request: request.md
+    - IPAM: IPAM.md
+  - Advanced Topics:
+    - Branching: branching.md
+    - Advanced Usage: advanced.md
+  - Development:
+    - Development Guide: development/index.md
+    - Getting Started: development/getting-started.md
+    - Release Checklist: development/release-checklist.md
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.emoji

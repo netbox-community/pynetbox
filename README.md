@@ -28,7 +28,7 @@ Alternatively, you can clone the repo and run `python setup.py install`.
 
 ## Quick Start
 
-The full pynetbox API is documented on [Read the Docs](http://pynetbox.readthedocs.io/en/latest/), but the following should be enough to get started using it.
+The full pynetbox API is documented on [GitHub Pages](https://netbox-community.github.io/pynetbox/), but the following should be enough to get started using it.
 
 To begin, import pynetbox and instantiate the API.
 
