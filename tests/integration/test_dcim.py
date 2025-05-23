@@ -2,6 +2,7 @@ import pytest
 from packaging import version
 
 import pynetbox
+import pynetbox.models.dcim
 
 
 @pytest.fixture(scope="module")
@@ -181,6 +182,7 @@ class TestInterface(BaseTest):
         ret = api.dcim.interfaces.create(
             name="test-interface", type="1000base-t", device=device.id
         )
+        assert isinstance(ret, pynetbox.models.dcim.Interfaces)
         yield ret
         ret.delete()
 
@@ -213,12 +215,14 @@ class TestPowerCable(BaseTest):
                 site=site.id,
             )
         outlet = api.dcim.power_outlets.create(name="outlet", device=pdu.id)
+        assert isinstance(outlet, pynetbox.models.dcim.PowerOutlets)
         yield outlet
         pdu.delete()
 
     @pytest.fixture(scope="class")
     def power_port(self, api, device):
         ret = api.dcim.power_ports.create(name="PSU1", device=device.id)
+        assert isinstance(ret, pynetbox.models.dcim.PowerPorts)
         yield ret
 
     @pytest.fixture(scope="class")
@@ -231,6 +235,7 @@ class TestPowerCable(BaseTest):
                 {"object_type": "dcim.poweroutlet", "object_id": power_outlet.id},
             ],
         )
+        assert isinstance(cable, pynetbox.models.dcim.Cables)
         yield cable
         cable.delete()
 
@@ -263,12 +268,14 @@ class TestConsoleCable(BaseTest):
                 site=site.id,
             )
         ret = api.dcim.console_server_ports.create(name="Port 1", device=device.id)
+        assert isinstance(ret, pynetbox.models.dcim.ConsoleServerPorts)
         yield ret
         device.delete()
 
     @pytest.fixture(scope="class")
     def console_port(self, api, device):
         ret = api.dcim.console_ports.create(name="Console", device=device.id)
+        assert isinstance(ret, pynetbox.models.dcim.ConsolePorts)
         yield ret
 
     @pytest.fixture(scope="class")
@@ -284,6 +291,7 @@ class TestConsoleCable(BaseTest):
                 },
             ],
         )
+        assert isinstance(ret, pynetbox.models.dcim.Cables)
         yield ret
         ret.delete()
 
@@ -318,6 +326,7 @@ class TestInterfaceCable(BaseTest):
         ret = api.dcim.interfaces.create(
             name="Ethernet1", type="1000base-t", device=device.id
         )
+        assert isinstance(ret, pynetbox.models.dcim.Interfaces)
         yield ret
         device.delete()
 
@@ -338,6 +347,7 @@ class TestInterfaceCable(BaseTest):
                 {"object_type": "dcim.interface", "object_id": interface_b.id},
             ],
         )
+        assert isinstance(ret, pynetbox.models.dcim.Cables)
         yield ret
         ret.delete()
 
