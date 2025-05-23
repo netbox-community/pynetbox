@@ -5,7 +5,6 @@ This document outlines the steps required to prepare and publish a new release o
 ## Pre-Release Tasks
 
 1. Ensure all tests are passing:
-
    ```bash
    pytest
    ```
