@@ -70,8 +70,8 @@ The function will:
 1. Check the current status of the branch
 2. If the status doesn't match the target status, it will retry with exponential backoff
 3. Continue retrying until either:
-   - The branch reaches the target status
-   - The maximum number of attempts (30) is reached
-   - The maximum wait time (60 seconds) is exceeded
+    - The branch reaches the target status
+    - The maximum number of attempts (30) is reached
+    - The maximum wait time (60 seconds) is exceeded
 
 The exponential backoff ensures that we don't overwhelm the server with requests while still checking frequently enough to catch status changes quickly. 
