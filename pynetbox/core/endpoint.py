@@ -54,6 +54,10 @@ class Endpoint:
             endpoint=self.name,
         )
         self._choices = None
+        self.openapi_path = "/api/{app}/{endpoint}/".format(
+            app=app.name,
+            endpoint=self.name,
+        )
 
     def _lookup_ret_obj(self, name, model):
         """Loads unique Response objects.
@@ -75,6 +79,31 @@ class Endpoint:
         else:
             ret = Record
         return ret
+    
+    def _validate_openapi_parameters(self, method, parameters):
+        """Validate request parameters against OpenAPI specification
+        
+        This method raises a RuntimeError if parameters passed to NetBox API
+        do not match the OpenAPI specification. It may also raise KeyError 
+        if the API endpoint does not exist.
+
+        ## Parameters
+
+        * **method** : Only "get" is supported as for other methods NetBox does proper validation
+        * **parameters** : filter given to filter()
+        """
+        if not self.api.strict_filters:
+            return
+        
+        if method != "get":
+            return
+        
+        openapi_parameters = self.api.openapi()["paths"][self.openapi_path][method]["parameters"]
+        allowed_filters = [p["name"] for p in openapi_parameters]
+
+        for x in parameters:
+            if x not in allowed_filters:
+                raise RuntimeError(f"'{x}' is not allowed as parameter on {self.openapi_path}")
 
     def all(self, limit=0, offset=None):
         """Queries the 'ListView' of a given endpoint.
@@ -275,6 +304,9 @@ class Endpoint:
         if limit == 0 and offset is not None:
             raise ValueError("offset requires a positive limit value")
         filters = {x: y if y is not None else "null" for x, y in kwargs.items()}
+
+        self._validate_openapi_parameters("get", filters)
+        
         req = Request(
             filters=filters,
             base=self.url,

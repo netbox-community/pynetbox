@@ -15,3 +15,19 @@ class Response:
 
     def json(self):
         return json.loads(self.content)
+
+def openapi_mock():
+    """Mock function to simulate Api.openapi()
+    """
+    return {
+        "paths": {
+            "/api/test/test/" : {
+                "get" : {
+                    "parameters" :[
+                        {"name":"test"},
+                        {"name":"name"},
+                    ]
+                },
+            },
+        },
+    }
