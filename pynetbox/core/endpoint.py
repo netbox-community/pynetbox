@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pynetbox.core.query import Request, RequestError
+from pynetbox.core.query import Request, RequestError, ParameterValidationError
 from pynetbox.core.response import Record, RecordSet
 
 RESERVED_KWARGS = ()
@@ -80,30 +80,44 @@ class Endpoint:
             ret = Record
         return ret
     
-    def _validate_openapi_parameters(self, method, parameters):
-        """Validate request parameters against OpenAPI specification
+    def _validate_openapi_parameters(self, method:str, parameters:dict)->None:
+        """Validate GET request parameters against OpenAPI specification
         
-        This method raises a RuntimeError if parameters passed to NetBox API
-        do not match the OpenAPI specification. It may also raise KeyError 
-        if the API endpoint does not exist.
+        This method raises a **ParameterValidationError** if parameters passed to NetBox API
+        do not match the OpenAPI specification or validation fails.
 
         ## Parameters
 
-        * **method** : Only "get" is supported as for other methods NetBox does proper validation
-        * **parameters** : filter given to filter()
-        """
-        if not self.api.strict_filters:
-            return
-        
-        if method != "get":
-            return
-        
-        openapi_parameters = self.api.openapi()["paths"][self.openapi_path][method]["parameters"]
-        allowed_filters = [p["name"] for p in openapi_parameters]
+        * **method** : Only "get" is supported as for other methods NetBox already does proper validation
+        * **parameters** : kwargs passed to filter() method
 
-        for x in parameters:
-            if x not in allowed_filters:
-                raise RuntimeError(f"'{x}' is not allowed as parameter on {self.openapi_path}")
+        ## Returns
+        None
+        """
+        if method.lower() != "get":
+            raise RuntimeError(f"Unsupported method '{method}'.")
+        
+        # Parse NetBox OpenAPI definition
+        try:
+            openapi_path = self.openapi_path()["paths"].get(self.openapi_path)
+
+            if not openapi_path:
+                raise ParameterValidationError(f"Path '{self.openapi_path}' does not exist in NetBox OpenAPI specification.")
+            
+            openapi_parameters = openapi_path[method]["parameters"]
+            allowed_parameters = [p["name"] for p in openapi_parameters]
+
+        except KeyError as exc:
+            raise ParameterValidationError(f"Error while parsing Netbox OpenAPI specification: {exc}")
+
+        # Validate all parameters
+        validation_errors = []
+        for p in parameters:
+            if p not in allowed_parameters:
+                validation_errors.append(f"'{p}' is not allowed as parameter on path '{self.openapi_path}'.")
+
+        if len(validation_errors) > 0:
+            raise ParameterValidationError(validation_errors)
 
     def all(self, limit=0, offset=None):
         """Queries the 'ListView' of a given endpoint.
@@ -163,6 +177,8 @@ class Endpoint:
         * **key** (int, optional): id for the item to be retrieved.
         * **kwargs**: Accepts the same keyword args as filter(). Any search argument the endpoint accepts can
             be added as a keyword arg.
+        * **strict_filters** (bool, optional): Overrides the global filter
+            validation per-request basis. Handled by the filter() method.
 
         ## Returns
         A single Record object or None
@@ -193,7 +209,6 @@ class Endpoint:
         # Row 1
         ```
         """
-
         try:
             key = args[0]
         except IndexError:
@@ -246,6 +261,8 @@ class Endpoint:
             be returned with each query to the Netbox server. The queries
             will be made as you iterate through the result set.
         * **offset** (int, optional): Overrides the offset on paginated returns.
+        * **strict_filters** (bool, optional): Overrides the global filter
+            validation per-request basis
 
         ## Returns
         A RecordSet object.
@@ -301,11 +318,21 @@ class Endpoint:
             )
         limit = kwargs.pop("limit") if "limit" in kwargs else 0
         offset = kwargs.pop("offset") if "offset" in kwargs else None
+        strict_filters = kwargs.pop("strict_filters") if "strict_filters" else None
+
         if limit == 0 and offset is not None:
             raise ValueError("offset requires a positive limit value")
         filters = {x: y if y is not None else "null" for x, y in kwargs.items()}
 
-        self._validate_openapi_parameters("get", filters)
+        try:
+            self._validate_openapi_parameters("get", filters)
+        
+        except ParameterValidationError as e:
+            # Local strict_filters kwarg takes precedence on global strict_filters
+            if (self.api.strict_filters if strict_filters is None else strict_filters):
+                raise
+            else:
+                print(e.error)
         
         req = Request(
             filters=filters,
