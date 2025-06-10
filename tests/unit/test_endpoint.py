@@ -13,7 +13,7 @@ class EndPointTestCase(unittest.TestCase):
         with patch(
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
+            api = Mock(base_url="http://localhost:8000/api", strict_filters=False, openapi=openapi_mock)
             app = Mock(name="test")
             mock.return_value = [{"id": 123}, {"id": 321}]
             test_obj = Endpoint(api, app, "test")
@@ -72,7 +72,7 @@ class EndPointTestCase(unittest.TestCase):
             test_obj.filter(offset=1)
 
     def test_filter_replace_none_with_null(self):
-        api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
+        api = Mock(base_url="http://localhost:8000/api", strict_filters=False, openapi=openapi_mock)
         app = Mock(name="test")
         test_obj = Endpoint(api, app, "test")
         test = test_obj.filter(name=None, id=0)
@@ -80,7 +80,7 @@ class EndPointTestCase(unittest.TestCase):
         self.assertEqual(test.request.filters, {"name": "null", "id": 0})
 
     def test_all_invalid_pagination_args(self):
-        api = Mock(base_url="http://localhost:8000/api")
+        api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
         app = Mock(name="test")
         test_obj = Endpoint(api, app, "test")
         with self.assertRaises(ValueError) as _:
@@ -88,7 +88,7 @@ class EndPointTestCase(unittest.TestCase):
 
     def test_choices(self):
         with patch("pynetbox.core.query.Request.options", return_value=Mock()) as mock:
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
             app = Mock(name="test")
             mock.return_value = {
                 "actions": {
@@ -110,7 +110,7 @@ class EndPointTestCase(unittest.TestCase):
 
     def test_choices_put(self):
         with patch("pynetbox.core.query.Request.options", return_value=Mock()) as mock:
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
             app = Mock(name="test")
             mock.return_value = {
                 "actions": {
@@ -132,7 +132,7 @@ class EndPointTestCase(unittest.TestCase):
 
     def test_choices_precedence(self):
         with patch("pynetbox.core.query.Request.options", return_value=Mock()) as mock:
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
             app = Mock(name="test")
             mock.return_value = {
                 "actions": {
@@ -166,7 +166,7 @@ class EndPointTestCase(unittest.TestCase):
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
             mock.return_value = [{"id": 123}]
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
+            api = Mock(base_url="http://localhost:8000/api", strict_filters=False, openapi=openapi_mock)
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             test = test_obj.get(name="test")
@@ -178,7 +178,7 @@ class EndPointTestCase(unittest.TestCase):
         ) as mock:
             ids = [1, 3, 5]
             mock.return_value = True
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             test = test_obj.delete(ids)
@@ -193,7 +193,7 @@ class EndPointTestCase(unittest.TestCase):
 
             ids = [1, 3, 5]
             mock.return_value = True
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             objects = [
@@ -216,7 +216,7 @@ class EndPointTestCase(unittest.TestCase):
                     return iter([{"id": i, "name": "dummy" + str(i)} for i in ids])
 
             mock.return_value = True
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             recordset = RecordSet(test_obj, FakeRequest())
@@ -229,7 +229,7 @@ class EndPointTestCase(unittest.TestCase):
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
             mock.return_value = [{"id": 123}, {"id": 321}]
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
+            api = Mock(base_url="http://localhost:8000/api", strict_filters=False, openapi=openapi_mock)
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             with self.assertRaises(ValueError) as _:
@@ -240,7 +240,7 @@ class EndPointTestCase(unittest.TestCase):
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
             mock.return_value = []
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
+            api = Mock(base_url="http://localhost:8000/api", strict_filters=False, openapi=openapi_mock)
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             test = test_obj.get(name="test")
@@ -254,7 +254,7 @@ class EndPointTestCase(unittest.TestCase):
 
             ids = [1, 3, 5]
             mock.return_value = True
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             objects = [
@@ -281,7 +281,7 @@ class EndPointTestCase(unittest.TestCase):
             ids = [1, 3, 5]
             changes = [{"id": i, "name": "puffy" + str(i)} for i in ids]
             mock.return_value = True
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
             app = Mock(name="test")
             mock.return_value = changes
             test_obj = Endpoint(api, app, "test")

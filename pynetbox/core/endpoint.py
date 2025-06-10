@@ -99,7 +99,7 @@ class Endpoint:
         
         # Parse NetBox OpenAPI definition
         try:
-            openapi_path = self.openapi_path()["paths"].get(self.openapi_path)
+            openapi_path = self.api.openapi()["paths"].get(self.openapi_path)
 
             if not openapi_path:
                 raise ParameterValidationError(f"Path '{self.openapi_path}' does not exist in NetBox OpenAPI specification.")
@@ -318,7 +318,7 @@ class Endpoint:
             )
         limit = kwargs.pop("limit") if "limit" in kwargs else 0
         offset = kwargs.pop("offset") if "offset" in kwargs else None
-        strict_filters = kwargs.pop("strict_filters") if "strict_filters" else None
+        strict_filters = kwargs.pop("strict_filters") if "strict_filters" in kwargs else None
 
         if limit == 0 and offset is not None:
             raise ValueError("offset requires a positive limit value")
