@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 from tests.util import openapi_mock
 
 from pynetbox.core.endpoint import Endpoint
-
+from pynetbox import ParameterValidationError
 
 def app_str(self):
     return self.name
@@ -39,11 +39,30 @@ class EndPointTestCase(unittest.TestCase):
             api = Mock(base_url="http://localhost:8000/api", strict_filters=True, openapi=openapi_mock)
             app = Mock(name="test")
             app.name="test"
-            mock.return_value = [{"id": 123}, {"id": 321}]
             test_obj = Endpoint(api, app, "test")
-            with self.assertRaises(RuntimeError):
-                test_obj.filter(sadasdasda="test")
+            with self.assertRaises(ParameterValidationError):
+                test_obj.filter(very_invalid_kwarg="test")
             
+    def test_filter_strict_per_request_disable_invalid_kwarg(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=Mock()
+        ) as mock:
+            api = Mock(base_url="http://localhost:8000/api", strict_filters=True, openapi=openapi_mock)
+            app = Mock(name="test")
+            app.name="test"
+            test_obj = Endpoint(api, app, "test")
+            test_obj.filter(very_invalid_kwarg="test", strict_filters=False)
+
+    def test_filter_strict_per_request_enable_invalid_kwarg(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=Mock()
+        ) as mock:
+            api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
+            app = Mock(name="test")
+            app.name="test"
+            test_obj = Endpoint(api, app, "test")
+            with self.assertRaises(ParameterValidationError):
+                test_obj.filter(very_invalid_kwarg="test", strict_filters=True)
 
     def test_filter_invalid_pagination_args(self):
         api = Mock(base_url="http://localhost:8000/api")
