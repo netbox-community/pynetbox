@@ -79,10 +79,10 @@ class Endpoint:
         else:
             ret = Record
         return ret
-    
-    def _validate_openapi_parameters(self, method:str, parameters:dict)->None:
+
+    def _validate_openapi_parameters(self, method: str, parameters: dict) -> None:
         """Validate GET request parameters against OpenAPI specification
-        
+
         This method raises a **ParameterValidationError** if parameters passed to NetBox API
         do not match the OpenAPI specification or validation fails.
 
@@ -96,25 +96,31 @@ class Endpoint:
         """
         if method.lower() != "get":
             raise RuntimeError(f"Unsupported method '{method}'.")
-        
+
         # Parse NetBox OpenAPI definition
         try:
             openapi_path = self.api.openapi()["paths"].get(self.openapi_path)
 
             if not openapi_path:
-                raise ParameterValidationError(f"Path '{self.openapi_path}' does not exist in NetBox OpenAPI specification.")
-            
+                raise ParameterValidationError(
+                    f"Path '{self.openapi_path}' does not exist in NetBox OpenAPI specification."
+                )
+
             openapi_parameters = openapi_path[method]["parameters"]
             allowed_parameters = [p["name"] for p in openapi_parameters]
 
         except KeyError as exc:
-            raise ParameterValidationError(f"Error while parsing Netbox OpenAPI specification: {exc}")
+            raise ParameterValidationError(
+                f"Error while parsing Netbox OpenAPI specification: {exc}"
+            )
 
         # Validate all parameters
         validation_errors = []
         for p in parameters:
             if p not in allowed_parameters:
-                validation_errors.append(f"'{p}' is not allowed as parameter on path '{self.openapi_path}'.")
+                validation_errors.append(
+                    f"'{p}' is not allowed as parameter on path '{self.openapi_path}'."
+                )
 
         if len(validation_errors) > 0:
             raise ParameterValidationError(validation_errors)
@@ -318,7 +324,9 @@ class Endpoint:
             )
         limit = kwargs.pop("limit") if "limit" in kwargs else 0
         offset = kwargs.pop("offset") if "offset" in kwargs else None
-        strict_filters = kwargs.pop("strict_filters") if "strict_filters" in kwargs else None
+        strict_filters = (
+            kwargs.pop("strict_filters") if "strict_filters" in kwargs else None
+        )
 
         if limit == 0 and offset is not None:
             raise ValueError("offset requires a positive limit value")
@@ -326,14 +334,14 @@ class Endpoint:
 
         try:
             self._validate_openapi_parameters("get", filters)
-        
+
         except ParameterValidationError as e:
             # Local strict_filters kwarg takes precedence on global strict_filters
-            if (self.api.strict_filters if strict_filters is None else strict_filters):
+            if self.api.strict_filters if strict_filters is None else strict_filters:
                 raise
             else:
                 print(e.error)
-        
+
         req = Request(
             filters=filters,
             base=self.url,

@@ -108,9 +108,10 @@ class ContentError(Exception):
     def __str__(self):
         return self.error
 
+
 class ParameterValidationError(Exception):
     """API parameter validation Exception.
-    
+
     Raised when filter parameters do not match Netbox OpenAPI specification.
 
     ## Examples
@@ -122,12 +123,14 @@ class ParameterValidationError(Exception):
         print(e.error)
     ```
     """
+
     def __init__(self, errors):
         super().__init__(errors)
         self.error = "The request parameter validation returned an error: {errors}"
 
     def __str__(self):
         return self.error
+
 
 class Request:
     """Creates requests to the Netbox API.

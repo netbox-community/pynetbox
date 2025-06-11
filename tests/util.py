@@ -6,7 +6,7 @@ class Response:
         self.status_code = status_code
         self.content = json.dumps(content) if content else self.load_fixture(fixture)
         self.ok = ok
-        self.headers = {"API-Version":'3.1'}
+        self.headers = {"API-Version": "3.1"}
 
     def load_fixture(self, path):
         if not path:
@@ -17,16 +17,16 @@ class Response:
     def json(self):
         return json.loads(self.content)
 
+
 def openapi_mock():
-    """Mock function to simulate Api.openapi()
-    """
+    """Mock function to simulate Api.openapi()"""
     return {
         "paths": {
-            "/api/test/test/" : {
-                "get" : {
-                    "parameters" :[
-                        {"name":"test"},
-                        {"name":"name"},
+            "/api/test/test/": {
+                "get": {
+                    "parameters": [
+                        {"name": "test"},
+                        {"name": "name"},
                     ]
                 },
             },

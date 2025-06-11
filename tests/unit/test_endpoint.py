@@ -5,15 +5,21 @@ from tests.util import openapi_mock
 from pynetbox.core.endpoint import Endpoint
 from pynetbox import ParameterValidationError
 
+
 def app_str(self):
     return self.name
+
 
 class EndPointTestCase(unittest.TestCase):
     def test_filter(self):
         with patch(
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=False, openapi=openapi_mock)
+            api = Mock(
+                base_url="http://localhost:8000/api",
+                strict_filters=False,
+                openapi=openapi_mock,
+            )
             app = Mock(name="test")
             mock.return_value = [{"id": 123}, {"id": 321}]
             test_obj = Endpoint(api, app, "test")
@@ -24,9 +30,13 @@ class EndPointTestCase(unittest.TestCase):
         with patch(
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=True, openapi=openapi_mock)
+            api = Mock(
+                base_url="http://localhost:8000/api",
+                strict_filters=True,
+                openapi=openapi_mock,
+            )
             app = Mock(name="test")
-            app.name="test"
+            app.name = "test"
             mock.return_value = [{"id": 123}, {"id": 321}]
             test_obj = Endpoint(api, app, "test")
             test = test_obj.filter(test="test")
@@ -36,20 +46,28 @@ class EndPointTestCase(unittest.TestCase):
         with patch(
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=True, openapi=openapi_mock)
+            api = Mock(
+                base_url="http://localhost:8000/api",
+                strict_filters=True,
+                openapi=openapi_mock,
+            )
             app = Mock(name="test")
-            app.name="test"
+            app.name = "test"
             test_obj = Endpoint(api, app, "test")
             with self.assertRaises(ParameterValidationError):
                 test_obj.filter(very_invalid_kwarg="test")
-            
+
     def test_filter_strict_per_request_disable_invalid_kwarg(self):
         with patch(
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=True, openapi=openapi_mock)
+            api = Mock(
+                base_url="http://localhost:8000/api",
+                strict_filters=True,
+                openapi=openapi_mock,
+            )
             app = Mock(name="test")
-            app.name="test"
+            app.name = "test"
             test_obj = Endpoint(api, app, "test")
             test_obj.filter(very_invalid_kwarg="test", strict_filters=False)
 
@@ -59,7 +77,7 @@ class EndPointTestCase(unittest.TestCase):
         ) as mock:
             api = Mock(base_url="http://localhost:8000/api", openapi=openapi_mock)
             app = Mock(name="test")
-            app.name="test"
+            app.name = "test"
             test_obj = Endpoint(api, app, "test")
             with self.assertRaises(ParameterValidationError):
                 test_obj.filter(very_invalid_kwarg="test", strict_filters=True)
@@ -72,7 +90,11 @@ class EndPointTestCase(unittest.TestCase):
             test_obj.filter(offset=1)
 
     def test_filter_replace_none_with_null(self):
-        api = Mock(base_url="http://localhost:8000/api", strict_filters=False, openapi=openapi_mock)
+        api = Mock(
+            base_url="http://localhost:8000/api",
+            strict_filters=False,
+            openapi=openapi_mock,
+        )
         app = Mock(name="test")
         test_obj = Endpoint(api, app, "test")
         test = test_obj.filter(name=None, id=0)
@@ -166,7 +188,11 @@ class EndPointTestCase(unittest.TestCase):
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
             mock.return_value = [{"id": 123}]
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=False, openapi=openapi_mock)
+            api = Mock(
+                base_url="http://localhost:8000/api",
+                strict_filters=False,
+                openapi=openapi_mock,
+            )
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             test = test_obj.get(name="test")
@@ -229,7 +255,11 @@ class EndPointTestCase(unittest.TestCase):
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
             mock.return_value = [{"id": 123}, {"id": 321}]
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=False, openapi=openapi_mock)
+            api = Mock(
+                base_url="http://localhost:8000/api",
+                strict_filters=False,
+                openapi=openapi_mock,
+            )
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             with self.assertRaises(ValueError) as _:
@@ -240,7 +270,11 @@ class EndPointTestCase(unittest.TestCase):
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
             mock.return_value = []
-            api = Mock(base_url="http://localhost:8000/api", strict_filters=False, openapi=openapi_mock)
+            api = Mock(
+                base_url="http://localhost:8000/api",
+                strict_filters=False,
+                openapi=openapi_mock,
+            )
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             test = test_obj.get(name="test")
