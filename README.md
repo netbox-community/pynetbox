@@ -91,11 +91,11 @@ This can also be enabled and disabled on a per-request basis:
 ```python
 # Disable for one request when enabled globally.
 # Will not raise an exception and return the entire Device table.
-nb.dcim.devices.filter(non_existing_filter="aaaa", strict_filter=False)
+nb.dcim.devices.filter(non_existing_filter="aaaa", strict_filters=False)
 
 # Enable for one request when not enabled globally.
 # Will raise an exception.
-nb.dcim.devices.filter(non_existing_filter="aaaa", strict_filter=True)
+nb.dcim.devices.filter(non_existing_filter="aaaa", strict_filters=True)
 ```
 
 ## Running Tests
