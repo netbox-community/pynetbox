@@ -73,6 +73,30 @@ nb = pynetbox.api(
     threading=True,
 )
 ```
+### Filters validation
+
+NetBox doesn't validate filters passed to the GET API endpoints, which are accessed with `.get()` and `.filter()`. If a filter is incorrect, NetBox silently returns the entire database table content. Pynetbox allows to check provided parameters against NetBox OpenAPI specification before doing the call, and raise an exception if a parameter is incorrect.
+
+This can be enabled globally by setting `strict_filters=True` in the API object initialization:
+
+```python
+nb = pynetbox.api(
+    'http://localhost:8000',
+    strict_filters=True,
+)
+```
+
+This can also be enabled and disabled on a per-request basis:
+
+```python
+# Disable for one request when enabled globally.
+# Will not raise an exception and return the entire Device table.
+nb.dcim.devices.filter(non_existing_filter="aaaa", strict_filter=False)
+
+# Enable for one request when not enabled globally.
+# Will raise an exception.
+nb.dcim.devices.filter(non_existing_filter="aaaa", strict_filter=True)
+```
 
 ## Running Tests
 

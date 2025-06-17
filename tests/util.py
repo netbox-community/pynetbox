@@ -6,7 +6,6 @@ class Response:
         self.status_code = status_code
         self.content = json.dumps(content) if content else self.load_fixture(fixture)
         self.ok = ok
-        self.headers = {"API-Version": "3.1"}
 
     def load_fixture(self, path):
         if not path:

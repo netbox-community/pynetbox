@@ -87,7 +87,7 @@ class Api:
             url (str): The base URL to the instance of NetBox you wish to connect to.
             token (str, optional): Your NetBox API token. If not provided, authentication will be required for each request.
             threading (bool, optional): Set to True to use threading in `.all()` and `.filter()` requests, defaults to False.
-            strict_filters (bool, optional): Set to True to check GET call filters against OpenAPI specifications (intentionally not done in NetBox API)
+            strict_filters (bool, optional): Set to True to check GET call filters against OpenAPI specifications (intentionally not done in NetBox API), defaults to False.
         """
         base_url = "{}/api".format(url if url[-1] != "/" else url[:-1])
         self.token = token
@@ -108,11 +108,6 @@ class Api:
         self.vpn = App(self, "vpn")
         self.wireless = App(self, "wireless")
         self.plugins = PluginsApp(self)
-
-        # OpenAPI specifications cache
-        self._openapi = None
-        if self.strict_filters:
-            self.openapi()
 
     @property
     def version(self):
@@ -164,12 +159,13 @@ class Api:
         # {...}
         ```
         """
-        if not self._openapi:
-            self._openapi = Request(
+        if not (openapi := getattr(self, "_openapi", None)):
+            openapi = self._openapi = Request(
                 base=self.base_url,
                 http_session=self.http_session,
             ).get_openapi()
-        return self._openapi
+
+        return openapi
 
     def status(self):
         """Gets the status information from NetBox.

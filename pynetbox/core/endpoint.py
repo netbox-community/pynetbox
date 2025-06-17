@@ -46,6 +46,7 @@ class Endpoint:
         self.return_obj = self._lookup_ret_obj(name, model)
         self.name = name.replace("_", "-")
         self.api = api
+        self.app = app
         self.base_url = api.base_url
         self.token = api.token
         self.url = "{base_url}/{app}/{endpoint}".format(
@@ -54,10 +55,6 @@ class Endpoint:
             endpoint=self.name,
         )
         self._choices = None
-        self.openapi_path = "/api/{app}/{endpoint}/".format(
-            app=app.name,
-            endpoint=self.name,
-        )
 
     def _lookup_ret_obj(self, name, model):
         """Loads unique Response objects.
@@ -97,16 +94,23 @@ class Endpoint:
         if method.lower() != "get":
             raise RuntimeError(f"Unsupported method '{method}'.")
 
+        openapi_definition_path = "/api/{app}/{endpoint}/".format(
+            app=self.app.name,
+            endpoint=self.name,
+        )
+
         # Parse NetBox OpenAPI definition
         try:
-            openapi_path = self.api.openapi()["paths"].get(self.openapi_path)
+            openapi_definition = self.api.openapi()["paths"].get(
+                openapi_definition_path
+            )
 
-            if not openapi_path:
+            if not openapi_definition:
                 raise ParameterValidationError(
-                    f"Path '{self.openapi_path}' does not exist in NetBox OpenAPI specification."
+                    f"Path '{openapi_definition_path}' does not exist in NetBox OpenAPI specification."
                 )
 
-            openapi_parameters = openapi_path[method]["parameters"]
+            openapi_parameters = openapi_definition[method]["parameters"]
             allowed_parameters = [p["name"] for p in openapi_parameters]
 
         except KeyError as exc:
@@ -119,7 +123,7 @@ class Endpoint:
         for p in parameters:
             if p not in allowed_parameters:
                 validation_errors.append(
-                    f"'{p}' is not allowed as parameter on path '{self.openapi_path}'."
+                    f"'{p}' is not allowed as parameter on path '{openapi_definition_path}'."
                 )
 
         if len(validation_errors) > 0:
@@ -268,7 +272,7 @@ class Endpoint:
             will be made as you iterate through the result set.
         * **offset** (int, optional): Overrides the offset on paginated returns.
         * **strict_filters** (bool, optional): Overrides the global filter
-            validation per-request basis
+            validation per-request basis.
 
         ## Returns
         A RecordSet object.
@@ -325,22 +329,18 @@ class Endpoint:
         limit = kwargs.pop("limit") if "limit" in kwargs else 0
         offset = kwargs.pop("offset") if "offset" in kwargs else None
         strict_filters = (
-            kwargs.pop("strict_filters") if "strict_filters" in kwargs else None
+            # kwargs value takes precedence on globally set value
+            kwargs.pop("strict_filters")
+            if "strict_filters" in kwargs
+            else self.api.strict_filters
         )
 
         if limit == 0 and offset is not None:
             raise ValueError("offset requires a positive limit value")
         filters = {x: y if y is not None else "null" for x, y in kwargs.items()}
 
-        try:
+        if strict_filters:
             self._validate_openapi_parameters("get", filters)
-
-        except ParameterValidationError as e:
-            # Local strict_filters kwarg takes precedence on global strict_filters
-            if self.api.strict_filters if strict_filters is None else strict_filters:
-                raise
-            else:
-                print(e.error)
 
         req = Request(
             filters=filters,
