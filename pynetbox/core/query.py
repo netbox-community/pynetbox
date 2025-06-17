@@ -126,7 +126,7 @@ class ParameterValidationError(Exception):
 
     def __init__(self, errors):
         super().__init__(errors)
-        self.error = "The request parameter validation returned an error: {errors}"
+        self.error = f"The request parameter validation returned an error: {errors}"
 
     def __str__(self):
         return self.error
