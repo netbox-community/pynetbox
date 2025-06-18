@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 from tests.util import openapi_mock
 
 from pynetbox.core.endpoint import Endpoint
