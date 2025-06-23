@@ -109,6 +109,29 @@ class ContentError(Exception):
         return self.error
 
 
+class ParameterValidationError(Exception):
+    """API parameter validation Exception.
+
+    Raised when filter parameters do not match Netbox OpenAPI specification.
+
+    ## Examples
+
+    ```python
+    try:
+        nb.dcim.devices.filter(field_which_does_not_exist="destined-for-failure")
+    except pynetbox.ParameterValidationError as e:
+        print(e.error)
+    ```
+    """
+
+    def __init__(self, errors):
+        super().__init__(errors)
+        self.error = f"The request parameter validation returned an error: {errors}"
+
+    def __str__(self):
+        return self.error
+
+
 class Request:
     """Creates requests to the Netbox API.
 

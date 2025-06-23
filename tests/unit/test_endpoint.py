@@ -9,7 +9,7 @@ class EndPointTestCase(unittest.TestCase):
         with patch(
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
             app = Mock(name="test")
             mock.return_value = [{"id": 123}, {"id": 321}]
             test_obj = Endpoint(api, app, "test")
@@ -24,7 +24,7 @@ class EndPointTestCase(unittest.TestCase):
             test_obj.filter(offset=1)
 
     def test_filter_replace_none_with_null(self):
-        api = Mock(base_url="http://localhost:8000/api")
+        api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
         app = Mock(name="test")
         test_obj = Endpoint(api, app, "test")
         test = test_obj.filter(name=None, id=0)
@@ -118,7 +118,7 @@ class EndPointTestCase(unittest.TestCase):
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
             mock.return_value = [{"id": 123}]
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             test = test_obj.get(name="test")
@@ -181,7 +181,7 @@ class EndPointTestCase(unittest.TestCase):
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
             mock.return_value = [{"id": 123}, {"id": 321}]
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             with self.assertRaises(ValueError) as _:
@@ -192,7 +192,7 @@ class EndPointTestCase(unittest.TestCase):
             "pynetbox.core.query.Request._make_call", return_value=Mock()
         ) as mock:
             mock.return_value = []
-            api = Mock(base_url="http://localhost:8000/api")
+            api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
             app = Mock(name="test")
             test_obj = Endpoint(api, app, "test")
             test = test_obj.get(name="test")
