@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from pynetbox.core.endpoint import DetailEndpoint
 from pynetbox.core.response import JsonField, Record
 from pynetbox.models.ipam import IpAddresses
 
@@ -23,3 +24,20 @@ class VirtualMachines(Record):
     primary_ip4 = IpAddresses
     primary_ip6 = IpAddresses
     config_context = JsonField
+
+    @property
+    def render_config(self):
+        """
+        Represents the ``render-config`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        viewing response from the render-config endpoint.
+
+        :returns: :py:class:`.DetailEndpoint`
+
+        :Examples:
+
+        >>> vm = nb.ipam.virtual_machines.get(123)
+        >>> vm.render_config.create()
+        """
+        return DetailEndpoint(self, "render-config")
