@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch
 
 import pynetbox
+import pynetbox.models.users
 
 from .util import Response
 
@@ -76,6 +77,7 @@ class Generic:
 
 class UsersTestCase(Generic.Tests):
     name = "users"
+    ret = pynetbox.models.users.Users
 
     @patch(
         "requests.sessions.Session.get",
@@ -93,6 +95,7 @@ class GroupsTestCase(Generic.Tests):
 
 class PermissionsTestCase(Generic.Tests):
     name = "permissions"
+    ret = pynetbox.models.users.Permissions
 
     @patch(
         "requests.sessions.Session.get",
