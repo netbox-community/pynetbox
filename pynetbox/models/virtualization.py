@@ -37,7 +37,7 @@ class VirtualMachines(Record):
 
         :Examples:
 
-        >>> vm = nb.ipam.virtual_machines.get(123)
+        >>> vm = nb.virtualization.virtual_machines.get(123)
         >>> vm.render_config.create()
         """
         return DetailEndpoint(self, "render-config")
