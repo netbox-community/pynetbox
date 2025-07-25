@@ -110,3 +110,5 @@ CONTENT_TYPE_MAPPER = {
     "wireless.WirelessLANGroup": None,
     "wireless.wirelesslink": None,
 }
+
+TYPE_CONTENT_MAPPER = {v: k for k, v in CONTENT_TYPE_MAPPER.items() if v is not None}
