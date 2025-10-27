@@ -1,7 +1,7 @@
 ---
 name: 🗑️ Deprecation
 description: The removal of an existing feature or resource
-labels: ["type: deprecation"]
+labels: ["app: pynetbox", "type: deprecation"]
 body:
   - type: textarea
     attributes:
