@@ -23,7 +23,7 @@ from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
 # List of fields that are lists but should be treated as sets.
-LIST_AS_SET = ("tags", "tagged_vlans", "object_types")
+LIST_AS_SET = ("tags", "tagged_vlans")
 
 
 def get_return(lookup, return_fields=None):
