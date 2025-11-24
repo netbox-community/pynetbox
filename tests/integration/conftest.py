@@ -268,9 +268,9 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                     new_services[new_service_name]["healthcheck"] = {
                         "test": "curl -f http://localhost:8080/login/ || exit 1",
                         "start_period": "180s",  # Increased from 90s
-                        "timeout": "10s",        # Increased from 3s
+                        "timeout": "10s",  # Increased from 3s
                         "interval": "15s",
-                        "retries": 5
+                        "retries": 5,
                     }
 
                 # set the network and an alias to the proper short name of the container
