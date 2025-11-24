@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         python: ["3.10", "3.11", "3.12"]
-        netbox: ["4.2",]
+        netbox: ["4.2", "4.3", "4.4"]
 
     steps:
       - uses: actions/checkout@v4
@@ -36,13 +36,3 @@ jobs:
           
       - name: Run Tests
         run: pytest --netbox-versions=${{ matrix.netbox }}
-
-      - name: Show Docker Logs on Failure
-        if: failure()
-        run: |
-          echo "=== Docker Container Status ==="
-          docker ps -a
-          echo "=== NetBox Container Logs ==="
-          docker logs $(docker ps -a | grep netbox_v4_2_netbox-1 | grep -v worker | grep -v housekeeping | awk '{print $1}') || echo "Could not find netbox container"
-          echo "=== All Container Health Status ==="
-          docker inspect $(docker ps -aq) --format='{{.Name}}: {{.State.Health.Status}}' || true
