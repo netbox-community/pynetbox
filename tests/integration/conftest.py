@@ -263,6 +263,16 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                     # ensure the netbox container listens on a random port
                     new_services[new_service_name]["ports"] = ["8080"]
 
+                    # Increase health check timeouts for GitHub Actions runners
+                    # which may have more resource constraints
+                    new_services[new_service_name]["healthcheck"] = {
+                        "test": "curl -f http://localhost:8080/login/ || exit 1",
+                        "start_period": "180s",  # Increased from 90s
+                        "timeout": "10s",        # Increased from 3s
+                        "interval": "15s",
+                        "retries": 5
+                    }
+
                 # set the network and an alias to the proper short name of the container
                 # within that network
                 new_services[new_service_name]["networks"] = {
