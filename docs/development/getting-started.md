@@ -39,7 +39,7 @@ pytest tests/integration
 You can specify which versions of NetBox to test against using the `--netbox-versions` flag:
 
 ```bash
-pytest tests/integration --netbox-versions 4.1 4.2 4.3
+pytest tests/integration --netbox-versions 4.2 4.3 4.4
 ```
 
 ### Running Specific Tests

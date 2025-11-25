@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         python: ["3.10", "3.11", "3.12"]
-        netbox: ["4.1", "4.2", "4.3"]
+        netbox: ["4.2", "4.3", "4.4"]
 
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +25,11 @@ jobs:
 
       - name: Install dev requirements
         run: pip install -r requirements-dev.txt .
+
+      - name: Free up Docker resources
+        run: |
+          docker system prune -af --volumes
+          docker network prune -f
 
       - name: Run Linter
         run: black --diff --check pynetbox tests
