@@ -66,4 +66,68 @@ nb = pynetbox.api(
     token='d6f4e314a5b5fefd164995169f28ae32d987704f'
 )
 nb.http_session = session
-``` 
+```
+
+# File Uploads (Image Attachments)
+
+Pynetbox supports file uploads for endpoints that accept them, such as image attachments. When you pass a file-like object (anything with a `.read()` method) to `create()`, pynetbox automatically detects it and uses multipart/form-data encoding instead of JSON.
+
+## Creating an Image Attachment
+
+```python
+import pynetbox
+
+nb = pynetbox.api(
+    'http://localhost:8000',
+    token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+)
+
+# Attach an image to a device
+with open('/path/to/image.png', 'rb') as f:
+    attachment = nb.extras.image_attachments.create(
+        object_type='dcim.device',
+        object_id=1,
+        image=f,
+        name='rack-photo.png'
+    )
+```
+
+## Using io.BytesIO
+
+You can also use in-memory file objects:
+
+```python
+import io
+import pynetbox
+
+nb = pynetbox.api(
+    'http://localhost:8000',
+    token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+)
+
+# Create image from bytes
+image_data = b'...'  # Your image bytes
+file_obj = io.BytesIO(image_data)
+file_obj.name = 'generated-image.png'  # Optional: set filename
+
+attachment = nb.extras.image_attachments.create(
+    object_type='dcim.device',
+    object_id=1,
+    image=file_obj
+)
+```
+
+## Custom Filename and Content-Type
+
+For more control, pass a tuple instead of a file object:
+
+```python
+with open('/path/to/image.png', 'rb') as f:
+    attachment = nb.extras.image_attachments.create(
+        object_type='dcim.device',
+        object_id=1,
+        image=('custom-name.png', f, 'image/png')
+    )
+```
+
+The tuple format is `(filename, file_object)` or `(filename, file_object, content_type)`.
