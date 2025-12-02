@@ -159,6 +159,27 @@ class TestRequestWithFiles(unittest.TestCase):
         self.assertIn("data", call_kwargs.kwargs)
         self.assertIn("files", call_kwargs.kwargs)
 
+    def test_patch_without_files_uses_json(self):
+        """PATCH without files should use JSON and set Content-Type."""
+        mock_session = Mock()
+        mock_session.patch.return_value.ok = True
+        mock_session.patch.return_value.status_code = 200
+        mock_session.patch.return_value.json.return_value = {"id": 1, "name": "updated"}
+
+        req = Request(
+            base="http://localhost:8000/api/dcim/devices",
+            http_session=mock_session,
+            token="testtoken",
+            key=1,
+        )
+        req._make_call(verb="patch", data={"name": "updated-device"})
+
+        mock_session.patch.assert_called_once()
+        call_kwargs = mock_session.patch.call_args
+        self.assertIn("json", call_kwargs.kwargs)
+        self.assertNotIn("files", call_kwargs.kwargs)
+        self.assertEqual(call_kwargs.kwargs["headers"]["Content-Type"], "application/json")
+
 
 class TestEndpointCreateWithFiles(unittest.TestCase):
     """Tests for Endpoint.create() with file uploads."""

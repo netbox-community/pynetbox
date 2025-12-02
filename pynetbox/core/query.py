@@ -297,16 +297,19 @@ class Request:
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
         # Extract any file-like objects from data
         files = None
-        if data is not None and verb in ("post", "put", "patch"):
+        # Verbs that support request bodies with file uploads
+        body_verbs = ("post", "put", "patch")
+        headers = {"accept": "application/json"}
+
+        # Extract files from data for applicable verbs
+        if data is not None and verb in body_verbs:
             data, files = _extract_files(data)
 
-        if files:
-            # For multipart/form-data, don't set Content-Type (requests handles it)
-            headers = {"accept": "application/json"}
-        elif verb in ("post", "put") or verb == "delete" and data:
+        # Set headers based on request type
+        should_be_json_body = not files and (verb in body_verbs or (verb == "delete" and data))
+
+        if should_be_json_body:
             headers = {"Content-Type": "application/json"}
-        else:
-            headers = {"accept": "application/json"}
 
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
