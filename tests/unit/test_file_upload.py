@@ -36,6 +36,13 @@ class TestIsFileLike(unittest.TestCase):
         """None should not be detected as file-like."""
         self.assertFalse(_is_file_like(None))
 
+    def test_non_callable_read_attribute(self):
+        """Objects with non-callable read attribute should not be file-like."""
+        class FakeFile:
+            read = "not a method"
+
+        self.assertFalse(_is_file_like(FakeFile()))
+
 
 class TestExtractFiles(unittest.TestCase):
     """Tests for _extract_files helper function."""

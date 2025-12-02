@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 import concurrent.futures as cf
+import io
 import os
 import json
 
@@ -22,9 +23,12 @@ from packaging import version
 
 
 def _is_file_like(obj):
-    """Check if an object is file-like (has a read method and is not a string/bytes)."""
-    return hasattr(obj, "read") and not isinstance(obj, (str, bytes))
-
+    if isinstance(obj, (str, bytes)):
+        return False
+    # Check if it's a standard library IO object OR has a callable read method
+    return isinstance(obj, io.IOBase) or (
+        hasattr(obj, "read") and callable(getattr(obj, "read"))
+    )
 
 def _extract_files(data):
     """Extract file-like objects from data dict.
