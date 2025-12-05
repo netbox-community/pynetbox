@@ -15,9 +15,52 @@ limitations under the License.
 """
 
 import concurrent.futures as cf
+import io
+import os
 import json
 
 from packaging import version
+
+
+def _is_file_like(obj):
+    if isinstance(obj, (str, bytes)):
+        return False
+    # Check if it's a standard library IO object OR has a callable read method
+    return isinstance(obj, io.IOBase) or (
+        hasattr(obj, "read") and callable(getattr(obj, "read"))
+    )
+
+
+def _extract_files(data):
+    """Extract file-like objects from data dict.
+
+    Returns a tuple of (clean_data, files) where clean_data has file objects
+    removed and files is a dict suitable for requests' files parameter.
+    """
+    if not isinstance(data, dict):
+        return data, None
+
+    files = {}
+    clean_data = {}
+
+    for key, value in data.items():
+        if _is_file_like(value):
+            # Format: (filename, file_obj, content_type)
+            # Try to get filename from file object, fallback to key
+            filename = getattr(value, "name", None)
+            if filename:
+                # Extract just the filename, not the full path
+                filename = os.path.basename(filename)
+            else:
+                filename = key
+            files[key] = (filename, value)
+        elif isinstance(value, tuple) and len(value) >= 2 and _is_file_like(value[1]):
+            # Already in (filename, file_obj) or (filename, file_obj, content_type) format
+            files[key] = value
+        else:
+            clean_data[key] = value
+
+    return clean_data, files if files else None
 
 
 def calc_pages(limit, count):
@@ -257,10 +300,23 @@ class Request:
         return url
 
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
-        if verb in ("post", "put") or verb == "delete" and data:
+        # Extract any file-like objects from data
+        files = None
+        # Verbs that support request bodies with file uploads
+        body_verbs = ("post", "put", "patch")
+        headers = {"accept": "application/json"}
+
+        # Extract files from data for applicable verbs
+        if data is not None and verb in body_verbs:
+            data, files = _extract_files(data)
+
+        # Set headers based on request type
+        should_be_json_body = not files and (
+            verb in body_verbs or (verb == "delete" and data)
+        )
+
+        if should_be_json_body:
             headers = {"Content-Type": "application/json"}
-        else:
-            headers = {"accept": "application/json"}
 
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
@@ -272,9 +328,19 @@ class Request:
             if add_params:
                 params.update(add_params)
 
-        req = getattr(self.http_session, verb)(
-            url_override or self.url, headers=headers, params=params, json=data
-        )
+        if files:
+            # Use multipart/form-data for file uploads
+            req = getattr(self.http_session, verb)(
+                url_override or self.url,
+                headers=headers,
+                params=params,
+                data=data,
+                files=files,
+            )
+        else:
+            req = getattr(self.http_session, verb)(
+                url_override or self.url, headers=headers, params=params, json=data
+            )
 
         if req.status_code == 409 and verb == "post":
             raise AllocationError(req)
