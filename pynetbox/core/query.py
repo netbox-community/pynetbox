@@ -30,6 +30,7 @@ def _is_file_like(obj):
         hasattr(obj, "read") and callable(getattr(obj, "read"))
     )
 
+
 def _extract_files(data):
     """Extract file-like objects from data dict.
 
@@ -310,7 +311,9 @@ class Request:
             data, files = _extract_files(data)
 
         # Set headers based on request type
-        should_be_json_body = not files and (verb in body_verbs or (verb == "delete" and data))
+        should_be_json_body = not files and (
+            verb in body_verbs or (verb == "delete" and data)
+        )
 
         if should_be_json_body:
             headers = {"Content-Type": "application/json"}
@@ -328,7 +331,11 @@ class Request:
         if files:
             # Use multipart/form-data for file uploads
             req = getattr(self.http_session, verb)(
-                url_override or self.url, headers=headers, params=params, data=data, files=files
+                url_override or self.url,
+                headers=headers,
+                params=params,
+                data=data,
+                files=files,
             )
         else:
             req = getattr(self.http_session, verb)(

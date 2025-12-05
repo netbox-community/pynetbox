@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch
 from pynetbox.core.query import Request, _extract_files, _is_file_like
 from pynetbox.core.endpoint import Endpoint
 
+
 class TestIsFileLike(unittest.TestCase):
     """Tests for _is_file_like helper function."""
 
@@ -38,6 +39,7 @@ class TestIsFileLike(unittest.TestCase):
 
     def test_non_callable_read_attribute(self):
         """Objects with non-callable read attribute should not be file-like."""
+
         class FakeFile:
             read = "not a method"
 
@@ -143,7 +145,9 @@ class TestRequestWithFiles(unittest.TestCase):
         call_kwargs = mock_session.post.call_args
         self.assertIn("json", call_kwargs.kwargs)
         self.assertNotIn("files", call_kwargs.kwargs)
-        self.assertEqual(call_kwargs.kwargs["headers"]["Content-Type"], "application/json")
+        self.assertEqual(
+            call_kwargs.kwargs["headers"]["Content-Type"], "application/json"
+        )
 
     def test_patch_with_files_uses_multipart(self):
         """PATCH with files should use multipart/form-data."""
@@ -185,7 +189,9 @@ class TestRequestWithFiles(unittest.TestCase):
         call_kwargs = mock_session.patch.call_args
         self.assertIn("json", call_kwargs.kwargs)
         self.assertNotIn("files", call_kwargs.kwargs)
-        self.assertEqual(call_kwargs.kwargs["headers"]["Content-Type"], "application/json")
+        self.assertEqual(
+            call_kwargs.kwargs["headers"]["Content-Type"], "application/json"
+        )
 
 
 class TestEndpointCreateWithFiles(unittest.TestCase):
