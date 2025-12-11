@@ -200,6 +200,7 @@ class Request:
         key=None,
         token=None,
         threading=False,
+        expect_json=True,
     ):
         """Instantiates a new Request object.
 
@@ -211,6 +212,16 @@ class Request:
             In (e.g. /api/dcim/devices/?name='test') 'name': 'test'
             would be in the filters dict.
         * **key** (int, optional): Database id of the item being queried.
+        * **expect_json** (bool, optional): If True, expects JSON response
+            and sets appropriate Accept header. If False, expects raw content
+            (e.g., SVG, XML) and returns text. Defaults to True.
+
+        ## Note
+
+        The `count` attribute is not initialized here. It is set dynamically
+        by the `get()` method when paginating results, or by `get_count()`
+        when explicitly requesting the count. This allows `get_count()` to
+        use `hasattr()` to determine if a count has already been fetched.
         """
         self.base = self.normalize_url(base)
         self.filters = filters or None
@@ -221,6 +232,7 @@ class Request:
         self.threading = threading
         self.limit = limit
         self.offset = offset
+        self.expect_json = expect_json
 
     def get_openapi(self):
         """Gets the OpenAPI Spec."""
@@ -304,7 +316,12 @@ class Request:
         files = None
         # Verbs that support request bodies with file uploads
         body_verbs = ("post", "put", "patch")
-        headers = {"accept": "application/json"}
+
+        # Set Accept header based on expected response type
+        if self.expect_json:
+            headers = {"accept": "application/json"}
+        else:
+            headers = {"accept": "*/*"}
 
         # Extract files from data for applicable verbs
         if data is not None and verb in body_verbs:
@@ -316,7 +333,7 @@ class Request:
         )
 
         if should_be_json_body:
-            headers = {"Content-Type": "application/json"}
+            headers["Content-Type"] = "application/json"
 
         if self.token:
             headers["authorization"] = "Token {}".format(self.token)
@@ -350,10 +367,15 @@ class Request:
             else:
                 raise RequestError(req)
         elif req.ok:
-            try:
-                return req.json()
-            except json.JSONDecodeError:
-                raise ContentError(req)
+            # Parse response based on expected type
+            if self.expect_json:
+                try:
+                    return req.json()
+                except json.JSONDecodeError:
+                    raise ContentError(req)
+            else:
+                # Return raw text for non-JSON responses
+                return req.text
         else:
             raise RequestError(req)
 

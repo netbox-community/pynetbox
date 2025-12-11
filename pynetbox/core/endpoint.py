@@ -668,3 +668,54 @@ class DetailEndpoint:
 class RODetailEndpoint(DetailEndpoint):
     def create(self, data):
         raise NotImplementedError("Writes are not supported for this endpoint.")
+
+
+class ROMultiFormatDetailEndpoint(RODetailEndpoint):
+    """Read-only detail endpoint supporting multiple response formats.
+
+    Handles endpoints that return data in different formats based on
+    query parameters. Supports both structured data (JSON) and raw formats
+    (e.g., SVG).
+
+    The endpoint inspects the 'render' parameter to determine response format:
+    - No parameter or render='json': Returns structured JSON data
+    - render='svg': Returns raw SVG content
+
+    ## Examples
+
+    ```python
+    rack = nb.dcim.racks.get(123)
+    rack.elevation.list()  # Returns: list of rack unit objects
+    rack.elevation.list(render='svg')  # Returns: SVG string
+    rack.elevation.list(render='json')  # Returns: list of rack unit objects
+    ```
+    """
+
+    def list(self, **kwargs):
+        """Returns data in the requested format.
+
+        ## Parameters
+
+        * **kwargs**: Key/value pairs that get converted into URL
+            parameters. Supports 'render' parameter for format selection.
+
+        ## Returns
+
+        - If render is non-JSON format: Raw content (string)
+        - If render is 'json' or absent: Structured data (list/generator)
+        """
+        # Check if non-JSON format requested
+        render_format = kwargs.get("render")
+        if render_format == "svg":
+            # Pass expect_json=False for raw SVG response
+            req = Request(**self.request_kwargs, expect_json=False).get(
+                add_params=kwargs
+            )
+            # Return raw content for non-JSON formats
+            return next(req)
+
+        if render_format != "json" and render_format is not None:
+            raise ValueError(f"Unsupported render format: {render_format}")
+
+        # Return structured JSON response via parent class
+        return super().list(**kwargs)

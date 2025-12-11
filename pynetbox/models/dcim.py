@@ -16,7 +16,11 @@ limitations under the License.
 
 from urllib.parse import urlsplit
 
-from pynetbox.core.endpoint import DetailEndpoint, RODetailEndpoint
+from pynetbox.core.endpoint import (
+    DetailEndpoint,
+    RODetailEndpoint,
+    ROMultiFormatDetailEndpoint,
+)
 from pynetbox.core.query import Request
 from pynetbox.core.response import JsonField, Record
 from pynetbox.models.circuits import Circuits, CircuitTerminations
@@ -230,22 +234,26 @@ class Racks(Record):
     def elevation(self):
         """Represents the ``elevation`` detail endpoint.
 
-        Returns a DetailEndpoint object that is the interface for
-        viewing response from the elevation endpoint updated in
-        Netbox version 2.8.
+        Returns a multi-format endpoint supporting both JSON and SVG responses.
+        The elevation endpoint provides rack unit information and can render
+        graphical elevation views.
 
         ## Returns
-        DetailEndpoint object.
+        ROMultiFormatDetailEndpoint object supporting JSON and SVG formats.
 
         ## Examples
 
         ```python
         rack = nb.dcim.racks.get(123)
+
+        # Get rack units as JSON (list of RU objects)
         rack.elevation.list()
-        # {"get_facts": {"interface_list": ["ge-0/0/0"]}}
+
+        # Get elevation as SVG diagram
+        svg = rack.elevation.list(render='svg')
         ```
         """
-        return RODetailEndpoint(self, "elevation", custom_return=RUs)
+        return ROMultiFormatDetailEndpoint(self, "elevation", custom_return=RUs)
 
 
 class Termination(Record):
