@@ -259,9 +259,9 @@ class Request:
         ## Raises
         RequestError if req.ok returns false.
         """
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {"Content-Type": "application/json"}
+        if self.token:
+            headers["authorization"] = "Token {}".format(self.token)
         req = self.http_session.get(
             self.normalize_url(self.base),
             headers=headers,
