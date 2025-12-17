@@ -138,7 +138,3 @@ class ROMultiFormatDetailEndpointTestCase(unittest.TestCase):
 
         self.assertIn("Unsupported render format", str(context.exception))
         self.assertIn("png", str(context.exception))
-
-
-if __name__ == "__main__":
-    unittest.main()

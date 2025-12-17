@@ -171,10 +171,3 @@ print(svg_diagram)  # '<svg xmlns="http://www.w3.org/2000/svg">...</svg>'
 with open('rack-elevation.svg', 'w') as f:
     f.write(svg_diagram)
 ```
-
-## Supported Formats
-
-The elevation endpoint supports:
-- `render='json'` - Explicitly request JSON (same as default)
-- `render='svg'` - Get SVG diagram
-- Unsupported formats raise `ValueError`
