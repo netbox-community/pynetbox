@@ -1,9 +1,6 @@
-import unittest
-from unittest.mock import patch
-
 import pynetbox
 
-from .util import Response
+from .generic import Generic
 
 api = pynetbox.api(
     "http://localhost:8000",
@@ -14,133 +11,77 @@ nb = api.ipam
 HEADERS = {"accept": "application/json"}
 
 
-class Generic:
-    class Tests(unittest.TestCase):
-        name = ""
-        ret = pynetbox.core.response.Record
-        app = "ipam"
-
-        def test_get_all(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
-            ) as mock:
-                ret = list(getattr(nb, self.name).all())
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret[0], self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={"limit": 0},
-                    json=None,
-                    headers=HEADERS,
-                )
-
-        def test_filter(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
-            ) as mock:
-                ret = list(getattr(nb, self.name).filter(name="test"))
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret[0], self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={"name": "test", "limit": 0},
-                    json=None,
-                    headers=HEADERS,
-                )
-
-        def test_get(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(
-                    fixture="{}/{}.json".format(self.app, self.name[:-1])
-                ),
-            ) as mock:
-                ret = getattr(nb, self.name).get(1)
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret, self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/1/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={},
-                    json=None,
-                    headers=HEADERS,
-                )
+class IpamTests(Generic.Tests):
+    app = "ipam"
 
 
-class AggregatesTestCase(Generic.Tests):
+class AggregatesTestCase(IpamTests):
     name = "aggregates"
 
 
-class AsnRangesTestCase(Generic.Tests):
+class AsnRangesTestCase(IpamTests):
     name = "asn_ranges"
 
 
-class AsnsTestCase(Generic.Tests):
+class AsnsTestCase(IpamTests):
     name = "asns"
 
 
-class FhrpGroupsTestCase(Generic.Tests):
+class FhrpGroupsTestCase(IpamTests):
     name = "fhrp_groups"
 
 
-class FhrpGroupAssignmentsTestCase(Generic.Tests):
+class FhrpGroupAssignmentsTestCase(IpamTests):
     name = "fhrp_group_assignments"
 
 
-class IpAddressesTestCase(Generic.Tests):
+class IpAddressesTestCase(IpamTests):
     name = "ip_addresses"
 
 
-class IpRangesTestCase(Generic.Tests):
+class IpRangesTestCase(IpamTests):
     name = "ip_ranges"
 
 
-class PrefixesTestCase(Generic.Tests):
+class PrefixesTestCase(IpamTests):
     name = "prefixes"
 
 
-class RirsTestCase(Generic.Tests):
+class RirsTestCase(IpamTests):
     name = "rirs"
 
 
-class RolesTestCase(Generic.Tests):
+class RolesTestCase(IpamTests):
     name = "roles"
 
 
-class RouteTargetsTestCase(Generic.Tests):
+class RouteTargetsTestCase(IpamTests):
     name = "route_targets"
 
 
-class ServiceTemplatesTestCase(Generic.Tests):
+class ServiceTemplatesTestCase(IpamTests):
     name = "service_templates"
 
 
-class ServicesTestCase(Generic.Tests):
+class ServicesTestCase(IpamTests):
     name = "services"
 
 
-class VlanGroupsTestCase(Generic.Tests):
+class VlanGroupsTestCase(IpamTests):
     name = "vlan_groups"
 
 
-class VlansTestCase(Generic.Tests):
+class VlansTestCase(IpamTests):
     name = "vlans"
 
 
-class VlanTranslationPoliciesTestCase(Generic.Tests):
+class VlanTranslationPoliciesTestCase(IpamTests):
     name = "vlan_translation_policies"
 
 
-class VlanTranslationRulesTestCase(Generic.Tests):
+class VlanTranslationRulesTestCase(IpamTests):
     name = "vlan_translation_rules"
 
 
-class VrfsTestCase(Generic.Tests):
+class VrfsTestCase(IpamTests):
     name = "vrfs"

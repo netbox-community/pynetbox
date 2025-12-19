@@ -1,9 +1,6 @@
-import unittest
-from unittest.mock import patch
-
 import pynetbox
 
-from .util import Response
+from .generic import Generic
 
 api = pynetbox.api(
     "http://localhost:8000",
@@ -14,67 +11,11 @@ nb = api.circuits
 HEADERS = {"accept": "application/json"}
 
 
-class Generic:
-    class Tests(unittest.TestCase):
-        name = ""
-        ret = pynetbox.core.response.Record
-        app = "circuits"
-
-        def test_get_all(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
-            ) as mock:
-                ret = list(getattr(nb, self.name).all())
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret[0], self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={"limit": 0},
-                    json=None,
-                    headers=HEADERS,
-                )
-
-        def test_filter(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
-            ) as mock:
-                ret = list(getattr(nb, self.name).filter(name="test"))
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret[0], self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={"name": "test", "limit": 0},
-                    json=None,
-                    headers=HEADERS,
-                )
-
-        def test_get(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(
-                    fixture="{}/{}.json".format(self.app, self.name[:-1])
-                ),
-            ) as mock:
-                ret = getattr(nb, self.name).get(1)
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret, self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/1/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={},
-                    json=None,
-                    headers=HEADERS,
-                )
+class CircuitsTests(Generic.Tests):
+    app = "circuits"
 
 
-class CircuitsTestCase(Generic.Tests):
+class CircuitsTestCase(CircuitsTests):
     name = "circuits"
 
     @patch(
@@ -86,15 +27,15 @@ class CircuitsTestCase(Generic.Tests):
         self.assertEqual(str(test), "123456")
 
 
-class ProviderTestCase(Generic.Tests):
+class ProviderTestCase(CircuitsTests):
     name = "providers"
 
 
-class CircuitTypeTestCase(Generic.Tests):
+class CircuitTypeTestCase(CircuitsTests):
     name = "circuit_types"
 
 
-class CircuitTerminationsTestCase(Generic.Tests):
+class CircuitTerminationsTestCase(CircuitsTests):
     name = "circuit_terminations"
 
     @patch(
@@ -106,29 +47,29 @@ class CircuitTerminationsTestCase(Generic.Tests):
         self.assertEqual(str(test), "123456")
 
 
-class CircuitGroupsTestCase(Generic.Tests):
+class CircuitGroupsTestCase(CircuitsTests):
     name = "circuit_groups"
 
 
-class CircuitGroupAssignmentsTestCase(Generic.Tests):
+class CircuitGroupAssignmentsTestCase(CircuitsTests):
     name = "circuit_group_assignments"
 
 
-class ProviderAccountsTestCase(Generic.Tests):
+class ProviderAccountsTestCase(CircuitsTests):
     name = "provider_accounts"
 
 
-class ProviderNetworksTestCase(Generic.Tests):
+class ProviderNetworksTestCase(CircuitsTests):
     name = "provider_networks"
 
 
-class VirtualCircuitsTestCase(Generic.Tests):
+class VirtualCircuitsTestCase(CircuitsTests):
     name = "virtual_circuits"
 
 
-class VirtualCircuitTypesTestCase(Generic.Tests):
+class VirtualCircuitTypesTestCase(CircuitsTests):
     name = "virtual_circuit_types"
 
 
-class VirtualCircuitTerminationsTestCase(Generic.Tests):
+class VirtualCircuitTerminationsTestCase(CircuitsTests):
     name = "virtual_circuit_terminations"

@@ -1,9 +1,6 @@
-import unittest
-from unittest.mock import patch
-
 import pynetbox
 
-from .util import Response
+from .generic import Generic
 
 api = pynetbox.api(
     "http://localhost:8000",
@@ -14,145 +11,89 @@ nb = api.dcim
 HEADERS = {"accept": "application/json"}
 
 
-class Generic:
-    class Tests(unittest.TestCase):
-        name = ""
-        ret = pynetbox.core.response.Record
-        app = "dcim"
-
-        def test_get_all(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
-            ) as mock:
-                ret = list(getattr(nb, self.name).all())
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret[0], self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={"limit": 0},
-                    json=None,
-                    headers=HEADERS,
-                )
-
-        def test_filter(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
-            ) as mock:
-                ret = list(getattr(nb, self.name).filter(name="test"))
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret[0], self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={"name": "test", "limit": 0},
-                    json=None,
-                    headers=HEADERS,
-                )
-
-        def test_get(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(
-                    fixture="{}/{}.json".format(self.app, self.name[:-1])
-                ),
-            ) as mock:
-                ret = getattr(nb, self.name).get(1)
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret, self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/1/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={},
-                    json=None,
-                    headers=HEADERS,
-                )
+class DcimTests(Generic.Tests):
+    app = "dcim"
 
 
-class SitesTestCase(Generic.Tests):
+class SitesTestCase(DcimTests):
     name = "sites"
 
 
-class RegionsTestCase(Generic.Tests):
+class RegionsTestCase(DcimTests):
     name = "regions"
 
 
-class SiteGroupsTestCase(Generic.Tests):
+class SiteGroupsTestCase(DcimTests):
     name = "site_groups"
 
 
-class LocationsTestCase(Generic.Tests):
+class LocationsTestCase(DcimTests):
     name = "locations"
 
 
-class RackRolesTestCase(Generic.Tests):
+class RackRolesTestCase(DcimTests):
     name = "rack_roles"
 
 
-class RacksTestCase(Generic.Tests):
+class RacksTestCase(DcimTests):
     name = "racks"
 
 
-class ManufacturersTestCase(Generic.Tests):
+class ManufacturersTestCase(DcimTests):
     name = "manufacturers"
 
 
-class DeviceTypesTestCase(Generic.Tests):
+class DeviceTypesTestCase(DcimTests):
     name = "device_types"
 
 
-class DeviceRolesTestCase(Generic.Tests):
+class DeviceRolesTestCase(DcimTests):
     name = "device_roles"
 
 
-class PlatformsTestCase(Generic.Tests):
+class PlatformsTestCase(DcimTests):
     name = "platforms"
 
 
-class DevicesTestCase(Generic.Tests):
+class DevicesTestCase(DcimTests):
     name = "devices"
 
 
-class InterfacesTestCase(Generic.Tests):
+class InterfacesTestCase(DcimTests):
     name = "interfaces"
 
 
-class ConsolePortsTestCase(Generic.Tests):
+class ConsolePortsTestCase(DcimTests):
     name = "console_ports"
 
 
-class ConsoleServerPortsTestCase(Generic.Tests):
+class ConsoleServerPortsTestCase(DcimTests):
     name = "console_server_ports"
 
 
-class PowerPortsTestCase(Generic.Tests):
+class PowerPortsTestCase(DcimTests):
     name = "power_ports"
 
 
-class PowerOutletsTestCase(Generic.Tests):
+class PowerOutletsTestCase(DcimTests):
     name = "power_outlets"
 
 
-class CablesTestCase(Generic.Tests):
+class CablesTestCase(DcimTests):
     name = "cables"
 
 
-class ModuleTypesTestCase(Generic.Tests):
+class ModuleTypesTestCase(DcimTests):
     name = "module_types"
 
 
-class PowerPanelsTestCase(Generic.Tests):
+class PowerPanelsTestCase(DcimTests):
     name = "power_panels"
 
 
-class PowerFeedsTestCase(Generic.Tests):
+class PowerFeedsTestCase(DcimTests):
     name = "power_feeds"
 
 
-class InventoryItemsTestCase(Generic.Tests):
+class InventoryItemsTestCase(DcimTests):
     name = "inventory_items"

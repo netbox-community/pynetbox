@@ -1,9 +1,6 @@
-import unittest
-from unittest.mock import patch
-
 import pynetbox
 
-from .util import Response
+from .generic import Generic
 
 api = pynetbox.api(
     "http://localhost:8000",
@@ -14,85 +11,29 @@ nb = api.virtualization
 HEADERS = {"accept": "application/json"}
 
 
-class Generic:
-    class Tests(unittest.TestCase):
-        name = ""
-        ret = pynetbox.core.response.Record
-        app = "virtualization"
-
-        def test_get_all(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
-            ) as mock:
-                ret = list(getattr(nb, self.name).all())
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret[0], self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={"limit": 0},
-                    json=None,
-                    headers=HEADERS,
-                )
-
-        def test_filter(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
-            ) as mock:
-                ret = list(getattr(nb, self.name).filter(name="test"))
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret[0], self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={"name": "test", "limit": 0},
-                    json=None,
-                    headers=HEADERS,
-                )
-
-        def test_get(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(
-                    fixture="{}/{}.json".format(self.app, self.name[:-1])
-                ),
-            ) as mock:
-                ret = getattr(nb, self.name).get(1)
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret, self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/1/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={},
-                    json=None,
-                    headers=HEADERS,
-                )
+class VirtualizationTests(Generic.Tests):
+    app = "virtualization"
 
 
-class ClusterTypesTestCase(Generic.Tests):
+class ClusterTypesTestCase(VirtualizationTests):
     name = "cluster_types"
 
 
-class ClusterGroupsTestCase(Generic.Tests):
+class ClusterGroupsTestCase(VirtualizationTests):
     name = "cluster_groups"
 
 
-class ClustersTestCase(Generic.Tests):
+class ClustersTestCase(VirtualizationTests):
     name = "clusters"
 
 
-class VirtualMachinesTestCase(Generic.Tests):
+class VirtualMachinesTestCase(VirtualizationTests):
     name = "virtual_machines"
 
 
-class VirtualDisksTestCase(Generic.Tests):
+class VirtualDisksTestCase(VirtualizationTests):
     name = "virtual_disks"
 
 
-class InterfacesTestCase(Generic.Tests):
+class InterfacesTestCase(VirtualizationTests):
     name = "interfaces"
