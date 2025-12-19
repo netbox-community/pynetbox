@@ -1,0 +1,19 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "url": "http://localhost:8000/api/extras/tags/1/",
+            "display": "test-tag",
+            "name": "test-tag",
+            "slug": "test-tag",
+            "color": "9e9e9e",
+            "description": "",
+            "tagged_items": 0,
+            "created": "2024-01-01T00:00:00.000000Z",
+            "last_updated": "2024-01-01T00:00:00.000000Z"
+        }
+    ]
+}

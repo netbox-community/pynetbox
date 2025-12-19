@@ -1,0 +1,21 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/core/jobs/1/",
+    "display": "test-job",
+    "object_type": "dcim.site",
+    "name": "test-job",
+    "created": "2024-01-01T00:00:00.000000Z",
+    "scheduled": null,
+    "interval": null,
+    "started": "2024-01-01T00:00:00.000000Z",
+    "completed": "2024-01-01T00:00:05.000000Z",
+    "user": {
+        "id": 1,
+        "url": "http://localhost:8000/api/users/users/1/",
+        "display": "admin",
+        "username": "admin"
+    },
+    "status": "completed",
+    "data": {},
+    "job_id": "abc123"
+}
