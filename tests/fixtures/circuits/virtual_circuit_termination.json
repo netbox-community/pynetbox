@@ -1,0 +1,18 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/circuits/virtual-circuit-terminations/1/",
+    "display": "Termination #1",
+    "virtual_circuit": {
+        "id": 1,
+        "url": "http://localhost:8000/api/circuits/virtual-circuits/1/",
+        "display": "VC123"
+    },
+    "role": "hub",
+    "interface": null,
+    "vlan": null,
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

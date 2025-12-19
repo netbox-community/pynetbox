@@ -1,0 +1,20 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/ipam/asn-ranges/1/",
+    "display": "Test ASN Range (64512-64520)",
+    "name": "Test ASN Range",
+    "slug": "test-asn-range",
+    "rir": {
+        "id": 1,
+        "url": "http://localhost:8000/api/ipam/rirs/1/",
+        "display": "RFC 6996"
+    },
+    "start": 64512,
+    "end": 64520,
+    "tenant": null,
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

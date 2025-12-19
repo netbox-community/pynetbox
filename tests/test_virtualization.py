@@ -90,5 +90,9 @@ class VirtualMachinesTestCase(Generic.Tests):
     name = "virtual_machines"
 
 
+class VirtualDisksTestCase(Generic.Tests):
+    name = "virtual_disks"
+
+
 class InterfacesTestCase(Generic.Tests):
     name = "interfaces"

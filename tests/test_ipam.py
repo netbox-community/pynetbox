@@ -9,7 +9,7 @@ api = pynetbox.api(
     "http://localhost:8000",
 )
 
-nb = api.circuits
+nb = api.ipam
 
 HEADERS = {"accept": "application/json"}
 
@@ -18,7 +18,7 @@ class Generic:
     class Tests(unittest.TestCase):
         name = ""
         ret = pynetbox.core.response.Record
-        app = "circuits"
+        app = "ipam"
 
         def test_get_all(self):
             with patch(
@@ -74,61 +74,73 @@ class Generic:
                 )
 
 
-class CircuitsTestCase(Generic.Tests):
-    name = "circuits"
-
-    @patch(
-        "requests.sessions.Session.get",
-        return_value=Response(fixture="circuits/circuit.json"),
-    )
-    def test_repr(self, _):
-        test = nb.circuits.get(1)
-        self.assertEqual(str(test), "123456")
+class AggregatesTestCase(Generic.Tests):
+    name = "aggregates"
 
 
-class ProviderTestCase(Generic.Tests):
-    name = "providers"
+class AsnRangesTestCase(Generic.Tests):
+    name = "asn_ranges"
 
 
-class CircuitTypeTestCase(Generic.Tests):
-    name = "circuit_types"
+class AsnsTestCase(Generic.Tests):
+    name = "asns"
 
 
-class CircuitTerminationsTestCase(Generic.Tests):
-    name = "circuit_terminations"
-
-    @patch(
-        "requests.sessions.Session.get",
-        return_value=Response(fixture="circuits/circuit_termination.json"),
-    )
-    def test_repr(self, _):
-        test = nb.circuit_terminations.get(1)
-        self.assertEqual(str(test), "123456")
+class FhrpGroupsTestCase(Generic.Tests):
+    name = "fhrp_groups"
 
 
-class CircuitGroupsTestCase(Generic.Tests):
-    name = "circuit_groups"
+class FhrpGroupAssignmentsTestCase(Generic.Tests):
+    name = "fhrp_group_assignments"
 
 
-class CircuitGroupAssignmentsTestCase(Generic.Tests):
-    name = "circuit_group_assignments"
+class IpAddressesTestCase(Generic.Tests):
+    name = "ip_addresses"
 
 
-class ProviderAccountsTestCase(Generic.Tests):
-    name = "provider_accounts"
+class IpRangesTestCase(Generic.Tests):
+    name = "ip_ranges"
 
 
-class ProviderNetworksTestCase(Generic.Tests):
-    name = "provider_networks"
+class PrefixesTestCase(Generic.Tests):
+    name = "prefixes"
 
 
-class VirtualCircuitsTestCase(Generic.Tests):
-    name = "virtual_circuits"
+class RirsTestCase(Generic.Tests):
+    name = "rirs"
 
 
-class VirtualCircuitTypesTestCase(Generic.Tests):
-    name = "virtual_circuit_types"
+class RolesTestCase(Generic.Tests):
+    name = "roles"
 
 
-class VirtualCircuitTerminationsTestCase(Generic.Tests):
-    name = "virtual_circuit_terminations"
+class RouteTargetsTestCase(Generic.Tests):
+    name = "route_targets"
+
+
+class ServiceTemplatesTestCase(Generic.Tests):
+    name = "service_templates"
+
+
+class ServicesTestCase(Generic.Tests):
+    name = "services"
+
+
+class VlanGroupsTestCase(Generic.Tests):
+    name = "vlan_groups"
+
+
+class VlansTestCase(Generic.Tests):
+    name = "vlans"
+
+
+class VlanTranslationPoliciesTestCase(Generic.Tests):
+    name = "vlan_translation_policies"
+
+
+class VlanTranslationRulesTestCase(Generic.Tests):
+    name = "vlan_translation_rules"
+
+
+class VrfsTestCase(Generic.Tests):
+    name = "vrfs"

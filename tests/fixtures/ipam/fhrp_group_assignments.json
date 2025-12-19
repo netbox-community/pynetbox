@@ -1,0 +1,27 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "url": "http://localhost:8000/api/ipam/fhrp-group-assignments/1/",
+            "display": "Assignment #1",
+            "group": {
+                "id": 1,
+                "url": "http://localhost:8000/api/ipam/fhrp-groups/1/",
+                "display": "test-fhrp (1)"
+            },
+            "interface_type": "dcim.interface",
+            "interface_id": 1,
+            "interface": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/interfaces/1/",
+                "display": "eth0"
+            },
+            "priority": 100,
+            "created": "2024-01-01T00:00:00.000000Z",
+            "last_updated": "2024-01-01T00:00:00.000000Z"
+        }
+    ]
+}

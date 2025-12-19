@@ -114,6 +114,10 @@ class PermissionsTestCase(Generic.Tests):
         self.assertIsInstance(permission.constraints[0], dict)
 
 
+class TokensTestCase(Generic.Tests):
+    name = "tokens"
+
+
 class UnknownModelTestCase(unittest.TestCase):
     """This test validates that an unknown model is returned as Record object
     and that the __str__() method correctly uses the 'display' field of the

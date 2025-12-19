@@ -80,3 +80,19 @@ class TenantsTestCase(Generic.Tests):
 
 class TenantGroupsTestCase(Generic.Tests):
     name = "tenant_groups"
+
+
+class ContactsTestCase(Generic.Tests):
+    name = "contacts"
+
+
+class ContactGroupsTestCase(Generic.Tests):
+    name = "contact_groups"
+
+
+class ContactRolesTestCase(Generic.Tests):
+    name = "contact_roles"
+
+
+class ContactAssignmentsTestCase(Generic.Tests):
+    name = "contact_assignments"

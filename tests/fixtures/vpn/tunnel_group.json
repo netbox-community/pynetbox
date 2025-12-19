@@ -1,0 +1,12 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/vpn/tunnel-groups/1/",
+    "display": "test-tunnel-group",
+    "name": "test-tunnel-group",
+    "slug": "test-tunnel-group",
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

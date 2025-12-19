@@ -1,0 +1,20 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "url": "http://localhost:8000/api/wireless/wireless-lan-groups/1/",
+            "display": "test-wlan-group",
+            "name": "test-wlan-group",
+            "slug": "test-wlan-group",
+            "parent": null,
+            "description": "",
+            "tags": [],
+            "custom_fields": {},
+            "created": "2024-01-01T00:00:00.000000Z",
+            "last_updated": "2024-01-01T00:00:00.000000Z"
+        }
+    ]
+}

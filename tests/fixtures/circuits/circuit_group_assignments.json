@@ -1,0 +1,26 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "url": "http://localhost:8000/api/circuits/circuit-group-assignments/1/",
+            "display": "Circuit Assignment #1",
+            "group": {
+                "id": 1,
+                "url": "http://localhost:8000/api/circuits/circuit-groups/1/",
+                "display": "test-group"
+            },
+            "circuit": {
+                "id": 1,
+                "url": "http://localhost:8000/api/circuits/circuits/1/",
+                "display": "123456"
+            },
+            "priority": "primary",
+            "tags": [],
+            "created": "2024-01-01T00:00:00.000000Z",
+            "last_updated": "2024-01-01T00:00:00.000000Z"
+        }
+    ]
+}

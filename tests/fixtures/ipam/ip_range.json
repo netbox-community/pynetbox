@@ -1,0 +1,19 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/ipam/ip-ranges/1/",
+    "display": "192.168.1.10-192.168.1.20/24",
+    "start_address": "192.168.1.10/24",
+    "end_address": "192.168.1.20/24",
+    "size": 11,
+    "vrf": null,
+    "tenant": null,
+    "status": "active",
+    "role": null,
+    "description": "",
+    "comments": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z",
+    "mark_utilized": false
+}

@@ -1,0 +1,27 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/tenancy/contact-assignments/1/",
+    "display": "Assignment #1",
+    "object_type": "dcim.site",
+    "object_id": 1,
+    "object": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/sites/1/",
+        "display": "test-site"
+    },
+    "contact": {
+        "id": 1,
+        "url": "http://localhost:8000/api/tenancy/contacts/1/",
+        "display": "John Doe"
+    },
+    "role": {
+        "id": 1,
+        "url": "http://localhost:8000/api/tenancy/contact-roles/1/",
+        "display": "Network Admin"
+    },
+    "priority": "primary",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

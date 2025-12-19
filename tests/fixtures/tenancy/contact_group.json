@@ -1,0 +1,14 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/tenancy/contact-groups/1/",
+    "display": "Engineering",
+    "name": "Engineering",
+    "slug": "engineering",
+    "parent": null,
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z",
+    "contact_count": 1
+}

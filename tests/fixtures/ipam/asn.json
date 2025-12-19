@@ -1,0 +1,18 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/ipam/asns/1/",
+    "display": "AS65000",
+    "asn": 65000,
+    "rir": {
+        "id": 1,
+        "url": "http://localhost:8000/api/ipam/rirs/1/",
+        "display": "RFC 6996"
+    },
+    "tenant": null,
+    "description": "",
+    "comments": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

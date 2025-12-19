@@ -72,6 +72,10 @@ class Generic:
                 )
 
 
+class WirelessLanGroupsTestCase(Generic.Tests):
+    name = "wireless_lan_groups"
+
+
 class WirelessLansTestCase(Generic.Tests):
     name = "wireless_lans"
 
@@ -83,3 +87,7 @@ class WirelessLansTestCase(Generic.Tests):
         wireless_lan_obj = nb_app.wireless_lans.get(1)
         self.assertEqual(type(wireless_lan_obj), pynetbox.models.wireless.WirelessLans)
         self.assertEqual(str(wireless_lan_obj), "SSID 1")
+
+
+class WirelessLinksTestCase(Generic.Tests):
+    name = "wireless_links"

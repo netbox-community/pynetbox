@@ -9,7 +9,7 @@ api = pynetbox.api(
     "http://localhost:8000",
 )
 
-nb = api.circuits
+nb = api.vpn
 
 HEADERS = {"accept": "application/json"}
 
@@ -18,7 +18,7 @@ class Generic:
     class Tests(unittest.TestCase):
         name = ""
         ret = pynetbox.core.response.Record
-        app = "circuits"
+        app = "vpn"
 
         def test_get_all(self):
             with patch(
@@ -74,61 +74,41 @@ class Generic:
                 )
 
 
-class CircuitsTestCase(Generic.Tests):
-    name = "circuits"
-
-    @patch(
-        "requests.sessions.Session.get",
-        return_value=Response(fixture="circuits/circuit.json"),
-    )
-    def test_repr(self, _):
-        test = nb.circuits.get(1)
-        self.assertEqual(str(test), "123456")
+class IkePoliciesTestCase(Generic.Tests):
+    name = "ike_policies"
 
 
-class ProviderTestCase(Generic.Tests):
-    name = "providers"
+class IkeProposalsTestCase(Generic.Tests):
+    name = "ike_proposals"
 
 
-class CircuitTypeTestCase(Generic.Tests):
-    name = "circuit_types"
+class IpsecPoliciesTestCase(Generic.Tests):
+    name = "ipsec_policies"
 
 
-class CircuitTerminationsTestCase(Generic.Tests):
-    name = "circuit_terminations"
-
-    @patch(
-        "requests.sessions.Session.get",
-        return_value=Response(fixture="circuits/circuit_termination.json"),
-    )
-    def test_repr(self, _):
-        test = nb.circuit_terminations.get(1)
-        self.assertEqual(str(test), "123456")
+class IpsecProfilesTestCase(Generic.Tests):
+    name = "ipsec_profiles"
 
 
-class CircuitGroupsTestCase(Generic.Tests):
-    name = "circuit_groups"
+class IpsecProposalsTestCase(Generic.Tests):
+    name = "ipsec_proposals"
 
 
-class CircuitGroupAssignmentsTestCase(Generic.Tests):
-    name = "circuit_group_assignments"
+class L2vpnTerminationsTestCase(Generic.Tests):
+    name = "l2vpn_terminations"
 
 
-class ProviderAccountsTestCase(Generic.Tests):
-    name = "provider_accounts"
+class L2vpnsTestCase(Generic.Tests):
+    name = "l2vpns"
 
 
-class ProviderNetworksTestCase(Generic.Tests):
-    name = "provider_networks"
+class TunnelGroupsTestCase(Generic.Tests):
+    name = "tunnel_groups"
 
 
-class VirtualCircuitsTestCase(Generic.Tests):
-    name = "virtual_circuits"
+class TunnelTerminationsTestCase(Generic.Tests):
+    name = "tunnel_terminations"
 
 
-class VirtualCircuitTypesTestCase(Generic.Tests):
-    name = "virtual_circuit_types"
-
-
-class VirtualCircuitTerminationsTestCase(Generic.Tests):
-    name = "virtual_circuit_terminations"
+class TunnelsTestCase(Generic.Tests):
+    name = "tunnels"
