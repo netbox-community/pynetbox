@@ -115,5 +115,7 @@ class TestObjectChange(BaseTest):
 
     def test_get_fixture_by_kwarg(self, api):
         if self.fixture:
-            test = getattr(getattr(api, self.app), self.endpoint).get(**self.filter_kwargs)
+            test = getattr(getattr(api, self.app), self.endpoint).get(
+                **self.filter_kwargs
+            )
             assert test

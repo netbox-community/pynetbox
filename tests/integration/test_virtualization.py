@@ -65,9 +65,7 @@ def cluster_type(api):
 
 @pytest.fixture(scope="module")
 def cluster(api, cluster_type):
-    ret = api.virtualization.clusters.create(
-        name="test-cluster", type=cluster_type.id
-    )
+    ret = api.virtualization.clusters.create(name="test-cluster", type=cluster_type.id)
     yield ret
     ret.delete()
 

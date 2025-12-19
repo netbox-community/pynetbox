@@ -1,6 +1,12 @@
 from .circuits import Circuits, CircuitTerminations
 from .core import DataSources, Jobs, ObjectChanges
-from .extras import ConfigContextProfiles, ConfigContexts, CustomFields, EventRules, SavedFilters
+from .extras import (
+    ConfigContextProfiles,
+    ConfigContexts,
+    CustomFields,
+    EventRules,
+    SavedFilters,
+)
 from .dcim import (
     CablePath,
     Cables,
@@ -21,7 +27,15 @@ from .dcim import (
     Termination,
     VirtualChassis,
 )
-from .ipam import Aggregates, AsnRanges, IpAddresses, IpRanges, Prefixes, VlanGroups, Vlans
+from .ipam import (
+    Aggregates,
+    AsnRanges,
+    IpAddresses,
+    IpRanges,
+    Prefixes,
+    VlanGroups,
+    Vlans,
+)
 from .users import Permissions, UserConfig, Users
 from .virtualization import VirtualMachines
 from .wireless import WirelessLans
