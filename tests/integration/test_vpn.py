@@ -60,6 +60,7 @@ class TestTunnel(BaseTest):
         ret = api.vpn.tunnels.create(
             name="test-tunnel",
             encapsulation="ipsec-transport",
+            status="active",
         )
         yield ret
         ret.delete()
