@@ -1,9 +1,10 @@
 """Tests for ROMultiFormatDetailEndpoint."""
 
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pynetbox
+from pynetbox.core.endpoint import ROMultiFormatDetailEndpoint
 
 
 class ROMultiFormatDetailEndpointTestCase(unittest.TestCase):
@@ -137,7 +138,3 @@ class ROMultiFormatDetailEndpointTestCase(unittest.TestCase):
 
         self.assertIn("Unsupported render format", str(context.exception))
         self.assertIn("png", str(context.exception))
-
-
-if __name__ == "__main__":
-    unittest.main()
