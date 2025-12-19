@@ -1,6 +1,7 @@
 from .circuits import Circuits, CircuitTerminations
 from .core import DataSources, Jobs, ObjectChanges
 from .dcim import (
+    CablePath,
     Cables,
     ConsolePorts,
     ConsoleServerPorts,
@@ -8,6 +9,8 @@ from .dcim import (
     DeviceTypes,
     FrontPorts,
     Interfaces,
+    ModuleTypeProfiles,
+    ModuleTypes,
     PowerFeeds,
     PowerOutlets,
     PowerPorts,
@@ -28,7 +31,7 @@ CONTENT_TYPE_MAPPER = {
     "core.job": Jobs,
     "core.objectchange": ObjectChanges,
     "dcim.cable": Cables,
-    "dcim.cablepath": None,
+    "dcim.cablepath": CablePath,
     "dcim.cabletermination": Termination,
     "dcim.consoleport": ConsolePorts,
     "dcim.consoleporttemplate": None,
@@ -51,7 +54,8 @@ CONTENT_TYPE_MAPPER = {
     "dcim.module": None,
     "dcim.modulebay": None,
     "dcim.modulebaytemplate": None,
-    "dcim.moduletype": None,
+    "dcim.moduletype": ModuleTypes,
+    "dcim.moduletypeprofile": ModuleTypeProfiles,
     "dcim.platform": None,
     "dcim.powerfeed": PowerFeeds,
     "dcim.poweroutlet": PowerOutlets,
