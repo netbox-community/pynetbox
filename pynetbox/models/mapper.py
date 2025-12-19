@@ -1,5 +1,6 @@
 from .circuits import Circuits, CircuitTerminations
 from .core import DataSources, Jobs, ObjectChanges
+from .extras import ConfigContextProfiles, ConfigContexts, CustomFields, EventRules, SavedFilters
 from .dcim import (
     CablePath,
     Cables,
@@ -72,15 +73,18 @@ CONTENT_TYPE_MAPPER = {
     "dcim.site": None,
     "dcim.sitegroup": None,
     "dcim.virtualchassis": VirtualChassis,
-    "extras.configcontext": None,
+    "extras.configcontext": ConfigContexts,
+    "extras.configcontextprofile": ConfigContextProfiles,
     "extras.configrevision": None,
-    "extras.customfield": None,
+    "extras.customfield": CustomFields,
     "extras.customlink": None,
+    "extras.eventrule": EventRules,
     "extras.exporttemplate": None,
     "extras.imageattachment": None,
     "extras.jobresult": None,
     "extras.journalentry": None,
     "extras.report": None,
+    "extras.savedfilter": SavedFilters,
     "extras.script": None,
     "extras.tag": None,
     "extras.taggeditem": None,
