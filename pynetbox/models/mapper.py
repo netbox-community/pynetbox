@@ -21,7 +21,7 @@ from .dcim import (
     Termination,
     VirtualChassis,
 )
-from .ipam import Aggregates, IpAddresses, Prefixes, VlanGroups, Vlans
+from .ipam import Aggregates, AsnRanges, IpAddresses, IpRanges, Prefixes, VlanGroups, Vlans
 from .virtualization import VirtualMachines
 from .wireless import WirelessLans
 
@@ -91,10 +91,11 @@ CONTENT_TYPE_MAPPER = {
     "extras.webhook": None,
     "ipam.aggregate": Aggregates,
     "ipam.ASN": None,
+    "ipam.ASNrange": AsnRanges,
     "ipam.FHRPgroup": None,
     "ipam.FHRPgroupassignment": None,
     "ipam.IPaddress": IpAddresses,
-    "ipam.IPrange": None,
+    "ipam.IPrange": IpRanges,
     "ipam.L2VPN": None,
     "ipam.L2VPNtermination": None,
     "ipam.prefix": Prefixes,
