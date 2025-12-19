@@ -75,7 +75,7 @@ class TestGroup(BaseTest):
 class TestUser(BaseTest):
     @pytest.fixture(scope="class")
     def user(self, api):
-        ret = api.users.users.create(username="testuser123", password="testpassword123")
+        ret = api.users.users.create(username="testuser123", password="TestPassword123")
         yield ret
         ret.delete()
 
@@ -93,7 +93,7 @@ class TestUser(BaseTest):
 @pytest.fixture(scope="module")
 def test_user(api):
     ret = api.users.users.create(
-        username="testuser-for-token", password="testpassword123"
+        username="testuser-for-token", password="TestPassword123"
     )
     yield ret
     ret.delete()
