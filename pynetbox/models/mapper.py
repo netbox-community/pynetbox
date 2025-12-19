@@ -22,6 +22,7 @@ from .dcim import (
     VirtualChassis,
 )
 from .ipam import Aggregates, AsnRanges, IpAddresses, IpRanges, Prefixes, VlanGroups, Vlans
+from .users import Permissions, UserConfig, Users
 from .virtualization import VirtualMachines
 from .wireless import WirelessLans
 
@@ -113,6 +114,11 @@ CONTENT_TYPE_MAPPER = {
     "tenancy.contactrole": None,
     "tenancy.tenant": None,
     "tenancy.tenantgroup": None,
+    "users.group": None,
+    "users.permission": Permissions,
+    "users.token": None,
+    "users.user": Users,
+    "users.userconfig": UserConfig,
     "virtualization.cluster": None,
     "virtualization.clustergroup": None,
     "virtualization.clustertype": None,
