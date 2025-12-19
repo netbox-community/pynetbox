@@ -200,7 +200,6 @@ class Request:
         key=None,
         token=None,
         threading=False,
-        expect_json=True,
     ):
         """Instantiates a new Request object.
 
@@ -212,9 +211,6 @@ class Request:
             In (e.g. /api/dcim/devices/?name='test') 'name': 'test'
             would be in the filters dict.
         * **key** (int, optional): Database id of the item being queried.
-        * **expect_json** (bool, optional): If True, expects JSON response
-            and sets appropriate Accept header. If False, expects raw content
-            (e.g., SVG, XML) and returns text. Defaults to True.
 
         ## Note
 
@@ -232,7 +228,6 @@ class Request:
         self.threading = threading
         self.limit = limit
         self.offset = offset
-        self.expect_json = expect_json
 
     def get_openapi(self):
         """Gets the OpenAPI Spec."""
@@ -317,11 +312,7 @@ class Request:
         # Verbs that support request bodies with file uploads
         body_verbs = ("post", "put", "patch")
 
-        # Set Accept header based on expected response type
-        if self.expect_json:
-            headers = {"accept": "application/json"}
-        else:
-            headers = {"accept": "*/*"}
+        headers = {"accept": "application/json"}
 
         # Extract files from data for applicable verbs
         if data is not None and verb in body_verbs:
@@ -367,15 +358,10 @@ class Request:
             else:
                 raise RequestError(req)
         elif req.ok:
-            # Parse response based on expected type
-            if self.expect_json:
-                try:
-                    return req.json()
-                except json.JSONDecodeError:
-                    raise ContentError(req)
-            else:
-                # Return raw text for non-JSON responses
-                return req.text
+            try:
+                return req.json()
+            except json.JSONDecodeError:
+                raise ContentError(req)
         else:
             raise RequestError(req)
 
