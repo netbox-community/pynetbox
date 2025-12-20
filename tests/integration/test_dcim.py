@@ -2,6 +2,7 @@ import pytest
 from packaging import version
 
 import pynetbox
+from .base import BaseIntegrationTest
 
 
 @pytest.fixture(scope="module")
@@ -31,9 +32,6 @@ def device(api, site, device_type, role):
         )
     yield device
     device.delete()
-
-
-from .base import BaseIntegrationTest
 
 
 class BaseTest(BaseIntegrationTest):

@@ -1,10 +1,9 @@
 """Tests for ROMultiFormatDetailEndpoint."""
 
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import pynetbox
-from pynetbox.core.endpoint import ROMultiFormatDetailEndpoint
 
 
 class ROMultiFormatDetailEndpointTestCase(unittest.TestCase):
