@@ -102,14 +102,8 @@ class Generic:
             nb_app = module.nb
             headers = module.HEADERS
 
-            # Get singular form from mapping or fallback to removing 's'
-            singular_name = PLURAL_TO_SINGULAR.get(self.name)
-            if singular_name is None:
-                # Fallback: simple removal of 's' if not in mapping
-                if self.name.endswith("s") and not self.name.endswith("ss"):
-                    singular_name = self.name[:-1]
-                else:
-                    singular_name = self.name
+            # Get singular form from mapping
+            singular_name = PLURAL_TO_SINGULAR.get(self.name) or self.name
 
             with patch(
                 "requests.sessions.Session.get",
