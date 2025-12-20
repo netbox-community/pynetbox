@@ -9,41 +9,24 @@ from .util import Response
 
 # Mapping of plural endpoint names to their singular forms
 PLURAL_TO_SINGULAR = {
-    # Words ending in -ies
-    "policies": "policy",
-    "categories": "category",
-
-    # Words ending in -sses
     "addresses": "address",
-
-    # Words ending in -xes
-    "prefixes": "prefix",
-
-    # Words ending in -es
-    "types": "type",
-    "sources": "source",
-    "roles": "role",
-    "sites": "site",
-    "ranges": "range",
-    "services": "service",
-    "templates": "template",
-    "rules": "rule",
-    "profiles": "profile",
-
-    # Words ending in -ces
+    "aggregates": "aggregate",
+    "cables": "cable",
+    "categories": "category",
     "devices": "device",
     "interfaces": "interface",
-
-    # Words ending in -les
-    "cables": "cable",
-
-    # Words ending in -nes
     "machines": "machine",
-
-    # Words ending in -tes
-    "aggregates": "aggregate",
-
-    # Add more mappings as needed
+    "policies": "policy",
+    "prefixes": "prefix",
+    "profiles": "profile",
+    "ranges": "range",
+    "roles": "role",
+    "rules": "rule",
+    "services": "service",
+    "sites": "site",
+    "sources": "source",
+    "templates": "template",
+    "types": "type",
 }
 
 
