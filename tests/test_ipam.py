@@ -11,77 +11,78 @@ nb = api.ipam
 HEADERS = {"accept": "application/json"}
 
 
-class IpamTests(Generic.Tests):
+class IpamBase(Generic.Tests):
+    __test__ = False  # Prevent pytest from discovering this as a test class
     app = "ipam"
 
 
-class AggregatesTestCase(IpamTests):
+class AggregatesTestCase(IpamBase):
     name = "aggregates"
 
 
-class AsnRangesTestCase(IpamTests):
+class AsnRangesTestCase(IpamBase):
     name = "asn_ranges"
 
 
-class AsnsTestCase(IpamTests):
+class AsnsTestCase(IpamBase):
     name = "asns"
 
 
-class FhrpGroupsTestCase(IpamTests):
+class FhrpGroupsTestCase(IpamBase):
     name = "fhrp_groups"
 
 
-class FhrpGroupAssignmentsTestCase(IpamTests):
+class FhrpGroupAssignmentsTestCase(IpamBase):
     name = "fhrp_group_assignments"
 
 
-class IpAddressesTestCase(IpamTests):
+class IpAddressesTestCase(IpamBase):
     name = "ip_addresses"
 
 
-class IpRangesTestCase(IpamTests):
+class IpRangesTestCase(IpamBase):
     name = "ip_ranges"
 
 
-class PrefixesTestCase(IpamTests):
+class PrefixesTestCase(IpamBase):
     name = "prefixes"
 
 
-class RirsTestCase(IpamTests):
+class RirsTestCase(IpamBase):
     name = "rirs"
 
 
-class RolesTestCase(IpamTests):
+class RolesTestCase(IpamBase):
     name = "roles"
 
 
-class RouteTargetsTestCase(IpamTests):
+class RouteTargetsTestCase(IpamBase):
     name = "route_targets"
 
 
-class ServiceTemplatesTestCase(IpamTests):
+class ServiceTemplatesTestCase(IpamBase):
     name = "service_templates"
 
 
-class ServicesTestCase(IpamTests):
+class ServicesTestCase(IpamBase):
     name = "services"
 
 
-class VlanGroupsTestCase(IpamTests):
+class VlanGroupsTestCase(IpamBase):
     name = "vlan_groups"
 
 
-class VlansTestCase(IpamTests):
+class VlansTestCase(IpamBase):
     name = "vlans"
 
 
-class VlanTranslationPoliciesTestCase(IpamTests):
+class VlanTranslationPoliciesTestCase(IpamBase):
     name = "vlan_translation_policies"
 
 
-class VlanTranslationRulesTestCase(IpamTests):
+class VlanTranslationRulesTestCase(IpamBase):
     name = "vlan_translation_rules"
 
 
-class VrfsTestCase(IpamTests):
+class VrfsTestCase(IpamBase):
     name = "vrfs"

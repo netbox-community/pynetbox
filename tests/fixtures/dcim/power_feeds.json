@@ -1,0 +1,43 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "url": "http://localhost:8000/api/dcim/power-feeds/1/",
+            "display": "test-power-feed",
+            "power_panel": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/power-panels/1/",
+                "display": "test-power-panel"
+            },
+            "rack": null,
+            "name": "test-power-feed",
+            "status": {
+                "value": "active",
+                "label": "Active"
+            },
+            "type": {
+                "value": "primary",
+                "label": "Primary"
+            },
+            "supply": {
+                "value": "ac",
+                "label": "AC"
+            },
+            "phase": {
+                "value": "single-phase",
+                "label": "Single phase"
+            },
+            "voltage": 120,
+            "amperage": 20,
+            "max_utilization": 80,
+            "description": "",
+            "tags": [],
+            "custom_fields": {},
+            "created": "2024-01-01T00:00:00.000000Z",
+            "last_updated": "2024-01-01T00:00:00.000000Z"
+        }
+    ]
+}

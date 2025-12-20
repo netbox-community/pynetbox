@@ -11,89 +11,90 @@ nb = api.dcim
 HEADERS = {"accept": "application/json"}
 
 
-class DcimTests(Generic.Tests):
+class DcimBase(Generic.Tests):
+    __test__ = False  # Prevent pytest from discovering this as a test class
     app = "dcim"
 
 
-class SitesTestCase(DcimTests):
+class SitesTestCase(DcimBase):
     name = "sites"
 
 
-class RegionsTestCase(DcimTests):
+class RegionsTestCase(DcimBase):
     name = "regions"
 
 
-class SiteGroupsTestCase(DcimTests):
+class SiteGroupsTestCase(DcimBase):
     name = "site_groups"
 
 
-class LocationsTestCase(DcimTests):
+class LocationsTestCase(DcimBase):
     name = "locations"
 
 
-class RackRolesTestCase(DcimTests):
+class RackRolesTestCase(DcimBase):
     name = "rack_roles"
 
 
-class RacksTestCase(DcimTests):
+class RacksTestCase(DcimBase):
     name = "racks"
 
 
-class ManufacturersTestCase(DcimTests):
+class ManufacturersTestCase(DcimBase):
     name = "manufacturers"
 
 
-class DeviceTypesTestCase(DcimTests):
+class DeviceTypesTestCase(DcimBase):
     name = "device_types"
 
 
-class DeviceRolesTestCase(DcimTests):
+class DeviceRolesTestCase(DcimBase):
     name = "device_roles"
 
 
-class PlatformsTestCase(DcimTests):
+class PlatformsTestCase(DcimBase):
     name = "platforms"
 
 
-class DevicesTestCase(DcimTests):
+class DevicesTestCase(DcimBase):
     name = "devices"
 
 
-class InterfacesTestCase(DcimTests):
+class InterfacesTestCase(DcimBase):
     name = "interfaces"
 
 
-class ConsolePortsTestCase(DcimTests):
+class ConsolePortsTestCase(DcimBase):
     name = "console_ports"
 
 
-class ConsoleServerPortsTestCase(DcimTests):
+class ConsoleServerPortsTestCase(DcimBase):
     name = "console_server_ports"
 
 
-class PowerPortsTestCase(DcimTests):
+class PowerPortsTestCase(DcimBase):
     name = "power_ports"
 
 
-class PowerOutletsTestCase(DcimTests):
+class PowerOutletsTestCase(DcimBase):
     name = "power_outlets"
 
 
-class CablesTestCase(DcimTests):
+class CablesTestCase(DcimBase):
     name = "cables"
 
 
-class ModuleTypesTestCase(DcimTests):
+class ModuleTypesTestCase(DcimBase):
     name = "module_types"
 
 
-class PowerPanelsTestCase(DcimTests):
+class PowerPanelsTestCase(DcimBase):
     name = "power_panels"
 
 
-class PowerFeedsTestCase(DcimTests):
+class PowerFeedsTestCase(DcimBase):
     name = "power_feeds"
 
 
-class InventoryItemsTestCase(DcimTests):
+class InventoryItemsTestCase(DcimBase):
     name = "inventory_items"

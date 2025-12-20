@@ -11,45 +11,46 @@ nb = api.vpn
 HEADERS = {"accept": "application/json"}
 
 
-class VpnTests(Generic.Tests):
+class VpnBase(Generic.Tests):
+    __test__ = False  # Prevent pytest from discovering this as a test class
     app = "vpn"
 
 
-class IkePoliciesTestCase(VpnTests):
+class IkePoliciesTestCase(VpnBase):
     name = "ike_policies"
 
 
-class IkeProposalsTestCase(VpnTests):
+class IkeProposalsTestCase(VpnBase):
     name = "ike_proposals"
 
 
-class IpsecPoliciesTestCase(VpnTests):
+class IpsecPoliciesTestCase(VpnBase):
     name = "ipsec_policies"
 
 
-class IpsecProfilesTestCase(VpnTests):
+class IpsecProfilesTestCase(VpnBase):
     name = "ipsec_profiles"
 
 
-class IpsecProposalsTestCase(VpnTests):
+class IpsecProposalsTestCase(VpnBase):
     name = "ipsec_proposals"
 
 
-class L2vpnTerminationsTestCase(VpnTests):
+class L2vpnTerminationsTestCase(VpnBase):
     name = "l2vpn_terminations"
 
 
-class L2vpnsTestCase(VpnTests):
+class L2vpnsTestCase(VpnBase):
     name = "l2vpns"
 
 
-class TunnelGroupsTestCase(VpnTests):
+class TunnelGroupsTestCase(VpnBase):
     name = "tunnel_groups"
 
 
-class TunnelTerminationsTestCase(VpnTests):
+class TunnelTerminationsTestCase(VpnBase):
     name = "tunnel_terminations"
 
 
-class TunnelsTestCase(VpnTests):
+class TunnelsTestCase(VpnBase):
     name = "tunnels"

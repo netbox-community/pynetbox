@@ -11,29 +11,30 @@ nb = api.tenancy
 HEADERS = {"accept": "application/json"}
 
 
-class TenancyTests(Generic.Tests):
+class TenancyBase(Generic.Tests):
+    __test__ = False  # Prevent pytest from discovering this as a test class
     app = "tenancy"
 
 
-class TenantsTestCase(TenancyTests):
+class TenantsTestCase(TenancyBase):
     name = "tenants"
 
 
-class TenantGroupsTestCase(TenancyTests):
+class TenantGroupsTestCase(TenancyBase):
     name = "tenant_groups"
 
 
-class ContactsTestCase(TenancyTests):
+class ContactsTestCase(TenancyBase):
     name = "contacts"
 
 
-class ContactGroupsTestCase(TenancyTests):
+class ContactGroupsTestCase(TenancyBase):
     name = "contact_groups"
 
 
-class ContactRolesTestCase(TenancyTests):
+class ContactRolesTestCase(TenancyBase):
     name = "contact_roles"
 
 
-class ContactAssignmentsTestCase(TenancyTests):
+class ContactAssignmentsTestCase(TenancyBase):
     name = "contact_assignments"

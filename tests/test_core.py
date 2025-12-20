@@ -11,17 +11,18 @@ nb = api.core
 HEADERS = {"accept": "application/json"}
 
 
-class CoreTests(Generic.Tests):
+class CoreBase(Generic.Tests):
+    __test__ = False  # Prevent pytest from discovering this as a test class
     app = "core"
 
 
-class DataSourcesTestCase(CoreTests):
+class DataSourcesTestCase(CoreBase):
     name = "data_sources"
 
 
-class JobsTestCase(CoreTests):
+class JobsTestCase(CoreBase):
     name = "jobs"
 
 
-class ObjectTypesTestCase(CoreTests):
+class ObjectTypesTestCase(CoreBase):
     name = "object_types"

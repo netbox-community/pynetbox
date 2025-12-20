@@ -1,0 +1,30 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "url": "http://localhost:8000/api/dcim/locations/1/",
+            "display": "test-location",
+            "name": "test-location",
+            "slug": "test-location",
+            "site": {
+                "id": 1,
+                "url": "http://localhost:8000/api/dcim/sites/1/",
+                "display": "test-site"
+            },
+            "parent": null,
+            "status": {
+                "value": "active",
+                "label": "Active"
+            },
+            "tenant": null,
+            "description": "",
+            "tags": [],
+            "custom_fields": {},
+            "created": "2024-01-01T00:00:00.000000Z",
+            "last_updated": "2024-01-01T00:00:00.000000Z"
+        }
+    ]
+}

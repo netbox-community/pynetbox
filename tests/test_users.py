@@ -1,6 +1,10 @@
+import unittest
+from unittest.mock import patch
+
 import pynetbox
 
 from .generic import Generic
+from .util import Response
 
 api = pynetbox.api(
     "http://localhost:8000",
@@ -11,11 +15,12 @@ nb = api.users
 HEADERS = {"accept": "application/json"}
 
 
-class UsersTests(Generic.Tests):
+class UsersBase(Generic.Tests):
+    __test__ = False  # Prevent pytest from discovering this as a test class
     app = "users"
 
 
-class UsersTestCase(UsersTests):
+class UsersTestCase(UsersBase):
     name = "users"
 
     @patch(
@@ -28,11 +33,11 @@ class UsersTestCase(UsersTests):
         self.assertEqual(str(test), "user1")
 
 
-class GroupsTestCase(UsersTests):
+class GroupsTestCase(UsersBase):
     name = "groups"
 
 
-class PermissionsTestCase(UsersTests):
+class PermissionsTestCase(UsersBase):
     name = "permissions"
 
     @patch(
@@ -55,7 +60,7 @@ class PermissionsTestCase(UsersTests):
         self.assertIsInstance(permission.constraints[0], dict)
 
 
-class TokensTestCase(UsersTests):
+class TokensTestCase(UsersBase):
     name = "tokens"
 
 

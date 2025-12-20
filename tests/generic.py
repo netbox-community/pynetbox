@@ -1,0 +1,147 @@
+"""Common Generic test class for all unit tests."""
+import unittest
+from unittest.mock import patch
+
+import pynetbox
+
+from .util import Response
+
+
+# Mapping of plural endpoint names to their singular forms
+PLURAL_TO_SINGULAR = {
+    # Words ending in -ies
+    "policies": "policy",
+    "categories": "category",
+
+    # Words ending in -sses
+    "addresses": "address",
+
+    # Words ending in -xes
+    "prefixes": "prefix",
+
+    # Words ending in -es
+    "types": "type",
+    "sources": "source",
+    "roles": "role",
+    "sites": "site",
+    "ranges": "range",
+    "services": "service",
+    "templates": "template",
+    "rules": "rule",
+    "profiles": "profile",
+
+    # Words ending in -ces
+    "devices": "device",
+    "interfaces": "interface",
+
+    # Words ending in -les
+    "cables": "cable",
+
+    # Words ending in -nes
+    "machines": "machine",
+
+    # Words ending in -tes
+    "aggregates": "aggregate",
+
+    # Add more mappings as needed
+}
+
+
+class Generic:
+    """Generic test class with common test methods for NetBox endpoints."""
+
+    class Tests(unittest.TestCase):
+        """Base test class for endpoint testing.
+
+        Subclasses should define:
+        - name: endpoint name (e.g., "circuits", "devices")
+        - app: API app name (e.g., "circuits", "dcim")
+        - nb: API app instance (inherited from module)
+        - HEADERS: HTTP headers (inherited from module)
+        """
+        name = ""
+        ret = pynetbox.core.response.Record
+        app = ""
+
+        def test_get_all(self):
+            # Get nb and HEADERS from the test module
+            nb = self.__class__.__module__
+            import sys
+            module = sys.modules[nb]
+            nb_app = module.nb
+            headers = module.HEADERS
+
+            with patch(
+                "requests.sessions.Session.get",
+                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
+            ) as mock:
+                ret = list(getattr(nb_app, self.name).all())
+                self.assertTrue(ret)
+                self.assertTrue(isinstance(ret[0], self.ret))
+                mock.assert_called_with(
+                    "http://localhost:8000/api/{}/{}/".format(
+                        self.app, self.name.replace("_", "-")
+                    ),
+                    params={"limit": 0},
+                    json=None,
+                    headers=headers,
+                )
+
+        def test_filter(self):
+            # Get nb and HEADERS from the test module
+            nb = self.__class__.__module__
+            import sys
+            module = sys.modules[nb]
+            nb_app = module.nb
+            headers = module.HEADERS
+
+            with patch(
+                "requests.sessions.Session.get",
+                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
+            ) as mock:
+                ret = list(getattr(nb_app, self.name).filter(name="test"))
+                self.assertTrue(ret)
+                self.assertTrue(isinstance(ret[0], self.ret))
+                mock.assert_called_with(
+                    "http://localhost:8000/api/{}/{}/".format(
+                        self.app, self.name.replace("_", "-")
+                    ),
+                    params={"name": "test", "limit": 0},
+                    json=None,
+                    headers=headers,
+                )
+
+        def test_get(self):
+            # Get nb and HEADERS from the test module
+            nb = self.__class__.__module__
+            import sys
+            module = sys.modules[nb]
+            nb_app = module.nb
+            headers = module.HEADERS
+
+            # Get singular form from mapping or fallback to removing 's'
+            singular_name = PLURAL_TO_SINGULAR.get(self.name)
+            if singular_name is None:
+                # Fallback: simple removal of 's' if not in mapping
+                if self.name.endswith("s") and not self.name.endswith("ss"):
+                    singular_name = self.name[:-1]
+                else:
+                    singular_name = self.name
+
+            with patch(
+                "requests.sessions.Session.get",
+                return_value=Response(
+                    fixture="{}/{}.json".format(self.app, singular_name)
+                ),
+            ) as mock:
+                ret = getattr(nb_app, self.name).get(1)
+                self.assertTrue(ret)
+                self.assertTrue(isinstance(ret, self.ret))
+                mock.assert_called_with(
+                    "http://localhost:8000/api/{}/{}/1/".format(
+                        self.app, self.name.replace("_", "-")
+                    ),
+                    params={},
+                    json=None,
+                    headers=headers,
+                )

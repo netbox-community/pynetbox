@@ -1,6 +1,9 @@
+from unittest.mock import patch
+
 import pynetbox
 
 from .generic import Generic
+from .util import Response
 
 api = pynetbox.api(
     "http://localhost:8000",
@@ -11,11 +14,12 @@ nb = api.circuits
 HEADERS = {"accept": "application/json"}
 
 
-class CircuitsTests(Generic.Tests):
+class CircuitsBase(Generic.Tests):
+    __test__ = False  # Prevent pytest from discovering this as a test class
     app = "circuits"
 
 
-class CircuitsTestCase(CircuitsTests):
+class CircuitsTestCase(CircuitsBase):
     name = "circuits"
 
     @patch(
@@ -27,15 +31,15 @@ class CircuitsTestCase(CircuitsTests):
         self.assertEqual(str(test), "123456")
 
 
-class ProviderTestCase(CircuitsTests):
+class ProviderTestCase(CircuitsBase):
     name = "providers"
 
 
-class CircuitTypeTestCase(CircuitsTests):
+class CircuitTypeTestCase(CircuitsBase):
     name = "circuit_types"
 
 
-class CircuitTerminationsTestCase(CircuitsTests):
+class CircuitTerminationsTestCase(CircuitsBase):
     name = "circuit_terminations"
 
     @patch(
@@ -47,29 +51,29 @@ class CircuitTerminationsTestCase(CircuitsTests):
         self.assertEqual(str(test), "123456")
 
 
-class CircuitGroupsTestCase(CircuitsTests):
+class CircuitGroupsTestCase(CircuitsBase):
     name = "circuit_groups"
 
 
-class CircuitGroupAssignmentsTestCase(CircuitsTests):
+class CircuitGroupAssignmentsTestCase(CircuitsBase):
     name = "circuit_group_assignments"
 
 
-class ProviderAccountsTestCase(CircuitsTests):
+class ProviderAccountsTestCase(CircuitsBase):
     name = "provider_accounts"
 
 
-class ProviderNetworksTestCase(CircuitsTests):
+class ProviderNetworksTestCase(CircuitsBase):
     name = "provider_networks"
 
 
-class VirtualCircuitsTestCase(CircuitsTests):
+class VirtualCircuitsTestCase(CircuitsBase):
     name = "virtual_circuits"
 
 
-class VirtualCircuitTypesTestCase(CircuitsTests):
+class VirtualCircuitTypesTestCase(CircuitsBase):
     name = "virtual_circuit_types"
 
 
-class VirtualCircuitTerminationsTestCase(CircuitsTests):
+class VirtualCircuitTerminationsTestCase(CircuitsBase):
     name = "virtual_circuit_terminations"

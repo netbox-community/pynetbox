@@ -11,21 +11,22 @@ nb = api.extras
 HEADERS = {"accept": "application/json"}
 
 
-class ExtrasTests(Generic.Tests):
+class ExtrasBase(Generic.Tests):
+    __test__ = False  # Prevent pytest from discovering this as a test class
     app = "extras"
 
 
-class TagsTestCase(ExtrasTests):
+class TagsTestCase(ExtrasBase):
     name = "tags"
 
 
-class WebhooksTestCase(ExtrasTests):
+class WebhooksTestCase(ExtrasBase):
     name = "webhooks"
 
 
-class ConfigContextsTestCase(ExtrasTests):
+class ConfigContextsTestCase(ExtrasBase):
     name = "config_contexts"
 
 
-class CustomFieldsTestCase(ExtrasTests):
+class CustomFieldsTestCase(ExtrasBase):
     name = "custom_fields"

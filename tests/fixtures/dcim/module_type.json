@@ -1,0 +1,17 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/dcim/module-types/1/",
+    "display": "test-module-type",
+    "manufacturer": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/manufacturers/1/",
+        "display": "Test Manufacturer"
+    },
+    "model": "test-module-type",
+    "part_number": "",
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}
