@@ -1,4 +1,5 @@
 """Common Generic test class for all unit tests."""
+
 import unittest
 from unittest.mock import patch
 
@@ -42,6 +43,7 @@ class Generic:
         - nb: API app instance (inherited from module)
         - HEADERS: HTTP headers (inherited from module)
         """
+
         name = ""
         ret = pynetbox.core.response.Record
         app = ""
@@ -50,6 +52,7 @@ class Generic:
             # Get nb and HEADERS from the test module
             nb = self.__class__.__module__
             import sys
+
             module = sys.modules[nb]
             nb_app = module.nb
             headers = module.HEADERS
@@ -74,6 +77,7 @@ class Generic:
             # Get nb and HEADERS from the test module
             nb = self.__class__.__module__
             import sys
+
             module = sys.modules[nb]
             nb_app = module.nb
             headers = module.HEADERS
@@ -98,6 +102,7 @@ class Generic:
             # Get nb and HEADERS from the test module
             nb = self.__class__.__module__
             import sys
+
             module = sys.modules[nb]
             nb_app = module.nb
             headers = module.HEADERS
