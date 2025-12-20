@@ -1,0 +1,27 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "url": "http://localhost:8000/api/vpn/tunnels/1/",
+            "display": "test-tunnel",
+            "name": "test-tunnel",
+            "status": {
+                "value": "active",
+                "label": "Active"
+            },
+            "group": null,
+            "encapsulation": "ipsec-tunnel",
+            "ipsec_profile": null,
+            "tenant": null,
+            "tunnel_id": 100,
+            "description": "",
+            "tags": [],
+            "custom_fields": {},
+            "created": "2024-01-01T00:00:00.000000Z",
+            "last_updated": "2024-01-01T00:00:00.000000Z"
+        }
+    ]
+}

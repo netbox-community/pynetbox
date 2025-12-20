@@ -1,0 +1,22 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/vpn/ipsec-profiles/1/",
+    "display": "test-ipsec-profile",
+    "name": "test-ipsec-profile",
+    "mode": "esp",
+    "ike_policy": {
+        "id": 1,
+        "url": "http://localhost:8000/api/vpn/ike-policies/1/",
+        "display": "test-ike-policy"
+    },
+    "ipsec_policy": {
+        "id": 1,
+        "url": "http://localhost:8000/api/vpn/ipsec-policies/1/",
+        "display": "test-ipsec-policy"
+    },
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

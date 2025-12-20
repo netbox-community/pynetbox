@@ -1,8 +1,8 @@
-import unittest
 from unittest.mock import patch
 
 import pynetbox
 
+from .generic import Generic
 from .util import Response
 
 api = pynetbox.api(
@@ -14,67 +14,12 @@ nb = api.circuits
 HEADERS = {"accept": "application/json"}
 
 
-class Generic:
-    class Tests(unittest.TestCase):
-        name = ""
-        ret = pynetbox.core.response.Record
-        app = "circuits"
-
-        def test_get_all(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
-            ) as mock:
-                ret = list(getattr(nb, self.name).all())
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret[0], self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={"limit": 0},
-                    json=None,
-                    headers=HEADERS,
-                )
-
-        def test_filter(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(fixture="{}/{}.json".format(self.app, self.name)),
-            ) as mock:
-                ret = list(getattr(nb, self.name).filter(name="test"))
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret[0], self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={"name": "test", "limit": 0},
-                    json=None,
-                    headers=HEADERS,
-                )
-
-        def test_get(self):
-            with patch(
-                "requests.sessions.Session.get",
-                return_value=Response(
-                    fixture="{}/{}.json".format(self.app, self.name[:-1])
-                ),
-            ) as mock:
-                ret = getattr(nb, self.name).get(1)
-                self.assertTrue(ret)
-                self.assertTrue(isinstance(ret, self.ret))
-                mock.assert_called_with(
-                    "http://localhost:8000/api/{}/{}/1/".format(
-                        self.app, self.name.replace("_", "-")
-                    ),
-                    params={},
-                    json=None,
-                    headers=HEADERS,
-                )
+class CircuitsBase(Generic.Tests):
+    __test__ = False  # Prevent pytest from discovering this as a test class
+    app = "circuits"
 
 
-class CircuitsTestCase(Generic.Tests):
+class CircuitsTestCase(CircuitsBase):
     name = "circuits"
 
     @patch(
@@ -86,15 +31,15 @@ class CircuitsTestCase(Generic.Tests):
         self.assertEqual(str(test), "123456")
 
 
-class ProviderTestCase(Generic.Tests):
+class ProviderTestCase(CircuitsBase):
     name = "providers"
 
 
-class CircuitTypeTestCase(Generic.Tests):
+class CircuitTypeTestCase(CircuitsBase):
     name = "circuit_types"
 
 
-class CircuitTerminationsTestCase(Generic.Tests):
+class CircuitTerminationsTestCase(CircuitsBase):
     name = "circuit_terminations"
 
     @patch(
@@ -104,3 +49,31 @@ class CircuitTerminationsTestCase(Generic.Tests):
     def test_repr(self, _):
         test = nb.circuit_terminations.get(1)
         self.assertEqual(str(test), "123456")
+
+
+class CircuitGroupsTestCase(CircuitsBase):
+    name = "circuit_groups"
+
+
+class CircuitGroupAssignmentsTestCase(CircuitsBase):
+    name = "circuit_group_assignments"
+
+
+class ProviderAccountsTestCase(CircuitsBase):
+    name = "provider_accounts"
+
+
+class ProviderNetworksTestCase(CircuitsBase):
+    name = "provider_networks"
+
+
+class VirtualCircuitsTestCase(CircuitsBase):
+    name = "virtual_circuits"
+
+
+class VirtualCircuitTypesTestCase(CircuitsBase):
+    name = "virtual_circuit_types"
+
+
+class VirtualCircuitTerminationsTestCase(CircuitsBase):
+    name = "virtual_circuit_terminations"

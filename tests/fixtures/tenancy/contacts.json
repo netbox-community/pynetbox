@@ -1,0 +1,29 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "url": "http://localhost:8000/api/tenancy/contacts/1/",
+            "display": "John Doe",
+            "group": {
+                "id": 1,
+                "url": "http://localhost:8000/api/tenancy/contact-groups/1/",
+                "display": "Engineering"
+            },
+            "name": "John Doe",
+            "title": "Network Engineer",
+            "phone": "+1-555-1234",
+            "email": "john.doe@example.com",
+            "address": "123 Main St",
+            "link": "https://example.com/contacts/johndoe",
+            "description": "",
+            "comments": "",
+            "tags": [],
+            "custom_fields": {},
+            "created": "2024-01-01T00:00:00.000000Z",
+            "last_updated": "2024-01-01T00:00:00.000000Z"
+        }
+    ]
+}

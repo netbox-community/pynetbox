@@ -17,14 +17,23 @@ limitations under the License.
 from pynetbox.core.response import JsonField, Record
 
 
+class ConfigContextProfiles(Record):
+    schema = JsonField
+
+
 class ConfigContexts(Record):
     data = JsonField
 
 
-class ObjectChanges(Record):
-    object_data = JsonField
-    postchange_data = JsonField
-    prechange_data = JsonField
+class CustomFields(Record):
+    default = JsonField
+    related_object_filter = JsonField
 
-    def __str__(self):
-        return self.request_id
+
+class EventRules(Record):
+    conditions = JsonField
+    action_data = JsonField
+
+
+class SavedFilters(Record):
+    parameters = JsonField

@@ -1,0 +1,21 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/ipam/services/1/",
+    "display": "HTTP (tcp/80)",
+    "device": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/devices/1/",
+        "display": "test-device"
+    },
+    "virtual_machine": null,
+    "name": "HTTP",
+    "protocol": "tcp",
+    "ports": [80],
+    "ipaddresses": [],
+    "description": "",
+    "comments": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

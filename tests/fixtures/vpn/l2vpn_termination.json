@@ -1,0 +1,22 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/vpn/l2vpn-terminations/1/",
+    "display": "L2VPN Termination 1",
+    "l2vpn": {
+        "id": 1,
+        "url": "http://localhost:8000/api/vpn/l2vpns/1/",
+        "display": "test-l2vpn",
+        "identifier": 100
+    },
+    "assigned_object_type": "dcim.interface",
+    "assigned_object_id": 1,
+    "assigned_object": {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/interfaces/1/",
+        "display": "eth0"
+    },
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

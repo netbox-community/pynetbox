@@ -1,0 +1,12 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/tenancy/contact-roles/1/",
+    "display": "Network Admin",
+    "name": "Network Admin",
+    "slug": "network-admin",
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

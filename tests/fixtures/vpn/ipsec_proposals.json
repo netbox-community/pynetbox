@@ -1,0 +1,22 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "url": "http://localhost:8000/api/vpn/ipsec-proposals/1/",
+            "display": "test-ipsec-proposal",
+            "name": "test-ipsec-proposal",
+            "encryption_algorithm": "aes-256-cbc",
+            "authentication_algorithm": "sha256",
+            "sa_lifetime_seconds": 3600,
+            "sa_lifetime_data": null,
+            "description": "",
+            "tags": [],
+            "custom_fields": {},
+            "created": "2024-01-01T00:00:00.000000Z",
+            "last_updated": "2024-01-01T00:00:00.000000Z"
+        }
+    ]
+}

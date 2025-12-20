@@ -1,0 +1,16 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/ipam/fhrp-groups/1/",
+    "display": "test-fhrp (1)",
+    "protocol": "vrrp",
+    "group_id": 1,
+    "auth_type": "",
+    "auth_key": "",
+    "name": "test-fhrp",
+    "description": "",
+    "comments": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

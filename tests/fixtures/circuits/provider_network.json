@@ -1,0 +1,18 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/circuits/provider-networks/1/",
+    "display": "test-network",
+    "provider": {
+        "id": 1,
+        "url": "http://localhost:8000/api/circuits/providers/1/",
+        "display": "TEST"
+    },
+    "name": "test-network",
+    "service_id": "NET123",
+    "description": "",
+    "comments": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

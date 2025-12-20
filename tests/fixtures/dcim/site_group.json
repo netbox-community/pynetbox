@@ -1,0 +1,13 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/dcim/site-groups/1/",
+    "display": "test-site-group",
+    "name": "test-site-group",
+    "slug": "test-site-group",
+    "parent": null,
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

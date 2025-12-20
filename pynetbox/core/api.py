@@ -285,7 +285,7 @@ class Api:
             # All operations within this block will use the branch's schema
         ```
         """
-        if not isinstance(branch, Record) or not "schema_id" in dict(branch):
+        if not isinstance(branch, Record) or "schema_id" not in dict(branch):
             raise ValueError(
                 f"The specified branch is not a valid NetBox branch: {branch}."
             )

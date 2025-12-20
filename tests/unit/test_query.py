@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock, call
+from unittest.mock import Mock
 
 from pynetbox.core.query import Request
 
@@ -61,11 +61,6 @@ class RequestTestCase(unittest.TestCase):
             "previous": False,
             "results": [1, 2, 3, 4],
         }
-        expected = call(
-            "http://localhost:8001/api/dcim/devices/",
-            params={"offset": 20, "limit": 10},
-            headers={"accept": "application/json"},
-        )
         test_obj.http_session.get.ok = True
         generator = test_obj.get()
         self.assertEqual(len(list(generator)), 4)

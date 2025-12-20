@@ -1,0 +1,17 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/ipam/vlan-translation-rules/1/",
+    "display": "Rule #1",
+    "policy": {
+        "id": 1,
+        "url": "http://localhost:8000/api/ipam/vlan-translation-policies/1/",
+        "display": "test-policy"
+    },
+    "vlan_id_from": 100,
+    "vlan_id_to": 200,
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

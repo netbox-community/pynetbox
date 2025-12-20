@@ -1,0 +1,7 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/core/object-types/1/",
+    "display": "dcim | site",
+    "app_label": "dcim",
+    "model": "site"
+}

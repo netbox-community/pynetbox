@@ -1,0 +1,17 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/core/data-sources/1/",
+    "display": "test-datasource",
+    "name": "test-datasource",
+    "type": "local",
+    "source_url": "file:///tmp/test",
+    "enabled": true,
+    "description": "",
+    "comments": "",
+    "parameters": {},
+    "ignore_rules": "",
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z",
+    "status": "completed",
+    "last_synced": null
+}

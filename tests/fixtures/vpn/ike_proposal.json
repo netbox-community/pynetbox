@@ -1,0 +1,15 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/vpn/ike-proposals/1/",
+    "display": "test-ike-proposal",
+    "name": "test-ike-proposal",
+    "encryption_algorithm": "aes-256-cbc",
+    "authentication_algorithm": "sha256",
+    "group": 14,
+    "sa_lifetime": 86400,
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}

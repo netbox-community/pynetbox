@@ -1,0 +1,16 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/vpn/l2vpns/1/",
+    "display": "test-l2vpn",
+    "identifier": 100,
+    "name": "test-l2vpn",
+    "slug": "test-l2vpn",
+    "type": "vpws",
+    "import_targets": [],
+    "export_targets": [],
+    "description": "",
+    "tags": [],
+    "custom_fields": {},
+    "created": "2024-01-01T00:00:00.000000Z",
+    "last_updated": "2024-01-01T00:00:00.000000Z"
+}
