@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock, call
+from unittest.mock import Mock
 
 from pynetbox.core.query import Request, _is_v2_token
 
@@ -81,13 +81,13 @@ class TokenDetectionTestCase(unittest.TestCase):
         self.assertFalse(_is_v2_token(token))
 
     def test_v2_token_with_prefix(self):
-        """V2 tokens may have nbt_ prefix."""
+        """V2 tokens have nbt_ prefix for secrets detection."""
         token = "nbt_abc123.def456ghi789"
         self.assertTrue(_is_v2_token(token))
 
-    def test_v2_automated_token_with_prefix(self):
-        """V2 automated tokens may have nbat_ prefix."""
-        token = "nbat_abc123.def456ghi789"
+    def test_v2_token_without_prefix(self):
+        """V2 tokens may be tested without the prefix."""
+        token = "abc123.def456ghi789"
         self.assertTrue(_is_v2_token(token))
 
 

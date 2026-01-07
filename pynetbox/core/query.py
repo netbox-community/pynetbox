@@ -25,8 +25,8 @@ from packaging import version
 def _is_v2_token(token):
     """Detect if a token is NetBox v2 format.
 
-    V2 tokens (introduced in NetBox 4.5.0) have the format: <id>.<token>
-    They may optionally start with a prefix like 'nbt_'.
+    V2 tokens (introduced in NetBox 4.5.0) have the format: nbt_<id>.<token>
+    The nbt_ prefix is used for secrets detection.
 
     V1 tokens are simple strings without dots.
 
@@ -35,11 +35,10 @@ def _is_v2_token(token):
     if not token:
         return False
 
-    # Remove common prefixes if present
+    # Remove nbt_ prefix if present
     token_body = token
-    if token.startswith(("nbt_", "nbat_")):
-        # nbt_ is the standard prefix, nbat_ for automated tokens
-        token_body = token[token.index("_") + 1 :]
+    if token.startswith("nbt_"):
+        token_body = token[4:]
 
     # V2 tokens contain a dot separating the ID from the secret
     return "." in token_body
