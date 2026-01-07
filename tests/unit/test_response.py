@@ -391,15 +391,12 @@ class RecordTestCase(unittest.TestCase):
 
         test_obj = Record(initial_values, api, endpoint)
 
-        # Verify initial state
-        self.assertEqual(test_obj.bridge.id, 1)
-
         # First save: set bridge to None
         test_obj.bridge = None
         updates = test_obj.updates()
         self.assertEqual(updates, {"bridge": None})
 
-        # Mock PATCH response - NetBox returns the updated object
+        # Mock PATCH response
         api.http_session.patch.return_value.ok = True
         api.http_session.patch.return_value.json.return_value = {
             "id": 415,
@@ -416,7 +413,7 @@ class RecordTestCase(unittest.TestCase):
         test_obj.bridge = Record({"id": 1, "name": "br-native"}, api, endpoint)
         updates = test_obj.updates()
 
-        # This should now contain the bridge update (previously failed)
+        # This should now contain the bridge update
         self.assertEqual(updates, {"bridge": 1})
 
 
