@@ -21,6 +21,9 @@ import json
 
 from packaging import version
 
+# NetBox v2 token prefix (introduced in NetBox 4.5.0)
+TOKEN_PREFIX = "nbt_"
+
 
 def _is_v2_token(token):
     """Detect if a token is NetBox v2 format.
@@ -32,13 +35,11 @@ def _is_v2_token(token):
 
     Returns True if token is v2 format, False otherwise.
     """
-    if not token:
+    if not token or not token.startswith(TOKEN_PREFIX):
         return False
 
-    # Remove nbt_ prefix if present
-    token_body = token
-    if token.startswith("nbt_"):
-        token_body = token[4:]
+    # Remove nbt_ prefix
+    token_body = token[len(TOKEN_PREFIX):]
 
     # V2 tokens contain a dot separating the ID from the secret
     return "." in token_body
