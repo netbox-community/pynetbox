@@ -237,6 +237,13 @@ class RecordTestCase(unittest.TestCase):
             app,
             endpoint,
         )
+        # Mock PATCH response - NetBox returns the updated object
+        app.http_session.patch.return_value.ok = True
+        app.http_session.patch.return_value.json.return_value = {
+            "id": 321,
+            "name": "test321",
+            "url": "http://localhost:8080/api/test-app/test-endpoint/321/",
+        }
         test.child.name = "test321"
         test.child.save()
         self.assertEqual(
@@ -263,6 +270,13 @@ class RecordTestCase(unittest.TestCase):
             app,
             endpoint,
         )
+        # Mock PATCH response - NetBox returns the updated object
+        app.http_session.patch.return_value.ok = True
+        app.http_session.patch.return_value.json.return_value = {
+            "id": 321,
+            "name": "test321",
+            "url": "http://localhost:8080/testing/api/test-app/test-endpoint/321/",
+        }
         test.child.name = "test321"
         test.child.save()
         self.assertEqual(
@@ -351,6 +365,59 @@ class RecordTestCase(unittest.TestCase):
         ]
         test = Record({"id": 123, "tags": test_tags}, None, None).serialize()
         self.assertEqual(test["tags"], test_tags)
+
+    def test_save_updates_cache(self):
+        """Test that save() updates _init_cache after successful PATCH.
+
+        This test verifies the fix for issue #586 where resetting an object
+        attribute to its initial value after a save() would fail because
+        _init_cache wasn't updated.
+        """
+        api = Mock()
+        api.token = "abc123"
+        api.base_url = "http://localhost:8000/api"
+
+        endpoint = Mock()
+        endpoint.url = "http://localhost:8000/api/dcim/interfaces/"
+        endpoint.name = "interfaces"
+
+        # Initial values - bridge is set to record with id=1
+        initial_values = {
+            "id": 415,
+            "name": "eth3",
+            "bridge": {"id": 1, "name": "br-native"},
+            "url": "http://localhost:8000/api/dcim/interfaces/415/",
+        }
+
+        test_obj = Record(initial_values, api, endpoint)
+
+        # Verify initial state
+        self.assertEqual(test_obj.bridge.id, 1)
+
+        # First save: set bridge to None
+        test_obj.bridge = None
+        updates = test_obj.updates()
+        self.assertEqual(updates, {"bridge": None})
+
+        # Mock PATCH response - NetBox returns the updated object
+        api.http_session.patch.return_value.ok = True
+        api.http_session.patch.return_value.json.return_value = {
+            "id": 415,
+            "name": "eth3",
+            "bridge": None,
+            "url": "http://localhost:8000/api/dcim/interfaces/415/",
+        }
+
+        # Save the change
+        self.assertTrue(test_obj.save())
+
+        # After save, _init_cache should be updated, so setting back to original
+        # value should be detected as a change
+        test_obj.bridge = Record({"id": 1, "name": "br-native"}, api, endpoint)
+        updates = test_obj.updates()
+
+        # This should now contain the bridge update (previously failed)
+        self.assertEqual(updates, {"bridge": 1})
 
 
 class RecordSetTestCase(unittest.TestCase):
