@@ -37,12 +37,12 @@ def _is_v2_token(token):
 
     # Remove common prefixes if present
     token_body = token
-    if token.startswith(('nbt_', 'nbat_')):
+    if token.startswith(("nbt_", "nbat_")):
         # nbt_ is the standard prefix, nbat_ for automated tokens
-        token_body = token[token.index('_') + 1:]
+        token_body = token[token.index("_") + 1 :]
 
     # V2 tokens contain a dot separating the ID from the secret
-    return '.' in token_body
+    return "." in token_body
 
 
 def _is_file_like(obj):
