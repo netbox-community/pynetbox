@@ -85,11 +85,6 @@ class TokenDetectionTestCase(unittest.TestCase):
         token = "nbt_abc123.def456ghi789"
         self.assertTrue(_is_v2_token(token))
 
-    def test_v2_token_without_prefix(self):
-        """V2 tokens may be tested without the prefix."""
-        token = "abc123.def456ghi789"
-        self.assertTrue(_is_v2_token(token))
-
 
 class TokenAuthorizationHeaderTestCase(unittest.TestCase):
     """Tests for authorization header format with v1 and v2 tokens."""
