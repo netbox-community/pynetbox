@@ -121,8 +121,7 @@ class TokenAuthorizationHeaderTestCase(unittest.TestCase):
         call_args = test_obj.http_session.get.call_args
         self.assertIn("authorization", call_args.kwargs["headers"])
         self.assertEqual(
-            call_args.kwargs["headers"]["authorization"],
-            f"Token {v1_token}"
+            call_args.kwargs["headers"]["authorization"], f"Token {v1_token}"
         )
 
     def test_v2_token_with_prefix_uses_bearer_header(self):
@@ -147,8 +146,7 @@ class TokenAuthorizationHeaderTestCase(unittest.TestCase):
         call_args = test_obj.http_session.get.call_args
         self.assertIn("authorization", call_args.kwargs["headers"])
         self.assertEqual(
-            call_args.kwargs["headers"]["authorization"],
-            f"Bearer {v2_token}"
+            call_args.kwargs["headers"]["authorization"], f"Bearer {v2_token}"
         )
 
     def test_get_status_with_v1_token(self):
@@ -171,8 +169,7 @@ class TokenAuthorizationHeaderTestCase(unittest.TestCase):
         call_args = test_obj.http_session.get.call_args
         self.assertIn("authorization", call_args.kwargs["headers"])
         self.assertEqual(
-            call_args.kwargs["headers"]["authorization"],
-            f"Token {v1_token}"
+            call_args.kwargs["headers"]["authorization"], f"Token {v1_token}"
         )
 
     def test_get_status_with_v2_token(self):
@@ -195,6 +192,5 @@ class TokenAuthorizationHeaderTestCase(unittest.TestCase):
         call_args = test_obj.http_session.get.call_args
         self.assertIn("authorization", call_args.kwargs["headers"])
         self.assertEqual(
-            call_args.kwargs["headers"]["authorization"],
-            f"Bearer {v2_token}"
+            call_args.kwargs["headers"]["authorization"], f"Bearer {v2_token}"
         )
