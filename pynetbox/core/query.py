@@ -39,7 +39,7 @@ def _is_v2_token(token):
         return False
 
     # Remove nbt_ prefix
-    token_body = token[len(TOKEN_PREFIX):]
+    token_body = token[len(TOKEN_PREFIX) :]
 
     # V2 tokens contain a dot separating the ID from the secret
     return "." in token_body
