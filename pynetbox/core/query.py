@@ -22,6 +22,29 @@ import json
 from packaging import version
 
 
+def _is_v2_token(token):
+    """Detect if a token is NetBox v2 format.
+
+    V2 tokens (introduced in NetBox 4.5.0) have the format: <id>.<token>
+    They may optionally start with a prefix like 'nbt_'.
+
+    V1 tokens are simple strings without dots.
+
+    Returns True if token is v2 format, False otherwise.
+    """
+    if not token:
+        return False
+
+    # Remove common prefixes if present
+    token_body = token
+    if token.startswith(('nbt_', 'nbat_')):
+        # nbt_ is the standard prefix, nbat_ for automated tokens
+        token_body = token[token.index('_') + 1:]
+
+    # V2 tokens contain a dot separating the ID from the secret
+    return '.' in token_body
+
+
 def _is_file_like(obj):
     if isinstance(obj, (str, bytes)):
         return False
@@ -294,7 +317,10 @@ class Request:
         """
         headers = {"Content-Type": "application/json"}
         if self.token:
-            headers["authorization"] = "Token {}".format(self.token)
+            if _is_v2_token(self.token):
+                headers["authorization"] = "Bearer {}".format(self.token)
+            else:
+                headers["authorization"] = "Token {}".format(self.token)
         req = self.http_session.get(
             "{}status/".format(self.normalize_url(self.base)),
             headers=headers,
@@ -336,7 +362,10 @@ class Request:
             headers["Content-Type"] = "application/json"
 
         if self.token:
-            headers["authorization"] = "Token {}".format(self.token)
+            if _is_v2_token(self.token):
+                headers["authorization"] = "Bearer {}".format(self.token)
+            else:
+                headers["authorization"] = "Token {}".format(self.token)
 
         params = {}
         if not url_override:
