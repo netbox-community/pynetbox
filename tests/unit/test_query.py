@@ -164,7 +164,7 @@ class TokenAuthorizationHeaderTestCase(unittest.TestCase):
 
     def test_get_status_with_v2_token(self):
         """get_status should use 'Bearer' header for v2 tokens."""
-        v2_token = "abc123.def456ghi789"
+        v2_token = "nbt_abc123.def456ghi789"
         test_obj = Request(
             http_session=Mock(),
             base="http://localhost:8001/api",
