@@ -1,4 +1,4 @@
-from pynetbox.core.api import Api as api
+from pynetbox.core.api import Api
 from pynetbox.core.query import (
     AllocationError,
     ContentError,
@@ -7,3 +7,6 @@ from pynetbox.core.query import (
 )
 
 __version__ = "7.5.0"
+
+# Lowercase alias for backward compatibility
+api = Api
