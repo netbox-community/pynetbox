@@ -11,7 +11,7 @@ body:
     attributes:
       label: pynetbox version
       description: What version of pynetbox are you currently running?
-      placeholder: v7.5.0
+      placeholder: v7.6.0
     validations:
       required: true
   - type: input
