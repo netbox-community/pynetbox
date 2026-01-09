@@ -295,11 +295,7 @@ class Request:
         RequestError if req.ok returns false.
         """
         headers = {"Content-Type": "application/json"}
-        if self.token:
-            if _is_v2_token(self.token):
-                headers["authorization"] = "Bearer {}".format(self.token)
-            else:
-                headers["authorization"] = "Token {}".format(self.token)
+        self._add_auth_header(headers)
         req = self.http_session.get(
             self.normalize_url(self.base),
             headers=headers,
@@ -319,11 +315,7 @@ class Request:
         RequestError if request is not successful.
         """
         headers = {"Content-Type": "application/json"}
-        if self.token:
-            if _is_v2_token(self.token):
-                headers["authorization"] = "Bearer {}".format(self.token)
-            else:
-                headers["authorization"] = "Token {}".format(self.token)
+        self._add_auth_header(headers)
         req = self.http_session.get(
             "{}status/".format(self.normalize_url(self.base)),
             headers=headers,
@@ -339,6 +331,18 @@ class Request:
             return "{}/".format(url)
 
         return url
+
+    def _add_auth_header(self, headers):
+        """Add authorization header to headers dict if token is present.
+
+        ## Parameters
+        * **headers** (dict): Headers dictionary to update with authorization.
+        """
+        if self.token:
+            if _is_v2_token(self.token):
+                headers["authorization"] = "Bearer {}".format(self.token)
+            else:
+                headers["authorization"] = "Token {}".format(self.token)
 
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
         # Extract any file-like objects from data
@@ -364,11 +368,7 @@ class Request:
         if should_be_json_body:
             headers["Content-Type"] = "application/json"
 
-        if self.token:
-            if _is_v2_token(self.token):
-                headers["authorization"] = "Bearer {}".format(self.token)
-            else:
-                headers["authorization"] = "Token {}".format(self.token)
+        self._add_auth_header(headers)
 
         params = {}
         if not url_override:
