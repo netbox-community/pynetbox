@@ -596,7 +596,10 @@ class Record:
                 token=self.api.token,
                 http_session=self.api.http_session,
             )
-            if req.patch(updates):
+            result = req.patch(updates)
+            if result:
+                # Update object state with response from PATCH to keep cache in sync
+                self._parse_values(result)
                 return True
         return False
 
