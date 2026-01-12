@@ -522,16 +522,17 @@ class Record:
         if nested:
             return get_return(self)
 
-        # For initial state, use only _init_cache
-        init_vals = dict(self._init_cache)
-        fields_to_serialize = self._init_cache
+        init_vals = None
+        fields_to_serialize = None
 
-        if not init:
+        if init:
+            # For initial state, use only _init_cache
+            init_vals = dict(self._init_cache)
+            fields_to_serialize = self._init_cache
+        else:
             # For current state, include all fields (original + modified)
-            init_vals = None
-
             # Get all field names from _init_cache
-            init_cache_keys = {k for k, v in self._init_cache}
+            init_cache_keys = {k for k, _ in self._init_cache}
 
             # Get all non-internal field names from object's __dict__
             obj_keys = {
