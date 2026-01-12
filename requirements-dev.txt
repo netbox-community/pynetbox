@@ -1,4 +1,4 @@
-black
+ruff
 pytest
 pytest-docker
 PyYAML
