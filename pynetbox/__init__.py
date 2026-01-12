@@ -1,17 +1,12 @@
-from pynetbox.core.api import Api as api
+from pynetbox.core.api import Api
 from pynetbox.core.query import (
-    AllocationError as AllocationError,
-    ContentError as ContentError,
-    RequestError as RequestError,
-    ParameterValidationError as ParameterValidationError,
+    AllocationError,
+    ContentError,
+    RequestError,
+    ParameterValidationError,
 )
 
-__all__ = [
-    "api",
-    "AllocationError",
-    "ContentError",
-    "RequestError",
-    "ParameterValidationError",
-]
+__version__ = "7.6.0"
 
-__version__ = "7.5.0"
+# Lowercase alias for backward compatibility
+api = Api

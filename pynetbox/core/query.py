@@ -21,6 +21,29 @@ import json
 
 from packaging import version
 
+# NetBox v2 token prefix (introduced in NetBox 4.5.0)
+TOKEN_PREFIX = "nbt_"
+
+
+def _is_v2_token(token):
+    """Detect if a token is NetBox v2 format.
+
+    V2 tokens (introduced in NetBox 4.5.0) have the format: nbt_<id>.<token>
+    The nbt_ prefix is used for secrets detection.
+
+    V1 tokens are simple strings without dots.
+
+    Returns True if token is v2 format, False otherwise.
+    """
+    if not token or not token.startswith(TOKEN_PREFIX):
+        return False
+
+    # Remove nbt_ prefix
+    token_body = token[len(TOKEN_PREFIX) :]
+
+    # V2 tokens contain a dot separating the ID from the secret
+    return "." in token_body
+
 
 def _is_file_like(obj):
     if isinstance(obj, (str, bytes)):
@@ -271,9 +294,8 @@ class Request:
         ## Raises
         RequestError if req.ok returns false.
         """
-        headers = {
-            "Content-Type": "application/json",
-        }
+        headers = {"Content-Type": "application/json"}
+        self._add_auth_header(headers)
         req = self.http_session.get(
             self.normalize_url(self.base),
             headers=headers,
@@ -293,8 +315,7 @@ class Request:
         RequestError if request is not successful.
         """
         headers = {"Content-Type": "application/json"}
-        if self.token:
-            headers["authorization"] = "Token {}".format(self.token)
+        self._add_auth_header(headers)
         req = self.http_session.get(
             "{}status/".format(self.normalize_url(self.base)),
             headers=headers,
@@ -310,6 +331,18 @@ class Request:
             return "{}/".format(url)
 
         return url
+
+    def _add_auth_header(self, headers):
+        """Add authorization header to headers dict if token is present.
+
+        ## Parameters
+        * **headers** (dict): Headers dictionary to update with authorization.
+        """
+        if self.token:
+            if _is_v2_token(self.token):
+                headers["authorization"] = "Bearer {}".format(self.token)
+            else:
+                headers["authorization"] = "Token {}".format(self.token)
 
     def _make_call(self, verb="get", url_override=None, add_params=None, data=None):
         # Extract any file-like objects from data
@@ -335,8 +368,7 @@ class Request:
         if should_be_json_body:
             headers["Content-Type"] = "application/json"
 
-        if self.token:
-            headers["authorization"] = "Token {}".format(self.token)
+        self._add_auth_header(headers)
 
         params = {}
         if not url_override:
