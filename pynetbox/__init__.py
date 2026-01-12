@@ -10,3 +10,13 @@ __version__ = "7.6.0"
 
 # Lowercase alias for backward compatibility
 api = Api
+
+__all__ = [
+    "Api",
+    "AllocationError",
+    "ContentError",
+    "RequestError",
+    "ParameterValidationError",
+    "api",
+    "__version__",
+]
