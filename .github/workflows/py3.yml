@@ -32,7 +32,7 @@ jobs:
           docker network prune -f
 
       - name: Run Linter
-        run: black --diff --check pynetbox tests
+        run: ruff check pynetbox/ tests/
           
       - name: Run Tests
         run: pytest --netbox-versions=${{ matrix.netbox }}
