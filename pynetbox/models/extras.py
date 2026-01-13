@@ -19,3 +19,21 @@ from pynetbox.core.response import JsonField, Record
 
 class ConfigContexts(Record):
     data = JsonField
+
+
+class ConfigContextProfiles(Record):
+    schema = JsonField
+
+
+class CustomFields(Record):
+    default = JsonField
+    related_object_filter = JsonField
+
+
+class EventRules(Record):
+    conditions = JsonField
+    action_data = JsonField
+
+
+class SavedFilters(Record):
+    parameters = JsonField

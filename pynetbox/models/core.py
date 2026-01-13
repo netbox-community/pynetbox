@@ -18,11 +18,12 @@ from pynetbox.core.response import JsonField, Record
 
 
 class DataSources(Record):
-    pass
+    parameters = JsonField
 
 
 class Jobs(Record):
-    pass
+    data = JsonField
+    log_entries = JsonField
 
 
 class ObjectChanges(Record):
