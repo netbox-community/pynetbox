@@ -17,10 +17,6 @@ limitations under the License.
 from pynetbox.core.response import JsonField, Record
 
 
-class UserConfig(Record):
-    data = JsonField
-
-
 class Users(Record):
     def __str__(self):
         return self.username

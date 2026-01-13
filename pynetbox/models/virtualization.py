@@ -23,7 +23,6 @@ class VirtualMachines(Record):
     primary_ip = IpAddresses
     primary_ip4 = IpAddresses
     primary_ip6 = IpAddresses
-    local_context_data = JsonField
     config_context = JsonField
 
     @property

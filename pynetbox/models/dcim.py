@@ -270,20 +270,8 @@ class Termination(Record):
     circuit = Circuits
 
 
-class CablePath(Record):
-    path = JsonField
-
-
 class Cables(Record):
     def __str__(self):
         if len(self.a_terminations) == 1 and len(self.b_terminations) == 1:
             return "{} <> {}".format(self.a_terminations[0], self.b_terminations[0])
         return "Cable #{}".format(self.id)
-
-
-class ModuleTypeProfiles(Record):
-    schema = JsonField
-
-
-class ModuleTypes(Record):
-    attribute_data = JsonField
