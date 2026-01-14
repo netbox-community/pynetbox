@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from urllib.parse import urlsplit
-
 from pynetbox.core.endpoint import (
     DetailEndpoint,
     RODetailEndpoint,
@@ -23,7 +21,7 @@ from pynetbox.core.endpoint import (
 )
 from pynetbox.core.query import Request
 from pynetbox.core.response import JsonField, Record
-from pynetbox.models.circuits import Circuits, CircuitTerminations
+from pynetbox.models.circuits import Circuits
 from pynetbox.models.ipam import IpAddresses
 
 
