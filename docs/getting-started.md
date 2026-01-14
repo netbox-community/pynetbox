@@ -252,35 +252,9 @@ except ContentError as e:
     print(f"Content error: {e}")
 ```
 
-## API Reference
-
-Detailed API documentation for the main classes:
-
-::: pynetbox.core.api.Api
-    handler: python
-    options:
-        members:
-            - __init__
-            - create_token
-            - openapi
-            - status
-            - version
-            - activate_branch
-        show_source: true
-        show_root_heading: true
-        heading_level: 3
-
-::: pynetbox.core.app.App
-    handler: python
-    options:
-        members:
-            - config
-        show_source: true
-        show_root_heading: true
-        heading_level: 3
-
 ## Next Steps
 
+- Review the [API Reference](api.md) for detailed documentation on core classes
 - Learn about [Threading](advanced.md#threading) for faster queries
 - Explore [Filter Validation](advanced.md#filter-validation) for safer queries
 - Review special methods documentation:

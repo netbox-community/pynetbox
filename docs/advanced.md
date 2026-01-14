@@ -138,11 +138,11 @@ except pynetbox.core.query.ParameterValidationError as e:
     # Error: 'iste' is not a valid filter parameter for dcim.devices
 ```
 
-# Custom Sessions
+## Custom Sessions
 
 Custom sessions can be used to modify the default HTTP behavior. Below are a few examples, most of them from [here](https://hodovi.ch/blog/advanced-usage-python-requests-timeouts-retries-hooks/).
 
-## Headers
+### Headers
 
 To set a custom header on all requests. These headers are automatically merged with headers pynetbox sets itself.
 
@@ -160,7 +160,7 @@ nb = pynetbox.api(
 nb.http_session = session
 ```
 
-## SSL Verification
+### SSL Verification
 
 To disable SSL verification. See [the docs](https://requests.readthedocs.io/en/stable/user/advanced/#ssl-cert-verification).
 
@@ -178,7 +178,7 @@ nb = pynetbox.api(
 nb.http_session = session
 ```
 
-## Timeouts
+### Timeouts
 
 Setting timeouts requires the use of Adapters.
 
@@ -208,11 +208,11 @@ nb = pynetbox.api(
 nb.http_session = session
 ```
 
-# File Uploads (Image Attachments)
+## File Uploads (Image Attachments)
 
 Pynetbox supports file uploads for endpoints that accept them, such as image attachments. When you pass a file-like object (anything with a `.read()` method) to `create()`, pynetbox automatically detects it and uses multipart/form-data encoding instead of JSON.
 
-## Creating an Image Attachment
+### Creating an Image Attachment
 
 ```python
 import pynetbox
@@ -232,7 +232,7 @@ with open('/path/to/image.png', 'rb') as f:
     )
 ```
 
-## Using io.BytesIO
+### Using io.BytesIO
 
 You can also use in-memory file objects:
 
@@ -257,7 +257,7 @@ attachment = nb.extras.image_attachments.create(
 )
 ```
 
-## Custom Filename and Content-Type
+### Custom Filename and Content-Type
 
 For more control, pass a tuple instead of a file object:
 
@@ -272,11 +272,11 @@ with open('/path/to/image.png', 'rb') as f:
 
 The tuple format is `(filename, file_object)` or `(filename, file_object, content_type)`.
 
-# Multi-Format Responses
+## Multi-Format Responses
 
 Some endpoints support multiple response formats. The rack elevation endpoint can return both JSON data and SVG diagrams.
 
-## Getting Rack Elevation as JSON
+### Getting Rack Elevation as JSON
 
 By default, the elevation endpoint returns JSON data as a list of rack unit objects:
 
@@ -296,7 +296,7 @@ for unit in units:
     print(unit.id, unit.name)
 ```
 
-## Getting Rack Elevation as SVG
+### Getting Rack Elevation as SVG
 
 Use the `render='svg'` parameter to get a graphical SVG diagram:
 

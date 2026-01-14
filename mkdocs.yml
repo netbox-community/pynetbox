@@ -30,6 +30,7 @@ nav:
     - Installation: installation.md
     - Quick Start: getting-started.md
   - API Reference:
+    - Core Classes: api.md
     - Endpoint: endpoint.md
     - Response: response.md
     - Request: request.md
