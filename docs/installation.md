@@ -127,43 +127,6 @@ pytest
 
 For more information on running tests, see the [Development Guide](development/index.md).
 
-## Troubleshooting
-
-### SSL Certificate Errors
-
-If you encounter SSL certificate errors when connecting to NetBox:
-
-```python
-import pynetbox
-import requests
-
-# Create a custom session with SSL verification disabled (not recommended for production)
-session = requests.Session()
-session.verify = False
-
-nb = pynetbox.api(
-    'https://netbox.example.com',
-    token='your-token',
-)
-nb.http_session = session
-```
-
-### Import Errors
-
-If you get `ImportError: No module named pynetbox`:
-
-1. Ensure pynetbox is installed: `pip list | grep pynetbox`
-2. Check you're using the correct Python interpreter
-3. Verify your virtual environment is activated (if using one)
-
-### Version Compatibility Issues
-
-If you encounter errors related to NetBox version compatibility:
-
-1. Check your NetBox version: `nb.version`
-2. Verify you're using a compatible pyNetBox version (see [compatibility table](index.md#netbox-version-compatibility))
-3. Upgrade or downgrade pyNetBox as needed
-
 ## Next Steps
 
 - Read the [Getting Started Guide](getting-started.md) for basic usage

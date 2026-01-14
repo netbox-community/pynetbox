@@ -1,3 +1,143 @@
+# Advanced Usage
+
+## Threading
+
+PyNetBox supports multithreaded calls for `.filter()` and `.all()` queries to significantly improve performance when fetching large datasets.
+
+!!! warning "NetBox Configuration Required"
+    It is **highly recommended** you have `MAX_PAGE_SIZE` in your NetBox installation set to anything *except* `0` or `None`. The default value of `1000` is usually a good value to use.
+
+### Enabling Threading
+
+Enable threading globally by passing `threading=True` to the API initialization:
+
+```python
+import pynetbox
+
+nb = pynetbox.api(
+    'http://localhost:8000',
+    token='your-token',
+    threading=True
+)
+
+# Now all .all() and .filter() calls will use threading
+devices = nb.dcim.devices.all()  # Fetches pages in parallel
+```
+
+### How It Works
+
+When threading is enabled:
+- PyNetBox fetches multiple pages of results in parallel
+- Significantly faster for large result sets
+- Especially useful for `.all()` queries that span many pages
+- Works automatically with pagination
+
+### Example
+
+```python
+import pynetbox
+import time
+
+nb = pynetbox.api('http://localhost:8000', token='your-token')
+
+# Without threading
+start = time.time()
+devices = list(nb.dcim.devices.all())
+print(f"Without threading: {time.time() - start:.2f}s")
+
+# With threading
+nb_threaded = pynetbox.api(
+    'http://localhost:8000',
+    token='your-token',
+    threading=True
+)
+start = time.time()
+devices = list(nb_threaded.dcim.devices.all())
+print(f"With threading: {time.time() - start:.2f}s")
+```
+
+## Filter Validation
+
+NetBox doesn't validate filters passed to GET API endpoints (`.get()` and `.filter()`). If a filter is incorrect, NetBox silently returns the entire database table content, which can be slow and unexpected.
+
+PyNetBox can validate filter parameters against NetBox's OpenAPI specification before making the request, raising an exception if a parameter is invalid.
+
+### Enabling Strict Filters Globally
+
+```python
+import pynetbox
+
+nb = pynetbox.api(
+    'http://localhost:8000',
+    token='your-token',
+    strict_filters=True  # Enable validation globally
+)
+
+# This will raise ParameterValidationError
+try:
+    devices = nb.dcim.devices.filter(non_existing_filter='value')
+except pynetbox.core.query.ParameterValidationError as e:
+    print(f"Invalid filter: {e}")
+```
+
+### Per-Request Validation
+
+You can also enable or disable validation on a per-request basis:
+
+```python
+nb = pynetbox.api('http://localhost:8000', token='your-token')
+
+# Enable for one request (when not globally enabled)
+try:
+    devices = nb.dcim.devices.filter(
+        non_existing_filter='aaaa',
+        strict_filters=True
+    )
+except pynetbox.core.query.ParameterValidationError as e:
+    print(f"Invalid filter: {e}")
+
+# Disable for one request (when globally enabled)
+nb_strict = pynetbox.api(
+    'http://localhost:8000',
+    token='your-token',
+    strict_filters=True
+)
+# This won't raise an exception, but returns entire table
+devices = nb_strict.dcim.devices.filter(
+    non_existing_filter='aaaa',
+    strict_filters=False
+)
+```
+
+### Benefits of Strict Filters
+
+- **Catch typos early**: Find misspelled filter names before making requests
+- **Prevent full table scans**: Avoid accidentally fetching entire tables
+- **Better error messages**: Get clear feedback about invalid parameters
+- **Development aid**: Helpful during development to ensure correct filter usage
+
+### Example
+
+```python
+import pynetbox
+
+nb = pynetbox.api(
+    'http://localhost:8000',
+    token='your-token',
+    strict_filters=True
+)
+
+# Valid filter - works fine
+devices = nb.dcim.devices.filter(site='datacenter1')
+
+# Invalid filter - raises exception
+try:
+    devices = nb.dcim.devices.filter(iste='datacenter1')  # Typo: 'iste' instead of 'site'
+except pynetbox.core.query.ParameterValidationError as e:
+    print(f"Error: {e}")
+    # Error: 'iste' is not a valid filter parameter for dcim.devices
+```
+
 # Custom Sessions
 
 Custom sessions can be used to modify the default HTTP behavior. Below are a few examples, most of them from [here](https://hodovi.ch/blog/advanced-usage-python-requests-timeouts-retries-hooks/).

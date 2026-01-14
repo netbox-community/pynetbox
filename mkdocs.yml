@@ -29,16 +29,13 @@ nav:
   - Getting Started:
     - Installation: installation.md
     - Quick Start: getting-started.md
-  - Core API:
+  - API Reference:
     - Endpoint: endpoint.md
     - Response: response.md
     - Request: request.md
-  - Models Documentation:
-    - DCIM: dcim.md
     - IPAM: ipam.md
+    - DCIM: dcim.md
     - Virtualization: virtualization.md
-    - Circuits: circuits.md
-    - Wireless: wireless.md
   - Advanced Topics:
     - Advanced Usage: advanced.md
     - Branching: branching.md
