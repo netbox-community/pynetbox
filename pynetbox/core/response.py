@@ -374,6 +374,55 @@ class Record:
             return self.__key__() == other.__key__()
         return NotImplemented
 
+    def _extract_app_endpoint(self, url):
+        """Extract app/endpoint from a NetBox API URL.
+
+        Extracts the app and endpoint portion from a URL like:
+            https://netbox/api/dcim/rear-ports/12761/
+        Returns:
+            String like "dcim/rear-ports"
+        """
+        app_endpoint = "/".join(
+            urlsplit(url).path[len(urlsplit(self.api.base_url).path) :].split("/")[1:3]
+        )
+        return app_endpoint
+
+    def _get_obj_class(self, url):
+        """Map API URL to corresponding Record class for cable tracing.
+
+        Used by TraceableRecord and PathableRecord to deserialize objects
+        encountered in cable trace/path responses.
+        """
+        # Import here to avoid circular dependency
+        from pynetbox.models.circuits import CircuitTerminations
+        from pynetbox.models.dcim import (
+            Cables,
+            ConsolePorts,
+            ConsoleServerPorts,
+            FrontPorts,
+            Interfaces,
+            PowerFeeds,
+            PowerOutlets,
+            PowerPorts,
+            RearPorts,
+        )
+
+        uri_to_obj_class_map = {
+            "circuits/circuit-terminations": CircuitTerminations,
+            "dcim/cables": Cables,
+            "dcim/console-ports": ConsolePorts,
+            "dcim/console-server-ports": ConsoleServerPorts,
+            "dcim/front-ports": FrontPorts,
+            "dcim/interfaces": Interfaces,
+            "dcim/power-feeds": PowerFeeds,
+            "dcim/power-outlets": PowerOutlets,
+            "dcim/power-ports": PowerPorts,
+            "dcim/rear-ports": RearPorts,
+        }
+
+        app_endpoint = self._extract_app_endpoint(url)
+        return uri_to_obj_class_map.get(app_endpoint, Record)
+
     def _add_cache(self, item):
         key, value = item
         self._init_cache.append((key, get_return(value)))

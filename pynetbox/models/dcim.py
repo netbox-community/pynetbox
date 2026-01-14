@@ -28,31 +28,6 @@ from pynetbox.models.ipam import IpAddresses
 
 
 class TraceableRecord(Record):
-    def _get_obj_class(self, url):
-        uri_to_obj_class_map = {
-            "circuits/circuit-terminations": CircuitTerminations,
-            "dcim/cables": Cables,
-            "dcim/console-ports": ConsolePorts,
-            "dcim/console-server-ports": ConsoleServerPorts,
-            "dcim/front-ports": FrontPorts,
-            "dcim/interfaces": Interfaces,
-            "dcim/power-feeds": PowerFeeds,
-            "dcim/power-outlets": PowerOutlets,
-            "dcim/power-ports": PowerPorts,
-            "dcim/rear-ports": RearPorts,
-        }
-
-        # the url for this item will be something like:
-        #     https://netbox/api/dcim/rear-ports/12761/
-        # TODO: Move this to a more general function.
-        app_endpoint = "/".join(
-            urlsplit(url).path[len(urlsplit(self.api.base_url).path) :].split("/")[1:3]
-        )
-        return uri_to_obj_class_map.get(
-            app_endpoint,
-            Record,
-        )
-
     def _build_termination_data(self, termination_list):
         terminations_data = []
         for hop_item_data in termination_list:
@@ -82,6 +57,63 @@ class TraceableRecord(Record):
                     return_obj_class(cable_data, self.endpoint.api, self.endpoint)
                 )
             ret.append(self._build_termination_data(b_terminations_data))
+
+        return ret
+
+
+class PathableRecord(Record):
+    """Record class for objects that support cable path tracing via /paths endpoint.
+
+    Front ports and rear ports use the /paths endpoint instead of /trace.
+    """
+
+    def _build_endpoint_object(self, endpoint_data):
+        if not endpoint_data:
+            return None
+
+        return_obj_class = self._get_obj_class(endpoint_data["url"])
+        return return_obj_class(endpoint_data, self.endpoint.api, self.endpoint)
+
+    def paths(self):
+        """Return all cable paths traversing this pass-through port.
+
+        Returns a list of dictionaries, each containing:
+        - origin: The starting endpoint of the path (or None if not connected)
+        - destination: The ending endpoint of the path (or None if not connected)
+        - path: List of path segments, where each segment is a list of Record objects
+                (similar to the trace() endpoint structure)
+        """
+        req = Request(
+            key=str(self.id) + "/paths",
+            base=self.endpoint.url,
+            token=self.api.token,
+            http_session=self.api.http_session,
+        ).get()
+
+        ret = []
+        for path_data in req:
+            path_segments = []
+            for segment_data in path_data.get("path", []):
+                segment_objects = []
+                if isinstance(segment_data, list):
+                    for item_data in segment_data:
+                        segment_obj = self._build_endpoint_object(item_data)
+                        if segment_obj:
+                            segment_objects.append(segment_obj)
+                else:
+                    segment_obj = self._build_endpoint_object(segment_data)
+                    if segment_obj:
+                        segment_objects.append(segment_obj)
+                path_segments.append(segment_objects)
+
+            origin = self._build_endpoint_object(path_data.get("origin"))
+            destination = self._build_endpoint_object(path_data.get("destination"))
+
+            ret.append({
+                "origin": origin,
+                "destination": destination,
+                "path": path_segments,
+            })
 
         return ret
 
@@ -201,11 +233,11 @@ class RUs(Record):
     device = Devices
 
 
-class FrontPorts(TraceableRecord):
+class FrontPorts(PathableRecord):
     device = Devices
 
 
-class RearPorts(TraceableRecord):
+class RearPorts(PathableRecord):
     device = Devices
 
 
