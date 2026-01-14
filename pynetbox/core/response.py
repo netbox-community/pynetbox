@@ -15,7 +15,6 @@ limitations under the License.
 """
 
 import copy
-from collections import OrderedDict
 from urllib.parse import urlsplit
 
 import pynetbox.core.app
@@ -528,7 +527,7 @@ class Record:
                         all([isinstance(v, str) for v in current_val])
                         or all([isinstance(v, int) for v in current_val])
                     ):
-                        current_val = list(OrderedDict.fromkeys(current_val))
+                        current_val = list(dict.fromkeys(current_val))
                 ret[i] = current_val
 
         return ret
