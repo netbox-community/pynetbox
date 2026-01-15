@@ -352,6 +352,100 @@ class RecordTestCase(unittest.TestCase):
         test = Record({"id": 123, "tags": test_tags}, None, None).serialize()
         self.assertEqual(test["tags"], test_tags)
 
+    def test_serialize_includes_new_field_set_to_none(self):
+        """Regression test for issue #708: serialize() should include fields set after init."""
+        test_obj = Record({"id": 123, "name": "test"}, None, None)
+        test_obj.new_field = None
+
+        current = test_obj.serialize()
+        self.assertIn("new_field", current)
+        self.assertIsNone(current["new_field"])
+
+        init = test_obj.serialize(init=True)
+        self.assertNotIn("new_field", init)
+
+    def test_serialize_includes_new_field_set_to_value(self):
+        """Regression test for issue #708: serialize() should include all new fields."""
+        test_obj = Record({"id": 123, "name": "test"}, None, None)
+        test_obj.new_string = "value"
+        test_obj.new_int = 42
+        test_obj.new_none = None
+
+        current = test_obj.serialize()
+        self.assertEqual(current["new_string"], "value")
+        self.assertEqual(current["new_int"], 42)
+        self.assertIsNone(current["new_none"])
+
+        init = test_obj.serialize(init=True)
+        self.assertNotIn("new_string", init)
+        self.assertNotIn("new_int", init)
+        self.assertNotIn("new_none", init)
+
+    def test_diff_detects_new_field_set_to_none(self):
+        """Regression test for issue #708: _diff() should detect new fields."""
+        test_obj = Record({"id": 123, "name": "test"}, None, None)
+        test_obj.primary_mac_address = None
+
+        diff = test_obj._diff()
+        self.assertIn("primary_mac_address", diff)
+
+    def test_updates_includes_new_field_set_to_none(self):
+        """Regression test for issue #708: updates() should include new fields set to None."""
+        test_obj = Record({"id": 123, "name": "test"}, None, None)
+        test_obj.primary_mac_address = None
+
+        updates = test_obj.updates()
+        self.assertIn("primary_mac_address", updates)
+        self.assertIsNone(updates["primary_mac_address"])
+
+    def test_updates_includes_new_field_set_to_value(self):
+        """Regression test for issue #708: updates() should include all new fields."""
+        test_obj = Record({"id": 123, "name": "test"}, None, None)
+        test_obj.new_field = "new_value"
+        test_obj.another_field = 42
+
+        updates = test_obj.updates()
+        self.assertEqual(updates["new_field"], "new_value")
+        self.assertEqual(updates["another_field"], 42)
+
+    def test_nested_object_field_update_issue_708(self):
+        """Regression test for issue #708: nested objects with limited fields."""
+        api = Mock()
+        api.base_url = "http://localhost:8000/api"
+        interface = Record(
+            {
+                "id": 1,
+                "name": "eth0",
+                "url": "http://localhost:8000/api/dcim/interfaces/1/",
+            },
+            api,
+            None,
+        )
+        interface.primary_mac_address = None
+
+        updates = interface.updates()
+        self.assertIn("primary_mac_address", updates)
+        self.assertIsNone(updates["primary_mac_address"])
+
+        diff = interface._diff()
+        self.assertIn("primary_mac_address", diff)
+
+    def test_serialize_excludes_internal_attributes(self):
+        """Ensure serialize() filters out internal Record metadata."""
+        test_obj = Record({"id": 123, "name": "test"}, None, None)
+
+        serialized = test_obj.serialize()
+        for attr in [
+            "api",
+            "endpoint",
+            "url",
+            "has_details",
+            "default_ret",
+            "_init_cache",
+            "_full_cache",
+        ]:
+            self.assertNotIn(attr, serialized)
+
 
 class RecordSetTestCase(unittest.TestCase):
     ids = [1, 3, 5]

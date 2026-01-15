@@ -295,6 +295,18 @@ class Record:
 
     url = None
 
+    # Internal Record metadata that should not be serialized for API updates.
+    # These are object bookkeeping attributes, not NetBox API fields.
+    _INTERNAL_ATTRS = frozenset(
+        [
+            "api",  # API client instance
+            "endpoint",  # Endpoint object reference
+            "url",  # Object URL (read-only field provided by API)
+            "has_details",  # Flag for lazy-loading full details
+            "default_ret",  # Default Record class for nested objects
+        ]
+    )
+
     def __init__(self, values, api, endpoint):
         self.has_details = False
         self._full_cache = []
@@ -489,6 +501,14 @@ class Record:
         If an attribute's value is a ``Record`` type it's replaced with
         the ``id`` field of that object.
 
+        When ``init=False`` (default), includes both original fields from the
+        API response and any fields that have been set on the object after
+        initialization. This allows proper change detection for fields set
+        to None or other values.
+
+        When ``init=True``, returns only the original fields from the initial
+        API response, used for comparing against the current state to detect
+        changes.
 
         .. note::
 
@@ -501,13 +521,35 @@ class Record:
         if nested:
             return get_return(self)
 
+        init_vals = None
+        fields_to_serialize = None
+
         if init:
+            # For initial state, use only _init_cache
             init_vals = dict(self._init_cache)
+            fields_to_serialize = self._init_cache
+        else:
+            # For current state, include all fields (original + modified)
+            # Get all field names from _init_cache
+            init_cache_keys = {k for k, _ in self._init_cache}
+
+            # Get all non-internal field names from object's __dict__
+            obj_keys = {
+                k
+                for k in self.__dict__.keys()
+                if not k.startswith("_") and k not in self._INTERNAL_ATTRS
+            }
+
+            # Combine both sets
+            all_keys = init_cache_keys | obj_keys
+
+            # Create list of tuples for consistency with _init_cache format
+            fields_to_serialize = [(k, None) for k in all_keys]
 
         ret = {}
 
-        for i in dict(self):
-            current_val = getattr(self, i) if not init else init_vals.get(i)
+        for i, _ in fields_to_serialize:
+            current_val = getattr(self, i, None) if not init else init_vals.get(i)
             if i == "custom_fields":
                 ret[i] = flatten_custom(current_val)
             else:
