@@ -13,22 +13,9 @@ def rack(api, site):
 
 @pytest.fixture(scope="module")
 def device(api, site, device_type, role):
-    if version.parse(api.version) >= version.parse("3.6"):
-        device = api.dcim.devices.create(
-            name="test-device",
-            role=role.id,
-            device_type=device_type.id,
-            site=site.id,
-            color="000000",
-        )
-    else:
-        device = api.dcim.devices.create(
-            name="test-device",
-            device_role=role.id,
-            device_type=device_type.id,
-            site=site.id,
-            color="000000",
-        )
+    from .conftest import create_device
+
+    device = create_device(api, site, device_type, role, "test-device")
     yield device
     device.delete()
 
@@ -198,20 +185,9 @@ class TestInterface(BaseTest):
 class TestPowerCable(BaseTest):
     @pytest.fixture(scope="class")
     def power_outlet(self, api, device_type, role, site):
-        if version.parse(api.version) >= version.parse("3.6"):
-            pdu = api.dcim.devices.create(
-                name="test-pdu",
-                role=role.id,
-                device_type=device_type.id,
-                site=site.id,
-            )
-        else:
-            pdu = api.dcim.devices.create(
-                name="test-pdu",
-                device_role=role.id,
-                device_type=device_type.id,
-                site=site.id,
-            )
+        from .conftest import create_device
+
+        pdu = create_device(api, site, device_type, role, "test-pdu")
         outlet = api.dcim.power_outlets.create(name="outlet", device=pdu.id)
         yield outlet
         pdu.delete()
@@ -248,20 +224,9 @@ class TestPowerCable(BaseTest):
 class TestConsoleCable(BaseTest):
     @pytest.fixture(scope="class")
     def console_server_port(self, api, device_type, role, site):
-        if version.parse(api.version) >= version.parse("3.6"):
-            device = api.dcim.devices.create(
-                name="test-console-server",
-                role=role.id,
-                device_type=device_type.id,
-                site=site.id,
-            )
-        else:
-            device = api.dcim.devices.create(
-                name="test-console-server",
-                device_role=role.id,
-                device_type=device_type.id,
-                site=site.id,
-            )
+        from .conftest import create_device
+
+        device = create_device(api, site, device_type, role, "test-console-server")
         ret = api.dcim.console_server_ports.create(name="Port 1", device=device.id)
         yield ret
         device.delete()
@@ -301,20 +266,9 @@ class TestConsoleCable(BaseTest):
 class TestInterfaceCable(BaseTest):
     @pytest.fixture(scope="class")
     def interface_b(self, api, device_type, role, site):
-        if version.parse(api.version) >= version.parse("3.6"):
-            device = api.dcim.devices.create(
-                name="test-device-2",
-                role=role.id,
-                device_type=device_type.id,
-                site=site.id,
-            )
-        else:
-            device = api.dcim.devices.create(
-                name="test-device-2",
-                device_role=role.id,
-                device_type=device_type.id,
-                site=site.id,
-            )
+        from .conftest import create_device
+
+        device = create_device(api, site, device_type, role, "test-device-2")
         ret = api.dcim.interfaces.create(
             name="Ethernet1", type="1000base-t", device=device.id
         )
@@ -356,3 +310,143 @@ class TestInterfaceCable(BaseTest):
         assert test
         assert test[0][0].name == "Ethernet1"
         assert test[2][0].name == "Ethernet1"
+
+
+class TestPassThroughPorts(BaseTest):
+    @pytest.fixture(scope="class")
+    def device_a(self, api, device_type, role, site):
+        from .conftest import create_device
+
+        device = create_device(api, site, device_type, role, "test-device-a")
+        yield device
+        device.delete()
+
+    @pytest.fixture(scope="class")
+    def device_b(self, api, device_type, role, site):
+        from .conftest import create_device
+
+        device = create_device(api, site, device_type, role, "test-device-b")
+        yield device
+        device.delete()
+
+    @pytest.fixture(scope="class")
+    def front_port_a(self, api, device_a, rear_port_a):
+        ret = api.dcim.front_ports.create(
+            name="FrontPort1",
+            device=device_a.id,
+            type="8p8c",
+            rear_port=rear_port_a.id,
+            rear_port_position=1,
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def rear_port_a(self, api, device_a):
+        ret = api.dcim.rear_ports.create(
+            name="RearPort1", device=device_a.id, type="8p8c", positions=1
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def front_port_b(self, api, device_b, rear_port_b):
+        ret = api.dcim.front_ports.create(
+            name="FrontPort2",
+            device=device_b.id,
+            type="8p8c",
+            rear_port=rear_port_b.id,
+            rear_port_position=1,
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def rear_port_b(self, api, device_b):
+        ret = api.dcim.rear_ports.create(
+            name="RearPort2", device=device_b.id, type="8p8c", positions=1
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def interface_a(self, api, device_a):
+        ret = api.dcim.interfaces.create(
+            name="eth0", type="1000base-t", device=device_a.id
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def interface_b(self, api, device_b):
+        ret = api.dcim.interfaces.create(
+            name="eth0", type="1000base-t", device=device_b.id
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def cable_front(self, api, front_port_a, front_port_b):
+        ret = api.dcim.cables.create(
+            a_terminations=[
+                {"object_type": "dcim.frontport", "object_id": front_port_a.id},
+            ],
+            b_terminations=[
+                {"object_type": "dcim.frontport", "object_id": front_port_b.id},
+            ],
+        )
+        yield ret
+        ret.delete()
+
+    @pytest.fixture(scope="class")
+    def cable_rear_a(self, api, rear_port_a, interface_a):
+        ret = api.dcim.cables.create(
+            a_terminations=[
+                {"object_type": "dcim.rearport", "object_id": rear_port_a.id},
+            ],
+            b_terminations=[
+                {"object_type": "dcim.interface", "object_id": interface_a.id},
+            ],
+        )
+        yield ret
+        ret.delete()
+
+    @pytest.fixture(scope="class")
+    def cable_rear_b(self, api, rear_port_b, interface_b):
+        ret = api.dcim.cables.create(
+            a_terminations=[
+                {"object_type": "dcim.rearport", "object_id": rear_port_b.id},
+            ],
+            b_terminations=[
+                {"object_type": "dcim.interface", "object_id": interface_b.id},
+            ],
+        )
+        yield ret
+        ret.delete()
+
+    @pytest.fixture(scope="class")
+    def init(
+        self,
+        request,
+        front_port_a,
+        cable_front,
+        cable_rear_a,
+        cable_rear_b,
+    ):
+        self._init_helper(
+            request,
+            front_port_a,
+            filter_kwargs={"name": front_port_a.name},
+            endpoint="front_ports",
+        )
+
+    def test_front_port_paths(self, front_port_a):
+        paths_result = front_port_a.paths()
+        assert paths_result
+        assert isinstance(paths_result, list)
+        assert len(paths_result) > 0
+        # Each path should have origin, destination, and path keys
+        for path in paths_result:
+            assert "origin" in path
+            assert "destination" in path
+            assert "path" in path
+            assert isinstance(path["path"], list)
+
+    def test_rear_port_paths(self, rear_port_a):
+        paths_result = rear_port_a.paths()
+        assert paths_result
+        assert isinstance(paths_result, list)

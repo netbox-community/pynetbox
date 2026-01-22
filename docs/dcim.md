@@ -105,8 +105,6 @@ Several DCIM models support cable path tracing through the `trace()` method.
 - PowerPorts
 - PowerOutlets
 - PowerFeeds
-- FrontPorts
-- RearPorts
 
 **Example:**
 ```python
@@ -135,3 +133,47 @@ console_trace = console.trace()
 power_port = nb.dcim.power_ports.get(name='PSU1', device='server1')
 power_trace = power_port.trace()
 ```
+
+## Cable Path Tracing (Pass-Through Ports)
+
+Front ports and rear ports use the `paths()` method instead of `trace()` because they are pass-through ports. The `paths()` method returns all cable paths that traverse through the port, from origin to destination.
+
+**Models with cable path tracing:**
+- FrontPorts
+- RearPorts
+
+**Example:**
+```python
+# Get paths through a front port
+front_port = nb.dcim.front_ports.get(name='FrontPort1', device='patch-panel-1')
+paths = front_port.paths()
+
+# Each path contains origin, destination, and path segments
+for path_info in paths:
+    print(f"Origin: {path_info['origin']}")
+    print(f"Destination: {path_info['destination']}")
+    print("Path segments:")
+    for segment in path_info['path']:
+        for obj in segment:
+            print(f"  - {obj}")
+
+# Get paths through a rear port
+rear_port = nb.dcim.rear_ports.get(name='RearPort1', device='patch-panel-1')
+rear_paths = rear_port.paths()
+
+# Access the complete path from origin to destination
+if rear_paths:
+    first_path = rear_paths[0]
+    if first_path['origin']:
+        print(f"Cable path starts at: {first_path['origin']}")
+    if first_path['destination']:
+        print(f"Cable path ends at: {first_path['destination']}")
+```
+
+**Path Structure:**
+
+The `paths()` method returns a list of dictionaries, where each dictionary represents a complete cable path:
+
+- `origin`: The starting endpoint of the path (Record object or None if unconnected)
+- `destination`: The ending endpoint of the path (Record object or None if unconnected)
+- `path`: A list of path segments, where each segment is a list of Record objects representing the components in that segment (cables, terminations, etc.)

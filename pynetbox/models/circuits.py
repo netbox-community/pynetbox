@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pynetbox.core.response import Record
+from pynetbox.core.response import PathableRecord, Record
 
 
 class Circuits(Record):
@@ -22,6 +22,12 @@ class Circuits(Record):
         return self.cid
 
 
-class CircuitTerminations(Record):
+class CircuitTerminations(PathableRecord):
+    """Circuit Termination Record with cable path tracing support.
+
+    Circuit terminations support cable path tracing via the paths() method,
+    which returns all cable paths traversing this circuit termination point.
+    """
+
     def __str__(self):
         return self.circuit.cid
