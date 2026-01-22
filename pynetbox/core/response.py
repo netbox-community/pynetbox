@@ -15,7 +15,6 @@ limitations under the License.
 """
 
 import copy
-from collections import OrderedDict
 from urllib.parse import urlsplit
 
 import pynetbox.core.app
@@ -577,7 +576,7 @@ class Record:
                         all([isinstance(v, str) for v in current_val])
                         or all([isinstance(v, int) for v in current_val])
                     ):
-                        current_val = list(OrderedDict.fromkeys(current_val))
+                        current_val = list(dict.fromkeys(current_val))
                 ret[i] = current_val
 
         return ret
@@ -645,7 +644,10 @@ class Record:
                 token=self.api.token,
                 http_session=self.api.http_session,
             )
-            if req.patch(updates):
+            result = req.patch(updates)
+            if result:
+                # Update object state with response from PATCH to keep cache in sync
+                self._parse_values(result)
                 return True
         return False
 
