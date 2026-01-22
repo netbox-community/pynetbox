@@ -1,6 +1,5 @@
 import pytest
 
-import pynetbox
 
 
 @pytest.fixture(scope="module")
