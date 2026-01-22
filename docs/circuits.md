@@ -65,3 +65,68 @@ The paths endpoint is useful for:
 **Difference from `trace()`:**
 
 Circuit terminations use the `paths()` method (not `trace()`) because they act as pass-through points in NetBox's cable path model. While `trace()` shows direct cable connections, `paths()` shows the complete end-to-end connectivity through intermediate components.
+
+## Virtual Circuits
+
+### Overview
+
+Virtual circuits represent L2VPN-like connections delivered across one or more physical circuits. Introduced in NetBox 4.2, they provide a way to model virtual connectivity between endpoints.
+
+**Example:**
+```python
+# Get a virtual circuit
+vcircuit = nb.circuits.virtual_circuits.get(cid='VPLS-001')
+print(f"Virtual Circuit: {vcircuit.cid}")
+print(f"Provider Network: {vcircuit.provider_network.name}")
+print(f"Type: {vcircuit.type.name}")
+
+# List all terminations for a virtual circuit
+terminations = nb.circuits.virtual_circuit_terminations.filter(
+    virtual_circuit_id=vcircuit.id
+)
+for term in terminations:
+    print(f"Termination Role: {term.role}")
+```
+
+### Virtual Circuit Termination Path Tracing
+
+Like circuit terminations, virtual circuit terminations support cable path tracing through the `paths()` method.
+
+**Example:**
+```python
+# Get a virtual circuit termination
+vterm = nb.circuits.virtual_circuit_terminations.get(
+    virtual_circuit_id=123, role='hub'
+)
+
+# Get all cable paths through this termination
+paths = vterm.paths()
+
+# Analyze the connectivity
+for path_info in paths:
+    print(f"Origin: {path_info['origin']}")
+    print(f"Destination: {path_info['destination']}")
+    print("Path segments:")
+    for segment in path_info['path']:
+        for obj in segment:
+            print(f"  - {obj}")
+
+# Example: Find all devices connected via a virtual circuit
+vcircuit = nb.circuits.virtual_circuits.get(cid='VPLS-001')
+terminations = nb.circuits.virtual_circuit_terminations.filter(
+    virtual_circuit_id=vcircuit.id
+)
+
+print(f"Virtual Circuit {vcircuit.cid} connectivity:")
+for term in terminations:
+    paths = term.paths()
+    if paths and paths[0]['destination']:
+        print(f"  {term.role}: {paths[0]['destination']}")
+```
+
+**Use Cases for Virtual Circuits:**
+
+- Modeling VPLS (Virtual Private LAN Service) connections
+- Tracking L2VPN connectivity across a provider network
+- Documenting EVPN (Ethernet VPN) topologies
+- Managing hub-and-spoke or mesh virtual topologies

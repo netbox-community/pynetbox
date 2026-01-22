@@ -28,6 +28,35 @@ def circuit(api, provider, circuit_type):
     circuit.delete()
 
 
+@pytest.fixture(scope="module")
+def provider_network(api, provider):
+    provider_network = api.circuits.provider_networks.create(
+        name="test-provider-network", provider=provider.id
+    )
+    yield provider_network
+    provider_network.delete()
+
+
+@pytest.fixture(scope="module")
+def virtual_circuit_type(api):
+    virtual_circuit_type = api.circuits.virtual_circuit_types.create(
+        name="test-virtual-circuit-type", slug="test-virtual-circuit-type"
+    )
+    yield virtual_circuit_type
+    virtual_circuit_type.delete()
+
+
+@pytest.fixture(scope="module")
+def virtual_circuit(api, provider_network, virtual_circuit_type):
+    virtual_circuit = api.circuits.virtual_circuits.create(
+        cid="TEST-VCIRCUIT-001",
+        provider_network=provider_network.id,
+        type=virtual_circuit_type.id,
+    )
+    yield virtual_circuit
+    virtual_circuit.delete()
+
+
 @pytest.mark.usefixtures("init")
 class BaseTest:
     app = "circuits"
@@ -181,6 +210,118 @@ class TestCircuitTermination(BaseTest):
 
     def test_circuit_termination_paths(self, circuit_termination_a):
         paths_result = circuit_termination_a.paths()
+        assert paths_result
+        assert isinstance(paths_result, list)
+        # Each path should have origin, destination, and path keys
+        for path in paths_result:
+            assert "origin" in path
+            assert "destination" in path
+            assert "path" in path
+            assert isinstance(path["path"], list)
+
+
+class TestVirtualCircuit(BaseTest):
+    @pytest.fixture(scope="class")
+    def init(self, request, virtual_circuit):
+        self._init_helper(
+            request,
+            virtual_circuit,
+            filter_kwargs={"cid": virtual_circuit.cid},
+            update_field="description",
+            endpoint="virtual_circuits",
+            str_repr=virtual_circuit.cid,
+        )
+
+
+class TestVirtualCircuitTermination(BaseTest):
+    @pytest.fixture(scope="class")
+    def device(self, api, site, device_type, role):
+        from .conftest import create_device
+
+        device = create_device(api, site, device_type, role, "test-vcircuit-device")
+        yield device
+        device.delete()
+
+    @pytest.fixture(scope="class")
+    def interface_a(self, api, device):
+        ret = api.dcim.interfaces.create(
+            name="GigabitEthernet1/0", type="1000base-t", device=device.id
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def interface_b(self, api, device):
+        ret = api.dcim.interfaces.create(
+            name="GigabitEthernet1/1", type="1000base-t", device=device.id
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def virtual_circuit_termination_a(self, api, virtual_circuit):
+        ret = api.circuits.virtual_circuit_terminations.create(
+            virtual_circuit=virtual_circuit.id, role="hub"
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def virtual_circuit_termination_b(self, api, virtual_circuit):
+        ret = api.circuits.virtual_circuit_terminations.create(
+            virtual_circuit=virtual_circuit.id, role="spoke"
+        )
+        yield ret
+
+    @pytest.fixture(scope="class")
+    def cable_a(self, api, virtual_circuit_termination_a, interface_a):
+        ret = api.dcim.cables.create(
+            a_terminations=[
+                {
+                    "object_type": "circuits.virtualcircuittermination",
+                    "object_id": virtual_circuit_termination_a.id,
+                },
+            ],
+            b_terminations=[
+                {"object_type": "dcim.interface", "object_id": interface_a.id},
+            ],
+        )
+        yield ret
+        ret.delete()
+
+    @pytest.fixture(scope="class")
+    def cable_b(self, api, virtual_circuit_termination_b, interface_b):
+        ret = api.dcim.cables.create(
+            a_terminations=[
+                {
+                    "object_type": "circuits.virtualcircuittermination",
+                    "object_id": virtual_circuit_termination_b.id,
+                },
+            ],
+            b_terminations=[
+                {"object_type": "dcim.interface", "object_id": interface_b.id},
+            ],
+        )
+        yield ret
+        ret.delete()
+
+    @pytest.fixture(scope="class")
+    def init(
+        self,
+        request,
+        virtual_circuit_termination_a,
+        cable_a,
+        cable_b,
+    ):
+        self._init_helper(
+            request,
+            virtual_circuit_termination_a,
+            filter_kwargs={
+                "virtual_circuit_id": virtual_circuit_termination_a.virtual_circuit.id
+            },
+            endpoint="virtual_circuit_terminations",
+            str_repr=virtual_circuit_termination_a.virtual_circuit.cid,
+        )
+
+    def test_virtual_circuit_termination_paths(self, virtual_circuit_termination_a):
+        paths_result = virtual_circuit_termination_a.paths()
         assert paths_result
         assert isinstance(paths_result, list)
         # Each path should have origin, destination, and path keys

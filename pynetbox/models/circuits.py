@@ -31,3 +31,25 @@ class CircuitTerminations(PathableRecord):
 
     def __str__(self):
         return self.circuit.cid
+
+
+class VirtualCircuits(Record):
+    """Virtual Circuit Record.
+
+    Virtual circuits represent L2VPN-like connections delivered across
+    one or more physical circuits.
+    """
+
+    def __str__(self):
+        return self.cid
+
+
+class VirtualCircuitTerminations(PathableRecord):
+    """Virtual Circuit Termination Record with cable path tracing support.
+
+    Virtual circuit terminations support cable path tracing via the paths()
+    method, which returns all cable paths traversing this termination point.
+    """
+
+    def __str__(self):
+        return self.virtual_circuit.cid
