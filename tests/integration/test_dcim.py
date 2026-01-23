@@ -13,7 +13,7 @@ def rack(api, site):
 
 @pytest.fixture(scope="module")
 def device(api, site, device_type, role):
-    from .conftest import create_device
+    from tests.integration.conftest import create_device
 
     device = create_device(api, site, device_type, role, "test-device")
     yield device
@@ -185,7 +185,7 @@ class TestInterface(BaseTest):
 class TestPowerCable(BaseTest):
     @pytest.fixture(scope="class")
     def power_outlet(self, api, device_type, role, site):
-        from .conftest import create_device
+        from tests.integration.conftest import create_device
 
         pdu = create_device(api, site, device_type, role, "test-pdu")
         outlet = api.dcim.power_outlets.create(name="outlet", device=pdu.id)
@@ -224,7 +224,7 @@ class TestPowerCable(BaseTest):
 class TestConsoleCable(BaseTest):
     @pytest.fixture(scope="class")
     def console_server_port(self, api, device_type, role, site):
-        from .conftest import create_device
+        from tests.integration.conftest import create_device
 
         device = create_device(api, site, device_type, role, "test-console-server")
         ret = api.dcim.console_server_ports.create(name="Port 1", device=device.id)
@@ -266,7 +266,7 @@ class TestConsoleCable(BaseTest):
 class TestInterfaceCable(BaseTest):
     @pytest.fixture(scope="class")
     def interface_b(self, api, device_type, role, site):
-        from .conftest import create_device
+        from tests.integration.conftest import create_device
 
         device = create_device(api, site, device_type, role, "test-device-2")
         ret = api.dcim.interfaces.create(
@@ -315,7 +315,7 @@ class TestInterfaceCable(BaseTest):
 class TestPassThroughPorts(BaseTest):
     @pytest.fixture(scope="class")
     def device_a(self, api, device_type, role, site):
-        from .conftest import create_device
+        from tests.integration.conftest import create_device
 
         device = create_device(api, site, device_type, role, "test-device-a")
         yield device
@@ -323,7 +323,7 @@ class TestPassThroughPorts(BaseTest):
 
     @pytest.fixture(scope="class")
     def device_b(self, api, device_type, role, site):
-        from .conftest import create_device
+        from tests.integration.conftest import create_device
 
         device = create_device(api, site, device_type, role, "test-device-b")
         yield device
