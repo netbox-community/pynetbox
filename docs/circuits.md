@@ -53,24 +53,11 @@ The `paths()` method returns a list of dictionaries, where each dictionary repre
 - `destination`: The ending endpoint of the path (Record object or None if unconnected)
 - `path`: A list of path segments, where each segment is a list of Record objects representing the components in that segment (cables, terminations, interfaces, etc.)
 
-**Use Cases:**
-
-The paths endpoint is useful for:
-
-- Tracing circuit connectivity through patch panels and cross-connects
-- Identifying what devices or interfaces a circuit connects to
-- Documenting end-to-end circuit paths
-- Troubleshooting connectivity issues
-
-**Difference from `trace()`:**
-
-Circuit terminations use the `paths()` method (not `trace()`) because they act as pass-through points in NetBox's cable path model. While `trace()` shows direct cable connections, `paths()` shows the complete end-to-end connectivity through intermediate components.
-
 ## Virtual Circuits
 
 ### Overview
 
-Virtual circuits represent L2VPN-like connections delivered across one or more physical circuits. Introduced in NetBox 4.2, they provide a way to model virtual connectivity between endpoints.
+Virtual circuits also support cable path tracing through the `paths()` method.
 
 **Example:**
 ```python
@@ -90,7 +77,7 @@ for term in terminations:
 
 ### Virtual Circuit Termination Path Tracing
 
-Like circuit terminations, virtual circuit terminations support cable path tracing through the `paths()` method.
+Virtual circuit terminations also support cable path tracing through the `paths()` method.
 
 **Example:**
 ```python
@@ -123,10 +110,3 @@ for term in terminations:
     if paths and paths[0]['destination']:
         print(f"  {term.role}: {paths[0]['destination']}")
 ```
-
-**Use Cases for Virtual Circuits:**
-
-- Modeling VPLS (Virtual Private LAN Service) connections
-- Tracking L2VPN connectivity across a provider network
-- Documenting EVPN (Ethernet VPN) topologies
-- Managing hub-and-spoke or mesh virtual topologies
