@@ -136,7 +136,7 @@ power_trace = power_port.trace()
 
 ## Cable Path Tracing (Pass-Through Ports)
 
-Front ports and rear ports use the `paths()` method instead of `trace()`. The `paths()` method returns all cable paths that traverse through the port, from origin to destination.
+Front ports and rear ports use the `paths()` method instead of `trace()`.
 
 **Models with cable path tracing:**
 - FrontPorts
