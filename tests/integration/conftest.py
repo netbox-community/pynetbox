@@ -498,6 +498,37 @@ def role(api):
     role.delete()
 
 
+def create_device(api, site, device_type, role, name):
+    """Helper function to create a device with proper version handling.
+
+    Args:
+        api: The API instance
+        site: Site object
+        device_type: DeviceType object
+        role: DeviceRole object
+        name: Device name
+
+    Returns:
+        Created device object
+    """
+    from packaging import version
+
+    if version.parse(api.version) >= version.parse("3.6"):
+        return api.dcim.devices.create(
+            name=name,
+            role=role.id,
+            device_type=device_type.id,
+            site=site.id,
+        )
+    else:
+        return api.dcim.devices.create(
+            name=name,
+            device_role=role.id,
+            device_type=device_type.id,
+            site=site.id,
+        )
+
+
 def pytest_generate_tests(metafunc):
     """Dynamically parametrize some functions based on args from the cli parser."""
     if "docker_netbox_service" in metafunc.fixturenames:

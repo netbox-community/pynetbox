@@ -157,8 +157,8 @@ class VlanGroups(Record):
     def available_vlans(self):
         """Represents the ``available-vlans`` detail endpoint.
 
-        Returns a DetailEndpoint object that is the interface for
-        viewing and creating VLANs inside a VLAN group.
+        Returns a DetailEndpoint object that is the interface for viewing
+        and creating VLANs inside a VLAN group.
 
         ## Returns
         DetailEndpoint object.

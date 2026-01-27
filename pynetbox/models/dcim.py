@@ -14,45 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from urllib.parse import urlsplit
-
 from pynetbox.core.endpoint import (
     DetailEndpoint,
     RODetailEndpoint,
     ROMultiFormatDetailEndpoint,
 )
 from pynetbox.core.query import Request
-from pynetbox.core.response import JsonField, Record
-from pynetbox.models.circuits import Circuits, CircuitTerminations
+from pynetbox.core.response import JsonField, PathableRecord, Record
+from pynetbox.models.circuits import Circuits
 from pynetbox.models.ipam import IpAddresses
 
 
 class TraceableRecord(Record):
-    def _get_obj_class(self, url):
-        uri_to_obj_class_map = {
-            "circuits/circuit-terminations": CircuitTerminations,
-            "dcim/cables": Cables,
-            "dcim/console-ports": ConsolePorts,
-            "dcim/console-server-ports": ConsoleServerPorts,
-            "dcim/front-ports": FrontPorts,
-            "dcim/interfaces": Interfaces,
-            "dcim/power-feeds": PowerFeeds,
-            "dcim/power-outlets": PowerOutlets,
-            "dcim/power-ports": PowerPorts,
-            "dcim/rear-ports": RearPorts,
-        }
-
-        # the url for this item will be something like:
-        #     https://netbox/api/dcim/rear-ports/12761/
-        # TODO: Move this to a more general function.
-        app_endpoint = "/".join(
-            urlsplit(url).path[len(urlsplit(self.api.base_url).path) :].split("/")[1:3]
-        )
-        return uri_to_obj_class_map.get(
-            app_endpoint,
-            Record,
-        )
-
     def _build_termination_data(self, termination_list):
         terminations_data = []
         for hop_item_data in termination_list:
@@ -201,11 +174,11 @@ class RUs(Record):
     device = Devices
 
 
-class FrontPorts(TraceableRecord):
+class FrontPorts(PathableRecord):
     device = Devices
 
 
-class RearPorts(TraceableRecord):
+class RearPorts(PathableRecord):
     device = Devices
 
 

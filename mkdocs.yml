@@ -34,8 +34,9 @@ nav:
     - Endpoint: endpoint.md
     - Response: response.md
     - Request: request.md
-    - IPAM: ipam.md
+    - Circuits: circuits.md
     - DCIM: dcim.md
+    - IPAM: ipam.md
     - Virtualization: virtualization.md
   - Advanced Topics:
     - Advanced Usage: advanced.md
