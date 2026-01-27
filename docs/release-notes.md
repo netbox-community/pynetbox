@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 7.6.1 (January 27, 2026)
+## Version 7.6.1 (January 28, 2026)
 
 #### Enhancements
 - [#726](https://github.com/netbox-community/pynetbox/issues/726) - Use `dict` instead of `OrderedDict` in Record serialization
