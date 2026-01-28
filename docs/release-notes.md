@@ -1,5 +1,18 @@
 # Release Notes
 
+## Version 7.6.1 (January 28, 2026)
+
+#### Enhancements
+- [#726](https://github.com/netbox-community/pynetbox/issues/726) - Use `dict` instead of `OrderedDict` in Record serialization
+
+#### New Features
+- [#434](https://github.com/netbox-community/pynetbox/issues/434) - Add cable path tracing support for front ports, rear ports, and virtual circuit terminations
+
+#### Bug Fixes
+- [#586](https://github.com/netbox-community/pynetbox/issues/586) - Update internal object state after save operations to prevent attribute reset issues
+
+---
+
 ## Version 7.6.0 (January 9, 2026)
 
 #### Breaking Changes
