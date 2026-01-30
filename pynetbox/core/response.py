@@ -570,16 +570,14 @@ class Record:
         if nested:
             return get_return(self)
 
-        init_vals = None
-        fields_to_serialize = None
-
+        # Determine which fields to serialize
         if init:
             # For initial state, use only _init_cache
-            init_vals = dict(self._init_cache)
-            fields_to_serialize = self._init_cache
+            init_cache_dict = dict(self._init_cache)
+            fields_to_serialize = init_cache_dict.keys()
+            init_vals = init_cache_dict
         else:
             # For current state, include all fields (original + modified)
-            # Get all field names from _init_cache
             init_cache_keys = {k for k, _ in self._init_cache}
 
             # Get all non-internal field names from object's __dict__
@@ -590,14 +588,12 @@ class Record:
             }
 
             # Combine both sets
-            all_keys = init_cache_keys | obj_keys
-
-            # Create list of tuples for consistency with _init_cache format
-            fields_to_serialize = [(k, None) for k in all_keys]
+            fields_to_serialize = init_cache_keys | obj_keys
+            init_vals = {}  # Not used when init=False
 
         ret = {}
 
-        for i, _ in fields_to_serialize:
+        for i in fields_to_serialize:
             current_val = getattr(self, i, None) if not init else init_vals.get(i)
             if i == "custom_fields":
                 ret[i] = flatten_custom(current_val)
