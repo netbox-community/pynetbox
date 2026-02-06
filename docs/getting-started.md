@@ -259,7 +259,7 @@ except ContentError as e:
 - Explore [Filter Validation](advanced.md#filter-validation) for safer queries
 - Review special methods documentation:
   - [DCIM Special Methods](dcim.md)
-  - [IPAM Special Methods](ipam.md)
+  - [IPAM Special Methods](IPAM.md)
   - [Virtualization Special Methods](virtualization.md)
 - Check out [Advanced Topics](advanced.md) for custom sessions and branching
 - Refer to [NetBox API Documentation](https://demo.netbox.dev/api/docs/) for standard CRUD operations
