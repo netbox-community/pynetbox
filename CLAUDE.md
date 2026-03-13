@@ -35,10 +35,10 @@ pytest tests/unit
 pytest tests/integration
 
 # Run specific test file
-pytest tests/unit/test_api.py
+pytest tests/test_api.py
 
 # Run specific test function
-pytest tests/unit/test_api.py::test_api_status
+pytest tests/test_api.py::ApiStatusTestCase::test_api_status
 
 # Run tests matching a pattern
 pytest -k "test_api"
@@ -62,14 +62,14 @@ pytest --no-cleanup
 pytest -p no:docker --url-override http://localhost:8000
 ```
 
-### Code Formatting
+### Linting
 
 ```bash
-# Format code with Black
-black .
+# Run Ruff linter
+ruff check pynetbox/ tests/
 
-# Check formatting without changes
-black --check .
+# Fix auto-fixable issues
+ruff check --fix pynetbox/ tests/
 ```
 
 ### Building Documentation
@@ -101,7 +101,7 @@ The codebase follows a layered architecture:
 
 3. **Endpoint Layer** (`pynetbox/core/endpoint.py`):
    - `Endpoint` class provides CRUD operations for API endpoints
-   - Methods: `.all()`, `.filter()`, `.get()`, `.create()`, `.update()`, `.delete()`, `.choices()`
+   - Methods: `.all()`, `.filter()`, `.get()`, `.count()`, `.create()`, `.update()`, `.delete()`, `.choices()`
    - Handles parameter validation against OpenAPI spec when `strict_filters=True`
    - Converts underscores to dashes in endpoint names (e.g., `ip_addresses` → `ip-addresses`)
 
@@ -132,7 +132,7 @@ Custom Record classes in `pynetbox/models/` provide specialized behavior for spe
 
 ### Key Design Patterns
 
-1. **Lazy Loading**: Endpoints and apps are created on attribute access, not initialization
+1. **Lazy Loading**: `Endpoint` objects are created lazily via `App.__getattr__`; top-level app objects (dcim, ipam, etc.) are created eagerly in `Api.__init__`
 2. **Threading Support**: Enable with `threading=True` in API initialization for parallel pagination
 3. **Custom Sessions**: Override `api.http_session` for custom SSL, timeouts, retries
 4. **Branch Support**: Context manager `api.activate_branch()` for NetBox branching plugin
