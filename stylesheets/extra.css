@@ -1,0 +1,79 @@
+/* Custom styles for pynetbox documentation */
+
+/* Improve code block appearance */
+.md-typeset pre > code {
+    padding: 1em;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Style method signatures */
+.md-typeset .doc-contents .doc-heading {
+    border-bottom: 1px solid var(--md-default-fg-color--lightest);
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+}
+
+/* Improve method documentation */
+.md-typeset .doc-contents .doc-heading + p {
+    margin-top: 1em;
+    font-size: 0.9em;
+    color: var(--md-default-fg-color--light);
+}
+
+/* Style parameters and returns sections */
+.md-typeset .doc-contents .doc-heading + p + h3 {
+    margin-top: 1.5em;
+    font-size: 1.1em;
+    color: var(--md-primary-fg-color);
+}
+
+/* Improve table appearance */
+.md-typeset table {
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.md-typeset table th {
+    background-color: var(--md-primary-fg-color);
+    color: var(--md-primary-bg-color);
+}
+
+/* Style code examples */
+.md-typeset .doc-contents .doc-heading + p + h3 + p + .highlight {
+    margin: 1em 0;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Improve navigation */
+.md-nav__item .md-nav__link--active {
+    color: var(--md-primary-fg-color);
+    font-weight: bold;
+}
+
+/* Style admonitions */
+.md-typeset .admonition {
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Improve method visibility */
+.md-typeset .doc-contents .doc-heading {
+    scroll-margin-top: 100px;
+}
+
+/* Style method parameters */
+.md-typeset .doc-contents .doc-heading + p + h3 + p + ul {
+    margin-left: 1em;
+    padding-left: 1em;
+    border-left: 2px solid var(--md-primary-fg-color);
+}
+
+/* Improve code block readability */
+.md-typeset code {
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    background-color: var(--md-code-bg-color);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+} 
