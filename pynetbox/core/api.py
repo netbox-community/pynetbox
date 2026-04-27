@@ -257,9 +257,7 @@ class Api:
             base="{}/users/tokens/provision/".format(self.base_url),
             http_session=self.http_session,
         ).post(data={"username": username, "password": password})
-        # NetBox 4.5+ v2 tokens: key is a short identifier, token is the plaintext secret.
-        # The full auth value must be constructed as 'nbt_<key>.<token>'.
-        # v1 tokens and older NetBox: use the token field if present, else fall back to key.
+        # v2 tokens (NetBox 4.5+): construct auth value as nbt_<key>.<token>
         if resp.get("version") == 2:
             self.token = "{}{}.{}".format(TOKEN_PREFIX, resp["key"], resp["token"])
         else:

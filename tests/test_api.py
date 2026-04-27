@@ -106,6 +106,18 @@ class ApiCreateTokenTestCase(unittest.TestCase):
 
     @patch(
         "requests.sessions.Session.post",
+        return_value=Response(fixture="api/token_provision_v1_with_token.json"),
+    )
+    def test_create_token_v1_with_token(self, *_):
+        """NetBox 4.5+ v1 tokens: response includes 'token' field; use it directly."""
+        api = pynetbox.api(host)
+        token = api.create_token("user", "pass")
+        self.assertTrue(isinstance(token, pynetbox.core.response.Record))
+        self.assertEqual(token.key, "1234567890123456789012345678901234567890")
+        self.assertEqual(api.token, "plaintexttoken7890abcdef1234567890abcdef")
+
+    @patch(
+        "requests.sessions.Session.post",
         return_value=Response(fixture="api/token_provision_v2.json"),
     )
     def test_create_token_v2(self, *_):
