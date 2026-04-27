@@ -19,7 +19,7 @@ import contextlib
 import requests
 
 from pynetbox.core.app import App, PluginsApp
-from pynetbox.core.query import Request
+from pynetbox.core.query import Request, TOKEN_PREFIX
 from pynetbox.core.response import Record
 
 
@@ -257,9 +257,11 @@ class Api:
             base="{}/users/tokens/provision/".format(self.base_url),
             http_session=self.http_session,
         ).post(data={"username": username, "password": password})
-        # Save the newly created API token, otherwise populating the Record
-        # object details will fail
-        self.token = resp["key"]
+        # v2 tokens (NetBox 4.5+): construct auth value as nbt_<key>.<token>
+        if resp.get("version") == 2:
+            self.token = "{}{}.{}".format(TOKEN_PREFIX, resp["key"], resp["token"])
+        else:
+            self.token = resp.get("token") or resp["key"]
         return Record(resp, self, None)
 
     @contextlib.contextmanager

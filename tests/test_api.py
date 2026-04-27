@@ -96,9 +96,36 @@ class ApiCreateTokenTestCase(unittest.TestCase):
         "requests.sessions.Session.post",
         return_value=Response(fixture="api/token_provision.json"),
     )
-    def test_create_token(self, *_):
+    def test_create_token_v1_legacy(self, *_):
+        """Old NetBox (pre-4.5): response has only 'key' field."""
         api = pynetbox.api(host)
         token = api.create_token("user", "pass")
         self.assertTrue(isinstance(token, pynetbox.core.response.Record))
         self.assertEqual(token.key, "1234567890123456789012345678901234567890")
         self.assertEqual(api.token, "1234567890123456789012345678901234567890")
+
+    @patch(
+        "requests.sessions.Session.post",
+        return_value=Response(fixture="api/token_provision_v1_with_token.json"),
+    )
+    def test_create_token_v1_with_token(self, *_):
+        """NetBox 4.5+ v1 tokens: response includes 'token' field; use it directly."""
+        api = pynetbox.api(host)
+        token = api.create_token("user", "pass")
+        self.assertTrue(isinstance(token, pynetbox.core.response.Record))
+        self.assertEqual(token.key, "1234567890123456789012345678901234567890")
+        self.assertEqual(api.token, "plaintexttoken7890abcdef1234567890abcdef")
+
+    @patch(
+        "requests.sessions.Session.post",
+        return_value=Response(fixture="api/token_provision_v2.json"),
+    )
+    def test_create_token_v2(self, *_):
+        """NetBox 4.5+ v2 tokens: auth token must be 'nbt_<key>.<token>'."""
+        api = pynetbox.api(host)
+        token = api.create_token("user", "pass")
+        self.assertTrue(isinstance(token, pynetbox.core.response.Record))
+        self.assertEqual(token.key, "shortkey1234567")
+        self.assertEqual(
+            api.token, "nbt_shortkey1234567.plaintexttoken7890abcdef1234567890abcdef"
+        )
