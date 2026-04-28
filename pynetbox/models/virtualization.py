@@ -16,14 +16,21 @@ limitations under the License.
 
 from pynetbox.core.endpoint import DetailEndpoint
 from pynetbox.core.response import JsonField, Record
+from pynetbox.models.dcim import Devices
 from pynetbox.models.ipam import IpAddresses
 
 
+class VirtualMachineTypes(Record):
+    pass
+
+
 class VirtualMachines(Record):
+    device = Devices
     primary_ip = IpAddresses
     primary_ip4 = IpAddresses
     primary_ip6 = IpAddresses
     config_context = JsonField
+    virtual_machine_type = VirtualMachineTypes
 
     @property
     def render_config(self):

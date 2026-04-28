@@ -23,7 +23,7 @@ from .dcim import (
     VirtualChassis,
 )
 from .ipam import Aggregates, IpAddresses, Prefixes, VlanGroups, Vlans
-from .virtualization import VirtualMachines
+from .virtualization import VirtualMachineTypes, VirtualMachines
 from .wireless import WirelessLans
 
 CONTENT_TYPE_MAPPER = {
@@ -35,6 +35,7 @@ CONTENT_TYPE_MAPPER = {
     "core.job": Jobs,
     "core.objectchange": ObjectChanges,
     "dcim.cable": Cables,
+    "dcim.cablebundle": None,
     "dcim.cablepath": None,
     "dcim.cabletermination": Termination,
     "dcim.consoleport": ConsolePorts,
@@ -67,6 +68,7 @@ CONTENT_TYPE_MAPPER = {
     "dcim.powerport": PowerPorts,
     "dcim.powerporttemplate": None,
     "dcim.rack": Racks,
+    "dcim.rackgroup": None,
     "dcim.rackreservation": RackReservations,
     "dcim.rackrole": None,
     "dcim.rearport": RearPorts,
@@ -116,6 +118,7 @@ CONTENT_TYPE_MAPPER = {
     "virtualization.clustertype": None,
     "virtualization.interface": None,
     "virtualization.virtualmachine": VirtualMachines,
+    "virtualization.virtualmachinetype": VirtualMachineTypes,
     "wireless.WirelessLAN": WirelessLans,
     "wireless.WirelessLANGroup": None,
     "wireless.wirelesslink": None,
