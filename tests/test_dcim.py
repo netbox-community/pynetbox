@@ -2,8 +2,7 @@ import unittest
 from unittest.mock import patch
 
 import pynetbox
-from pynetbox.models.dcim import Devices
-from pynetbox.models.virtualization import VirtualMachineTypes
+from pynetbox.models.ipam import IpAddresses
 
 from .util import Response
 
@@ -11,7 +10,7 @@ api = pynetbox.api(
     "http://localhost:8000",
 )
 
-nb = api.virtualization
+nb = api.dcim
 
 HEADERS = {"accept": "application/json"}
 
@@ -20,7 +19,7 @@ class Generic:
     class Tests(unittest.TestCase):
         name = ""
         ret = pynetbox.core.response.Record
-        app = "virtualization"
+        app = "dcim"
 
         def test_get_all(self):
             with patch(
@@ -76,43 +75,14 @@ class Generic:
                 )
 
 
-class ClusterTypesTestCase(Generic.Tests):
-    name = "cluster_types"
-
-
-class ClusterGroupsTestCase(Generic.Tests):
-    name = "cluster_groups"
-
-
-class ClustersTestCase(Generic.Tests):
-    name = "clusters"
-
-
-class VirtualMachinesTestCase(Generic.Tests):
-    name = "virtual_machines"
+class DevicesTestCase(Generic.Tests):
+    name = "devices"
 
     @patch(
         "requests.sessions.Session.get",
-        return_value=Response(fixture="virtualization/virtual_machine.json"),
+        return_value=Response(fixture="dcim/device.json"),
     )
-    def test_device_attr(self, _):
-        vm = nb.virtual_machines.get(1)
-        self.assertIsInstance(vm.device, Devices)
-        self.assertEqual(vm.device.name, "test-device")
-
-    @patch(
-        "requests.sessions.Session.get",
-        return_value=Response(fixture="virtualization/virtual_machine.json"),
-    )
-    def test_virtual_machine_type_attr(self, _):
-        vm = nb.virtual_machines.get(1)
-        self.assertIsInstance(vm.virtual_machine_type, VirtualMachineTypes)
-        self.assertEqual(vm.virtual_machine_type.name, "Standard")
-
-
-class VirtualMachineTypesTestCase(Generic.Tests):
-    name = "virtual_machine_types"
-
-
-class InterfacesTestCase(Generic.Tests):
-    name = "interfaces"
+    def test_oob_ip_attr(self, _):
+        device = nb.devices.get(1)
+        self.assertIsInstance(device.oob_ip, IpAddresses)
+        self.assertEqual(str(device.oob_ip), "192.0.2.1/32")

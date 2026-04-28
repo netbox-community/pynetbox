@@ -5,10 +5,17 @@
         "value": 1,
         "label": "Active"
     },
-    "cluster": {
+    "cluster": null,
+    "device": {
         "id": 1,
-        "url": "http://localhost:8000/api/virtualization/clusters/1/",
-        "name": "vm-test-cluster"
+        "url": "http://localhost:8000/api/dcim/devices/1/",
+        "name": "test-device"
+    },
+    "virtual_machine_type": {
+        "id": 1,
+        "url": "http://localhost:8000/api/virtualization/virtual-machine-types/1/",
+        "name": "Standard",
+        "slug": "standard"
     },
     "role": null,
     "tenant": null,
