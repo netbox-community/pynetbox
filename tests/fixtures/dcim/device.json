@@ -64,6 +64,12 @@
         "address": "10.0.255.1/32"
     },
     "primary_ip6": null,
+    "oob_ip": {
+        "id": 5,
+        "url": "http://localhost:8000/api/ipam/ip-addresses/5/",
+        "family": 4,
+        "address": "192.0.2.1/32"
+    },
     "comments": "",
     "local_context_data": {
         "testing": "test"

@@ -1,0 +1,6 @@
+{
+    "id": 1,
+    "url": "http://localhost:8000/api/virtualization/virtual-machine-types/1/",
+    "name": "Standard",
+    "slug": "standard"
+}
