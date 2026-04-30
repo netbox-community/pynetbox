@@ -27,6 +27,11 @@ jobs:
       - name: Install dev requirements
         run: pip install -r requirements-dev.txt .
 
+      - name: Enable Docker IPv6
+        run: |
+          echo '{"ipv6": true, "fixed-cidr-v6": "fd00::/80"}' | sudo tee /etc/docker/daemon.json
+          sudo systemctl reload docker
+
       - name: Free up Docker resources
         run: |
           docker system prune -af --volumes
