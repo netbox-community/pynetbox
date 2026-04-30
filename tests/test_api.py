@@ -94,7 +94,7 @@ class ApiStatusTestCase(unittest.TestCase):
 class ApiCreateTokenTestCase(unittest.TestCase):
     @patch(
         "requests.sessions.Session.post",
-        return_value=Response(fixture="api/token_provision.json"),
+        return_value=Response(fixture="api/token_provision_v1_legacy.json"),
     )
     def test_create_token_v1_legacy(self, *_):
         """Old NetBox (pre-4.5): response has only 'key' field."""
