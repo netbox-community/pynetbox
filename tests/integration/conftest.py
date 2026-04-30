@@ -451,9 +451,9 @@ def docker_netbox_service(
 
 @pytest.fixture(scope="session")
 def api(docker_netbox_service):
-    return pynetbox.api(
-        docker_netbox_service["url"], token="0123456789abcdef0123456789abcdef01234567"
-    )
+    nb = pynetbox.api(docker_netbox_service["url"])
+    nb.create_token("admin", "admin")
+    return nb
 
 
 @pytest.fixture(scope="session")
