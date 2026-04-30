@@ -266,9 +266,14 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                     new_services[new_service_name]["ports"] = ["8080"]
 
                     # Increase health check timeouts for GitHub Actions runners
-                    # which may have more resource constraints
+                    # which may have more resource constraints.
+                    # Granian (used in netbox-docker 4.x) binds to "::" (IPv6); fall
+                    # back to [::1] if localhost resolves to IPv4 only.
                     new_services[new_service_name]["healthcheck"] = {
-                        "test": "curl -f http://localhost:8080/login/ || exit 1",
+                        "test": [
+                            "CMD-SHELL",
+                            "curl -sf http://localhost:8080/login/ || curl -sf http://[::1]:8080/login/",
+                        ],
                         "start_period": "180s",  # Increased from 90s
                         "timeout": "10s",  # Increased from 3s
                         "interval": "15s",
