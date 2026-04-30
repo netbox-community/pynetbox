@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.10", "3.11", "3.12"]
-        netbox: ["4.2", "4.3", "4.4", "4.5"]
+        python: ["3.12", "3.13", "3.14"]
+        netbox: ["4.3", "4.4", "4.5"]
 
     steps:
       - name: Checkout pynetbox
