@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.10", "3.11", "3.12"]
-        netbox: ["4.2", "4.3", "4.4"]
+        python: ["3.12", "3.13", "3.14"]
+        netbox: ["4.3", "4.4", "4.5"]
 
     steps:
       - name: Checkout pynetbox
@@ -26,6 +26,11 @@ jobs:
 
       - name: Install dev requirements
         run: pip install -r requirements-dev.txt .
+
+      - name: Enable Docker IPv6
+        run: |
+          echo '{"ipv6": true, "fixed-cidr-v6": "fd00::/80"}' | sudo tee /etc/docker/daemon.json
+          sudo systemctl reload docker
 
       - name: Free up Docker resources
         run: |

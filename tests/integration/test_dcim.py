@@ -97,11 +97,8 @@ class TestSite(BaseTest):
             i.delete()
 
     def test_threading_duplicates(self, docker_netbox_service, add_sites):
-        api = pynetbox.api(
-            docker_netbox_service["url"],
-            token="0123456789abcdef0123456789abcdef01234567",
-            threading=True,
-        )
+        api = pynetbox.api(docker_netbox_service["url"], threading=True)
+        api.create_token("admin", "admin")
         test = api.dcim.sites.all(limit=5)
         test_list = list(test)
         test_set = set(test_list)
@@ -330,14 +327,14 @@ class TestPassThroughPorts(BaseTest):
         device.delete()
 
     @pytest.fixture(scope="class")
-    def front_port_a(self, api, device_a, rear_port_a):
-        ret = api.dcim.front_ports.create(
-            name="FrontPort1",
-            device=device_a.id,
-            type="8p8c",
-            rear_port=rear_port_a.id,
-            rear_port_position=1,
-        )
+    def front_port_a(self, api, device_a, rear_port_a, nb_version):
+        kwargs = dict(name="FrontPort1", device=device_a.id, type="8p8c")
+        if version.parse(str(nb_version)) >= version.parse("4.5"):
+            kwargs["rear_ports"] = [{"rear_port": rear_port_a.id, "rear_port_position": 1, "position": 1}]
+        else:
+            kwargs["rear_port"] = rear_port_a.id
+            kwargs["rear_port_position"] = 1
+        ret = api.dcim.front_ports.create(**kwargs)
         yield ret
 
     @pytest.fixture(scope="class")
@@ -348,14 +345,14 @@ class TestPassThroughPorts(BaseTest):
         yield ret
 
     @pytest.fixture(scope="class")
-    def front_port_b(self, api, device_b, rear_port_b):
-        ret = api.dcim.front_ports.create(
-            name="FrontPort2",
-            device=device_b.id,
-            type="8p8c",
-            rear_port=rear_port_b.id,
-            rear_port_position=1,
-        )
+    def front_port_b(self, api, device_b, rear_port_b, nb_version):
+        kwargs = dict(name="FrontPort2", device=device_b.id, type="8p8c")
+        if version.parse(str(nb_version)) >= version.parse("4.5"):
+            kwargs["rear_ports"] = [{"rear_port": rear_port_b.id, "rear_port_position": 1, "position": 1}]
+        else:
+            kwargs["rear_port"] = rear_port_b.id
+            kwargs["rear_port_position"] = 1
+        ret = api.dcim.front_ports.create(**kwargs)
         yield ret
 
     @pytest.fixture(scope="class")

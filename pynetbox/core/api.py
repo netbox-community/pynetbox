@@ -19,7 +19,7 @@ import contextlib
 import requests
 
 from pynetbox.core.app import App, PluginsApp
-from pynetbox.core.query import Request
+from pynetbox.core.query import Request, TOKEN_PREFIX
 from pynetbox.core.response import Record
 
 
@@ -224,42 +224,40 @@ class Api:
         ## Raises
         `RequestError`: If the request is not successful.
 
+        ## Notes
+
+        NetBox 4.5 introduced v2 tokens. For v2 tokens, `nb.token` is set to
+        `nbt_<key>.<token>` (the full auth value required in the Authorization
+        header), which differs from `token.key`. For v1 tokens (pre-4.5),
+        `nb.token` is the plaintext token value.
+
         ## Example
 
         ```python
         import pynetbox
         nb = pynetbox.api("https://netbox-server")
         token = nb.create_token("admin", "netboxpassword")
+
+        # NetBox 4.5+ v2 token: nb.token differs from token.key
+        nb.token
+        # 'nbt_shortkey1234567.plaintexttoken7890abcdef1234567890abcdef'
+        token.key
+        # 'shortkey1234567'
+
+        # Pre-4.5 / v1 token: nb.token matches token.key (or token.token)
         nb.token
         # '96d02e13e3f1fdcd8b4c089094c0191dcb045bef'
-
-        from pprint import pprint
-        pprint(dict(token))
-        {
-            'created': '2021-11-27T11:26:49.360185+02:00',
-            'description': '',
-            'display': '045bef (admin)',
-            'expires': None,
-            'id': 2,
-            'key': '96d02e13e3f1fdcd8b4c089094c0191dcb045bef',
-            'url': 'https://netbox-server/api/users/tokens/2/',
-            'user': {
-                'display': 'admin',
-                'id': 1,
-                'url': 'https://netbox-server/api/users/users/1/',
-                'username': 'admin'
-            },
-            'write_enabled': True
-        }
         ```
         """
         resp = Request(
             base="{}/users/tokens/provision/".format(self.base_url),
             http_session=self.http_session,
         ).post(data={"username": username, "password": password})
-        # Save the newly created API token, otherwise populating the Record
-        # object details will fail
-        self.token = resp["key"]
+        # v2 tokens (NetBox 4.5+): construct auth value as nbt_<key>.<token>
+        if resp.get("version") == 2:
+            self.token = "{}{}.{}".format(TOKEN_PREFIX, resp["key"], resp["token"])
+        else:
+            self.token = resp.get("token") or resp["key"]
         return Record(resp, self, None)
 
     @contextlib.contextmanager
