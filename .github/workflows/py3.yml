@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         python: ["3.12", "3.13", "3.14"]
-        netbox: ["4.4", "4.5", "4.6"]
+        netbox: ["4.3", "4.4", "4.5"]
 
     steps:
       - name: Checkout pynetbox
