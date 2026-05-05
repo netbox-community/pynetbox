@@ -6,7 +6,7 @@ from pynetbox.core.query import (
     ParameterValidationError,
 )
 
-__version__ = "7.6.1"
+__version__ = "7.7.0"
 
 # Lowercase alias for backward compatibility
 api = Api
