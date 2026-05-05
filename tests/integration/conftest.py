@@ -32,6 +32,8 @@ def get_netbox_docker_version_tag(netbox_version):
         tag = "3.3.0"
     elif (major, minor) == (4, 4):
         tag = "3.4.2"
+    elif (major, minor) == (4, 5):
+        tag = "4.0.2"
     else:
         raise NotImplementedError(
             "Version %s is not currently supported" % netbox_version
@@ -263,14 +265,18 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                     # ensure the netbox container listens on a random port
                     new_services[new_service_name]["ports"] = ["8080"]
 
-                    # Increase health check timeouts for GitHub Actions runners
-                    # which may have more resource constraints
+                    # Increase health check timeouts for GitHub Actions runners.
+                    # Granian (netbox-docker 4.x) binds to "::" (IPv6); try
+                    # explicit IPv4 loopback first via dual-stack, then IPv6.
                     new_services[new_service_name]["healthcheck"] = {
-                        "test": "curl -f http://localhost:8080/login/ || exit 1",
-                        "start_period": "180s",  # Increased from 90s
-                        "timeout": "10s",  # Increased from 3s
+                        "test": [
+                            "CMD-SHELL",
+                            "curl -sf http://127.0.0.1:8080/login/ || curl -sf http://[::1]:8080/login/",
+                        ],
+                        "start_period": "360s",
+                        "timeout": "10s",
                         "interval": "15s",
-                        "retries": 5,
+                        "retries": 10,
                     }
 
                 # set the network and an alias to the proper short name of the container
@@ -281,20 +287,18 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
 
                 # fix the naming of any dependencies
                 if "depends_on" in new_services[new_service_name]:
-                    new_service_dependencies = []
-                    for dependent_service_name in new_services[new_service_name][
-                        "depends_on"
-                    ]:
-                        new_service_dependencies.append(
-                            "netbox_v%s_%s"
-                            % (
-                                docker_netbox_version,
-                                dependent_service_name,
-                            )
-                        )
-                    new_services[new_service_name][
-                        "depends_on"
-                    ] = new_service_dependencies
+                    depends_on = new_services[new_service_name]["depends_on"]
+                    if isinstance(depends_on, dict):
+                        # Dict form: {service: {condition: service_healthy}} — preserve conditions
+                        new_services[new_service_name]["depends_on"] = {
+                            "netbox_v%s_%s" % (docker_netbox_version, dep): cfg
+                            for dep, cfg in depends_on.items()
+                        }
+                    else:
+                        new_services[new_service_name]["depends_on"] = [
+                            "netbox_v%s_%s" % (docker_netbox_version, dep)
+                            for dep in depends_on
+                        ]
 
                 # make any internal named volumes unique to the netbox version
                 if "volumes" in new_services[new_service_name]:
@@ -449,9 +453,9 @@ def docker_netbox_service(
 
 @pytest.fixture(scope="session")
 def api(docker_netbox_service):
-    return pynetbox.api(
-        docker_netbox_service["url"], token="0123456789abcdef0123456789abcdef01234567"
-    )
+    nb = pynetbox.api(docker_netbox_service["url"])
+    nb.create_token("admin", "admin")
+    return nb
 
 
 @pytest.fixture(scope="session")
