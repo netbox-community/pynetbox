@@ -84,6 +84,7 @@ class Devices(Record):
     primary_ip = IpAddresses
     primary_ip4 = IpAddresses
     primary_ip6 = IpAddresses
+    oob_ip = IpAddresses
     local_context_data = JsonField
     config_context = JsonField
 

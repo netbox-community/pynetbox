@@ -1,5 +1,19 @@
 # Release Notes
 
+## Version 7.7.0 (May 5, 2026)
+
+#### New Features
+- [#762](https://github.com/netbox-community/pynetbox/issues/762) - Support NetBox 4.6: add `VirtualMachineTypes` model, `virtual_machine_type` and `device` typed attributes on `VirtualMachines`, `oob_ip` typed attribute on `Devices`, and `dcim.cablebundle` / `dcim.rackgroup` content type mappings
+
+#### Bug Fixes
+- [#756](https://github.com/netbox-community/pynetbox/issues/756) - Use v2 token auth value in `create_token` (NetBox 4.5+)
+- [#708](https://github.com/netbox-community/pynetbox/issues/708) - `Record.serialize()` now includes new properties added by the user
+
+#### Compatibility
+- Supports NetBox 4.6
+
+---
+
 ## Version 7.6.1 (January 28, 2026)
 
 #### Enhancements
