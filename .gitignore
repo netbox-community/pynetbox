@@ -66,6 +66,9 @@ docs/_build/
 # PyBuilder
 target/
 
+# AI tooling
+.claude/settings.local.json
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
