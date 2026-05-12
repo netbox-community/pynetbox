@@ -52,6 +52,18 @@ class RecordTestCase(unittest.TestCase):
         with self.assertRaises(KeyError) as _:
             test_obj["nothing"]
 
+    def test_nested_dict_key_collides_with_record_method(self):
+        # Regression for issue #749: a nested dict key like "updates"
+        # collided with Record.updates and was invoked as a constructor.
+        test_values = {
+            "id": 1,
+            "config_context": {"router_bgp": {"updates": {"wait_install": True}}},
+        }
+        test_obj = Record(test_values, Mock(base_url="http://test"), None)
+        self.assertEqual(
+            test_obj.config_context.router_bgp.updates.wait_install, True
+        )
+
     def test_serialize_list_of_records(self):
         test_values = {
             "id": 123,
