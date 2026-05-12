@@ -607,7 +607,12 @@ class Record:
                         if isinstance(v, GenericListObject):
                             v = v.serialize()
                         elif isinstance(v, Record):
-                            v = v.id
+                            # FK-style list items (e.g. tagged_vlans) collapse to
+                            # their id. NetBox 4.5+ also returns nested mapping
+                            # objects without an id of their own (e.g.
+                            # FrontPort.rear_ports items); preserve those as dicts
+                            # so the API round-trips correctly.
+                            v = v.id if hasattr(v, "id") else v.serialize()
                         serialized_list.append(v)
                     current_val = serialized_list
                     if i in LIST_AS_SET and (
