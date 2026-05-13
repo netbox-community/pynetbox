@@ -118,9 +118,13 @@ class Endpoint:
                 f"Error while parsing Netbox OpenAPI specification: {exc}"
             )
 
-        # Validate all parameters
+        # Validate all parameters. Custom field filters (cf_<fieldname>, plus
+        # lookup expressions like cf_<fieldname>__gt) are per-instance dynamic
+        # and not listed in the OpenAPI spec, so they are skipped here.
         validation_errors = []
         for p in parameters:
+            if p.startswith("cf_"):
+                continue
             if p not in allowed_parameters:
                 validation_errors.append(
                     f"'{p}' is not allowed as parameter on path '{openapi_definition_path}'."
