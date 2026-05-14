@@ -482,7 +482,7 @@ class Record:
                     self._add_cache((k, copy.deepcopy(v)))
                     setattr(self, k, v)
                     continue
-                if lookup:
+                if isinstance(lookup, type) and issubclass(lookup, Record):
                     v = lookup(v, self.api, self.endpoint)
                 else:
                     v = self.default_ret(v, self.api, self.endpoint)
