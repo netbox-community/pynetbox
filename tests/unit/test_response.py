@@ -158,6 +158,48 @@ class RecordTestCase(unittest.TestCase):
         test = test_obj._diff()
         self.assertFalse(test)
 
+    def test_serialize_list_of_records_without_id(self):
+        # NetBox 4.5+ FrontPort.rear_ports mapping items have no id.
+        # Regression test for issue #745.
+        test_values = {
+            "id": 123,
+            "rear_ports": [
+                {"position": 1, "rear_port": 1653, "rear_port_position": 1},
+                {"position": 2, "rear_port": 1654, "rear_port_position": 1},
+            ],
+        }
+        test_obj = Record(test_values, Mock(base_url="test"), None)
+        result = test_obj.serialize()
+        self.assertEqual(result["rear_ports"], test_values["rear_ports"])
+
+    def test_diff_unchanged_list_of_records_without_id(self):
+        # Regression test for issue #745: no false-positive diff for
+        # untouched mapping lists like FrontPort.rear_ports.
+        test_values = {
+            "id": 123,
+            "rear_ports": [
+                {"position": 1, "rear_port": 1653, "rear_port_position": 1},
+            ],
+        }
+        test_obj = Record(test_values, Mock(base_url="test"), None)
+        self.assertFalse(test_obj._diff())
+
+    def test_diff_detects_changed_idless_nested_record(self):
+        test_obj = Record(
+            {
+                "id": 123,
+                "rear_ports": [
+                    {"position": 1, "rear_port": 1653, "rear_port_position": 1},
+                ],
+            },
+            Mock(base_url="test"),
+            None,
+        )
+
+        test_obj.rear_ports[0].position = 2
+
+        self.assertEqual(test_obj._diff(), {"rear_ports"})
+
     def test_dict(self):
         test_values = {
             "id": 123,
