@@ -172,6 +172,22 @@ class RecordTestCase(unittest.TestCase):
         test_obj = Record(test_values, Mock(base_url="test"), None)
         self.assertFalse(test_obj._diff())
 
+    def test_diff_detects_changed_idless_nested_record(self):
+        test_obj = Record(
+            {
+                "id": 123,
+                "rear_ports": [
+                    {"position": 1, "rear_port": 1653, "rear_port_position": 1},
+                ],
+            },
+            Mock(base_url="test"),
+            None,
+        )
+
+        test_obj.rear_ports[0].position = 2
+
+        self.assertEqual(test_obj._diff(), {"rear_ports"})
+
     def test_dict(self):
         test_values = {
             "id": 123,

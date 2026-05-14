@@ -577,18 +577,23 @@ class Record:
             fields_to_serialize = init_cache_dict.keys()
             init_vals = init_cache_dict
         else:
-            # For current state, include all fields (original + modified)
-            init_cache_keys = {k for k, _ in self._init_cache}
+            # For current state, include all fields (original + modified).
+            # Preserve init_cache insertion order, then append any new
+            # attributes set after init, so the serialized dict has a
+            # deterministic key order across init=True/False calls (the
+            # str-based list comparison in _diff() depends on it).
+            init_cache_keys = [k for k, _ in self._init_cache]
+            init_cache_key_set = set(init_cache_keys)
 
-            # Get all non-internal field names from object's __dict__
-            obj_keys = {
+            extra_keys = [
                 k
                 for k in self.__dict__.keys()
-                if not k.startswith("_") and k not in self._INTERNAL_ATTRS
-            }
+                if not k.startswith("_")
+                and k not in self._INTERNAL_ATTRS
+                and k not in init_cache_key_set
+            ]
 
-            # Combine both sets
-            fields_to_serialize = init_cache_keys | obj_keys
+            fields_to_serialize = init_cache_keys + extra_keys
             init_vals = {}  # Not used when init=False
 
         ret = {}
@@ -612,7 +617,7 @@ class Record:
                             # objects without an id of their own (e.g.
                             # FrontPort.rear_ports items); preserve those as dicts
                             # so the API round-trips correctly.
-                            v = v.id if hasattr(v, "id") else v.serialize()
+                            v = v.id if hasattr(v, "id") else v.serialize(init=init)
                         serialized_list.append(v)
                     current_val = serialized_list
                     if i in LIST_AS_SET and (
