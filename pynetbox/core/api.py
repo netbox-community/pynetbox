@@ -121,6 +121,11 @@ class Api:
         ``App._setmodel`` can look up the right ``models`` namespace, and
         composes the built-in ``CONTENT_TYPE_MAPPER`` with each extension's
         ``content_types`` overrides.
+
+        Two extensions cannot share a ``plugin_name`` or register the same
+        content-type key — both raise ``ValueError``, since a silent
+        last-wins would mask a configuration mistake. Overriding a key from
+        the built-in ``CONTENT_TYPE_MAPPER`` is allowed and intentional.
         """
         self._extensions = {}
         for ext in extensions:
@@ -129,11 +134,26 @@ class Api:
                 raise ValueError(
                     "Extension {!r} is missing a 'plugin_name' attribute".format(ext)
                 )
+            if plugin_name in self._extensions:
+                raise ValueError(
+                    "Duplicate extension for plugin_name {!r}: {!r} and {!r}".format(
+                        plugin_name, self._extensions[plugin_name], ext
+                    )
+                )
             self._extensions[plugin_name] = ext
 
         content_types = dict(CONTENT_TYPE_MAPPER)
+        seen_extension_keys = {}
         for ext in self._extensions.values():
-            content_types.update(getattr(ext, "content_types", None) or {})
+            ext_content_types = getattr(ext, "content_types", None) or {}
+            for key, value in ext_content_types.items():
+                if key in seen_extension_keys:
+                    raise ValueError(
+                        "Duplicate content_type {!r} registered by extensions "
+                        "{!r} and {!r}".format(key, seen_extension_keys[key], ext)
+                    )
+                seen_extension_keys[key] = ext
+                content_types[key] = value
         self._content_type_mapper = content_types
         self._type_content_mapper = {
             v: k for k, v in content_types.items() if v is not None

@@ -65,6 +65,51 @@ class ExtensionRegistrationTestCase(unittest.TestCase):
                 "http://localhost:8000", token="abc", extensions=[BadExtension]
             )
 
+    def test_duplicate_plugin_name_raises(self):
+        class OtherBranchingExtension(Extension):
+            plugin_name = "branching"
+            models = BranchingModels
+
+        with self.assertRaisesRegex(ValueError, "Duplicate extension"):
+            pynetbox.api(
+                "http://localhost:8000",
+                token="abc",
+                extensions=[BranchingExtension, OtherBranchingExtension],
+            )
+
+    def test_duplicate_content_type_across_extensions_raises(self):
+        class ConflictingExtension(Extension):
+            plugin_name = "other_plugin"
+            models = CustomObjectsModels
+            content_types = {
+                "custom_objects.customobjecttypefield": CustomObjectTypeFields,
+            }
+
+        with self.assertRaisesRegex(ValueError, "Duplicate content_type"):
+            pynetbox.api(
+                "http://localhost:8000",
+                token="abc",
+                extensions=[CustomObjectsExtension, ConflictingExtension],
+            )
+
+    def test_extension_can_override_builtin_content_type(self):
+        """Overriding a built-in CONTENT_TYPE_MAPPER entry is allowed."""
+
+        class CableOverride(Record):
+            pass
+
+        class CableOverrideExtension(Extension):
+            plugin_name = "cable_override"
+            models = None
+            content_types = {"dcim.cable": CableOverride}
+
+        nb = pynetbox.api(
+            "http://localhost:8000",
+            token="abc",
+            extensions=[CableOverrideExtension],
+        )
+        self.assertIs(nb._content_type_mapper["dcim.cable"], CableOverride)
+
     def test_content_types_merged_into_mapper(self):
         nb = pynetbox.api(
             "http://localhost:8000",
