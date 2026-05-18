@@ -3,16 +3,14 @@
 ## Requirements
 
 - **Python**: 3.10 or higher
-- **NetBox**: 3.3 or higher (for pyNetBox 6.7+)
+- **NetBox**: 3.3 or higher (for pynetbox 6.7+)
 - **Dependencies**:
-  - `requests>=2.20.0,<3.0`
-  - `packaging`
+    - `requests>=2.20.0,<3.0`
+    - `packaging`
 
 ## Installation Methods
 
 ### Install from PyPI (Recommended)
-
-The easiest way to install pyNetBox is using pip:
 
 ```bash
 pip install pynetbox
@@ -20,23 +18,17 @@ pip install pynetbox
 
 ### Install from Source
 
-If you need the latest development version or want to contribute:
+To install the latest development version directly from GitHub:
 
 ```bash
-# Clone the repository
 git clone https://github.com/netbox-community/pynetbox.git
 cd pynetbox
-
-# Install in development mode
 pip install -e .
-
-# Or install directly
-python setup.py install
 ```
 
-### Using a Virtual Environment (Recommended)
+### Using a Virtual Environment
 
-It's recommended to use a virtual environment to isolate pyNetBox dependencies:
+It is strongly recommended to install pynetbox into a virtual environment so its dependencies are isolated from your system Python:
 
 ```bash
 # Create a virtual environment
@@ -54,11 +46,11 @@ pip install pynetbox
 
 ## Verifying Installation
 
-After installation, verify pyNetBox is installed correctly:
+After installation, verify that pynetbox is importable and check its version:
 
 ```python
 import pynetbox
-print(pynetbox.version)
+print(pynetbox.__version__)
 ```
 
 You can also test connectivity to your NetBox instance:
@@ -86,49 +78,39 @@ To upgrade to the latest version:
 pip install --upgrade pynetbox
 ```
 
-To upgrade to a specific version:
+To install a specific version:
 
 ```bash
-pip install pynetbox==7.6.0
+pip install pynetbox==7.7.0
 ```
 
 ## Development Installation
 
-If you're planning to develop or contribute to pyNetBox:
+If you intend to develop or contribute to pynetbox:
 
 ```bash
 # Clone the repository
 git clone https://github.com/netbox-community/pynetbox.git
 cd pynetbox
 
-# Create and activate virtual environment
+# Create and activate a virtual environment
 python3 -m venv venv
 source venv/bin/activate
 
-# Install development dependencies
+# Install runtime and development dependencies
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 
-# Install in editable mode
+# Install pynetbox in editable mode
 pip install -e .
 ```
 
-## Docker Setup for Testing
+The integration test suite uses [pytest-docker](https://pypi.org/project/pytest-docker/) to spin up NetBox in containers, so Docker must be installed and running to execute integration tests. Unit tests have no such requirement.
 
-The test suite requires Docker for integration tests:
-
-```bash
-# Ensure Docker is installed and running
-docker --version
-
-# Run the test suite
-pytest
-```
-
-For more information on running tests, see the [Development Guide](development/index.md).
+For more information on running the test suite, see the [Development Guide](development/index.md).
 
 ## Next Steps
 
-- Read the [Getting Started Guide](getting-started.md) for basic usage
-- Explore the [API Reference](endpoint.md) for detailed documentation
-- Check the [Advanced Topics](advanced.md) for custom configurations
+- Read the [Quick Start](getting-started.md) for an introduction to basic usage.
+- Explore the [API Reference](api.md) for detailed documentation of core classes.
+- Review [Advanced Topics](advanced.md) for threading, filter validation, custom sessions, and file uploads.

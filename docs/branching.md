@@ -1,77 +1,68 @@
 # Branching Plugin
 
-The NetBox branching plugin allows you to create and work with branches in NetBox, similar to version control systems. This enables you to make changes in isolation and merge them back to the main branch when ready.
+The [NetBox branching plugin](https://github.com/netboxlabs/netbox-branching) lets you create branches in NetBox, much like a version control system. Changes made within a branch are isolated from the main schema and can later be merged.
 
-## Activating Branches
+!!! note "Plugin required"
+    These methods only work when the branching plugin is installed and enabled in your NetBox instance. They have no effect on a stock NetBox installation.
 
-The `activate_branch` context manager allows you to perform operations within a specific branch's schema. All operations performed within the context manager will use that branch's schema.
+## Activating a Branch
+
+`Api.activate_branch()` is a context manager that adds the `X-NetBox-Branch` header to outgoing requests so they operate against the branch's schema. The header is removed when the `with` block exits.
 
 ```python
 import pynetbox
 
-# Initialize the API
 nb = pynetbox.api(
-    "http://localhost:8000",
-    token="your-token-here"
+    'http://localhost:8000',
+    token='your-token-here',
 )
 
-# Get an existing branch
-branch = nb.plugins.branching.branches.get(id=1)
+# Look up an existing branch
+branch = nb.plugins.branching.branches.get(1)
 
-# Activate the branch for operations
+# All NetBox operations inside the block run against this branch
 with nb.activate_branch(branch):
-    # All operations within this block will use the branch's schema
     sites = nb.dcim.sites.all()
-    # Make changes to objects...
-    # These changes will only exist in this branch
+    # Create, update, and delete calls here only affect the branch's schema
 ```
 
-## Waiting for Branch Status
+The argument must be a branch `Record` (the object returned by the branches endpoint). Passing anything else raises `ValueError`.
 
-When working with branches, you often need to wait for certain status changes, such as when a branch becomes ready after creation or when a merge operation completes. The [tenacity](https://github.com/jd/tenacity) library provides a robust way to handle these waiting scenarios.
+## Waiting for a Branch to be Ready
 
-First, install tenacity:
+Newly created branches are not immediately ready; NetBox runs a background job to provision the branch's schema. Likewise, merges and reverts are asynchronous. The [tenacity](https://github.com/jd/tenacity) library is a convenient way to poll a branch until it reaches a target status:
 
 ```bash
 pip install tenacity
 ```
 
-Here's how to create a reusable function to wait for branch status changes:
-
 ```python
 from tenacity import retry, retry_if_result, stop_after_attempt, wait_exponential
-import pynetbox
+
 
 @retry(
-    stop=stop_after_attempt(30),  # Try for up to 30 attempts
-    wait=wait_exponential(
-        multiplier=1, min=4, max=60
-    ),  # Wait between 4-60 seconds, increasing exponentially
-    retry=retry_if_result(lambda x: not x),  # Retry if the status check returns False
+    stop=stop_after_attempt(30),
+    wait=wait_exponential(multiplier=1, min=4, max=60),
+    retry=retry_if_result(lambda ready: not ready),
 )
 def wait_for_branch_status(branch, target_status):
-    """Wait for branch to reach a specific status, with exponential backoff."""
+    """Poll until ``branch`` reaches ``target_status``."""
     branch = nb.plugins.branching.branches.get(branch.id)
     return str(branch.status) == target_status
 
-# Example usage:
-branch = nb.plugins.branching.branches.create(name="my-branch")
 
-# Wait for branch to be ready
-wait_for_branch_status(branch, "Ready")
+# Create a branch and wait for it to become Ready
+branch = nb.plugins.branching.branches.create(name='my-branch')
+wait_for_branch_status(branch, 'Ready')
 
-# Get the latest branch status
 branch = nb.plugins.branching.branches.get(branch.id)
-print(f"Branch is now ready! Status: {branch.status}")
+print(f"Branch is ready! Status: {branch.status}")
 ```
 
-The function will:
+The helper above will:
 
-1. Check the current status of the branch
-2. If the status doesn't match the target status, it will retry with exponential backoff
-3. Continue retrying until either:
-    - The branch reaches the target status
-    - The maximum number of attempts (30) is reached
-    - The maximum wait time (60 seconds) is exceeded
+1. Re-fetch the branch and compare its status to the target.
+2. Retry with exponential backoff (4–60 seconds between attempts) until the target is reached.
+3. Give up after 30 attempts.
 
-The exponential backoff ensures that we don't overwhelm the server with requests while still checking frequently enough to catch status changes quickly. 
+Exponential backoff strikes a balance between checking frequently enough to catch quick transitions and avoiding excessive load on the NetBox server.

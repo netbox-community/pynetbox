@@ -1,34 +1,34 @@
-# API Core Classes
+# Core Classes
 
-This page documents the core classes that form pyNetBox's API structure.
+This page documents the core classes that form pynetbox's API surface.
 
 ## Overview
 
-PyNetBox uses a layered architecture to interact with NetBox:
+pynetbox uses a layered architecture, with each layer wrapping the one below:
 
-1. **Api** - The main entry point that creates connections to NetBox
-2. **App** - Represents NetBox applications (dcim, ipam, circuits, etc.)
-3. **Endpoint** - Provides CRUD operations for specific API endpoints
+1. **`Api`** — main entry point; manages the HTTP session, authentication token, and global flags.
+2. **`App`** — represents a NetBox application (e.g. `dcim`, `ipam`); attribute access returns endpoints.
+3. **`Endpoint`** — represents an individual NetBox API endpoint and exposes CRUD methods.
 
 ```python
 import pynetbox
 
-# Create API connection (Api class)
+# Create an API connection (Api)
 nb = pynetbox.api('http://localhost:8000', token='your-token')
 
-# Access an app (App class)
-nb.dcim  # Returns an App instance
+# Access an app (App)
+nb.dcim
 
-# Access an endpoint (Endpoint class)
-nb.dcim.devices  # Returns an Endpoint instance
+# Access an endpoint (Endpoint)
+nb.dcim.devices
 
-# Use endpoint methods
+# Call an endpoint method (returns Record / RecordSet)
 devices = nb.dcim.devices.all()
 ```
 
-## Api Class
+## Api
 
-The `Api` class is the main entry point for interacting with NetBox. It manages the HTTP session, authentication, and provides access to NetBox applications.
+The `Api` class is the main entry point. It manages the underlying `requests.Session`, holds the authentication token, and provides access to NetBox applications.
 
 ::: pynetbox.core.api.Api
     handler: python
@@ -44,9 +44,9 @@ The `Api` class is the main entry point for interacting with NetBox. It manages 
         show_root_heading: true
         heading_level: 3
 
-## App Class
+## App
 
-The `App` class represents a NetBox application (such as dcim, ipam, circuits). When you access an attribute on the `Api` object, it returns an `App` instance. Accessing attributes on an `App` returns `Endpoint` objects.
+The `App` class represents a NetBox application (such as `dcim`, `ipam`, or `circuits`). Accessing an attribute on the `Api` instance returns an `App`; accessing an attribute on an `App` returns an `Endpoint`.
 
 ::: pynetbox.core.app.App
     handler: python
@@ -57,19 +57,32 @@ The `App` class represents a NetBox application (such as dcim, ipam, circuits). 
         show_root_heading: true
         heading_level: 3
 
+## PluginsApp
+
+The `PluginsApp` class exposes plugin endpoints under `nb.plugins`. Plugin and endpoint names containing dashes are accessed using underscores (e.g. `/api/plugins/my-plugin/objects/` becomes `nb.plugins.my_plugin.objects`).
+
+::: pynetbox.core.app.PluginsApp
+    handler: python
+    options:
+        members:
+            - installed_plugins
+        show_source: true
+        show_root_heading: true
+        heading_level: 3
+
 ## Relationship to Endpoints
 
-When you access an attribute on an `App` object, it returns an [Endpoint](endpoint.md) instance:
+Attribute access on an `App` returns an [`Endpoint`](endpoint.md) instance:
 
 ```python
-# nb.dcim is an App instance
-# nb.dcim.devices is an Endpoint instance
+# nb.dcim is an App
+# nb.dcim.devices is an Endpoint
 devices_endpoint = nb.dcim.devices
 
 # Endpoint provides CRUD methods
 all_devices = devices_endpoint.all()
 device = devices_endpoint.get(1)
-new_device = devices_endpoint.create(name='test', site=1, device_type=1, device_role=1)
+new_device = devices_endpoint.create(name='test', site=1, device_type=1, role=1)
 ```
 
-See the [Endpoint documentation](endpoint.md) for details on available methods.
+See the [Endpoint reference](endpoint.md) for the full method list.

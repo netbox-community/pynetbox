@@ -2,14 +2,14 @@
 
 ## Threading
 
-PyNetBox supports multithreaded calls for `.filter()` and `.all()` queries to significantly improve performance when fetching large datasets.
+pynetbox supports multithreaded page fetching for `.filter()` and `.all()` queries, which can significantly improve performance when iterating large result sets.
 
 !!! warning "NetBox Configuration Required"
-    It is **highly recommended** you have `MAX_PAGE_SIZE` in your NetBox installation set to anything *except* `0` or `None`. The default value of `1000` is usually a good value to use.
+    For threading to be effective, `MAX_PAGE_SIZE` in your NetBox installation must be set to a finite value (not `0` or `None`). The default of `1000` is usually a good choice.
 
 ### Enabling Threading
 
-Enable threading globally by passing `threading=True` to the API initialization:
+Enable threading globally by passing `threading=True` when constructing the API client:
 
 ```python
 import pynetbox
@@ -17,20 +17,18 @@ import pynetbox
 nb = pynetbox.api(
     'http://localhost:8000',
     token='your-token',
-    threading=True
+    threading=True,
 )
 
-# Now all .all() and .filter() calls will use threading
-devices = nb.dcim.devices.all()  # Fetches pages in parallel
+# .all() and .filter() now fetch pages in parallel
+devices = nb.dcim.devices.all()
 ```
 
 ### How It Works
 
-When threading is enabled:
-- PyNetBox fetches multiple pages of results in parallel
-- Significantly faster for large result sets
-- Especially useful for `.all()` queries that span many pages
-- Works automatically with pagination
+When threading is enabled, pynetbox issues an initial request to determine the total record count, then dispatches concurrent requests for the remaining pages. The records are streamed back through the same `RecordSet` interface as a single-threaded query.
+
+Threading is opt-in per API client; thread safety beyond pynetbox's own page-fetching is the caller's responsibility.
 
 ### Example
 
@@ -38,18 +36,17 @@ When threading is enabled:
 import pynetbox
 import time
 
+# Single-threaded
 nb = pynetbox.api('http://localhost:8000', token='your-token')
-
-# Without threading
 start = time.time()
 devices = list(nb.dcim.devices.all())
 print(f"Without threading: {time.time() - start:.2f}s")
 
-# With threading
+# Multithreaded
 nb_threaded = pynetbox.api(
     'http://localhost:8000',
     token='your-token',
-    threading=True
+    threading=True,
 )
 start = time.time()
 devices = list(nb_threaded.dcim.devices.all())
@@ -58,9 +55,9 @@ print(f"With threading: {time.time() - start:.2f}s")
 
 ## Filter Validation
 
-NetBox doesn't validate filters passed to GET API endpoints (`.get()` and `.filter()`). If a filter is incorrect, NetBox silently returns the entire database table content, which can be slow and unexpected.
+NetBox does not validate filter parameters passed to list endpoints. An unrecognized parameter is silently ignored, which means a typo in a `.filter()` or `.get()` call can quietly return the entire table.
 
-PyNetBox can validate filter parameters against NetBox's OpenAPI specification before making the request, raising an exception if a parameter is invalid.
+pynetbox can optionally validate filter parameters against NetBox's OpenAPI specification before making the request, raising `ParameterValidationError` if any parameter is unrecognized.
 
 ### Enabling Strict Filters Globally
 
@@ -70,51 +67,52 @@ import pynetbox
 nb = pynetbox.api(
     'http://localhost:8000',
     token='your-token',
-    strict_filters=True  # Enable validation globally
+    strict_filters=True,
 )
 
-# This will raise ParameterValidationError
 try:
-    devices = nb.dcim.devices.filter(non_existing_filter='value')
-except pynetbox.core.query.ParameterValidationError as e:
+    nb.dcim.devices.filter(non_existing_filter='value')
+except pynetbox.ParameterValidationError as e:
     print(f"Invalid filter: {e}")
 ```
 
 ### Per-Request Validation
 
-You can also enable or disable validation on a per-request basis:
+Validation can also be toggled per request by passing `strict_filters` directly to `.filter()` or `.get()`. The per-request value overrides the global setting.
 
 ```python
 nb = pynetbox.api('http://localhost:8000', token='your-token')
 
 # Enable for one request (when not globally enabled)
 try:
-    devices = nb.dcim.devices.filter(
+    nb.dcim.devices.filter(
         non_existing_filter='aaaa',
-        strict_filters=True
+        strict_filters=True,
     )
-except pynetbox.core.query.ParameterValidationError as e:
+except pynetbox.ParameterValidationError as e:
     print(f"Invalid filter: {e}")
 
 # Disable for one request (when globally enabled)
 nb_strict = pynetbox.api(
     'http://localhost:8000',
     token='your-token',
-    strict_filters=True
+    strict_filters=True,
 )
-# This won't raise an exception, but returns entire table
-devices = nb_strict.dcim.devices.filter(
+# Skips validation; NetBox will accept the request but ignore the unknown filter
+nb_strict.dcim.devices.filter(
     non_existing_filter='aaaa',
-    strict_filters=False
+    strict_filters=False,
 )
 ```
 
-### Benefits of Strict Filters
+!!! note "Custom field filters"
+    Custom field filters (`cf_<fieldname>` and their lookup suffixes such as `cf_<fieldname>__gt`) are dynamic and not listed in the OpenAPI specification. They are skipped by the validator and never raise `ParameterValidationError`.
 
-- **Catch typos early**: Find misspelled filter names before making requests
-- **Prevent full table scans**: Avoid accidentally fetching entire tables
-- **Better error messages**: Get clear feedback about invalid parameters
-- **Development aid**: Helpful during development to ensure correct filter usage
+### Benefits
+
+- **Catch typos early**: surface misspelled filter names before they cause silent full-table scans.
+- **Better error messages**: failures point to the exact invalid parameter.
+- **Safer development**: enable globally during development and disable in production hot paths if needed.
 
 ### Example
 
@@ -124,93 +122,96 @@ import pynetbox
 nb = pynetbox.api(
     'http://localhost:8000',
     token='your-token',
-    strict_filters=True
+    strict_filters=True,
 )
 
-# Valid filter - works fine
+# Valid filter
 devices = nb.dcim.devices.filter(site='datacenter1')
 
-# Invalid filter - raises exception
+# Invalid filter
 try:
-    devices = nb.dcim.devices.filter(iste='datacenter1')  # Typo: 'iste' instead of 'site'
-except pynetbox.core.query.ParameterValidationError as e:
+    devices = nb.dcim.devices.filter(iste='datacenter1')   # typo
+except pynetbox.ParameterValidationError as e:
     print(f"Error: {e}")
-    # Error: 'iste' is not a valid filter parameter for dcim.devices
 ```
 
 ## Custom Sessions
 
-Custom sessions can be used to modify the default HTTP behavior. Below are a few examples, most of them from [here](https://hodovi.ch/blog/advanced-usage-python-requests-timeouts-retries-hooks/).
+You can substitute pynetbox's default `requests.Session` with your own to customize HTTP behavior such as headers, SSL verification, timeouts, and retries.
 
-### Headers
+### Custom Headers
 
-To set a custom header on all requests. These headers are automatically merged with headers pynetbox sets itself.
-
-Example:
+To set custom headers on every request:
 
 ```python
 import pynetbox
 import requests
+
 session = requests.Session()
-session.headers = {"mycustomheader": "test"}
+session.headers = {'mycustomheader': 'test'}
+
 nb = pynetbox.api(
     'http://localhost:8000',
-    token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+    token='d6f4e314a5b5fefd164995169f28ae32d987704f',
 )
 nb.http_session = session
 ```
 
-### SSL Verification
+Custom headers are merged with the headers pynetbox sets internally.
 
-To disable SSL verification. See [the docs](https://requests.readthedocs.io/en/stable/user/advanced/#ssl-cert-verification).
+### Disabling SSL Verification
 
-Example:
+To disable SSL certificate verification (for self-signed certificates in lab environments). See the [requests docs](https://requests.readthedocs.io/en/stable/user/advanced/#ssl-cert-verification) for additional options:
 
 ```python
 import pynetbox
 import requests
+
 session = requests.Session()
 session.verify = False
+
 nb = pynetbox.api(
     'http://localhost:8000',
-    token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+    token='d6f4e314a5b5fefd164995169f28ae32d987704f',
 )
 nb.http_session = session
 ```
 
 ### Timeouts
 
-Setting timeouts requires the use of Adapters.
-
-Example:
+Setting a default timeout requires a custom HTTP adapter:
 
 ```python
+import pynetbox
+import requests
 from requests.adapters import HTTPAdapter
+
 
 class TimeoutHTTPAdapter(HTTPAdapter):
     def __init__(self, *args, **kwargs):
-        self.timeout = kwargs.get("timeout", 5)
+        self.timeout = kwargs.pop('timeout', 5)
         super().__init__(*args, **kwargs)
 
     def send(self, request, **kwargs):
         kwargs['timeout'] = self.timeout
         return super().send(request, **kwargs)
 
-adapter = TimeoutHTTPAdapter()
+
+adapter = TimeoutHTTPAdapter(timeout=10)
 session = requests.Session()
-session.mount("http://", adapter)
-session.mount("https://", adapter)
+session.mount('http://', adapter)
+session.mount('https://', adapter)
 
 nb = pynetbox.api(
     'http://localhost:8000',
-    token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+    token='d6f4e314a5b5fefd164995169f28ae32d987704f',
 )
 nb.http_session = session
 ```
 
 ## File Uploads (Image Attachments)
 
-Pynetbox supports file uploads for endpoints that accept them, such as image attachments. When you pass a file-like object (anything with a `.read()` method) to `create()`, pynetbox automatically detects it and uses multipart/form-data encoding instead of JSON.
+pynetbox supports file uploads on endpoints that accept them, such as image attachments. When a file-like object (anything with a callable `.read()`) is passed to `.create()`, pynetbox automatically switches to `multipart/form-data` encoding instead of JSON.
 
 ### Creating an Image Attachment
 
@@ -219,22 +220,21 @@ import pynetbox
 
 nb = pynetbox.api(
     'http://localhost:8000',
-    token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+    token='d6f4e314a5b5fefd164995169f28ae32d987704f',
 )
 
-# Attach an image to a device
 with open('/path/to/image.png', 'rb') as f:
     attachment = nb.extras.image_attachments.create(
         object_type='dcim.device',
         object_id=1,
         image=f,
-        name='rack-photo.png'
+        name='rack-photo.png',
     )
 ```
 
-### Using io.BytesIO
+### Using `io.BytesIO`
 
-You can also use in-memory file objects:
+In-memory file objects work the same way:
 
 ```python
 import io
@@ -242,72 +242,66 @@ import pynetbox
 
 nb = pynetbox.api(
     'http://localhost:8000',
-    token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+    token='d6f4e314a5b5fefd164995169f28ae32d987704f',
 )
 
-# Create image from bytes
-image_data = b'...'  # Your image bytes
+image_data = b'...'   # raw image bytes
 file_obj = io.BytesIO(image_data)
-file_obj.name = 'generated-image.png'  # Optional: set filename
+file_obj.name = 'generated-image.png'   # optional: filename hint
 
 attachment = nb.extras.image_attachments.create(
     object_type='dcim.device',
     object_id=1,
-    image=file_obj
+    image=file_obj,
 )
 ```
 
 ### Custom Filename and Content-Type
 
-For more control, pass a tuple instead of a file object:
+For full control over the multipart part, pass a tuple in place of the file object. The accepted forms are `(filename, file_object)` and `(filename, file_object, content_type)`:
 
 ```python
 with open('/path/to/image.png', 'rb') as f:
     attachment = nb.extras.image_attachments.create(
         object_type='dcim.device',
         object_id=1,
-        image=('custom-name.png', f, 'image/png')
+        image=('custom-name.png', f, 'image/png'),
     )
 ```
 
-The tuple format is `(filename, file_object)` or `(filename, file_object, content_type)`.
-
 ## Multi-Format Responses
 
-Some endpoints support multiple response formats. The rack elevation endpoint can return both JSON data and SVG diagrams.
+Some endpoints can return data in multiple formats. The rack elevation endpoint, for example, supports both JSON (a list of rack-unit objects) and SVG (a rendered diagram).
 
-### Getting Rack Elevation as JSON
+### Rack Elevation as JSON
 
-By default, the elevation endpoint returns JSON data as a list of rack unit objects:
+By default the elevation endpoint returns JSON:
 
 ```python
 import pynetbox
 
 nb = pynetbox.api(
     'http://localhost:8000',
-    token='d6f4e314a5b5fefd164995169f28ae32d987704f'
+    token='d6f4e314a5b5fefd164995169f28ae32d987704f',
 )
 
 rack = nb.dcim.racks.get(123)
 
-# Returns list of RU objects (default JSON response)
-units = rack.elevation.list()
-for unit in units:
+# Returns a list of RU objects
+for unit in rack.elevation.list():
     print(unit.id, unit.name)
 ```
 
-### Getting Rack Elevation as SVG
+### Rack Elevation as SVG
 
-Use the `render='svg'` parameter to get a graphical SVG diagram:
+Pass `render='svg'` to get a rendered SVG diagram as a string:
 
 ```python
 rack = nb.dcim.racks.get(123)
 
-# Returns raw SVG string
 svg_diagram = rack.elevation.list(render='svg')
-print(svg_diagram)  # '<svg xmlns="http://www.w3.org/2000/svg">...</svg>'
+# '<svg xmlns="http://www.w3.org/2000/svg">...</svg>'
 
-# Save to file
 with open('rack-elevation.svg', 'w') as f:
     f.write(svg_diagram)
 ```

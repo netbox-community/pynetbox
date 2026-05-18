@@ -1,15 +1,15 @@
 # DCIM
 
-This page documents special methods available for DCIM models in pyNetBox.
+This page documents the special methods available on DCIM models. Standard CRUD operations follow the patterns described in [Quick Start](getting-started.md) and the [Endpoint reference](endpoint.md).
 
 !!! note "Standard API Operations"
-    Standard CRUD operations (`.all()`, `.filter()`, `.get()`, `.create()`, `.update()`, `.delete()`) follow NetBox's REST API patterns. Refer to the [NetBox API documentation](https://demo.netbox.dev/api/docs/) for details on available endpoints and filters.
+    The standard endpoint methods (`.all()`, `.filter()`, `.get()`, `.create()`, `.update()`, `.delete()`) follow NetBox's REST API. Refer to the [NetBox API documentation](https://demo.netbox.dev/api/docs/) for the available fields and filters on each endpoint.
 
 ## Devices
 
 ### NAPALM Integration
 
-The `napalm` property provides access to NAPALM device data.
+The `napalm` property exposes the `/napalm/` detail route on a device, providing live data fetched from the device through NAPALM. This requires NAPALM to be configured on the NetBox server.
 
 ::: pynetbox.models.dcim.Devices.napalm
     handler: python
@@ -17,23 +17,23 @@ The `napalm` property provides access to NAPALM device data.
         show_source: true
 
 **Example:**
+
 ```python
 device = nb.dcim.devices.get(name='router1')
 
-# Get device facts
+# Device facts
 facts = device.napalm.list(method='get_facts')
-print(facts)
 
-# Get interfaces
+# Interfaces
 interfaces = device.napalm.list(method='get_interfaces')
 
-# Get ARP table
+# ARP table
 arp = device.napalm.list(method='get_arp_table')
 ```
 
 ### Config Rendering
 
-The `render_config` property renders device configuration based on config contexts and templates.
+The `render_config` property renders a device's configuration from its assigned config template and config contexts.
 
 ::: pynetbox.models.dcim.Devices.render_config
     handler: python
@@ -41,6 +41,7 @@ The `render_config` property renders device configuration based on config contex
         show_source: true
 
 **Example:**
+
 ```python
 device = nb.dcim.devices.get(name='switch1')
 config = device.render_config.create()
@@ -51,7 +52,7 @@ print(config)
 
 ### Rack Units
 
-The `units` property provides access to rack unit information.
+The `units` property returns information about each rack unit and the device installed in it.
 
 ::: pynetbox.models.dcim.Racks.units
     handler: python
@@ -59,11 +60,11 @@ The `units` property provides access to rack unit information.
         show_source: true
 
 **Example:**
+
 ```python
 rack = nb.dcim.racks.get(name='RACK-01')
-units = rack.units.list()
 
-for unit in units:
+for unit in rack.units.list():
     if unit.device:
         print(f"U{unit.name}: {unit.device.name}")
     else:
@@ -72,7 +73,7 @@ for unit in units:
 
 ### Rack Elevation
 
-The `elevation` property supports both JSON and SVG output for rack elevation diagrams.
+The `elevation` property supports both JSON and SVG output. By default it returns a list of rack-unit records; passing `render='svg'` returns a rendered SVG diagram as a string.
 
 ::: pynetbox.models.dcim.Racks.elevation
     handler: python
@@ -80,25 +81,26 @@ The `elevation` property supports both JSON and SVG output for rack elevation di
         show_source: true
 
 **Examples:**
+
 ```python
 rack = nb.dcim.racks.get(name='RACK-01')
 
-# Get elevation as JSON (returns list of RU objects)
+# As JSON (list of RU objects)
 elevation_data = rack.elevation.list()
 
-# Get elevation as SVG diagram
+# As an SVG diagram
 svg_diagram = rack.elevation.list(render='svg')
 
-# Save SVG to file
 with open('rack-elevation.svg', 'w') as f:
     f.write(svg_diagram)
 ```
 
 ## Cable Tracing
 
-Several DCIM models support cable path tracing through the `trace()` method.
+Several DCIM models expose a `trace()` method that traces a cable end-to-end, returning each hop of the path.
 
-**Models with cable tracing:**
+**Supported models:**
+
 - Interfaces
 - ConsolePorts
 - ConsoleServerPorts
@@ -106,50 +108,50 @@ Several DCIM models support cable path tracing through the `trace()` method.
 - PowerOutlets
 - PowerFeeds
 
+The return value is a flat list arranged as `[a_terminations, cable, b_terminations, a_terminations, cable, b_terminations, ...]`, where each `*_terminations` entry is a list of Record objects and each `cable` entry is either a `Cables` record or `None` for an incomplete path.
+
 **Example:**
+
 ```python
-# Trace a network interface
 interface = nb.dcim.interfaces.get(name='eth0', device='switch1')
 trace_result = interface.trace()
 
-# The trace returns a list of [terminations, cable, terminations]
 for item in trace_result:
     if isinstance(item, list):
         # Terminations
         for term in item:
             print(f"  Termination: {term}")
     else:
-        # Cable or None
+        # Cable (or None for an incomplete path)
         if item:
             print(f"  Cable: {item.id} - {item.label}")
         else:
             print("  No cable")
 
-# Trace console port
+# Console port
 console = nb.dcim.console_ports.get(name='Console', device='router1')
 console_trace = console.trace()
 
-# Trace power connections
+# Power connection
 power_port = nb.dcim.power_ports.get(name='PSU1', device='server1')
 power_trace = power_port.trace()
 ```
 
 ## Cable Path Tracing (Pass-Through Ports)
 
-Front ports and rear ports use the `paths()` method instead of `trace()`.
+Front ports and rear ports use the `paths()` method instead of `trace()` because a single port can participate in multiple complete cable paths.
 
-**Models with cable path tracing:**
+**Supported models:**
+
 - FrontPorts
 - RearPorts
 
 **Example:**
-```python
-# Get paths through a front port
-front_port = nb.dcim.front_ports.get(name='FrontPort1', device='patch-panel-1')
-paths = front_port.paths()
 
-# Each path contains origin, destination, and path segments
-for path_info in paths:
+```python
+front_port = nb.dcim.front_ports.get(name='FrontPort1', device='patch-panel-1')
+
+for path_info in front_port.paths():
     print(f"Origin: {path_info['origin']}")
     print(f"Destination: {path_info['destination']}")
     print("Path segments:")
@@ -157,11 +159,10 @@ for path_info in paths:
         for obj in segment:
             print(f"  - {obj}")
 
-# Get paths through a rear port
+# Rear ports work the same way
 rear_port = nb.dcim.rear_ports.get(name='RearPort1', device='patch-panel-1')
 rear_paths = rear_port.paths()
 
-# Access the complete path from origin to destination
 if rear_paths:
     first_path = rear_paths[0]
     if first_path['origin']:
@@ -172,8 +173,8 @@ if rear_paths:
 
 **Path Structure:**
 
-The `paths()` method returns a list of dictionaries, where each dictionary represents a complete cable path:
+`paths()` returns a list of dictionaries, one per complete cable path. Each dictionary contains:
 
-- `origin`: The starting endpoint of the path (Record object or None if unconnected)
-- `destination`: The ending endpoint of the path (Record object or None if unconnected)
-- `path`: A list of path segments, where each segment is a list of Record objects representing the components in that segment (cables, terminations, etc.)
+- `origin`: The starting endpoint of the path (`Record` or `None` if unconnected).
+- `destination`: The ending endpoint of the path (`Record` or `None` if unconnected).
+- `path`: A list of path segments. Each segment is a list of `Record` objects representing the components in that segment (cables, terminations, etc.).
