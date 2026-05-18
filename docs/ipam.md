@@ -1,15 +1,15 @@
 # IPAM
 
-This page documents special methods available for IPAM models in pyNetBox.
+This page documents the special methods available on IPAM models. Standard CRUD operations follow the patterns described in [Quick Start](getting-started.md) and the [Endpoint reference](endpoint.md).
 
 !!! note "Standard API Operations"
-    Standard CRUD operations (`.all()`, `.filter()`, `.get()`, `.create()`, `.update()`, `.delete()`) follow NetBox's REST API patterns. Refer to the [NetBox API documentation](https://demo.netbox.dev/api/docs/) for details on available endpoints and filters.
+    The standard endpoint methods (`.all()`, `.filter()`, `.get()`, `.create()`, `.update()`, `.delete()`) follow NetBox's REST API. Refer to the [NetBox API documentation](https://demo.netbox.dev/api/docs/) for the available fields and filters on each endpoint.
 
 ## Prefixes
 
 ### Available IPs
 
-The `available_ips` property provides access to view and create available IP addresses within a prefix.
+The `available_ips` property exposes the prefix's `available-ips` detail route, used to list addresses that are not yet allocated and to provision new ones from the available pool.
 
 ::: pynetbox.models.ipam.Prefixes.available_ips
     handler: python
@@ -17,6 +17,7 @@ The `available_ips` property provides access to view and create available IP add
         show_source: true
 
 **Examples:**
+
 ```python
 prefix = nb.ipam.prefixes.get(prefix='10.0.0.0/24')
 
@@ -24,23 +25,23 @@ prefix = nb.ipam.prefixes.get(prefix='10.0.0.0/24')
 available = prefix.available_ips.list()
 # [10.0.0.1/24, 10.0.0.2/24, 10.0.0.3/24, ...]
 
-# Create a single IP from available pool
+# Provision a single IP from the pool
 new_ip = prefix.available_ips.create()
 
-# Create multiple IPs
-new_ips = prefix.available_ips.create([{} for i in range(5)])
+# Provision multiple IPs
+new_ips = prefix.available_ips.create([{} for _ in range(5)])
 
-# Create IP with specific attributes
+# Provision an IP with specific attributes
 new_ip = prefix.available_ips.create({
     'dns_name': 'server01.example.com',
     'description': 'Web Server',
-    'status': 'active'
+    'status': 'active',
 })
 ```
 
 ### Available Prefixes
 
-The `available_prefixes` property provides access to view and create available child prefixes within a parent prefix.
+The `available_prefixes` property exposes the parent prefix's `available-prefixes` detail route, used to list and carve out child prefixes.
 
 ::: pynetbox.models.ipam.Prefixes.available_prefixes
     handler: python
@@ -48,6 +49,7 @@ The `available_prefixes` property provides access to view and create available c
         show_source: true
 
 **Examples:**
+
 ```python
 prefix = nb.ipam.prefixes.get(prefix='10.0.0.0/16')
 
@@ -55,18 +57,18 @@ prefix = nb.ipam.prefixes.get(prefix='10.0.0.0/16')
 available = prefix.available_prefixes.list()
 # [10.0.1.0/24, 10.0.2.0/23, 10.0.4.0/22, ...]
 
-# Create a child prefix
+# Carve out a single child prefix (prefix_length is required)
 new_prefix = prefix.available_prefixes.create({
     'prefix_length': 24,
     'status': 'active',
-    'description': 'Server subnet'
+    'description': 'Server subnet',
 })
 
-# Create multiple child prefixes
+# Carve out multiple child prefixes
 new_prefixes = prefix.available_prefixes.create([
     {'prefix_length': 24},
     {'prefix_length': 24},
-    {'prefix_length': 25}
+    {'prefix_length': 25},
 ])
 ```
 
@@ -74,7 +76,7 @@ new_prefixes = prefix.available_prefixes.create([
 
 ### Available IPs
 
-The `available_ips` property provides access to view and create available IP addresses within an IP range.
+The `available_ips` property on an IP range works the same way as on a prefix, but allocates from the range's address pool.
 
 ::: pynetbox.models.ipam.IpRanges.available_ips
     handler: python
@@ -82,22 +84,23 @@ The `available_ips` property provides access to view and create available IP add
         show_source: true
 
 **Examples:**
+
 ```python
 ip_range = nb.ipam.ip_ranges.get(1)
 
-# List available IPs in range
+# List available IPs in the range
 available = ip_range.available_ips.list()
 
-# Create single IP from range
+# Allocate a single IP
 new_ip = ip_range.available_ips.create()
 
-# Create multiple IPs
-new_ips = ip_range.available_ips.create([{} for i in range(10)])
+# Allocate multiple IPs
+new_ips = ip_range.available_ips.create([{} for _ in range(10)])
 
-# Create IP with attributes
+# Allocate an IP with attributes
 new_ip = ip_range.available_ips.create({
     'description': 'DHCP reservation',
-    'status': 'reserved'
+    'status': 'reserved',
 })
 ```
 
@@ -105,7 +108,7 @@ new_ip = ip_range.available_ips.create({
 
 ### Available VLANs
 
-The `available_vlans` property provides access to view and create available VLANs within a VLAN group.
+The `available_vlans` property lists VLAN IDs that are not yet in use within a VLAN group, and allocates new VLANs from that pool.
 
 ::: pynetbox.models.ipam.VlanGroups.available_vlans
     handler: python
@@ -113,25 +116,25 @@ The `available_vlans` property provides access to view and create available VLAN
         show_source: true
 
 **Examples:**
+
 ```python
 vlan_group = nb.ipam.vlan_groups.get(name='Production')
 
-# List available VLAN IDs
+# Available VLAN IDs in the group
 available = vlan_group.available_vlans.list()
 # [10, 11, 12, 13, ...]
 
-# Create a VLAN from available IDs
+# Create a new VLAN; NetBox picks the lowest available VID
 new_vlan = vlan_group.available_vlans.create({
     'name': 'NewVLAN',
-    'status': 'active'
+    'status': 'active',
 })
-# NewVLAN (VID: 10)
 
-# Create VLAN with specific VID (must be in available range)
+# Create a VLAN with a specific VID (must be available within the group)
 new_vlan = vlan_group.available_vlans.create({
     'name': 'Servers',
     'vid': 100,
-    'status': 'active'
+    'status': 'active',
 })
 ```
 
@@ -139,7 +142,7 @@ new_vlan = vlan_group.available_vlans.create({
 
 ### Available ASNs
 
-The `available_asns` property provides access to view and create available ASNs within an ASN range.
+The `available_asns` property lists ASNs that are not yet allocated within an ASN range, and allocates new ASNs from that pool.
 
 ::: pynetbox.models.ipam.AsnRanges.available_asns
     handler: python
@@ -147,17 +150,17 @@ The `available_asns` property provides access to view and create available ASNs 
         show_source: true
 
 **Examples:**
+
 ```python
 asn_range = nb.ipam.asn_ranges.get(name='Private ASN Pool')
 
-# List available ASNs
+# Available ASNs
 available = asn_range.available_asns.list()
 # [64512, 64513, 64514, ...]
 
 # Allocate a single ASN
 new_asn = asn_range.available_asns.create()
-# 64512
 
 # Allocate multiple ASNs
-new_asns = asn_range.available_asns.create([{} for i in range(5)])
+new_asns = asn_range.available_asns.create([{} for _ in range(5)])
 ```

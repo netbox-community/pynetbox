@@ -1,20 +1,26 @@
 site_name: pynetbox
 site_description: Python API client library for NetBox
+repo_name: netbox-community/pynetbox
+repo_url: https://github.com/netbox-community/pynetbox
 theme:
   name: material
   features:
-    - navigation.tabs
-    - navigation.sections
-    - navigation.expand
-    - navigation.top
-    - navigation.indexes
-    - toc.follow
-    - search.suggest
-    - search.highlight
     - content.code.copy
-
+    - navigation.footer
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to Dark Mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/lightbulb
+        name: Switch to Light Mode
 plugins:
-  - search
+  - search:
+      lang: en
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -23,7 +29,20 @@ plugins:
             show_source: true
             show_root_heading: true
             heading_level: 3
-
+markdown_extensions:
+    - admonition
+    - attr_list
+    - footnotes
+    - pymdownx.emoji:
+        emoji_index: !!python/name:material.extensions.emoji.twemoji
+        emoji_generator: !!python/name:material.extensions.emoji.to_svg
+    - pymdownx.superfences:
+        custom_fences:
+          - name: mermaid
+            class: mermaid
+            format: !!python/name:pymdownx.superfences.fence_code_format
+    - pymdownx.tabbed:
+        alternate_style: true
 nav:
   - Home: index.md
   - Getting Started:
@@ -33,7 +52,7 @@ nav:
     - Core Classes: api.md
     - Endpoint: endpoint.md
     - Response: response.md
-    - Request: request.md
+    - Exceptions: exceptions.md
     - Circuits: circuits.md
     - DCIM: dcim.md
     - IPAM: ipam.md
@@ -46,26 +65,3 @@ nav:
     - Getting Started: development/getting-started.md
     - Release Checklist: development/release-checklist.md
   - Release Notes: release-notes.md
-
-extra_css:
-  - stylesheets/extra.css
-
-markdown_extensions:
-  - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences
-  - admonition
-  - pymdownx.details
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - toc:
-      permalink: true
-      toc_depth: 3
-  - tables
-  - attr_list
-  - md_in_html
