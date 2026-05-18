@@ -35,6 +35,28 @@ class DetailEndpointTestCase(unittest.TestCase):
             ip_obj = ip_range_obj.available_ips.create()
             self.assertEqual(ip_obj.address, "1.2.4.2/24")
 
+    def test_data_source_sync(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call",
+            return_value={"id": 1, "name": "test-source", "status": {"value": "new"}},
+        ):
+            data_source = nb.core.data_sources.get(1)
+            self.assertEqual(data_source.name, "test-source")
+        self.assertTrue(
+            data_source.sync.url.endswith("/api/core/data-sources/1/sync/")
+        )
+        with patch(
+            "pynetbox.core.query.Request._make_call",
+            return_value={
+                "id": 1,
+                "name": "test-source",
+                "status": {"value": "queued"},
+            },
+        ) as mock_call:
+            result = data_source.sync.create()
+            self.assertEqual(result["status"]["value"], "queued")
+            self.assertEqual(mock_call.call_args.kwargs["verb"], "post")
+
     def test_detail_endpoint_create_list(self):
         # Prefixes
         with patch(

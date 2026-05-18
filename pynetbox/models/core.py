@@ -14,11 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from pynetbox.core.endpoint import DetailEndpoint
 from pynetbox.core.response import JsonField, Record
 
 
 class DataSources(Record):
-    pass
+    @property
+    def sync(self):
+        """Represents the ``sync`` detail endpoint.
+
+        Returns a DetailEndpoint object that is the interface for
+        triggering a sync of the data source.
+
+        ## Returns
+        DetailEndpoint object.
+
+        ## Examples
+
+        ```python
+        data_source = nb.core.data_sources.get(123)
+        data_source.sync.create()
+        ```
+        """
+        return DetailEndpoint(self, "sync")
 
 
 class Jobs(Record):
