@@ -56,8 +56,21 @@ class App:
         "wireless": wireless,
     }
 
+    _PLUGINS_PREFIX = "plugins/"
+
     def _setmodel(self):
-        self.model = App.models[self.name] if self.name in App.models else None
+        if self.name.startswith(self._PLUGINS_PREFIX):
+            # Plugin apps may carry a custom models namespace registered
+            # via an Extension. The plugin attribute uses underscores while
+            # the URL slug uses dashes (PluginsApp.__getattr__), so convert
+            # back when looking up the registry.
+            plugin_slug = self.name[len(self._PLUGINS_PREFIX) :]
+            plugin_name = plugin_slug.replace("-", "_")
+            extensions = getattr(self.api, "_extensions", {})
+            ext = extensions.get(plugin_name)
+            self.model = getattr(ext, "models", None) if ext is not None else None
+        else:
+            self.model = App.models.get(self.name)
 
     def __getstate__(self):
         return {"api": self.api, "name": self.name}
