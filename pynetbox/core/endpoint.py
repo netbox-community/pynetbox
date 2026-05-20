@@ -636,24 +636,29 @@ class DetailEndpoint:
             ]
         return req
 
-    def create(self, data=None):
+    def create(self, data=None, **kwargs):
         """The write operation for a detail endpoint.
 
         Creates objects on a detail endpoint in NetBox.
 
         ## Parameters
 
-        * **data** (dict/list, optional): A dictionary containing the
+        * **data** (dict/list, optional): A dictionary or list containing the
             key/value pair of the items you're creating on the parent
             object. Defaults to empty dict which will create a single
             item with default values.
+        * **kwargs**: Alternative to `data`, fields and values to create
+            the object with — mirrors `Endpoint.create()`. Cannot be
+            combined with `data`.
 
         ## Returns
         A Record object or list of Record objects created
         from data created in NetBox.
         """
-        data = data or {}
-        req = Request(**self.request_kwargs).post(data)
+        if data is not None and kwargs:
+            raise ValueError("Cannot pass both data and keyword arguments")
+        payload = data if data is not None else kwargs
+        req = Request(**self.request_kwargs).post(payload)
         if self.custom_return:
             if isinstance(req, list):
                 return [
@@ -670,7 +675,7 @@ class DetailEndpoint:
 
 
 class RODetailEndpoint(DetailEndpoint):
-    def create(self, data):
+    def create(self, data=None, **kwargs):
         raise NotImplementedError("Writes are not supported for this endpoint.")
 
 

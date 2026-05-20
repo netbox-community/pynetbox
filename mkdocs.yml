@@ -54,6 +54,7 @@ nav:
     - Response: response.md
     - Exceptions: exceptions.md
     - Circuits: circuits.md
+    - Core: core.md
     - DCIM: dcim.md
     - IPAM: ipam.md
     - Virtualization: virtualization.md

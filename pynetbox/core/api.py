@@ -126,6 +126,11 @@ class Api:
         content-type key — both raise ``ValueError``, since a silent
         last-wins would mask a configuration mistake. Overriding a key from
         the built-in ``CONTENT_TYPE_MAPPER`` is allowed and intentional.
+
+        ``plugin_name`` is normalized by converting dashes to underscores
+        before lookup so the same plugin cannot register itself twice
+        under both spellings (e.g. ``"custom-objects"`` and
+        ``"custom_objects"``).
         """
         self._extensions = {}
         for ext in extensions:
@@ -134,6 +139,7 @@ class Api:
                 raise ValueError(
                     "Extension {!r} is missing a 'plugin_name' attribute".format(ext)
                 )
+            plugin_name = plugin_name.replace("-", "_")
             if plugin_name in self._extensions:
                 raise ValueError(
                     "Duplicate extension for plugin_name {!r}: {!r} and {!r}".format(

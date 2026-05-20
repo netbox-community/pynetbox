@@ -6,9 +6,15 @@ content-type mappings without modifying pynetbox itself.
 
 An extension is any object (typically a class) exposing:
 
-* ``plugin_name`` (str): the plugin's slug as it appears under ``nb.plugins``
-  (e.g. ``"branching"`` for ``nb.plugins.branching``). Underscores in the
-  attribute access map to dashes in the URL, matching the existing
+* ``plugin_name`` (str): the plugin's API URL slug as used under
+  ``/api/plugins/`` — *not* the plugin's Python package name or
+  ``PluginConfig.name``. For example, the ``netbox-acls`` plugin
+  serves ``/api/plugins/access-lists/`` so its ``plugin_name`` is
+  ``"access_lists"`` (or equivalently ``"access-lists"``).
+  Dashes are normalized to underscores on registration, so the
+  same plugin cannot be registered twice under both spellings.
+  The attribute access ``nb.plugins.<plugin_name>`` then converts
+  underscores back to dashes for the URL, matching the existing
   ``PluginsApp`` convention.
 * ``models``: a namespace (module, class, or any object) from which
   ``Record`` subclasses can be resolved by title-cased endpoint name —
