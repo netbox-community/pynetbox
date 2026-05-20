@@ -448,13 +448,17 @@ class Record:
         def generic_list_parser(key_name, list_item):
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
+            content_type_mapper = getattr(
+                self.api, "_content_type_mapper", CONTENT_TYPE_MAPPER
+            )
+
             if (
                 isinstance(list_item, dict)
                 and "object_type" in list_item
                 and "object" in list_item
             ):
                 lookup = list_item["object_type"]
-                if model := CONTENT_TYPE_MAPPER.get(lookup, None):
+                if model := content_type_mapper.get(lookup, None):
                     record = model(list_item["object"], self.api, self.endpoint)
                     return GenericListObject(record)
 
@@ -492,7 +496,13 @@ class Record:
                 # check if GFK
                 if len(v) and isinstance(v[0], dict) and "object_type" in v[0]:
                     v = [generic_list_parser(k, i) for i in v]
-                    to_cache = [i.serialize() for i in v]
+                    # An unmapped object_type (e.g. a plugin whose extension
+                    # hasn't been registered) falls through as the raw dict,
+                    # so cache it directly instead of assuming .serialize().
+                    to_cache = [
+                        i.serialize() if hasattr(i, "serialize") else copy.deepcopy(i)
+                        for i in v
+                    ]
                 elif k == "constraints":
                     # Permissions constraints can be either dict or list
                     to_cache = copy.deepcopy(v)
@@ -806,9 +816,13 @@ class GenericListObject:
     def __init__(self, record):
         from pynetbox.models.mapper import TYPE_CONTENT_MAPPER
 
+        type_content_mapper = getattr(
+            record.api, "_type_content_mapper", TYPE_CONTENT_MAPPER
+        )
+
         self.object = record
         self.object_id = record.id
-        self.object_type = TYPE_CONTENT_MAPPER.get(record.__class__)
+        self.object_type = type_content_mapper.get(record.__class__)
 
     def __repr__(self):
         return str(self.object)

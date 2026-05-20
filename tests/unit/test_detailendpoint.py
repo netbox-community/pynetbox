@@ -35,6 +35,32 @@ class DetailEndpointTestCase(unittest.TestCase):
             ip_obj = ip_range_obj.available_ips.create()
             self.assertEqual(ip_obj.address, "1.2.4.2/24")
 
+    def test_detail_endpoint_create_kwargs(self):
+        """Detail endpoints accept kwargs in the same spirit as Endpoint.create()."""
+        with patch(
+            "pynetbox.core.query.Request._make_call",
+            return_value={"id": 123, "prefix": "1.2.3.0/24"},
+        ):
+            prefix_obj = nb.ipam.prefixes.get(123)
+        with patch(
+            "pynetbox.core.query.Request._make_call",
+            return_value={"address": "1.2.3.1/24"},
+        ) as mock_call:
+            ip_obj = prefix_obj.available_ips.create(description="example")
+            mock_call.assert_called_once_with(
+                verb="post", data={"description": "example"}
+            )
+            self.assertEqual(ip_obj.address, "1.2.3.1/24")
+
+    def test_detail_endpoint_create_rejects_data_and_kwargs(self):
+        with patch(
+            "pynetbox.core.query.Request._make_call",
+            return_value={"id": 123, "prefix": "1.2.3.0/24"},
+        ):
+            prefix_obj = nb.ipam.prefixes.get(123)
+        with self.assertRaises(ValueError):
+            prefix_obj.available_ips.create({"description": "x"}, commit=True)
+
     def test_data_source_sync(self):
         with patch(
             "pynetbox.core.query.Request._make_call",

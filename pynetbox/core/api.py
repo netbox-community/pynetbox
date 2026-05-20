@@ -21,6 +21,7 @@ import requests
 from pynetbox.core.app import App, PluginsApp
 from pynetbox.core.query import Request, TOKEN_PREFIX
 from pynetbox.core.response import Record
+from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
 
 class Api:
@@ -80,6 +81,7 @@ class Api:
         token=None,
         threading=False,
         strict_filters=False,
+        extensions=None,
     ):
         """Initialize the API client.
 
@@ -88,6 +90,7 @@ class Api:
             token (str, optional): Your NetBox API token. If not provided, authentication will be required for each request.
             threading (bool, optional): Set to True to use threading in `.all()` and `.filter()` requests, defaults to False.
             strict_filters (bool, optional): Set to True to check GET call filters against OpenAPI specifications (intentionally not done in NetBox API), defaults to False.
+            extensions (list, optional): A list of `Extension` classes or instances that register custom `Record` subclasses and content-type mappings for NetBox plugins. See `pynetbox.core.extension`.
         """
         base_url = "{}/api".format(url if url[-1] != "/" else url[:-1])
         self.token = token
@@ -95,6 +98,8 @@ class Api:
         self.http_session = requests.Session()
         self.threading = threading
         self.strict_filters = strict_filters
+
+        self._register_extensions(extensions or [])
 
         # Initialize NetBox apps
         self.circuits = App(self, "circuits")
@@ -108,6 +113,57 @@ class Api:
         self.vpn = App(self, "vpn")
         self.wireless = App(self, "wireless")
         self.plugins = PluginsApp(self)
+
+    def _register_extensions(self, extensions):
+        """Build per-instance extension and content-type registries.
+
+        Stores extensions keyed by ``plugin_name`` so ``PluginsApp`` and
+        ``App._setmodel`` can look up the right ``models`` namespace, and
+        composes the built-in ``CONTENT_TYPE_MAPPER`` with each extension's
+        ``content_types`` overrides.
+
+        Two extensions cannot share a ``plugin_name`` or register the same
+        content-type key — both raise ``ValueError``, since a silent
+        last-wins would mask a configuration mistake. Overriding a key from
+        the built-in ``CONTENT_TYPE_MAPPER`` is allowed and intentional.
+
+        ``plugin_name`` is normalized by converting dashes to underscores
+        before lookup so the same plugin cannot register itself twice
+        under both spellings (e.g. ``"custom-objects"`` and
+        ``"custom_objects"``).
+        """
+        self._extensions = {}
+        for ext in extensions:
+            plugin_name = getattr(ext, "plugin_name", None)
+            if not plugin_name:
+                raise ValueError(
+                    "Extension {!r} is missing a 'plugin_name' attribute".format(ext)
+                )
+            plugin_name = plugin_name.replace("-", "_")
+            if plugin_name in self._extensions:
+                raise ValueError(
+                    "Duplicate extension for plugin_name {!r}: {!r} and {!r}".format(
+                        plugin_name, self._extensions[plugin_name], ext
+                    )
+                )
+            self._extensions[plugin_name] = ext
+
+        content_types = dict(CONTENT_TYPE_MAPPER)
+        seen_extension_keys = {}
+        for ext in self._extensions.values():
+            ext_content_types = getattr(ext, "content_types", None) or {}
+            for key, value in ext_content_types.items():
+                if key in seen_extension_keys:
+                    raise ValueError(
+                        "Duplicate content_type {!r} registered by extensions "
+                        "{!r} and {!r}".format(key, seen_extension_keys[key], ext)
+                    )
+                seen_extension_keys[key] = ext
+                content_types[key] = value
+        self._content_type_mapper = content_types
+        self._type_content_mapper = {
+            v: k for k, v in content_types.items() if v is not None
+        }
 
     @property
     def version(self):
