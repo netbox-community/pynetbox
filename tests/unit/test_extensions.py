@@ -77,6 +77,35 @@ class ExtensionRegistrationTestCase(unittest.TestCase):
                 extensions=[BranchingExtension, OtherBranchingExtension],
             )
 
+    def test_plugin_name_dash_underscore_equivalent(self):
+        """plugin_name 'custom-objects' and 'custom_objects' are the same key."""
+
+        class DashExtension(Extension):
+            plugin_name = "custom-objects"
+            models = CustomObjectsModels
+
+        class UnderscoreExtension(Extension):
+            plugin_name = "custom_objects"
+            models = CustomObjectsModels
+
+        with self.assertRaisesRegex(ValueError, "Duplicate extension"):
+            pynetbox.api(
+                "http://localhost:8000",
+                token="abc",
+                extensions=[DashExtension, UnderscoreExtension],
+            )
+
+    def test_plugin_name_dashed_registers_under_underscored_key(self):
+        class DashExtension(Extension):
+            plugin_name = "access-lists"
+            models = BranchingModels
+
+        nb = pynetbox.api(
+            "http://localhost:8000", token="abc", extensions=[DashExtension]
+        )
+        self.assertIn("access_lists", nb._extensions)
+        self.assertNotIn("access-lists", nb._extensions)
+
     def test_duplicate_content_type_across_extensions_raises(self):
         class ConflictingExtension(Extension):
             plugin_name = "other_plugin"
@@ -255,3 +284,55 @@ class GenericListExtensionTestCase(unittest.TestCase):
             Mock(spec=Endpoint),
         )
         self.assertIsInstance(record.things[0].object, CustomObjectTypeFields)
+
+    def test_unmapped_object_type_preserved_as_dict(self):
+        """An unregistered plugin object_type stays as the raw dict instead of crashing.
+
+        Real-world case: a NetBox instance returns generic-list items from
+        a plugin the caller hasn't added an extension for. Parsing should
+        not raise.
+        """
+        nb = pynetbox.api("http://localhost:8000", token="abc")
+        raw_item = {
+            "object_type": "some_plugin.some_model",
+            "object": {"id": 9, "name": "unknown"},
+        }
+        record = Record(
+            {"id": 1, "things": [raw_item]},
+            nb,
+            Mock(spec=Endpoint),
+        )
+        self.assertEqual(record.things, [raw_item])
+
+    def test_unmapped_and_mapped_object_types_mixed(self):
+        """Mapped entries become GenericListObject; unmapped entries stay raw dicts."""
+        nb = pynetbox.api(
+            "http://localhost:8000",
+            token="abc",
+            extensions=[CustomObjectsExtension],
+        )
+        record = Record(
+            {
+                "id": 1,
+                "things": [
+                    {
+                        "object_type": "custom_objects.customobjecttypefield",
+                        "object": {"id": 9, "name": "cidr_list"},
+                    },
+                    {
+                        "object_type": "some_plugin.some_model",
+                        "object": {"id": 10, "name": "unknown"},
+                    },
+                ],
+            },
+            nb,
+            Mock(spec=Endpoint),
+        )
+        self.assertIsInstance(record.things[0].object, CustomObjectTypeFields)
+        self.assertEqual(
+            record.things[1],
+            {
+                "object_type": "some_plugin.some_model",
+                "object": {"id": 10, "name": "unknown"},
+            },
+        )
