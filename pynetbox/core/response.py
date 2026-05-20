@@ -496,7 +496,13 @@ class Record:
                 # check if GFK
                 if len(v) and isinstance(v[0], dict) and "object_type" in v[0]:
                     v = [generic_list_parser(k, i) for i in v]
-                    to_cache = [i.serialize() for i in v]
+                    # An unmapped object_type (e.g. a plugin whose extension
+                    # hasn't been registered) falls through as the raw dict,
+                    # so cache it directly instead of assuming .serialize().
+                    to_cache = [
+                        i.serialize() if hasattr(i, "serialize") else copy.deepcopy(i)
+                        for i in v
+                    ]
                 elif k == "constraints":
                     # Permissions constraints can be either dict or list
                     to_cache = copy.deepcopy(v)
