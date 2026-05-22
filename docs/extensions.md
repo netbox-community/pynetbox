@@ -24,6 +24,7 @@ pynetbox ships a small set of extensions for popular NetBox plugins. These live 
 | Plugin | Extension | Docs |
 |---|---|---|
 | [netbox-branching](https://github.com/netboxlabs/netbox-branching) | `pynetbox.extensions.BranchingExtension` | [Branching](branching.md) |
+| [netbox-custom-objects](https://github.com/netboxlabs/netbox-custom-objects) | `pynetbox.extensions.CustomObjectsExtension` | [Custom Objects](custom-objects.md) |
 
 If you write or maintain an extension for a NetBox plugin that's widely used and want to upstream it, open an issue on the pynetbox repo.
 
@@ -37,33 +38,32 @@ from pynetbox.core.endpoint import DetailEndpoint
 from pynetbox.core.response import JsonField, Record
 
 
-class CustomObjectTypeFields(Record):
+class Notes(Record):
     # Mark a JSON dict column so pynetbox doesn't mangle it into a nested Record.
-    related_object_filter = JsonField
+    metadata = JsonField
 
-
-class CustomObjects(Record):
     @property
-    def run(self):
-        return DetailEndpoint(self, "run")
+    def render(self):
+        # Expose a per-object sub-route like /notes/{id}/render/.
+        return DetailEndpoint(self, "render")
 
 
-class CustomObjectsModels:
+class NotesModels:
     # Attribute names match the title-cased endpoint name. pynetbox looks up
-    # ``getattr(models, "CustomObjectTypeFields", Record)`` for the endpoint
-    # ``nb.plugins.custom_objects.custom_object_type_fields``.
-    CustomObjectTypeFields = CustomObjectTypeFields
-    CustomObjects = CustomObjects
+    # ``getattr(models, "Notes", Record)`` for the endpoint
+    # ``nb.plugins.notes.notes``.
+    Notes = Notes
 
 
-class CustomObjectsExtension(Extension):
-    plugin_name = "custom_objects"        # matches nb.plugins.custom_objects
-    models = CustomObjectsModels
+class NotesExtension(Extension):
+    plugin_name = "notes"                 # matches nb.plugins.notes
+    models = NotesModels
     content_types = {                     # optional; merged into the GFK mapper
-        "custom_objects.customobject": CustomObjects,
-        "custom_objects.customobjecttypefield": CustomObjectTypeFields,
+        "notes.note": Notes,
     }
 ```
+
+For real shipped extensions, see `pynetbox/extensions/branching.py` and `pynetbox/extensions/custom_objects.py`.
 
 ### `plugin_name`
 

@@ -19,7 +19,12 @@ An extension is any object (typically a class) exposing:
 * ``models``: a namespace (module, class, or any object) from which
   ``Record`` subclasses can be resolved by title-cased endpoint name —
   the same lookup used for built-in apps. For ``nb.plugins.<x>.branches``
-  pynetbox will look up ``models.Branches``.
+  pynetbox will look up ``models.Branches``. If your namespace defines
+  ``__getattr__`` to provide a fallback for endpoints not known at import
+  time, ``models`` must be an *instance*, not a bare class — ``getattr``
+  on a class only consults the metaclass's ``__getattr__``, never the
+  class's own. See ``pynetbox/extensions/custom_objects.py`` for an
+  example.
 * ``content_types`` (dict, optional): maps NetBox content-type strings
   (e.g. ``"netbox_branching.branch"``) to ``Record`` subclasses, so the
   classes are used when resolving polymorphic nested objects.

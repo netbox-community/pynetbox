@@ -7,5 +7,6 @@ extension contract and `docs/extensions.md` for a user-facing guide.
 """
 
 from pynetbox.extensions.branching import BranchingExtension
+from pynetbox.extensions.custom_objects import CustomObjectsExtension
 
-__all__ = ("BranchingExtension",)
+__all__ = ("BranchingExtension", "CustomObjectsExtension")
