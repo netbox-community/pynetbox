@@ -109,6 +109,33 @@ class RelatedObjectFilterRoundTripTestCase(unittest.TestCase):
             field.related_object_type, self.PAYLOAD["related_object_type"]
         )
 
+    def test_polymorphic_related_object_types_preserves_data(self):
+        """Polymorphic Object/MultiObject fields return ``related_object_types``
+        as a list of ``{id, app_label, model}`` dicts. pynetbox wraps each
+        item in a base ``Record`` (JsonField doesn't apply to list values),
+        but every attribute remains accessible."""
+        payload = {
+            "id": 4,
+            "name": "targets",
+            "type": "multiobject",
+            "related_object_type": None,
+            "related_object_types": [
+                {"id": 84, "app_label": "ipam", "model": "prefix"},
+                {"id": 12, "app_label": "dcim", "model": "device"},
+            ],
+        }
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=[payload]
+        ):
+            nb = _api()
+            field = nb.plugins.custom_objects.custom_object_type_fields.get(4)
+
+        self.assertEqual(len(field.related_object_types), 2)
+        first = field.related_object_types[0]
+        self.assertEqual(first.id, 84)
+        self.assertEqual(first.app_label, "ipam")
+        self.assertEqual(first.model, "prefix")
+
 
 class CustomObjectTypeRecordTestCase(unittest.TestCase):
     """`schema_document` and `fields` nesting on a CustomObjectType."""
@@ -177,6 +204,28 @@ class CustomObjectRecordTestCase(unittest.TestCase):
         self.assertIsInstance(obj, CustomObject)
         self.assertIsInstance(obj.custom_object_type, CustomObjectTypes)
         self.assertEqual(obj.custom_object_type.slug, "cidr-list")
+
+    def test_underscore_context_round_trips_as_dict(self):
+        """The plugin emits ``_context`` as a nested dict when the type has
+        context fields. The leading underscore would normally exclude it
+        from ``extra_keys`` in ``serialize()``, but server-supplied values
+        land in ``_init_cache`` and are serialized from there."""
+        payload = {
+            "id": 7,
+            "url": "http://localhost:8000/api/plugins/custom-objects/cidr-list/7/",
+            "display": "thing",
+            "name": "thing",
+            "_context": {"summary": "192.0.2.0/24", "labels": ["a", "b"]},
+        }
+        with patch(
+            "pynetbox.core.query.Request._make_call", return_value=[payload]
+        ):
+            nb = _api()
+            obj = nb.plugins.custom_objects.cidr_list.get(7)
+
+        self.assertIsInstance(obj._context, dict)
+        self.assertEqual(obj._context, payload["_context"])
+        self.assertEqual(obj.serialize()["_context"], payload["_context"])
 
 
 class LinkedObjectsTestCase(unittest.TestCase):

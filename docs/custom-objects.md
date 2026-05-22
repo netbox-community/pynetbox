@@ -65,9 +65,6 @@ for row in hits:
 
 Both `custom_object_type` and `object` come back as plain dicts — the target type isn't fixed (it can be any NetBox model), so the extension intentionally doesn't try to wrap them in typed records.
 
-!!! warning "Pagination caveat"
-    Up to and including netbox-custom-objects 0.4.x, the `linked-objects/` endpoint returns `{"count": N, "results": [...]}` without the standard DRF `next`/`previous` keys. pynetbox's paginator expects those keys and will raise `KeyError: 'next'` when iterating a non-empty result. Track [this upstream issue](https://github.com/netboxlabs/netbox-custom-objects/) for the plugin-side fix.
-
 ## Schema Preview and Apply
 
 The plugin exposes two non-CRUD endpoints for declarative schema management:

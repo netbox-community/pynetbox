@@ -53,35 +53,31 @@ from pynetbox.core.response import JsonField, Record
 _PLUGIN_URL_SLUG = "custom-objects"
 
 
-def _plugin_request(api, path, **kwargs):
+def _plugin_request(api, path):
     """Build a `Request` bound to a plugin sub-path under custom-objects.
 
     `path` is appended verbatim to ``<base>/plugins/custom-objects/`` and
     must include the trailing slash NetBox expects.
     """
     base = "{}/plugins/{}/{}".format(api.base_url, _PLUGIN_URL_SLUG, path)
-    return Request(
-        base=base, token=api.token, http_session=api.http_session, **kwargs
-    )
+    return Request(base=base, token=api.token, http_session=api.http_session)
 
 
 class CustomObjectTypeFields(Record):
     """A field definition on a Custom Object Type.
 
-    Several of the columns are JSON-typed on the server and were being
-    silently dropped because the default deserializer treats dict-valued
-    attributes as nested records. They are marked here so they round-trip
-    as plain Python objects.
+    Both `related_object_filter` (issue #751) and `related_object_type`
+    (``{id, app_label, model}`` from the plugin's SerializerMethodField)
+    are dict-valued and marked so they round-trip as plain dicts.
 
-    `related_object_filter` is the column called out in issue #751.
-    `related_object_type` and `related_object_types` are read-only nested
-    representations (``{id, app_label, model}``) emitted by the
-    `SerializerMethodField` on the plugin's serializer.
+    The polymorphic plural `related_object_types` is a list of the same
+    nested dicts; pynetbox's `JsonField` only applies to dict values, so
+    list items deserialize into base `Record`s instead — still accessible
+    as ``.id`` / ``.app_label`` / ``.model``.
     """
 
     related_object_filter = JsonField
     related_object_type = JsonField
-    related_object_types = JsonField
 
 
 class CustomObjectTypes(Record):
