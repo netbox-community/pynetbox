@@ -6,6 +6,7 @@ Each module here exposes an `Extension` subclass that can be passed to
 extension contract and `docs/extensions.md` for a user-facing guide.
 """
 
+from pynetbox.extensions.branching import BranchingExtension
 from pynetbox.extensions.custom_objects import CustomObjectsExtension
 
-__all__ = ("CustomObjectsExtension",)
+__all__ = ("BranchingExtension", "CustomObjectsExtension")
