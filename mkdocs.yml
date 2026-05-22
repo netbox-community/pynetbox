@@ -60,6 +60,7 @@ nav:
     - Virtualization: virtualization.md
   - Advanced Topics:
     - Advanced Usage: advanced.md
+    - Extensions: extensions.md
     - Branching: branching.md
   - Development:
     - Development Guide: development/index.md
