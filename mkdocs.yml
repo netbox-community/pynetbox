@@ -62,6 +62,7 @@ nav:
     - Advanced Usage: advanced.md
     - Extensions: extensions.md
     - Branching: branching.md
+    - Custom Objects: custom-objects.md
   - Development:
     - Development Guide: development/index.md
     - Getting Started: development/getting-started.md

@@ -24,6 +24,7 @@ pynetbox ships a small set of extensions for popular NetBox plugins. These live 
 | Plugin | Extension | Docs |
 |---|---|---|
 | [netbox-branching](https://github.com/netboxlabs/netbox-branching) | `pynetbox.extensions.BranchingExtension` | [Branching](branching.md) |
+| [netbox-custom-objects](https://github.com/netboxlabs/netbox-custom-objects) | `pynetbox.extensions.CustomObjectsExtension` | [Custom Objects](custom-objects.md) |
 
 If you write or maintain an extension for a NetBox plugin that's widely used and want to upstream it, open an issue on the pynetbox repo.
 
@@ -37,33 +38,32 @@ from pynetbox.core.endpoint import DetailEndpoint
 from pynetbox.core.response import JsonField, Record
 
 
-class CustomObjectTypeFields(Record):
+class Notes(Record):
     # Mark a JSON dict column so pynetbox doesn't mangle it into a nested Record.
-    related_object_filter = JsonField
+    metadata = JsonField
 
-
-class CustomObjects(Record):
     @property
-    def run(self):
-        return DetailEndpoint(self, "run")
+    def render(self):
+        # Expose a per-object sub-route like /notes/{id}/render/.
+        return DetailEndpoint(self, "render")
 
 
-class CustomObjectsModels:
+class NotesModels:
     # Attribute names match the title-cased endpoint name. pynetbox looks up
-    # ``getattr(models, "CustomObjectTypeFields", Record)`` for the endpoint
-    # ``nb.plugins.custom_objects.custom_object_type_fields``.
-    CustomObjectTypeFields = CustomObjectTypeFields
-    CustomObjects = CustomObjects
+    # ``getattr(models, "Notes", Record)`` for the endpoint
+    # ``nb.plugins.notes.notes``.
+    Notes = Notes
 
 
-class CustomObjectsExtension(Extension):
-    plugin_name = "custom_objects"        # matches nb.plugins.custom_objects
-    models = CustomObjectsModels
+class NotesExtension(Extension):
+    plugin_name = "notes"                 # matches nb.plugins.notes
+    models = NotesModels
     content_types = {                     # optional; merged into the GFK mapper
-        "custom_objects.customobject": CustomObjects,
-        "custom_objects.customobjecttypefield": CustomObjectTypeFields,
+        "notes.note": Notes,
     }
 ```
+
+For real shipped extensions, see `pynetbox/extensions/branching.py` and `pynetbox/extensions/custom_objects.py`.
 
 ### `plugin_name`
 
@@ -78,6 +78,26 @@ Common things to put on a Record subclass:
 - **`JsonField` markers** for columns that are JSON dicts/lists. Without this, pynetbox tries to coerce a dict-typed field into a nested `Record` and the data is lost. (See `Changes` in `pynetbox/extensions/branching.py` for an example.)
 - **`DetailEndpoint` properties** for per-object sub-routes like `/foo/{id}/run/` or `/foo/{id}/render/`.
 - **Custom methods** for plugin-specific actions, returning whatever record type the response represents.
+
+#### Dynamic endpoint names
+
+If the plugin exposes endpoints whose names you don't know up front — for example, the netbox-custom-objects plugin serves one endpoint per Custom Object Type at `/api/plugins/custom-objects/<slug>/` — make `models` an **instance** with a `__getattr__` fallback rather than a bare class:
+
+```python
+class _Models:
+    Notes = Notes  # statically known endpoints stay as class attributes
+
+    def __getattr__(self, name):
+        # Any endpoint name not listed above falls back to this Record class.
+        return Notes
+
+
+class NotesExtension(Extension):
+    plugin_name = "notes"
+    models = _Models()  # instance, not the class
+```
+
+This works because pynetbox resolves the Record class with `getattr(models, "<TitleCased>", Record)`. `getattr` on a class doesn't consult that class's `__getattr__` (only the metaclass's), so a `models = _Models` (class) form would never trigger the fallback. An instance puts the fallback on the right code path. See `pynetbox/extensions/custom_objects.py` for a real example.
 
 ### `content_types` (optional)
 
