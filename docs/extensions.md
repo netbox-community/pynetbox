@@ -79,26 +79,6 @@ Common things to put on a Record subclass:
 - **`DetailEndpoint` properties** for per-object sub-routes like `/foo/{id}/run/` or `/foo/{id}/render/`.
 - **Custom methods** for plugin-specific actions, returning whatever record type the response represents.
 
-#### Dynamic endpoint names
-
-If the plugin exposes endpoints whose names you don't know up front — for example, the netbox-custom-objects plugin serves one endpoint per Custom Object Type at `/api/plugins/custom-objects/<slug>/` — make `models` an **instance** with a `__getattr__` fallback rather than a bare class:
-
-```python
-class _Models:
-    Notes = Notes  # statically known endpoints stay as class attributes
-
-    def __getattr__(self, name):
-        # Any endpoint name not listed above falls back to this Record class.
-        return Notes
-
-
-class NotesExtension(Extension):
-    plugin_name = "notes"
-    models = _Models()  # instance, not the class
-```
-
-This works because pynetbox resolves the Record class with `getattr(models, "<TitleCased>", Record)`. `getattr` on a class doesn't consult that class's `__getattr__` (only the metaclass's), so a `models = _Models` (class) form would never trigger the fallback. An instance puts the fallback on the right code path. See `pynetbox/extensions/custom_objects.py` for a real example.
-
 ### `content_types` (optional)
 
 A mapping of NetBox content-type strings (e.g. `"netbox_branching.branch"`) to your `Record` subclasses. These are merged into a per-instance copy of pynetbox's built-in `CONTENT_TYPE_MAPPER`, so polymorphic nested objects (generic foreign keys) deserialize into your classes.
