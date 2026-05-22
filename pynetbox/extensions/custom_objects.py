@@ -50,16 +50,14 @@ from pynetbox.core.extension import Extension
 from pynetbox.core.query import Request
 from pynetbox.core.response import JsonField, Record
 
-_PLUGIN_URL_SLUG = "custom-objects"
-
-
 def _plugin_request(api, path):
     """Build a `Request` bound to a plugin sub-path under custom-objects.
 
     `path` is appended verbatim to ``<base>/plugins/custom-objects/`` and
     must include the trailing slash NetBox expects.
     """
-    base = "{}/plugins/{}/{}".format(api.base_url, _PLUGIN_URL_SLUG, path)
+    slug = CustomObjectsExtension.plugin_name.replace("_", "-")
+    base = "{}/plugins/{}/{}".format(api.base_url, slug, path)
     return Request(base=base, token=api.token, http_session=api.http_session)
 
 
@@ -70,10 +68,10 @@ class CustomObjectTypeFields(Record):
     (``{id, app_label, model}`` from the plugin's SerializerMethodField)
     are dict-valued and marked so they round-trip as plain dicts.
 
-    The polymorphic plural `related_object_types` is a list of the same
-    nested dicts; pynetbox's `JsonField` only applies to dict values, so
-    list items deserialize into base `Record`s instead — still accessible
-    as ``.id`` / ``.app_label`` / ``.model``.
+    The plural `related_object_types` is a list whose server-side items
+    are ``{id, app_label, model}`` dicts. `JsonField` only applies to
+    dict values, so list items deserialize into base `Record`s —
+    ``.id`` / ``.app_label`` / ``.model`` remain accessible.
     """
 
     related_object_filter = JsonField
