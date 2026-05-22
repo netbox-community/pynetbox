@@ -126,6 +126,33 @@ class BranchActionsTestCase(unittest.TestCase):
         self.assertEqual(mock_call.call_args.kwargs.get("data"), {})
         self.assertTrue(request_self.url.endswith("/branches/1/archive/"))
 
+    def test_changes_delegates_to_top_level_endpoint(self):
+        nb = make_api()
+        branch = self._branch(nb)
+        payload = {
+            "id": 11,
+            "object_type": "dcim.site",
+            "object_id": 7,
+            "object_repr": "site-1",
+            "action": "update",
+            "conflicts": [],
+            "diff": {},
+            "original_data": {},
+            "modified_data": {},
+            "current_data": {},
+        }
+        with self._patch_make_call([payload]) as mock_call:
+            results = list(branch.changes)
+
+        self.assertEqual(len(results), 1)
+        self.assertIsInstance(results[0], Changes)
+        request_self = mock_call.call_args.args[0]
+        self.assertEqual(
+            request_self.url,
+            "http://localhost:8000/api/plugins/branching/changes/",
+        )
+        self.assertEqual(request_self.filters, {"branch_id": 1})
+
 
 class ChangeDiffJsonFieldsTestCase(unittest.TestCase):
     """ChangeDiff has several JSONField columns that must round-trip as dicts."""

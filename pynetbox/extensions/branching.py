@@ -66,7 +66,6 @@ for model in nb.plugins.branching.branchable_models.all():
 ```
 """
 
-from pynetbox.core.endpoint import DetailEndpoint
 from pynetbox.core.extension import Extension
 from pynetbox.core.query import Request
 from pynetbox.core.response import JsonField, Record
@@ -185,15 +184,14 @@ class Branches(Record):
 
     @property
     def changes(self):
-        """Return a `DetailEndpoint` for this branch's `ChangeDiff`s.
+        """Return this branch's `ChangeDiff`s as a `RecordSet`.
 
-        ## Note
-        This is a convenience for `nb.plugins.branching.changes.filter(
-        branch_id=branch.id)`, useful when you already hold a Branch
-        record. Each returned object is a plain dict — to get `Changes`
-        records, use the top-level `changes` endpoint directly.
+        Convenience for ``nb.plugins.branching.changes.filter(
+        branch_id=branch.id)``. `ChangeDiff` is a top-level endpoint
+        on the branching plugin, so this delegates there with the
+        branch filter applied. Each item is a `Changes` record.
         """
-        return DetailEndpoint(self, "changes")
+        return self.api.plugins.branching.changes.filter(branch_id=self.id)
 
 
 class BranchEvents(Record):
