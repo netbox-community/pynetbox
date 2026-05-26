@@ -53,3 +53,12 @@ class VirtualCircuitTerminations(PathableRecord):
 
     def __str__(self):
         return self.virtual_circuit.cid
+
+
+class ProviderNetworks(Record):
+    """Provider Network Record.
+
+    Represents an upstream provider's network — a connectivity endpoint
+    delivered by a provider that can terminate a circuit without an
+    on-premise device.
+    """
