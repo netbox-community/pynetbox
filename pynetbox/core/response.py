@@ -24,6 +24,11 @@ from pynetbox.core.util import Hashabledict
 # List of fields that are lists but should be treated as sets.
 LIST_AS_SET = ("tags", "tagged_vlans")
 
+# List fields whose item type is announced via a sibling "<field>_type"
+# content-type string (NetBox's CableTerminationModelSerializerMixin pattern).
+# Items are cast to the Record subclass named by that sibling content type.
+SIBLING_TYPED_LIST_FIELDS = ("link_peers", "connected_endpoints")
+
 
 def get_return(lookup, return_fields=None):
     """Returns simple representations for items passed to lookup.
@@ -477,6 +482,19 @@ class Record:
 
             return list_item
 
+        def sibling_typed_list_parser(list_item, content_type):
+            from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
+
+            content_type_mapper = getattr(
+                self.api, "_content_type_mapper", CONTENT_TYPE_MAPPER
+            )
+
+            if isinstance(list_item, dict):
+                if model := content_type_mapper.get(content_type, None):
+                    return model(list_item, self.api, self.endpoint)
+                return self.default_ret(list_item, self.api, self.endpoint)
+            return list_item
+
         for k, v in values.items():
             if isinstance(v, dict):
                 lookup = getattr(self.__class__, k, None)
@@ -506,6 +524,19 @@ class Record:
                 elif k == "constraints":
                     # Permissions constraints can be either dict or list
                     to_cache = copy.deepcopy(v)
+                elif (
+                    k in SIBLING_TYPED_LIST_FIELDS
+                    and len(v)
+                    and isinstance(v[0], dict)
+                    and isinstance(values.get(f"{k}_type"), str)
+                ):
+                    # NetBox cable-termination pattern: link_peers/
+                    # connected_endpoints carry their item type in the sibling
+                    # link_peers_type/connected_endpoints_type field rather
+                    # than per-item. Cast each item to the model named by
+                    # that sibling content type.
+                    v = [sibling_typed_list_parser(i, values[f"{k}_type"]) for i in v]
+                    to_cache = list(v)
                 else:
                     v = [list_parser(k, i) for i in v]
                     to_cache = list(v)

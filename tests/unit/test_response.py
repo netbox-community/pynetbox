@@ -564,6 +564,108 @@ class RecordTestCase(unittest.TestCase):
         ]:
             self.assertNotIn(attr, serialized)
 
+    def test_link_peers_typed_by_sibling_content_type(self):
+        """Regression for issue #519: link_peers items should be cast to the
+        Record subclass identified by the sibling link_peers_type field."""
+        import pynetbox
+        from pynetbox.models.circuits import CircuitTerminations
+
+        nb = pynetbox.api("http://localhost:8000", token="abc")
+        record = Record(
+            {
+                "id": 7,
+                "name": "et-0/0/0",
+                "link_peers": [
+                    {
+                        "id": 1,
+                        "url": "http://localhost:8000/api/circuits/circuit-terminations/1/",
+                        "display": "Termination A",
+                    }
+                ],
+                "link_peers_type": "circuits.circuittermination",
+            },
+            nb,
+            Mock(spec=Endpoint),
+        )
+        self.assertEqual(len(record.link_peers), 1)
+        self.assertIsInstance(record.link_peers[0], CircuitTerminations)
+        self.assertEqual(record.link_peers[0].id, 1)
+
+    def test_connected_endpoints_typed_by_sibling_content_type(self):
+        """Regression for issue #519: connected_endpoints items should be cast
+        to the Record subclass identified by the sibling
+        connected_endpoints_type field."""
+        import pynetbox
+        from pynetbox.models.dcim import Interfaces
+
+        nb = pynetbox.api("http://localhost:8000", token="abc")
+        record = Record(
+            {
+                "id": 7,
+                "name": "et-0/0/0",
+                "connected_endpoints": [
+                    {
+                        "id": 22,
+                        "url": "http://localhost:8000/api/dcim/interfaces/22/",
+                        "display": "eth0",
+                        "name": "eth0",
+                    }
+                ],
+                "connected_endpoints_type": "dcim.interface",
+                "connected_endpoints_reachable": True,
+            },
+            nb,
+            Mock(spec=Endpoint),
+        )
+        self.assertEqual(len(record.connected_endpoints), 1)
+        self.assertIsInstance(record.connected_endpoints[0], Interfaces)
+        self.assertEqual(record.connected_endpoints[0].name, "eth0")
+
+    def test_sibling_type_null_falls_back_to_default(self):
+        """A null sibling type (no link peer present) should leave the empty
+        list alone and not raise."""
+        import pynetbox
+
+        nb = pynetbox.api("http://localhost:8000", token="abc")
+        record = Record(
+            {
+                "id": 7,
+                "name": "et-0/0/0",
+                "link_peers": [],
+                "link_peers_type": None,
+            },
+            nb,
+            Mock(spec=Endpoint),
+        )
+        self.assertEqual(record.link_peers, [])
+        self.assertIsNone(record.link_peers_type)
+
+    def test_sibling_type_unmapped_falls_back_to_default_record(self):
+        """If the sibling content type isn't in the mapper, items still
+        become Records rather than raw dicts."""
+        import pynetbox
+
+        nb = pynetbox.api("http://localhost:8000", token="abc")
+        record = Record(
+            {
+                "id": 7,
+                "name": "et-0/0/0",
+                "link_peers": [
+                    {
+                        "id": 99,
+                        "url": "http://localhost:8000/api/some_plugin/some_models/99/",
+                        "display": "plugin obj",
+                    }
+                ],
+                "link_peers_type": "some_plugin.some_model",
+            },
+            nb,
+            Mock(spec=Endpoint),
+        )
+        self.assertEqual(len(record.link_peers), 1)
+        self.assertIsInstance(record.link_peers[0], Record)
+        self.assertEqual(record.link_peers[0].id, 99)
+
 
 class RecordSetTestCase(unittest.TestCase):
     ids = [1, 3, 5]
