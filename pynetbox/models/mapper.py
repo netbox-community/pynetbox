@@ -1,6 +1,7 @@
 from .circuits import (
     Circuits,
     CircuitTerminations,
+    ProviderNetworks,
     VirtualCircuits,
     VirtualCircuitTerminations,
 )
@@ -29,6 +30,7 @@ from .wireless import WirelessLans
 CONTENT_TYPE_MAPPER = {
     "circuits.circuit": Circuits,
     "circuits.circuittermination": CircuitTerminations,
+    "circuits.providernetwork": ProviderNetworks,
     "circuits.virtualcircuit": VirtualCircuits,
     "circuits.virtualcircuittermination": VirtualCircuitTerminations,
     "core.datasource": DataSources,
