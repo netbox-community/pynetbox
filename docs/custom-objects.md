@@ -38,7 +38,7 @@ cot.fields[0].related_object_type           # dict {"id", "app_label", "model"}
 `fields` is a nested list of `CustomObjectTypeFields` records, so attribute access on each item works as expected.
 
 !!! note "`related_object_types` (plural)"
-    On polymorphic Object/MultiObject fields the server returns `related_object_types` as a list of `{id, app_label, model}` dicts. pynetbox wraps each list item in a base `Record` (the `JsonField` marker only applies to dict-valued attributes, not list elements), so `field.related_object_types[0].app_label` works, but `isinstance(field.related_object_types[0], dict)` is `False` — unlike the singular `related_object_type`, which round-trips as a plain dict.
+    On polymorphic Object/MultiObject fields the server returns `related_object_types` as a list of `{id, app_label, model}` dicts. This field is not marked `JsonField`, so pynetbox wraps each list item in a base `Record`, so `field.related_object_types[0].app_label` works, but `isinstance(field.related_object_types[0], dict)` is `False` — unlike the singular `related_object_type`, which is marked `JsonField` and round-trips as a plain dict. (Marking a list-valued column `JsonField` keeps its items as plain dicts.)
 
 ## Custom Objects (per-type endpoints)
 
