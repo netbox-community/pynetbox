@@ -511,6 +511,15 @@ class Record:
                 self._add_cache((k, v))
 
             elif isinstance(v, list):
+                lookup = getattr(self.__class__, k, None)
+                # An explicit JsonField marker means the column is raw JSON
+                # (e.g. a plugin field holding a list of dicts). Keep it as-is
+                # instead of coercing each dict into a nested Record, which
+                # would break serialize()/save() (no id on plain JSON dicts).
+                if hasattr(lookup, "_json_field"):
+                    self._add_cache((k, copy.deepcopy(v)))
+                    setattr(self, k, v)
+                    continue
                 # check if GFK
                 if len(v) and isinstance(v[0], dict) and "object_type" in v[0]:
                     v = [generic_list_parser(k, i) for i in v]

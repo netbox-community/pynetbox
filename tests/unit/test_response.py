@@ -200,6 +200,34 @@ class RecordTestCase(unittest.TestCase):
 
         self.assertEqual(test_obj._diff(), {"rear_ports"})
 
+    def test_json_field_list_of_dicts_kept_raw(self):
+        # Regression test for issue #625: a column explicitly marked
+        # JsonField that holds a list of dicts (e.g. an arbitrary plugin
+        # JSON field) must stay as plain dicts, not be coerced into nested
+        # Records. Coercion broke serialize()/save() because the dicts have
+        # no id.
+        from pynetbox.core.response import JsonField
+
+        class PluginRecord(Record):
+            my_json_list = JsonField
+
+        test_values = {
+            "id": 123,
+            "my_json_list": [{"example": "bug"}, {"another": "value"}],
+        }
+        test_obj = PluginRecord(test_values, Mock(base_url="test"), None)
+
+        # Items remain plain dicts, not Records.
+        self.assertIsInstance(test_obj.my_json_list[0], dict)
+        self.assertEqual(test_obj.my_json_list, test_values["my_json_list"])
+
+        # serialize() round-trips the raw JSON and save() doesn't choke.
+        self.assertEqual(
+            test_obj.serialize()["my_json_list"], test_values["my_json_list"]
+        )
+        # Unchanged list produces no false-positive diff.
+        self.assertFalse(test_obj._diff())
+
     def test_dict(self):
         test_values = {
             "id": 123,
