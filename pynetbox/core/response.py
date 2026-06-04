@@ -687,9 +687,27 @@ class Record:
                 return k, ",".join(map(str, v))
             return k, v
 
-        current = Hashabledict({fmt_dict(k, v) for k, v in self.serialize().items()})
+        current_serialized = self.serialize()
+        init_serialized = self.serialize(init=True)
+
+        # custom_fields use merge semantics on PATCH: NetBox leaves any custom
+        # field omitted from an update unchanged. Restrict the comparison to the
+        # keys present in the current value so that assigning a subset of custom
+        # fields isn't seen as removing the others (issue #748). To clear a
+        # custom field the caller still sets it explicitly to None.
+        current_cf = current_serialized.get("custom_fields")
+        init_cf = init_serialized.get("custom_fields")
+        if isinstance(current_cf, dict) and isinstance(init_cf, dict):
+            init_serialized = {
+                **init_serialized,
+                "custom_fields": {
+                    k: v for k, v in init_cf.items() if k in current_cf
+                },
+            }
+
+        current = Hashabledict({fmt_dict(k, v) for k, v in current_serialized.items()})
         init = Hashabledict(
-            {fmt_dict(k, v) for k, v in self.serialize(init=True).items()}
+            {fmt_dict(k, v) for k, v in init_serialized.items()}
         )
         return set([i[0] for i in set(current.items()) ^ set(init.items())])
 
