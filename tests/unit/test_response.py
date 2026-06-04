@@ -607,6 +607,36 @@ class RecordTestCase(unittest.TestCase):
         test_obj.custom_fields = {"testfield": "new_val"}
         self.assertEqual(test_obj._diff(), {"custom_fields"})
 
+    def test_diff_partial_custom_fields_detects_new_key(self):
+        """Issue #748: assigning a custom field key that was not in the original
+        response is detected as a change."""
+        test_obj = Record(
+            {
+                "id": 123,
+                "name": "testsite",
+                "custom_fields": {"testfield": "val", "other_field": None},
+            },
+            None,
+            None,
+        )
+        test_obj.custom_fields = {"brand_new_key": "val"}
+        self.assertEqual(test_obj._diff(), {"custom_fields"})
+
+    def test_diff_partial_custom_fields_detects_explicit_none_clear(self):
+        """Issue #748: explicitly setting a custom field to None to clear it is
+        detected as a change."""
+        test_obj = Record(
+            {
+                "id": 123,
+                "name": "testsite",
+                "custom_fields": {"testfield": "val", "other_field": None},
+            },
+            None,
+            None,
+        )
+        test_obj.custom_fields = {"testfield": None}
+        self.assertEqual(test_obj._diff(), {"custom_fields"})
+
     def test_serialize_excludes_internal_attributes(self):
         """Ensure serialize() filters out internal Record metadata."""
         test_obj = Record({"id": 123, "name": "test"}, None, None)

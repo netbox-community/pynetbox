@@ -694,7 +694,9 @@ class Record:
         # field omitted from an update unchanged. Restrict the comparison to the
         # keys present in the current value so that assigning a subset of custom
         # fields isn't seen as removing the others (issue #748). To clear a
-        # custom field the caller still sets it explicitly to None.
+        # custom field the caller still sets it explicitly to None. Assigning an
+        # empty dict is therefore a no-op (it touches no keys), matching NetBox's
+        # merge semantics where an empty custom_fields body changes nothing.
         current_cf = current_serialized.get("custom_fields")
         init_cf = init_serialized.get("custom_fields")
         if isinstance(current_cf, dict) and isinstance(init_cf, dict):
