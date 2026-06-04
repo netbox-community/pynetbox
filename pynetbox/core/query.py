@@ -223,6 +223,8 @@ class Request:
         key=None,
         token=None,
         threading=False,
+        thread_pool_executor=None,
+        max_workers=4,
         expect_json=True,
     ):
         """Instantiates a new Request object.
@@ -253,6 +255,8 @@ class Request:
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
+        self.thread_pool_executor = thread_pool_executor or cf.ThreadPoolExecutor
+        self.max_workers = max_workers
         self.limit = limit
         self.offset = offset
         self.expect_json = expect_json
@@ -413,7 +417,7 @@ class Request:
 
     def concurrent_get(self, ret, page_size, page_offsets):
         futures_to_results = []
-        with cf.ThreadPoolExecutor(max_workers=4) as pool:
+        with self.thread_pool_executor(max_workers=self.max_workers) as pool:
             for offset in page_offsets:
                 new_params = {"offset": offset, "limit": page_size}
                 futures_to_results.append(
