@@ -19,6 +19,18 @@ filtered = devices.filter(site='headquarters')
 new_device = devices.create(name='test', site=1, device_type=1, role=1)
 ```
 
+## Slugs with underscores
+
+Attribute access converts underscores to dashes (`nb.dcim.ip_addresses` → the `ip-addresses` endpoint), since Python attribute names can't contain dashes. For the rare endpoint whose URL slug legitimately contains an underscore (e.g. some custom-objects plugin types), use `App.endpoint()` to pass the slug verbatim:
+
+```python
+# Attribute access — underscores become dashes:
+nb.plugins.custom_objects.my_object        # → .../custom-objects/my-object/
+
+# endpoint() — slug used as-is:
+nb.plugins.custom_objects.endpoint("my_object").all()   # → .../custom-objects/my_object/
+```
+
 ## Endpoint Class
 
 ::: pynetbox.core.endpoint.Endpoint
