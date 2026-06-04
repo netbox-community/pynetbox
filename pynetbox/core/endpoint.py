@@ -33,6 +33,10 @@ class Endpoint:
     * **app** (App): Takes App.
     * **name** (str): Name of endpoint passed to App().
     * **model** (obj, optional): Custom model for given app.
+    * **literal_name** (bool, optional): When True, use ``name`` verbatim
+      as the URL slug instead of converting underscores to dashes. Used to
+      reach endpoints whose slug legitimately contains underscores
+      (e.g. custom objects). Defaults to False.
 
     ## Note
 
@@ -40,11 +44,16 @@ class Endpoint:
     names you should convert the dash to an underscore.
     (E.g. querying the ip-addresses endpoint is done with
     ``nb.ipam.ip_addresses.all()``.)
+
+    For the rare endpoint whose slug really does contain underscores,
+    use ``App.endpoint()`` (e.g.
+    ``nb.plugins.custom_objects.endpoint("my_custom_object")``) which sets
+    ``literal_name=True`` so no conversion is applied.
     """
 
-    def __init__(self, api, app, name, model=None):
+    def __init__(self, api, app, name, model=None, literal_name=False):
         self.return_obj = self._lookup_ret_obj(name, model)
-        self.name = name.replace("_", "-")
+        self.name = name if literal_name else name.replace("_", "-")
         self.api = api
         self.app = app
         self.base_url = api.base_url

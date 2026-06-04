@@ -82,6 +82,29 @@ class App:
     def __getattr__(self, name):
         return Endpoint(self.api, self, name, model=self.model)
 
+    def endpoint(self, name):
+        """Return an Endpoint using ``name`` as the literal URL slug.
+
+        Attribute access (``app.ip_addresses``) converts underscores to
+        dashes, which is correct for the vast majority of NetBox endpoints.
+        This method skips that conversion so endpoints whose slug genuinely
+        contains underscores can be reached.
+
+        ## Parameters
+
+        * **name** (str): The endpoint slug, used verbatim (no ``_`` → ``-``).
+
+        ## Returns
+        Endpoint matching the given slug.
+
+        ## Examples
+
+        ```python
+        nb.plugins.custom_objects.endpoint("my_custom_object").all()
+        ```
+        """
+        return Endpoint(self.api, self, name, model=self.model, literal_name=True)
+
     def config(self):
         """Returns config response from app.
 
