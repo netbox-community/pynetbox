@@ -50,9 +50,18 @@ class RecordTestCase(unittest.TestCase):
         test_obj = Record(test_values, Mock(base_url="http://localhost:8000/api"), None)
         test_obj.name = "modified"
         with patch.object(Record, "full_details") as full_details:
+            # Simulate what the real full_details would do if reached:
+            # re-parse the server values and overwrite local edits.
+            def clobber():
+                test_obj.name = "original"
+                return True
+
+            full_details.side_effect = clobber
+
             self.assertFalse(hasattr(test_obj, "__pydantic_decorators__"))
             full_details.assert_not_called()
-        # Local modification is preserved.
+        # Local modification is preserved: the dunder guard short-circuited
+        # before full_details could run and clobber it.
         self.assertEqual(test_obj.name, "modified")
 
     def test_dict_access(self):
