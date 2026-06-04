@@ -37,6 +37,24 @@ class RecordTestCase(unittest.TestCase):
         with self.assertRaises(AttributeError) as _:
             test_obj.nothing
 
+    def test_dunder_attribute_does_not_trigger_full_details(self):
+        """Probing for a missing dunder attribute (e.g. pydantic's
+        isinstance check, copy/pickle machinery) must not fire a network
+        request nor clobber local modifications. See issue #688.
+        """
+        test_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": "original",
+        }
+        test_obj = Record(test_values, Mock(base_url="http://localhost:8000/api"), None)
+        test_obj.name = "modified"
+        with patch.object(Record, "full_details") as full_details:
+            self.assertFalse(hasattr(test_obj, "__pydantic_decorators__"))
+            full_details.assert_not_called()
+        # Local modification is preserved.
+        self.assertEqual(test_obj.name, "modified")
+
     def test_dict_access(self):
         test_values = {
             "id": 123,
