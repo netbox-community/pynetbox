@@ -334,7 +334,16 @@ class Record:
 
         In order to prevent non-explicit behavior,`k='keys'` is
         excluded because casting to dict() calls this attr.
+
+        Dunder attributes are excluded as well: they are never NetBox
+        fields, and probing for them (e.g. pydantic's isinstance check
+        calling `hasattr(obj, '__pydantic_decorators__')`, or copy and
+        pickle machinery) must not trigger a network fetch that would
+        also clobber local modifications.
         """
+        if k.startswith("__") and k.endswith("__"):
+            raise AttributeError('object has no attribute "{}"'.format(k))
+
         if self.url:
             if self.has_details is False and k != "keys":
                 if self.full_details():
