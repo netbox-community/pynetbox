@@ -224,6 +224,7 @@ class Request:
         token=None,
         threading=False,
         expect_json=True,
+        pagination="offset",
     ):
         """Instantiates a new Request object.
 
@@ -238,6 +239,11 @@ class Request:
         * **expect_json** (bool, optional): If True, expects JSON response
             and sets appropriate Accept header. If False, expects raw content
             (e.g., SVG, XML) and returns text. Defaults to True.
+        * **pagination** (str, optional): Pagination strategy for list
+            views, either ``"offset"`` (default) or ``"cursor"``. Cursor
+            pagination (NetBox 4.6+) pages with the ``start`` parameter and
+            follows ``next`` links sequentially; it omits the total count
+            and is mutually exclusive with threading.
 
         ## Note
 
@@ -256,6 +262,7 @@ class Request:
         self.limit = limit
         self.offset = offset
         self.expect_json = expect_json
+        self.pagination = pagination
 
     def get_openapi(self):
         """Gets the OpenAPI Spec."""
@@ -438,15 +445,39 @@ class Request:
         * ContentError if response is not json.
         """
 
+        # Cursor-based pagination (NetBox 4.6+) is used only for full
+        # iteration of a list view. An explicit offset (single requested
+        # page) or a detail route (add_params already set) falls back to
+        # the default offset behavior, since 'start' and 'offset' are
+        # mutually exclusive on the server.
+        use_cursor = (
+            self.pagination == "cursor"
+            and self.offset is None
+            and add_params is None
+        )
+
         if not add_params and self.limit is not None:
             add_params = {"limit": self.limit}
-            if self.limit and self.offset is not None:
+            if use_cursor:
+                # 'start' is the numeric id of the first object to return;
+                # begin at the start and follow the server's next links.
+                add_params["start"] = 0
+            elif self.limit and self.offset is not None:
                 # if non-zero limit and some offset -> add offset
                 add_params["offset"] = self.offset
         req = self._make_call(add_params=add_params)
         if isinstance(req, dict) and req.get("results") is not None:
+            # In cursor mode NetBox omits the count (returns null); it is
+            # fetched lazily by get_count() if len() is requested.
             self.count = req["count"]
-            if self.offset is not None:
+            if use_cursor:
+                # Sequentially follow next links; each link carries the
+                # next 'start' cursor (last pk + 1) computed by the server.
+                yield from req["results"]
+                while req.get("next"):
+                    req = self._make_call(url_override=req["next"])
+                    yield from req["results"]
+            elif self.offset is not None:
                 # only yield requested page results if paginating
                 for i in req["results"]:
                     yield i
@@ -595,6 +626,10 @@ class Request:
         * ContentError if response is not json.
         """
 
-        if not hasattr(self, "count"):
+        # ``count`` may be unset, or set to None when cursor pagination was
+        # used (NetBox omits the count in that mode). In both cases fetch it
+        # explicitly. This uses an offset-style request (no 'start' param),
+        # which always returns the total count.
+        if getattr(self, "count", None) is None:
             self.count = self._make_call(add_params={"limit": 1, "brief": 1})["count"]
         return self.count

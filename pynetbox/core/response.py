@@ -136,13 +136,18 @@ class RecordSet:
 
     def __len__(self):
         try:
-            return self.request.count
+            count = self.request.count
         except AttributeError:
             try:
                 self._response_cache.append(next(self.response))
             except StopIteration:
                 return 0
-            return self.request.count
+            count = self.request.count
+        if count is None:
+            # Cursor-based pagination omits the total count; fetch it
+            # explicitly with a separate (offset-based) count request.
+            count = self.request.get_count()
+        return count
 
     def update(self, **kwargs):
         """Updates kwargs onto all Records in the RecordSet and saves these.

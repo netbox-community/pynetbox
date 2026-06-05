@@ -179,6 +179,7 @@ class Endpoint:
             threading=self.api.threading,
             limit=limit,
             offset=offset,
+            pagination=self.api._effective_pagination(),
         )
 
         return RecordSet(self, req)
@@ -354,6 +355,7 @@ class Endpoint:
             threading=self.api.threading,
             limit=limit,
             offset=offset,
+            pagination=self.api._effective_pagination(),
         )
 
         return RecordSet(self, req)

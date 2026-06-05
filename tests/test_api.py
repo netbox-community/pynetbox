@@ -71,6 +71,47 @@ class ApiVersionTestCase(unittest.TestCase):
         self.assertEqual(api.version, "")
 
 
+class ApiPaginationTestCase(unittest.TestCase):
+    class ResponseHeadersWithVersion:
+        def __init__(self, version):
+            self.headers = {"API-Version": version}
+            self.ok = True
+
+    def test_invalid_pagination_rejected(self):
+        with self.assertRaises(ValueError):
+            pynetbox.api(host, pagination="bogus")
+
+    def test_default_pagination_is_offset(self):
+        api = pynetbox.api(host)
+        self.assertEqual(api.pagination, "offset")
+
+    @patch("requests.sessions.Session.get")
+    def test_effective_pagination_offset_no_version_request(self, mock_get):
+        """Offset mode must not probe the server version."""
+        api = pynetbox.api(host)
+        self.assertEqual(api._effective_pagination(), "offset")
+        mock_get.assert_not_called()
+
+    def test_effective_pagination_cursor_supported(self):
+        api = pynetbox.api(host, pagination="cursor")
+        with patch(
+            "requests.sessions.Session.get",
+            return_value=self.ResponseHeadersWithVersion("4.6"),
+        ) as mock_get:
+            self.assertEqual(api._effective_pagination(), "cursor")
+            # Result is cached; a second call does not re-probe.
+            self.assertEqual(api._effective_pagination(), "cursor")
+            self.assertEqual(mock_get.call_count, 1)
+
+    def test_effective_pagination_cursor_unsupported_falls_back(self):
+        api = pynetbox.api(host, pagination="cursor")
+        with patch(
+            "requests.sessions.Session.get",
+            return_value=self.ResponseHeadersWithVersion("4.5"),
+        ):
+            self.assertEqual(api._effective_pagination(), "offset")
+
+
 class ApiStatusTestCase(unittest.TestCase):
     class ResponseWithStatus:
         ok = True

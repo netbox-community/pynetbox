@@ -53,6 +53,54 @@ devices = list(nb_threaded.dcim.devices.all())
 print(f"With threading: {time.time() - start:.2f}s")
 ```
 
+## Cursor-Based Pagination
+
+Starting with NetBox 4.6, the REST API supports cursor-based pagination as an
+alternative to the default offset-based pagination. Instead of skipping a
+growing number of rows with an `offset`, the server pages forward using the
+primary key (`id`) as a cursor. This avoids the cost of scanning the table up to
+the offset position, so it performs significantly better on very large result
+sets.
+
+### Enabling Cursor Pagination
+
+Pass `pagination="cursor"` when constructing the API client:
+
+```python
+import pynetbox
+
+nb = pynetbox.api(
+    'http://localhost:8000',
+    token='your-token',
+    pagination="cursor",
+)
+
+# .all() and .filter() now page using the server's `start` cursor
+devices = nb.dcim.devices.all()
+```
+
+pynetbox probes the NetBox version once on the first query. If the server is
+older than 4.6 (and therefore does not support cursor pagination), it
+transparently falls back to offset-based pagination, so it is safe to leave this
+option enabled across mixed environments.
+
+### Trade-offs
+
+!!! note "Things to know about cursor pagination"
+    - **No total count up front.** NetBox omits the `count` in cursor mode for
+      performance. pynetbox still supports `len(record_set)`, but doing so
+      triggers a separate count request.
+    - **Fixed ordering.** Results are always ordered by `id`; an explicit
+      `ordering` filter cannot be combined with cursor pagination.
+    - **Not combined with threading.** Cursor pagination is inherently
+      sequential (each page's cursor depends on the previous page), so it cannot
+      be parallelized. When `pagination="cursor"` is set, queries page
+      sequentially even if `threading=True`. For parallel fetching of large
+      offset-paginated result sets, use threading instead (see above).
+    - **Explicit `offset` still works.** Passing an explicit `offset` to
+      `.all()`/`.filter()` requests a single offset-based page as before, since
+      `start` and `offset` are mutually exclusive on the server.
+
 ## Filter Validation
 
 NetBox does not validate filter parameters passed to list endpoints. An unrecognized parameter is silently ignored, which means a typo in a `.filter()` or `.get()` call can quietly return the entire table.
