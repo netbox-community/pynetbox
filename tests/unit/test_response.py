@@ -37,6 +37,33 @@ class RecordTestCase(unittest.TestCase):
         with self.assertRaises(AttributeError) as _:
             test_obj.nothing
 
+    def test_dunder_attribute_does_not_trigger_full_details(self):
+        """Probing for a missing dunder attribute (e.g. pydantic's
+        isinstance check, copy/pickle machinery) must not fire a network
+        request nor clobber local modifications. See issue #688.
+        """
+        test_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": "original",
+        }
+        test_obj = Record(test_values, Mock(base_url="http://localhost:8000/api"), None)
+        test_obj.name = "modified"
+        with patch.object(Record, "full_details") as full_details:
+            # Simulate what the real full_details would do if reached:
+            # re-parse the server values and overwrite local edits.
+            def clobber():
+                test_obj.name = "original"
+                return True
+
+            full_details.side_effect = clobber
+
+            self.assertFalse(hasattr(test_obj, "__pydantic_decorators__"))
+            full_details.assert_not_called()
+        # Local modification is preserved: the dunder guard short-circuited
+        # before full_details could run and clobber it.
+        self.assertEqual(test_obj.name, "modified")
+
     def test_dict_access(self):
         test_values = {
             "id": 123,
@@ -575,6 +602,67 @@ class RecordTestCase(unittest.TestCase):
 
         diff = interface._diff()
         self.assertIn("primary_mac_address", diff)
+
+    def test_diff_partial_custom_fields_no_false_change(self):
+        """Regression test for issue #748: assigning a subset of custom_fields
+        should not flag the omitted fields as changed."""
+        test_obj = Record(
+            {
+                "id": 123,
+                "name": "testsite",
+                "custom_fields": {"testfield": "val", "other_field": None},
+            },
+            None,
+            None,
+        )
+        # Re-assign only the field we care about, leaving its value unchanged.
+        test_obj.custom_fields = {"testfield": "val"}
+        self.assertFalse(test_obj._diff())
+
+    def test_diff_partial_custom_fields_detects_real_change(self):
+        """Issue #748: a changed value in a partial custom_fields assignment is
+        still detected."""
+        test_obj = Record(
+            {
+                "id": 123,
+                "name": "testsite",
+                "custom_fields": {"testfield": "val", "other_field": None},
+            },
+            None,
+            None,
+        )
+        test_obj.custom_fields = {"testfield": "new_val"}
+        self.assertEqual(test_obj._diff(), {"custom_fields"})
+
+    def test_diff_partial_custom_fields_detects_new_key(self):
+        """Issue #748: assigning a custom field key that was not in the original
+        response is detected as a change."""
+        test_obj = Record(
+            {
+                "id": 123,
+                "name": "testsite",
+                "custom_fields": {"testfield": "val", "other_field": None},
+            },
+            None,
+            None,
+        )
+        test_obj.custom_fields = {"brand_new_key": "val"}
+        self.assertEqual(test_obj._diff(), {"custom_fields"})
+
+    def test_diff_partial_custom_fields_detects_explicit_none_clear(self):
+        """Issue #748: explicitly setting a custom field to None to clear it is
+        detected as a change."""
+        test_obj = Record(
+            {
+                "id": 123,
+                "name": "testsite",
+                "custom_fields": {"testfield": "val", "other_field": None},
+            },
+            None,
+            None,
+        )
+        test_obj.custom_fields = {"testfield": None}
+        self.assertEqual(test_obj._diff(), {"custom_fields"})
 
     def test_serialize_excludes_internal_attributes(self):
         """Ensure serialize() filters out internal Record metadata."""

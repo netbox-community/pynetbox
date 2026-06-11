@@ -1,3 +1,4 @@
+import concurrent.futures
 import unittest
 from unittest.mock import Mock
 
@@ -184,6 +185,59 @@ class CursorPaginationTestCase(unittest.TestCase):
         self.assertEqual(test_obj.get_count(), 99)
         call_args = test_obj.http_session.get.call_args
         self.assertEqual(call_args.kwargs["params"], {"limit": 1, "brief": 1})
+
+
+class ConcurrentGetTestCase(unittest.TestCase):
+    """Tests for the threaded pagination executor wiring."""
+
+    def _request(self, **kwargs):
+        test_obj = Request(
+            http_session=Mock(),
+            base="http://localhost:8001/api/dcim/devices",
+            **kwargs,
+        )
+        # Stub the per-page HTTP call so concurrent_get has something to fan out.
+        test_obj._make_call = Mock(return_value={"results": [1, 2]})
+        return test_obj
+
+    def test_defaults_to_threadpoolexecutor(self):
+        """Without an override, the stdlib ThreadPoolExecutor is used."""
+        test_obj = self._request()
+        self.assertIs(
+            test_obj.thread_pool_executor, concurrent.futures.ThreadPoolExecutor
+        )
+        self.assertEqual(test_obj.max_workers, 4)
+
+    def test_custom_executor_is_used(self):
+        """A custom executor factory is invoked with the configured max_workers."""
+        calls = {}
+
+        class RecordingExecutor(concurrent.futures.ThreadPoolExecutor):
+            def __init__(self, max_workers=None):
+                calls["max_workers"] = max_workers
+                calls["used"] = True
+                super().__init__(max_workers=max_workers)
+
+        test_obj = self._request(
+            thread_pool_executor=RecordingExecutor,
+            max_workers=7,
+        )
+
+        ret = []
+        test_obj.concurrent_get(ret, page_size=2, page_offsets=[2, 4, 6])
+
+        self.assertTrue(calls.get("used"))
+        self.assertEqual(calls["max_workers"], 7)
+        # Three offsets, two results per page.
+        self.assertEqual(len(ret), 6)
+        self.assertEqual(test_obj._make_call.call_count, 3)
+
+    def test_none_executor_falls_back_to_default(self):
+        """Passing None explicitly resolves to the stdlib default."""
+        test_obj = self._request(thread_pool_executor=None)
+        self.assertIs(
+            test_obj.thread_pool_executor, concurrent.futures.ThreadPoolExecutor
+        )
 
 
 class TokenDetectionTestCase(unittest.TestCase):

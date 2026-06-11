@@ -53,6 +53,61 @@ devices = list(nb_threaded.dcim.devices.all())
 print(f"With threading: {time.time() - start:.2f}s")
 ```
 
+### Tuning the Worker Count
+
+By default, threaded queries use up to 4 worker threads. Override this with `max_workers`:
+
+```python
+nb = pynetbox.api(
+    'http://localhost:8000',
+    token='your-token',
+    threading=True,
+    max_workers=8,
+)
+```
+
+### Custom Thread Pool Executor
+
+By default pynetbox builds its pool with `concurrent.futures.ThreadPoolExecutor`. You can
+inject your own executor with `thread_pool_executor`. It must be a callable matching the
+`ThreadPoolExecutor(max_workers=...)` signature and support the context-manager protocol —
+a `ThreadPoolExecutor` subclass is the simplest option.
+
+This is useful when worker threads need thread-local state that the standard executor does
+not propagate, such as an OpenTelemetry trace context, a request-scoped logging correlation
+ID, or a thread-bound database/session handle. Without propagation, work performed in the
+pool's threads is detached from the context of the calling thread.
+
+```python
+import concurrent.futures
+from opentelemetry import context as otel_context
+
+class ContextPropagatingExecutor(concurrent.futures.ThreadPoolExecutor):
+    """Carries the caller's OpenTelemetry context into each worker thread."""
+
+    def submit(self, fn, *args, **kwargs):
+        ctx = otel_context.get_current()
+
+        def run_with_context():
+            token = otel_context.attach(ctx)
+            try:
+                return fn(*args, **kwargs)
+            finally:
+                otel_context.detach(token)
+
+        return super().submit(run_with_context)
+
+nb = pynetbox.api(
+    'http://localhost:8000',
+    token='your-token',
+    threading=True,
+    thread_pool_executor=ContextPropagatingExecutor,
+)
+```
+
+The executor is constructed once per threaded query and shut down when that query's pages
+have been fetched, so pass the class (or a factory), not an already-instantiated pool.
+
 ## Cursor-Based Pagination
 
 Starting with NetBox 4.6, the REST API supports cursor-based pagination as an

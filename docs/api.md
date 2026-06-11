@@ -53,6 +53,7 @@ The `App` class represents a NetBox application (such as `dcim`, `ipam`, or `cir
     options:
         members:
             - config
+            - endpoint
         show_source: true
         show_root_heading: true
         heading_level: 3

@@ -54,6 +54,20 @@ new = nb.plugins.custom_objects.cidr_list.create(name="ours", prefix=42)
 
 `CustomObject.custom_object_type` resolves to a `CustomObjectTypes` record, so `obj.custom_object_type.slug` works without an extra fetch when the per-type serializer includes it.
 
+### Slugs that contain underscores
+
+Attribute access converts underscores to dashes, which is correct for almost every endpoint but breaks when an endpoint slug genuinely contains an underscore — e.g. a slug of `my_first_custom_object` would be requested as `.../custom-objects/my-first-custom-object/` and 404. Use `App.endpoint()` to pass the slug verbatim (the fix for [#715](https://github.com/netbox-community/pynetbox/issues/715)):
+
+```python
+# Attribute access — underscores become dashes:
+nb.plugins.custom_objects.my_first_custom_object        # → .../custom-objects/my-first-custom-object/
+
+# endpoint() — slug used as-is, underscores preserved:
+nb.plugins.custom_objects.endpoint("my_first_custom_object").all()   # → .../custom-objects/my_first_custom_object/
+```
+
+`endpoint()` is a per-call escape hatch: it returns an ordinary `Endpoint` (same CRUD methods, same typed `CustomObject` records) and changes nothing about the default attribute-access behaviour. It works on any `App`, not just plugins.
+
 ## Linked Objects
 
 `linked-objects/` reports which custom objects link to a given NetBox object via an Object/MultiObject field:

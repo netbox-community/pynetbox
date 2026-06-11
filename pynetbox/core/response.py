@@ -339,7 +339,16 @@ class Record:
 
         In order to prevent non-explicit behavior,`k='keys'` is
         excluded because casting to dict() calls this attr.
+
+        Dunder attributes are excluded as well: they are never NetBox
+        fields, and probing for them (e.g. pydantic's isinstance check
+        calling `hasattr(obj, '__pydantic_decorators__')`, or copy and
+        pickle machinery) must not trigger a network fetch that would
+        also clobber local modifications.
         """
+        if k.startswith("__") and k.endswith("__"):
+            raise AttributeError('object has no attribute "{}"'.format(k))
+
         if self.url:
             if self.has_details is False and k != "keys":
                 if self.full_details():
@@ -692,9 +701,29 @@ class Record:
                 return k, ",".join(map(str, v))
             return k, v
 
-        current = Hashabledict({fmt_dict(k, v) for k, v in self.serialize().items()})
+        current_serialized = self.serialize()
+        init_serialized = self.serialize(init=True)
+
+        # custom_fields use merge semantics on PATCH: NetBox leaves any custom
+        # field omitted from an update unchanged. Restrict the comparison to the
+        # keys present in the current value so that assigning a subset of custom
+        # fields isn't seen as removing the others (issue #748). To clear a
+        # custom field the caller still sets it explicitly to None. Assigning an
+        # empty dict is therefore a no-op (it touches no keys), matching NetBox's
+        # merge semantics where an empty custom_fields body changes nothing.
+        current_cf = current_serialized.get("custom_fields")
+        init_cf = init_serialized.get("custom_fields")
+        if isinstance(current_cf, dict) and isinstance(init_cf, dict):
+            init_serialized = {
+                **init_serialized,
+                "custom_fields": {
+                    k: v for k, v in init_cf.items() if k in current_cf
+                },
+            }
+
+        current = Hashabledict({fmt_dict(k, v) for k, v in current_serialized.items()})
         init = Hashabledict(
-            {fmt_dict(k, v) for k, v in self.serialize(init=True).items()}
+            {fmt_dict(k, v) for k, v in init_serialized.items()}
         )
         return set([i[0] for i in set(current.items()) ^ set(init.items())])
 
