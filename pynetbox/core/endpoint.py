@@ -186,6 +186,8 @@ class Endpoint:
             token=self.token,
             http_session=self.api.http_session,
             threading=self.api.threading,
+            thread_pool_executor=self.api.thread_pool_executor,
+            max_workers=self.api.max_workers,
             limit=limit,
             offset=offset,
         )
@@ -361,6 +363,8 @@ class Endpoint:
             token=self.token,
             http_session=self.api.http_session,
             threading=self.api.threading,
+            thread_pool_executor=self.api.thread_pool_executor,
+            max_workers=self.api.max_workers,
             limit=limit,
             offset=offset,
         )

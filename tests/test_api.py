@@ -1,5 +1,6 @@
+import concurrent.futures
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pynetbox
 
@@ -39,6 +40,53 @@ class ApiTestCase(unittest.TestCase):
         api = pynetbox.api("http://localhost:8000/", **def_kwargs)
         self.assertTrue(api)
         self.assertEqual(api.base_url, "http://localhost:8000/api")
+
+
+class ApiThreadPoolTestCase(unittest.TestCase):
+    @patch("requests.sessions.Session.post", return_value=Response())
+    def test_threadpool_defaults(self, *_):
+        api = pynetbox.api(host, **def_kwargs)
+        self.assertIsNone(api.thread_pool_executor)
+        self.assertEqual(api.max_workers, 4)
+
+    @patch("requests.sessions.Session.post", return_value=Response())
+    def test_threadpool_custom_values_stored(self, *_):
+        executor = concurrent.futures.ThreadPoolExecutor
+        api = pynetbox.api(
+            host,
+            thread_pool_executor=executor,
+            max_workers=12,
+            **def_kwargs,
+        )
+        self.assertIs(api.thread_pool_executor, executor)
+        self.assertEqual(api.max_workers, 12)
+
+    @patch("requests.sessions.Session.post", return_value=Response())
+    def test_threadpool_invalid_max_workers(self, *_):
+        for invalid in (0, -1):
+            with self.assertRaises(ValueError):
+                pynetbox.api(host, max_workers=invalid, **def_kwargs)
+
+    @patch("requests.sessions.Session.post", return_value=Response())
+    @patch("pynetbox.core.endpoint.Request")
+    def test_threadpool_propagated_to_request(self, request_mock, *_):
+        executor = concurrent.futures.ThreadPoolExecutor
+        api = pynetbox.api(
+            host,
+            threading=True,
+            thread_pool_executor=executor,
+            max_workers=9,
+            **def_kwargs,
+        )
+        # Avoid iterating the mocked RecordSet; we only care about the kwargs
+        # passed into the Request that backs .all().
+        request_mock.return_value = Mock()
+        api.dcim.devices.all()
+
+        _, kwargs = request_mock.call_args
+        self.assertIs(kwargs["thread_pool_executor"], executor)
+        self.assertEqual(kwargs["max_workers"], 9)
+        self.assertTrue(kwargs["threading"])
 
 
 class ApiVersionTestCase(unittest.TestCase):
