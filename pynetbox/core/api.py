@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 import contextlib
+import warnings
 
 import requests
 from packaging import version
@@ -220,8 +221,24 @@ class Api:
                 self._cursor_supported = version.parse(self.version) >= version.parse(
                     "4.6"
                 )
-            except (RequestError, InvalidVersion):
+            except (RequestError, InvalidVersion, requests.exceptions.RequestException):
+                # RequestError covers a non-ok HTTP response from the version
+                # probe; requests.exceptions.RequestException covers transport
+                # failures (ConnectionError, Timeout, ...) raised before a
+                # response exists. In every case fall back to offset, as the
+                # docstring promises, and let the real list request surface any
+                # underlying connectivity error.
                 self._cursor_supported = False
+            if self._cursor_supported and self.threading:
+                # Cursor pagination follows next links sequentially and cannot
+                # be parallelised; the cursor path ignores self.threading.
+                # Warn so the no-op threading configuration is not a silent
+                # performance surprise.
+                warnings.warn(
+                    "threading=True has no effect with cursor pagination; "
+                    "cursor pages are fetched sequentially.",
+                    stacklevel=2,
+                )
         return "cursor" if self._cursor_supported else "offset"
 
     def openapi(self):

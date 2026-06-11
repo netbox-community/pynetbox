@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import patch
 
+import requests
+
 import pynetbox
 
 from .util import Response
@@ -110,6 +112,38 @@ class ApiPaginationTestCase(unittest.TestCase):
             return_value=self.ResponseHeadersWithVersion("4.5"),
         ):
             self.assertEqual(api._effective_pagination(), "offset")
+
+    def test_effective_pagination_cursor_network_error_falls_back(self):
+        """A transport-level failure in the version probe falls back to offset."""
+        api = pynetbox.api(host, pagination="cursor")
+        with patch(
+            "requests.sessions.Session.get",
+            side_effect=requests.exceptions.ConnectionError("boom"),
+        ):
+            self.assertEqual(api._effective_pagination(), "offset")
+
+    def test_effective_pagination_cursor_threading_warns(self):
+        """Confirming cursor support with threading=True warns about the no-op."""
+        api = pynetbox.api(host, pagination="cursor", threading=True)
+        with patch(
+            "requests.sessions.Session.get",
+            return_value=self.ResponseHeadersWithVersion("4.6"),
+        ):
+            with self.assertWarns(UserWarning):
+                self.assertEqual(api._effective_pagination(), "cursor")
+
+    def test_effective_pagination_offset_fallback_does_not_warn(self):
+        """Falling back to offset (NetBox < 4.6) leaves threading functional."""
+        import warnings
+
+        api = pynetbox.api(host, pagination="cursor", threading=True)
+        with patch(
+            "requests.sessions.Session.get",
+            return_value=self.ResponseHeadersWithVersion("4.5"),
+        ):
+            with warnings.catch_warnings():
+                warnings.simplefilter("error")
+                self.assertEqual(api._effective_pagination(), "offset")
 
 
 class ApiStatusTestCase(unittest.TestCase):
