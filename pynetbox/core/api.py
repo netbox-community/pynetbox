@@ -103,11 +103,19 @@ class Api:
             thread_pool_executor (callable, optional): A `concurrent.futures.ThreadPoolExecutor` class, or any callable matching its `(max_workers=...)` signature and context-manager protocol, used to build the pool for threaded requests. Defaults to `concurrent.futures.ThreadPoolExecutor`.
             max_workers (int, optional): Maximum number of worker threads used for threaded requests, defaults to 4.
         """
+        if max_workers <= 0:
+            raise ValueError("max_workers must be a positive integer")
+
         base_url = "{}/api".format(url if url[-1] != "/" else url[:-1])
         self.token = token
         self.base_url = base_url
         self.http_session = requests.Session()
         self.threading = threading
+        # Stored as ``None`` (the sentinel) when the caller did not supply a
+        # custom executor, so ``None`` distinguishes "use the default" from an
+        # explicit choice. ``Request`` resolves ``None`` to
+        # ``concurrent.futures.ThreadPoolExecutor`` at request time, so the
+        # value here is not necessarily the executor actually used.
         self.thread_pool_executor = thread_pool_executor
         self.max_workers = max_workers
         self.strict_filters = strict_filters

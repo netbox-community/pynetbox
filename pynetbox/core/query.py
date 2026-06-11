@@ -255,7 +255,11 @@ class Request:
         self.http_session = http_session
         self.url = self.base if not key else "{}{}/".format(self.base, key)
         self.threading = threading
-        self.thread_pool_executor = thread_pool_executor or cf.ThreadPoolExecutor
+        self.thread_pool_executor = (
+            thread_pool_executor
+            if thread_pool_executor is not None
+            else cf.ThreadPoolExecutor
+        )
         self.max_workers = max_workers
         self.limit = limit
         self.offset = offset

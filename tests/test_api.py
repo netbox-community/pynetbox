@@ -62,6 +62,12 @@ class ApiThreadPoolTestCase(unittest.TestCase):
         self.assertEqual(api.max_workers, 12)
 
     @patch("requests.sessions.Session.post", return_value=Response())
+    def test_threadpool_invalid_max_workers(self, *_):
+        for invalid in (0, -1):
+            with self.assertRaises(ValueError):
+                pynetbox.api(host, max_workers=invalid, **def_kwargs)
+
+    @patch("requests.sessions.Session.post", return_value=Response())
     @patch("pynetbox.core.endpoint.Request")
     def test_threadpool_propagated_to_request(self, request_mock, *_):
         executor = concurrent.futures.ThreadPoolExecutor
