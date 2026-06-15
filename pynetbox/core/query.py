@@ -241,10 +241,13 @@ class Request:
         * **expect_json** (bool, optional): If True, expects JSON response
             and sets appropriate Accept header. If False, expects raw content
             (e.g., SVG, XML) and returns text. Defaults to True.
-        * **pagination** (str, optional): Pagination strategy for list
-            views, either ``"offset"`` (default) or ``"cursor"``. Cursor
-            pagination (NetBox 4.6+) pages with the ``start`` parameter and
-            follows ``next`` links sequentially; it omits the total count
+        * **pagination** (str or callable, optional): Pagination strategy for
+            list views, either ``"offset"`` (default) or ``"cursor"``. May
+            also be a zero-argument callable returning one of those strings,
+            which is resolved lazily on the first list request so any work it
+            performs (e.g. a server version probe) is deferred until needed.
+            Cursor pagination (NetBox 4.6+) pages with the ``start`` parameter
+            and follows ``next`` links sequentially; it omits the total count
             and is mutually exclusive with threading.
 
         ## Note
@@ -439,6 +442,18 @@ class Request:
                 result = future.result()
                 ret.extend(result["results"])
 
+    def _resolve_pagination(self):
+        """Resolve the configured pagination strategy.
+
+        ``pagination`` may be either a string (``"offset"``/``"cursor"``) or a
+        zero-argument callable returning one. Deferring the call to here keeps
+        any work it does (such as the NetBox version probe behind
+        ``Api._effective_pagination``) out of ``Request`` construction, so a
+        lazily-built ``RecordSet`` that is never iterated makes no extra call.
+        """
+        pagination = self.pagination
+        return pagination() if callable(pagination) else pagination
+
     def get(self, add_params=None):
         """Makes a GET request.
 
@@ -459,7 +474,7 @@ class Request:
         # the default offset behavior, since 'start' and 'offset' are
         # mutually exclusive on the server.
         use_cursor = (
-            self.pagination == "cursor"
+            self._resolve_pagination() == "cursor"
             and self.offset is None
             and add_params is None
         )

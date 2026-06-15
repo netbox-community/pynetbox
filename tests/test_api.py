@@ -142,6 +142,19 @@ class ApiPaginationTestCase(unittest.TestCase):
         self.assertEqual(api._effective_pagination(), "offset")
         mock_get.assert_not_called()
 
+    @patch("requests.sessions.Session.get")
+    def test_effective_pagination_cursor_deferred_until_iteration(self, mock_get):
+        """Building a cursor-mode RecordSet must not probe the server version.
+
+        The version lookup behind cursor pagination is resolved lazily on the
+        first page fetch, so an .all()/.filter() that is never iterated makes
+        no extra request.
+        """
+        api = pynetbox.api(host, pagination="cursor")
+        api.dcim.devices.all()
+        api.dcim.devices.filter(name="test")
+        mock_get.assert_not_called()
+
     def test_effective_pagination_cursor_supported(self):
         api = pynetbox.api(host, pagination="cursor")
         with patch(

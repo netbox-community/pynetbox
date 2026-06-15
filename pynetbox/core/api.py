@@ -255,10 +255,16 @@ class Api:
                 # be parallelised; the cursor path ignores self.threading.
                 # Warn so the no-op threading configuration is not a silent
                 # performance surprise.
+                # stacklevel=5 attributes the warning to the caller's list
+                # request rather than to pynetbox internals. The version probe
+                # is resolved lazily on the first page fetch, so the fixed
+                # frame chain at this point is:
+                #   _effective_pagination -> Request._resolve_pagination
+                #   -> Request.get -> RecordSet.__next__/__len__ -> caller.
                 warnings.warn(
                     "threading=True has no effect with cursor pagination; "
                     "cursor pages are fetched sequentially.",
-                    stacklevel=2,
+                    stacklevel=5,
                 )
         return "cursor" if self._cursor_supported else "offset"
 

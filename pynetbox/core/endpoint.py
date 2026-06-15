@@ -190,7 +190,10 @@ class Endpoint:
             max_workers=self.api.max_workers,
             limit=limit,
             offset=offset,
-            pagination=self.api._effective_pagination(),
+            # Passed uncalled so the version probe behind
+            # _effective_pagination() is deferred until the request actually
+            # runs, rather than firing when this lazy RecordSet is built.
+            pagination=self.api._effective_pagination,
         )
 
         return RecordSet(self, req)
@@ -368,7 +371,10 @@ class Endpoint:
             max_workers=self.api.max_workers,
             limit=limit,
             offset=offset,
-            pagination=self.api._effective_pagination(),
+            # Passed uncalled so the version probe behind
+            # _effective_pagination() is deferred until the request actually
+            # runs, rather than firing when this lazy RecordSet is built.
+            pagination=self.api._effective_pagination,
         )
 
         return RecordSet(self, req)
