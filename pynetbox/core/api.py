@@ -15,11 +15,14 @@ limitations under the License.
 """
 
 import contextlib
+import warnings
 
 import requests
+from packaging import version
+from packaging.version import InvalidVersion
 
 from pynetbox.core.app import App, PluginsApp
-from pynetbox.core.query import Request, TOKEN_PREFIX
+from pynetbox.core.query import Request, RequestError, TOKEN_PREFIX
 from pynetbox.core.response import Record
 from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
@@ -89,6 +92,7 @@ class Api:
         threading=False,
         strict_filters=False,
         extensions=None,
+        pagination="offset",
         thread_pool_executor=None,
         max_workers=4,
     ):
@@ -100,9 +104,14 @@ class Api:
             threading (bool, optional): Set to True to use threading in `.all()` and `.filter()` requests, defaults to False.
             strict_filters (bool, optional): Set to True to check GET call filters against OpenAPI specifications (intentionally not done in NetBox API), defaults to False.
             extensions (list, optional): A list of `Extension` classes or instances that register custom `Record` subclasses and content-type mappings for NetBox plugins. See `pynetbox.core.extension`.
+            pagination (str, optional): Pagination strategy for `.all()` and `.filter()`, either `"offset"` (default) or `"cursor"`. Cursor pagination (NetBox 4.6+) offers better performance on very large result sets but omits the total count and cannot be combined with threading or `ordering`. On NetBox versions older than 4.6 it transparently falls back to offset pagination.
             thread_pool_executor (callable, optional): A `concurrent.futures.ThreadPoolExecutor` class, or any callable matching its `(max_workers=...)` signature and context-manager protocol, used to build the pool for threaded requests. Defaults to `concurrent.futures.ThreadPoolExecutor`.
             max_workers (int, optional): Maximum number of worker threads used for threaded requests, defaults to 4.
         """
+        if pagination not in ("offset", "cursor"):
+            raise ValueError(
+                "pagination must be 'offset' or 'cursor', got {!r}".format(pagination)
+            )
         if max_workers <= 0:
             raise ValueError("max_workers must be a positive integer")
 
@@ -119,6 +128,8 @@ class Api:
         self.thread_pool_executor = thread_pool_executor
         self.max_workers = max_workers
         self.strict_filters = strict_filters
+        self.pagination = pagination
+        self._cursor_supported = None
 
         self._register_extensions(extensions or [])
 
@@ -214,6 +225,48 @@ class Api:
             http_session=self.http_session,
         ).get_version()
         return version
+
+    def _effective_pagination(self):
+        """Resolve the pagination strategy to use for list requests.
+
+        Returns ``"cursor"`` only when cursor pagination was requested *and*
+        the connected NetBox supports it (4.6+). Otherwise returns
+        ``"offset"``. The server version is probed once and cached, so only
+        the first `.all()`/`.filter()` on a cursor-mode `Api` pays the cost;
+        offset-mode instances never make the extra request.
+        """
+        if self.pagination != "cursor":
+            return "offset"
+        if self._cursor_supported is None:
+            try:
+                self._cursor_supported = version.parse(self.version) >= version.parse(
+                    "4.6"
+                )
+            except (RequestError, InvalidVersion, requests.exceptions.RequestException):
+                # RequestError covers a non-ok HTTP response from the version
+                # probe; requests.exceptions.RequestException covers transport
+                # failures (ConnectionError, Timeout, ...) raised before a
+                # response exists. In every case fall back to offset, as the
+                # docstring promises, and let the real list request surface any
+                # underlying connectivity error.
+                self._cursor_supported = False
+            if self._cursor_supported and self.threading:
+                # Cursor pagination follows next links sequentially and cannot
+                # be parallelised; the cursor path ignores self.threading.
+                # Warn so the no-op threading configuration is not a silent
+                # performance surprise.
+                # stacklevel=5 attributes the warning to the caller's list
+                # request rather than to pynetbox internals. The version probe
+                # is resolved lazily on the first page fetch, so the fixed
+                # frame chain at this point is:
+                #   _effective_pagination -> Request._resolve_pagination
+                #   -> Request.get -> RecordSet.__next__/__len__ -> caller.
+                warnings.warn(
+                    "threading=True has no effect with cursor pagination; "
+                    "cursor pages are fetched sequentially.",
+                    stacklevel=5,
+                )
+        return "cursor" if self._cursor_supported else "offset"
 
     def openapi(self):
         """Returns the OpenAPI spec.

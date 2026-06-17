@@ -815,6 +815,26 @@ class RecordSetTestCase(unittest.TestCase):
             )
             self.assertTrue(test)
 
+    def test_len_fetches_count_in_cursor_mode(self):
+        """len() falls back to get_count() when count is None (cursor mode)."""
+        from pynetbox.core.query import Request
+
+        req = Request(
+            http_session=Mock(),
+            base="http://localhost:8000/api/dcim/devices",
+            pagination="cursor",
+        )
+        # Simulate a cursor-paginated response: count omitted (null).
+        req.http_session.get.return_value.ok = True
+        req.http_session.get.return_value.json.side_effect = [
+            {"count": None, "next": None, "previous": None, "results": [{"id": 1}]},
+            {"count": 7, "next": None, "previous": None, "results": []},
+        ]
+        api = Mock(base_url="http://localhost:8000/api")
+        app = Mock(name="dcim")
+        record_set = RecordSet(Endpoint(api, app, "devices"), req)
+        self.assertEqual(len(record_set), 7)
+
     def test_update(self):
         with patch(
             "pynetbox.core.query.Request._make_call", return_value=Mock()
