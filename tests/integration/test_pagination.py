@@ -1,3 +1,5 @@
+import contextlib
+
 import pytest
 from packaging import version
 
@@ -10,6 +12,26 @@ def cursor_api(docker_netbox_service):
     nb = pynetbox.api(docker_netbox_service["url"], pagination="cursor")
     nb.create_token("admin", "admin")
     return nb
+
+
+@contextlib.contextmanager
+def capture_request_urls(api):
+    """Record the URL of every request issued through ``api``'s session.
+
+    Uses a ``requests`` response hook so the assertions can inspect exactly
+    which query parameters were sent, rather than only the deserialized
+    results (which look identical regardless of the pagination strategy used).
+    """
+    urls = []
+
+    def _hook(response, *args, **kwargs):
+        urls.append(response.request.url)
+
+    api.http_session.hooks["response"].append(_hook)
+    try:
+        yield urls
+    finally:
+        api.http_session.hooks["response"].remove(_hook)
 
 
 @pytest.fixture(scope="module")
@@ -42,7 +64,14 @@ class TestCursorPagination:
 
         # Force a small page size so the result set spans multiple cursor
         # pages and the next-link following is actually exercised.
-        results = list(cursor_api.ipam.prefixes.filter(limit=2))
+        with capture_request_urls(cursor_api) as urls:
+            results = list(cursor_api.ipam.prefixes.filter(limit=2))
+
+        # Assert cursor pagination is genuinely in play: the offset strategy
+        # never emits a 'start' parameter, so its presence proves the client
+        # took the cursor path rather than silently falling back to offset.
+        assert any("start=" in url for url in urls)
+
         returned = {str(p.prefix) for p in results}
         for prefix in prefixes:
             assert str(prefix.prefix) in returned
@@ -53,4 +82,10 @@ class TestCursorPagination:
             pytest.skip("cursor pagination requires NetBox 4.6+")
 
         record_set = cursor_api.ipam.prefixes.filter(limit=2)
-        assert len(record_set) >= len(prefixes)
+        with capture_request_urls(cursor_api) as urls:
+            count = len(record_set)
+
+        assert count >= len(prefixes)
+        # len() fetches the first cursor page (start=0) before refetching the
+        # count, so confirm the cursor path was exercised here too.
+        assert any("start=" in url for url in urls)

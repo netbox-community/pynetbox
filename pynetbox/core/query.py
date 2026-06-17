@@ -18,6 +18,7 @@ import concurrent.futures as cf
 import io
 import os
 import json
+import warnings
 
 from packaging import version
 
@@ -478,6 +479,19 @@ class Request:
             and self.offset is None
             and add_params is None
         )
+
+        if use_cursor and self.filters and "ordering" in self.filters:
+            # Cursor pagination derives the page boundaries from a fixed
+            # server-side ordering, so a caller-supplied 'ordering' filter is
+            # silently ignored by NetBox. Warn rather than let the result come
+            # back in an unexpected order.
+            # stacklevel=3: get() (generator body, resumed on the first
+            # next()) -> RecordSet.__next__/__len__ -> caller.
+            warnings.warn(
+                "ordering has no effect with cursor pagination; results are "
+                "returned in NetBox's fixed cursor order.",
+                stacklevel=3,
+            )
 
         if not add_params and self.limit is not None:
             add_params = {"limit": self.limit}

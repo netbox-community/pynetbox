@@ -166,6 +166,50 @@ class CursorPaginationTestCase(unittest.TestCase):
         self.assertEqual(call_args.kwargs["params"], {"offset": 20, "limit": 10})
         self.assertNotIn("start", call_args.kwargs["params"])
 
+    def test_ordering_filter_warns(self):
+        """An 'ordering' filter has no effect in cursor mode, so warn."""
+        test_obj = Request(
+            http_session=Mock(),
+            base="http://localhost:8001/api/dcim/devices",
+            filters={"ordering": "name"},
+            limit=2,
+            pagination="cursor",
+        )
+        test_obj.http_session.get.return_value.ok = True
+        test_obj.http_session.get.return_value.json.return_value = {
+            "count": None,
+            "next": None,
+            "previous": None,
+            "results": [{"id": 1}],
+        }
+
+        with self.assertWarns(UserWarning) as ctx:
+            list(test_obj.get())
+        self.assertIn("ordering", str(ctx.warning))
+
+    def test_ordering_filter_no_warn_offset(self):
+        """Offset pagination honors 'ordering', so it must not warn."""
+        import warnings
+
+        test_obj = Request(
+            http_session=Mock(),
+            base="http://localhost:8001/api/dcim/devices",
+            filters={"ordering": "name"},
+            limit=2,
+            pagination="offset",
+        )
+        test_obj.http_session.get.return_value.ok = True
+        test_obj.http_session.get.return_value.json.return_value = {
+            "count": 1,
+            "next": None,
+            "previous": None,
+            "results": [{"id": 1}],
+        }
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            list(test_obj.get())
+
     def test_get_count_fetched_when_null(self):
         """get_count() refetches when cursor pagination left count as None."""
         test_obj = Request(
