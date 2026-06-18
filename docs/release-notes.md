@@ -1,5 +1,39 @@
 # Release Notes
 
+## Version 7.8.0 (June 18, 2026)
+
+#### Plugin Extension Framework ([#774](https://github.com/netbox-community/pynetbox/issues/774))
+
+pynetbox can now be extended to support third-party NetBox plugins without modifying the library. You can register custom record types for a plugin's endpoints, so working with plugin objects feels the same as working with built-in NetBox objects. The new branching ([#710](https://github.com/netbox-community/pynetbox/issues/710)) and Custom Objects ([#751](https://github.com/netbox-community/pynetbox/issues/751)) integrations are built on this framework.
+
+#### Custom Thread Pool Executor ([#633](https://github.com/netbox-community/pynetbox/issues/633))
+
+When threading is enabled, you can now control how the parallel requests behind `.all()` and `.filter()` are run. You can adjust how many worker threads are used, and supply your own executor — useful for carrying context such as tracing information into the worker threads.
+
+#### Cursor-Based Pagination ([#764](https://github.com/netbox-community/pynetbox/issues/764))
+
+pynetbox can now page through large result sets using NetBox 4.6's cursor-based pagination.
+
+#### Other New Features
+- [#713](https://github.com/netbox-community/pynetbox/issues/713) - Add `sync()` method to the `data_sources` endpoint
+- [#715](https://github.com/netbox-community/pynetbox/issues/715) - Allow endpoints with underscores
+
+#### Enhancements
+- [#625](https://github.com/netbox-community/pynetbox/issues/625) - Preserve JSON list fields instead of returning them as `Record`s
+
+#### Bug Fixes
+- [#701](https://github.com/netbox-community/pynetbox/issues/701) - Fix filtering for custom fields
+- [#749](https://github.com/netbox-community/pynetbox/issues/749) - Don't treat `Record` methods as constructors in `_parse_values`
+- [#745](https://github.com/netbox-community/pynetbox/issues/745) - Serialize list-`Record` items that lack an ID
+- [#519](https://github.com/netbox-community/pynetbox/issues/519) - Fix link peer casting
+- [#688](https://github.com/netbox-community/pynetbox/issues/688) - Skip network fetch for dunder attributes in `Record.__getattr__`
+- [#748](https://github.com/netbox-community/pynetbox/issues/748) - Stop re-sending PATCH for unchanged partial `custom_fields`
+
+#### Compatibility
+- Supports NetBox 4.6
+
+---
+
 ## Version 7.7.0 (May 5, 2026)
 
 #### New Features
