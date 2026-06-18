@@ -1,0 +1,3942 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Python API client library for NetBox">
+      
+      
+      
+      
+        <link rel="prev" href="../getting-started/">
+      
+      
+        <link rel="next" href="../endpoint/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Core Classes - pynetbox</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#core-classes" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="pynetbox" class="md-header__button md-logo" aria-label="pynetbox" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            pynetbox
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Core Classes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to Dark Mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to Dark Mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to Light Mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to Light Mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/netbox-community/pynetbox" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    netbox-community/pynetbox
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="pynetbox" class="md-nav__button md-logo" aria-label="pynetbox" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    pynetbox
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/netbox-community/pynetbox" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    netbox-community/pynetbox
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Classes
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Classes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Api
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Api">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Api
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Api">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api--additional-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional Attributes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api--examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        version
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="version">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.version--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.version--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.activate_branch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        activate_branch()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="activate_branch()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.activate_branch--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.activate_branch--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.activate_branch--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_token()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="create_token()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token--notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.openapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        openapi()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="openapi()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.openapi--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.openapi--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        status()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="status()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.status--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.status--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.status--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        App
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="App">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        App
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="App">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        config()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="config()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.config--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.config--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.config--examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        endpoint()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="endpoint()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.endpoint--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.endpoint--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.endpoint--examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pluginsapp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PluginsApp
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PluginsApp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.PluginsApp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PluginsApp
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PluginsApp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.PluginsApp--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.PluginsApp.installed_plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        installed_plugins()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="installed_plugins()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.PluginsApp.installed_plugins--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.PluginsApp.installed_plugins--examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relationship-to-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationship to Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../endpoint/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Endpoint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../response/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Response
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exceptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exceptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../circuits/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Circuits
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dcim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DCIM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ipam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IPAM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../virtualization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Virtualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Topics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Advanced Topics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../branching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Branching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom-objects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Objects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/release-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Checklist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release-notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Api
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Api">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Api
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Api">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api--additional-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional Attributes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api--examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        version
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="version">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.version--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.version--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.activate_branch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        activate_branch()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="activate_branch()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.activate_branch--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.activate_branch--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.activate_branch--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_token()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="create_token()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token--notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.create_token--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.openapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        openapi()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="openapi()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.openapi--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.openapi--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        status()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="status()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.status--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.status--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.api.Api.status--example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        App
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="App">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        App
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="App">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        config()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="config()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.config--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.config--raises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Raises
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.config--examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        endpoint()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="endpoint()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.endpoint--parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.endpoint--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.App.endpoint--examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pluginsapp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PluginsApp
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PluginsApp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.PluginsApp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PluginsApp
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PluginsApp">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.PluginsApp--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.PluginsApp.installed_plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        installed_plugins()
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="installed_plugins()">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.PluginsApp.installed_plugins--returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Returns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pynetbox.core.app.PluginsApp.installed_plugins--examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relationship-to-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationship to Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="core-classes">Core Classes</h1>
+<p>This page documents the core classes that form pynetbox's API surface.</p>
+<h2 id="overview">Overview</h2>
+<p>pynetbox uses a layered architecture, with each layer wrapping the one below:</p>
+<ol>
+<li><strong><code>Api</code></strong> — main entry point; manages the HTTP session, authentication token, and global flags.</li>
+<li><strong><code>App</code></strong> — represents a NetBox application (e.g. <code>dcim</code>, <code>ipam</code>); attribute access returns endpoints.</li>
+<li><strong><code>Endpoint</code></strong> — represents an individual NetBox API endpoint and exposes CRUD methods.</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pynetbox</span>
+
+<span class="c1"># Create an API connection (Api)</span>
+<span class="n">nb</span> <span class="o">=</span> <span class="n">pynetbox</span><span class="o">.</span><span class="n">api</span><span class="p">(</span><span class="s1">&#39;http://localhost:8000&#39;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="s1">&#39;your-token&#39;</span><span class="p">)</span>
+
+<span class="c1"># Access an app (App)</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">dcim</span>
+
+<span class="c1"># Access an endpoint (Endpoint)</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span>
+
+<span class="c1"># Call an endpoint method (returns Record / RecordSet)</span>
+<span class="n">devices</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="api">Api</h2>
+<p>The <code>Api</code> class is the main entry point. It manages the underlying <code>requests.Session</code>, holds the authentication token, and provides access to NetBox applications.</p>
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="pynetbox.core.api.Api" class="doc doc-heading">
+        <code>
+pynetbox.core.api.Api        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents first">
+
+      <p>The API object is the point of entry to pynetbox.</p>
+<p>After instantiating the Api() with the appropriate named arguments
+you can specify which app and endpoint you wish to interact with.</p>
+<p>Valid attributes currently are:</p>
+<ul>
+<li>circuits</li>
+<li>core (NetBox 3.5+)</li>
+<li>dcim</li>
+<li>extras</li>
+<li>ipam</li>
+<li>tenancy</li>
+<li>users</li>
+<li>virtualization</li>
+<li>vpn (NetBox 3.7+)</li>
+<li>wireless</li>
+</ul>
+<p>Calling any of these attributes will return an <code>App</code> object which exposes endpoints as attributes.</p>
+<h5 id="pynetbox.core.api.Api--additional-attributes">Additional Attributes</h5>
+<ul>
+<li><strong>http_session(requests.Session)</strong>: Override the default session with your own. This is used to control
+  a number of HTTP behaviors such as SSL verification, custom headers,
+  retires, and timeouts.
+  See <a href="../advanced/#custom-sessions">custom sessions</a> for more info.</li>
+</ul>
+<h5 id="pynetbox.core.api.Api--parameters">Parameters</h5>
+<ul>
+<li><strong>url</strong> (str): The base URL to the instance of NetBox you wish to connect to.</li>
+<li><strong>token</strong> (str): Your NetBox token.</li>
+<li><strong>threading</strong> (bool, optional): Set to True to use threading in <code>.all()</code> and <code>.filter()</code> requests.</li>
+<li><strong>thread_pool_executor</strong> (callable, optional): A <code>concurrent.futures.ThreadPoolExecutor</code>
+  class (or any callable matching its <code>(max_workers=...)</code> signature and context-manager
+  protocol) used to build the pool for threaded requests. Defaults to
+  <code>concurrent.futures.ThreadPoolExecutor</code>. Inject a custom executor to propagate
+  thread-local state such as OpenTelemetry trace context into worker threads.</li>
+<li><strong>max_workers</strong> (int, optional): Maximum number of worker threads used for threaded
+  <code>.all()</code> and <code>.filter()</code> requests. Defaults to 4. Only used when <code>threading=True</code>.</li>
+</ul>
+<h5 id="pynetbox.core.api.Api--raises">Raises</h5>
+<ul>
+<li><strong>AttributeError</strong>: If app doesn't exist.</li>
+</ul>
+<h5 id="pynetbox.core.api.Api--examples">Examples</h5>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pynetbox</span>
+<span class="n">nb</span> <span class="o">=</span> <span class="n">pynetbox</span><span class="o">.</span><span class="n">api</span><span class="p">(</span>
+    <span class="s1">&#39;http://localhost:8000&#39;</span><span class="p">,</span>
+    <span class="n">token</span><span class="o">=</span><span class="s1">&#39;d6f4e314a5b5fefd164995169f28ae32d987704f&#39;</span>
+<span class="p">)</span>
+<span class="nb">list</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+<span class="c1"># [test1-leaf1, test1-leaf2, test1-leaf3]</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/api.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Api</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The API object is the point of entry to pynetbox.</span>
+
+<span class="sd">    After instantiating the Api() with the appropriate named arguments</span>
+<span class="sd">    you can specify which app and endpoint you wish to interact with.</span>
+
+<span class="sd">    Valid attributes currently are:</span>
+
+<span class="sd">    * circuits</span>
+<span class="sd">    * core (NetBox 3.5+)</span>
+<span class="sd">    * dcim</span>
+<span class="sd">    * extras</span>
+<span class="sd">    * ipam</span>
+<span class="sd">    * tenancy</span>
+<span class="sd">    * users</span>
+<span class="sd">    * virtualization</span>
+<span class="sd">    * vpn (NetBox 3.7+)</span>
+<span class="sd">    * wireless</span>
+
+<span class="sd">    Calling any of these attributes will return an `App` object which exposes endpoints as attributes.</span>
+
+<span class="sd">    ## Additional Attributes</span>
+
+<span class="sd">    * **http_session(requests.Session)**: Override the default session with your own. This is used to control</span>
+<span class="sd">      a number of HTTP behaviors such as SSL verification, custom headers,</span>
+<span class="sd">      retires, and timeouts.</span>
+<span class="sd">      See [custom sessions](advanced.md#custom-sessions) for more info.</span>
+
+<span class="sd">    ## Parameters</span>
+
+<span class="sd">    * **url** (str): The base URL to the instance of NetBox you wish to connect to.</span>
+<span class="sd">    * **token** (str): Your NetBox token.</span>
+<span class="sd">    * **threading** (bool, optional): Set to True to use threading in `.all()` and `.filter()` requests.</span>
+<span class="sd">    * **thread_pool_executor** (callable, optional): A `concurrent.futures.ThreadPoolExecutor`</span>
+<span class="sd">      class (or any callable matching its `(max_workers=...)` signature and context-manager</span>
+<span class="sd">      protocol) used to build the pool for threaded requests. Defaults to</span>
+<span class="sd">      `concurrent.futures.ThreadPoolExecutor`. Inject a custom executor to propagate</span>
+<span class="sd">      thread-local state such as OpenTelemetry trace context into worker threads.</span>
+<span class="sd">    * **max_workers** (int, optional): Maximum number of worker threads used for threaded</span>
+<span class="sd">      `.all()` and `.filter()` requests. Defaults to 4. Only used when `threading=True`.</span>
+
+<span class="sd">    ## Raises</span>
+
+<span class="sd">    * **AttributeError**: If app doesn&#39;t exist.</span>
+
+<span class="sd">    ## Examples</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    import pynetbox</span>
+<span class="sd">    nb = pynetbox.api(</span>
+<span class="sd">        &#39;http://localhost:8000&#39;,</span>
+<span class="sd">        token=&#39;d6f4e314a5b5fefd164995169f28ae32d987704f&#39;</span>
+<span class="sd">    )</span>
+<span class="sd">    list(nb.dcim.devices.all())</span>
+<span class="sd">    # [test1-leaf1, test1-leaf2, test1-leaf3]</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">,</span>
+        <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">threading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">strict_filters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">extensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">pagination</span><span class="o">=</span><span class="s2">&quot;offset&quot;</span><span class="p">,</span>
+        <span class="n">thread_pool_executor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the API client.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            url (str): The base URL to the instance of NetBox you wish to connect to.</span>
+<span class="sd">            token (str, optional): Your NetBox API token. If not provided, authentication will be required for each request.</span>
+<span class="sd">            threading (bool, optional): Set to True to use threading in `.all()` and `.filter()` requests, defaults to False.</span>
+<span class="sd">            strict_filters (bool, optional): Set to True to check GET call filters against OpenAPI specifications (intentionally not done in NetBox API), defaults to False.</span>
+<span class="sd">            extensions (list, optional): A list of `Extension` classes or instances that register custom `Record` subclasses and content-type mappings for NetBox plugins. See `pynetbox.core.extension`.</span>
+<span class="sd">            pagination (str, optional): Pagination strategy for `.all()` and `.filter()`, either `&quot;offset&quot;` (default) or `&quot;cursor&quot;`. Cursor pagination (NetBox 4.6+) offers better performance on very large result sets but omits the total count and cannot be combined with threading or `ordering`. On NetBox versions older than 4.6 it transparently falls back to offset pagination.</span>
+<span class="sd">            thread_pool_executor (callable, optional): A `concurrent.futures.ThreadPoolExecutor` class, or any callable matching its `(max_workers=...)` signature and context-manager protocol, used to build the pool for threaded requests. Defaults to `concurrent.futures.ThreadPoolExecutor`.</span>
+<span class="sd">            max_workers (int, optional): Maximum number of worker threads used for threaded requests, defaults to 4.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pagination</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="s2">&quot;cursor&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;pagination must be &#39;offset&#39; or &#39;cursor&#39;, got </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pagination</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">max_workers</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;max_workers must be a positive integer&quot;</span><span class="p">)</span>
+
+        <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/api&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span> <span class="k">if</span> <span class="n">url</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/&quot;</span> <span class="k">else</span> <span class="n">url</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">http_session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threading</span> <span class="o">=</span> <span class="n">threading</span>
+        <span class="c1"># Stored as ``None`` (the sentinel) when the caller did not supply a</span>
+        <span class="c1"># custom executor, so ``None`` distinguishes &quot;use the default&quot; from an</span>
+        <span class="c1"># explicit choice. ``Request`` resolves ``None`` to</span>
+        <span class="c1"># ``concurrent.futures.ThreadPoolExecutor`` at request time, so the</span>
+        <span class="c1"># value here is not necessarily the executor actually used.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread_pool_executor</span> <span class="o">=</span> <span class="n">thread_pool_executor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_workers</span> <span class="o">=</span> <span class="n">max_workers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strict_filters</span> <span class="o">=</span> <span class="n">strict_filters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pagination</span> <span class="o">=</span> <span class="n">pagination</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_supported</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_extensions</span><span class="p">(</span><span class="n">extensions</span> <span class="ow">or</span> <span class="p">[])</span>
+
+        <span class="c1"># Initialize NetBox apps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circuits</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;circuits&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;core&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dcim</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dcim&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;extras&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ipam</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ipam&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tenancy</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;tenancy&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">users</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;users&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">virtualization</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;virtualization&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vpn</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;vpn&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wireless</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;wireless&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="n">PluginsApp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_register_extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extensions</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build per-instance extension and content-type registries.</span>
+
+<span class="sd">        Stores extensions keyed by ``plugin_name`` so ``PluginsApp`` and</span>
+<span class="sd">        ``App._setmodel`` can look up the right ``models`` namespace, and</span>
+<span class="sd">        composes the built-in ``CONTENT_TYPE_MAPPER`` with each extension&#39;s</span>
+<span class="sd">        ``content_types`` overrides.</span>
+
+<span class="sd">        Two extensions cannot share a ``plugin_name`` or register the same</span>
+<span class="sd">        content-type key — both raise ``ValueError``, since a silent</span>
+<span class="sd">        last-wins would mask a configuration mistake. Overriding a key from</span>
+<span class="sd">        the built-in ``CONTENT_TYPE_MAPPER`` is allowed and intentional.</span>
+
+<span class="sd">        ``plugin_name`` is normalized by converting dashes to underscores</span>
+<span class="sd">        before lookup so the same plugin cannot register itself twice</span>
+<span class="sd">        under both spellings (e.g. ``&quot;custom-objects&quot;`` and</span>
+<span class="sd">        ``&quot;custom_objects&quot;``).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
+            <span class="n">plugin_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s2">&quot;plugin_name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">plugin_name</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Extension </span><span class="si">{!r}</span><span class="s2"> is missing a &#39;plugin_name&#39; attribute&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">plugin_name</span> <span class="o">=</span> <span class="n">plugin_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">plugin_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Duplicate extension for plugin_name </span><span class="si">{!r}</span><span class="s2">: </span><span class="si">{!r}</span><span class="s2"> and </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">plugin_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span><span class="p">[</span><span class="n">plugin_name</span><span class="p">],</span> <span class="n">ext</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span><span class="p">[</span><span class="n">plugin_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ext</span>
+
+        <span class="n">content_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">CONTENT_TYPE_MAPPER</span><span class="p">)</span>
+        <span class="n">seen_extension_keys</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">ext_content_types</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s2">&quot;content_types&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ext_content_types</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">seen_extension_keys</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Duplicate content_type </span><span class="si">{!r}</span><span class="s2"> registered by extensions &quot;</span>
+                        <span class="s2">&quot;</span><span class="si">{!r}</span><span class="s2"> and </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">seen_extension_keys</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">ext</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="n">seen_extension_keys</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ext</span>
+                <span class="n">content_types</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_content_type_mapper</span> <span class="o">=</span> <span class="n">content_types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type_content_mapper</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">content_types</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the API version of NetBox.</span>
+
+<span class="sd">        Can be used to check the NetBox API version if there are</span>
+<span class="sd">        version-dependent features or syntaxes in the API.</span>
+
+<span class="sd">        ## Returns</span>
+<span class="sd">        Version number as a string.</span>
+
+<span class="sd">        ## Example</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        import pynetbox</span>
+<span class="sd">        nb = pynetbox.api(</span>
+<span class="sd">            &#39;http://localhost:8000&#39;,</span>
+<span class="sd">            token=&#39;d6f4e314a5b5fefd164995169f28ae32d987704f&#39;</span>
+<span class="sd">        )</span>
+<span class="sd">        nb.version</span>
+<span class="sd">        # &#39;3.1&#39;</span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+            <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span>
+            <span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+            <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">version</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_effective_pagination</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve the pagination strategy to use for list requests.</span>
+
+<span class="sd">        Returns ``&quot;cursor&quot;`` only when cursor pagination was requested *and*</span>
+<span class="sd">        the connected NetBox supports it (4.6+). Otherwise returns</span>
+<span class="sd">        ``&quot;offset&quot;``. The server version is probed once and cached, so only</span>
+<span class="sd">        the first `.all()`/`.filter()` on a cursor-mode `Api` pays the cost;</span>
+<span class="sd">        offset-mode instances never make the extra request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pagination</span> <span class="o">!=</span> <span class="s2">&quot;cursor&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;offset&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_supported</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_supported</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span>
+                    <span class="s2">&quot;4.6&quot;</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">RequestError</span><span class="p">,</span> <span class="n">InvalidVersion</span><span class="p">,</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RequestException</span><span class="p">):</span>
+                <span class="c1"># RequestError covers a non-ok HTTP response from the version</span>
+                <span class="c1"># probe; requests.exceptions.RequestException covers transport</span>
+                <span class="c1"># failures (ConnectionError, Timeout, ...) raised before a</span>
+                <span class="c1"># response exists. In every case fall back to offset, as the</span>
+                <span class="c1"># docstring promises, and let the real list request surface any</span>
+                <span class="c1"># underlying connectivity error.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_supported</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_supported</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">threading</span><span class="p">:</span>
+                <span class="c1"># Cursor pagination follows next links sequentially and cannot</span>
+                <span class="c1"># be parallelised; the cursor path ignores self.threading.</span>
+                <span class="c1"># Warn so the no-op threading configuration is not a silent</span>
+                <span class="c1"># performance surprise.</span>
+                <span class="c1"># stacklevel=5 attributes the warning to the caller&#39;s list</span>
+                <span class="c1"># request rather than to pynetbox internals. The version probe</span>
+                <span class="c1"># is resolved lazily on the first page fetch, so the fixed</span>
+                <span class="c1"># frame chain at this point is:</span>
+                <span class="c1">#   _effective_pagination -&gt; Request._resolve_pagination</span>
+                <span class="c1">#   -&gt; Request.get -&gt; RecordSet.__next__/__len__ -&gt; caller.</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;threading=True has no effect with cursor pagination; &quot;</span>
+                    <span class="s2">&quot;cursor pages are fetched sequentially.&quot;</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;cursor&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_supported</span> <span class="k">else</span> <span class="s2">&quot;offset&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">openapi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the OpenAPI spec.</span>
+
+<span class="sd">        Quick helper function to pull down the entire OpenAPI spec.</span>
+<span class="sd">        It is stored in memory to avoid repeated calls on NetBox API.</span>
+
+<span class="sd">        ## Returns</span>
+<span class="sd">        dict: The OpenAPI specification as a dictionary.</span>
+
+<span class="sd">        ## Example</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        import pynetbox</span>
+<span class="sd">        nb = pynetbox.api(</span>
+<span class="sd">            &#39;http://localhost:8000&#39;,</span>
+<span class="sd">            token=&#39;d6f4e314a5b5fefd164995169f28ae32d987704f&#39;</span>
+<span class="sd">        )</span>
+<span class="sd">        nb.openapi()</span>
+<span class="sd">        # {...}</span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">openapi</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_openapi&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+            <span class="n">openapi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_openapi</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+                <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span>
+                <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">get_openapi</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">openapi</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the status information from NetBox.</span>
+
+<span class="sd">        ## Returns</span>
+<span class="sd">        Dictionary containing NetBox status information.</span>
+
+<span class="sd">        ## Raises</span>
+<span class="sd">        `RequestError`: If the request is not successful.</span>
+
+<span class="sd">        ## Example</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        from pprint import pprint</span>
+<span class="sd">        pprint(nb.status())</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;django-version&#39;: &#39;3.1.3&#39;,</span>
+<span class="sd">            &#39;installed-apps&#39;: {</span>
+<span class="sd">                &#39;cacheops&#39;: &#39;5.0.1&#39;,</span>
+<span class="sd">                &#39;debug_toolbar&#39;: &#39;3.1.1&#39;,</span>
+<span class="sd">                &#39;django_filters&#39;: &#39;2.4.0&#39;,</span>
+<span class="sd">                &#39;django_prometheus&#39;: &#39;2.1.0&#39;,</span>
+<span class="sd">                &#39;django_rq&#39;: &#39;2.4.0&#39;,</span>
+<span class="sd">                &#39;django_tables2&#39;: &#39;2.3.3&#39;,</span>
+<span class="sd">                &#39;drf_yasg&#39;: &#39;1.20.0&#39;,</span>
+<span class="sd">                &#39;mptt&#39;: &#39;0.11.0&#39;,</span>
+<span class="sd">                &#39;rest_framework&#39;: &#39;3.12.2&#39;,</span>
+<span class="sd">                &#39;taggit&#39;: &#39;1.3.0&#39;,</span>
+<span class="sd">                &#39;timezone_field&#39;: &#39;4.0&#39;</span>
+<span class="sd">            },</span>
+<span class="sd">            &#39;netbox-version&#39;: &#39;2.10.2&#39;,</span>
+<span class="sd">            &#39;plugins&#39;: {},</span>
+<span class="sd">            &#39;python-version&#39;: &#39;3.7.3&#39;,</span>
+<span class="sd">            &#39;rq-workers-running&#39;: 1</span>
+<span class="sd">        }</span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+            <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span>
+            <span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+            <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">status</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an API token using a valid NetBox username and password.</span>
+<span class="sd">        Saves the created token automatically in the API object.</span>
+
+<span class="sd">        ## Parameters</span>
+<span class="sd">        * **username** (str): NetBox username</span>
+<span class="sd">        * **password** (str): NetBox password</span>
+
+<span class="sd">        ## Returns</span>
+<span class="sd">        `Record`: The token as a Record object.</span>
+
+<span class="sd">        ## Raises</span>
+<span class="sd">        `RequestError`: If the request is not successful.</span>
+
+<span class="sd">        ## Notes</span>
+
+<span class="sd">        NetBox 4.5 introduced v2 tokens. For v2 tokens, `nb.token` is set to</span>
+<span class="sd">        `nbt_&lt;key&gt;.&lt;token&gt;` (the full auth value required in the Authorization</span>
+<span class="sd">        header), which differs from `token.key`. For v1 tokens (pre-4.5),</span>
+<span class="sd">        `nb.token` is the plaintext token value.</span>
+
+<span class="sd">        ## Example</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        import pynetbox</span>
+<span class="sd">        nb = pynetbox.api(&quot;https://netbox-server&quot;)</span>
+<span class="sd">        token = nb.create_token(&quot;admin&quot;, &quot;netboxpassword&quot;)</span>
+
+<span class="sd">        # NetBox 4.5+ v2 token: nb.token differs from token.key</span>
+<span class="sd">        nb.token</span>
+<span class="sd">        # &#39;nbt_shortkey1234567.plaintexttoken7890abcdef1234567890abcdef&#39;</span>
+<span class="sd">        token.key</span>
+<span class="sd">        # &#39;shortkey1234567&#39;</span>
+
+<span class="sd">        # Pre-4.5 / v1 token: nb.token matches token.key (or token.token)</span>
+<span class="sd">        nb.token</span>
+<span class="sd">        # &#39;96d02e13e3f1fdcd8b4c089094c0191dcb045bef&#39;</span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+            <span class="n">base</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/users/tokens/provision/&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">),</span>
+            <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">password</span><span class="p">})</span>
+        <span class="c1"># v2 tokens (NetBox 4.5+): construct auth value as nbt_&lt;key&gt;.&lt;token&gt;</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">TOKEN_PREFIX</span><span class="p">,</span> <span class="n">resp</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">],</span> <span class="n">resp</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">resp</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">Record</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">activate_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">branch</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Context manager to activate the branch by setting the schema ID in the headers.</span>
+
+<span class="sd">        **Note**: The NetBox branching plugin must be installed and enabled in your NetBox instance for this functionality to work.</span>
+
+<span class="sd">        ## Parameters</span>
+<span class="sd">        * **branch** (Record): The NetBox branch to activate</span>
+
+<span class="sd">        ## Raises</span>
+<span class="sd">        `ValueError`: If the branch is not a valid NetBox branch.</span>
+
+<span class="sd">        ## Example</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        import pynetbox</span>
+<span class="sd">        nb = pynetbox.api(&quot;https://netbox-server&quot;)</span>
+<span class="sd">        branch = nb.plugins.branching.branches.create(name=&quot;testbranch&quot;)</span>
+<span class="sd">        with nb.activate_branch(branch):</span>
+<span class="sd">            sites = nb.dcim.sites.all()</span>
+<span class="sd">            # All operations within this block will use the branch&#39;s schema</span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">branch</span><span class="p">,</span> <span class="n">Record</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;schema_id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">branch</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The specified branch is not a valid NetBox branch: </span><span class="si">{</span><span class="n">branch</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-NetBox-Branch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">branch</span><span class="o">.</span><span class="n">schema_id</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;X-NetBox-Branch&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="pynetbox.core.api.Api.version" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">version</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+  </span>
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Gets the API version of NetBox.</p>
+<p>Can be used to check the NetBox API version if there are
+version-dependent features or syntaxes in the API.</p>
+<h6 id="pynetbox.core.api.Api.version--returns">Returns</h6>
+<p>Version number as a string.</p>
+<h6 id="pynetbox.core.api.Api.version--example">Example</h6>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pynetbox</span>
+<span class="n">nb</span> <span class="o">=</span> <span class="n">pynetbox</span><span class="o">.</span><span class="n">api</span><span class="p">(</span>
+    <span class="s1">&#39;http://localhost:8000&#39;</span><span class="p">,</span>
+    <span class="n">token</span><span class="o">=</span><span class="s1">&#39;d6f4e314a5b5fefd164995169f28ae32d987704f&#39;</span>
+<span class="p">)</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">version</span>
+<span class="c1"># &#39;3.1&#39;</span>
+</code></pre></div>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="pynetbox.core.api.Api.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">strict_filters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">extensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pagination</span><span class="o">=</span><span class="s1">&#39;offset&#39;</span><span class="p">,</span> <span class="n">thread_pool_executor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Initialize the API client.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>url</code></td>
+        <td><code>str</code></td>
+        <td><p>The base URL to the instance of NetBox you wish to connect to.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>token</code></td>
+        <td><code>str</code></td>
+        <td><p>Your NetBox API token. If not provided, authentication will be required for each request.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>threading</code></td>
+        <td><code>bool</code></td>
+        <td><p>Set to True to use threading in <code>.all()</code> and <code>.filter()</code> requests, defaults to False.</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>strict_filters</code></td>
+        <td><code>bool</code></td>
+        <td><p>Set to True to check GET call filters against OpenAPI specifications (intentionally not done in NetBox API), defaults to False.</p></td>
+        <td><code>False</code></td>
+      </tr>
+      <tr>
+        <td><code>extensions</code></td>
+        <td><code>list</code></td>
+        <td><p>A list of <code>Extension</code> classes or instances that register custom <code>Record</code> subclasses and content-type mappings for NetBox plugins. See <code>pynetbox.core.extension</code>.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>pagination</code></td>
+        <td><code>str</code></td>
+        <td><p>Pagination strategy for <code>.all()</code> and <code>.filter()</code>, either <code>"offset"</code> (default) or <code>"cursor"</code>. Cursor pagination (NetBox 4.6+) offers better performance on very large result sets but omits the total count and cannot be combined with threading or <code>ordering</code>. On NetBox versions older than 4.6 it transparently falls back to offset pagination.</p></td>
+        <td><code>&#39;offset&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>thread_pool_executor</code></td>
+        <td><code>callable</code></td>
+        <td><p>A <code>concurrent.futures.ThreadPoolExecutor</code> class, or any callable matching its <code>(max_workers=...)</code> signature and context-manager protocol, used to build the pool for threaded requests. Defaults to <code>concurrent.futures.ThreadPoolExecutor</code>.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>max_workers</code></td>
+        <td><code>int</code></td>
+        <td><p>Maximum number of worker threads used for threaded requests, defaults to 4.</p></td>
+        <td><code>4</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/api.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">url</span><span class="p">,</span>
+    <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">threading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">strict_filters</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">extensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">pagination</span><span class="o">=</span><span class="s2">&quot;offset&quot;</span><span class="p">,</span>
+    <span class="n">thread_pool_executor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the API client.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        url (str): The base URL to the instance of NetBox you wish to connect to.</span>
+<span class="sd">        token (str, optional): Your NetBox API token. If not provided, authentication will be required for each request.</span>
+<span class="sd">        threading (bool, optional): Set to True to use threading in `.all()` and `.filter()` requests, defaults to False.</span>
+<span class="sd">        strict_filters (bool, optional): Set to True to check GET call filters against OpenAPI specifications (intentionally not done in NetBox API), defaults to False.</span>
+<span class="sd">        extensions (list, optional): A list of `Extension` classes or instances that register custom `Record` subclasses and content-type mappings for NetBox plugins. See `pynetbox.core.extension`.</span>
+<span class="sd">        pagination (str, optional): Pagination strategy for `.all()` and `.filter()`, either `&quot;offset&quot;` (default) or `&quot;cursor&quot;`. Cursor pagination (NetBox 4.6+) offers better performance on very large result sets but omits the total count and cannot be combined with threading or `ordering`. On NetBox versions older than 4.6 it transparently falls back to offset pagination.</span>
+<span class="sd">        thread_pool_executor (callable, optional): A `concurrent.futures.ThreadPoolExecutor` class, or any callable matching its `(max_workers=...)` signature and context-manager protocol, used to build the pool for threaded requests. Defaults to `concurrent.futures.ThreadPoolExecutor`.</span>
+<span class="sd">        max_workers (int, optional): Maximum number of worker threads used for threaded requests, defaults to 4.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pagination</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="s2">&quot;cursor&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;pagination must be &#39;offset&#39; or &#39;cursor&#39;, got </span><span class="si">{!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pagination</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">max_workers</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;max_workers must be a positive integer&quot;</span><span class="p">)</span>
+
+    <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/api&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span> <span class="k">if</span> <span class="n">url</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;/&quot;</span> <span class="k">else</span> <span class="n">url</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">http_session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">threading</span> <span class="o">=</span> <span class="n">threading</span>
+    <span class="c1"># Stored as ``None`` (the sentinel) when the caller did not supply a</span>
+    <span class="c1"># custom executor, so ``None`` distinguishes &quot;use the default&quot; from an</span>
+    <span class="c1"># explicit choice. ``Request`` resolves ``None`` to</span>
+    <span class="c1"># ``concurrent.futures.ThreadPoolExecutor`` at request time, so the</span>
+    <span class="c1"># value here is not necessarily the executor actually used.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">thread_pool_executor</span> <span class="o">=</span> <span class="n">thread_pool_executor</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">max_workers</span> <span class="o">=</span> <span class="n">max_workers</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">strict_filters</span> <span class="o">=</span> <span class="n">strict_filters</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">pagination</span> <span class="o">=</span> <span class="n">pagination</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_cursor_supported</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_register_extensions</span><span class="p">(</span><span class="n">extensions</span> <span class="ow">or</span> <span class="p">[])</span>
+
+    <span class="c1"># Initialize NetBox apps</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">circuits</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;circuits&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">core</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;core&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dcim</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;dcim&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;extras&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ipam</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;ipam&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tenancy</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;tenancy&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">users</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;users&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">virtualization</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;virtualization&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">vpn</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;vpn&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">wireless</span> <span class="o">=</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;wireless&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="n">PluginsApp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="pynetbox.core.api.Api.activate_branch" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">activate_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">branch</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Context manager to activate the branch by setting the schema ID in the headers.</p>
+<p><strong>Note</strong>: The NetBox branching plugin must be installed and enabled in your NetBox instance for this functionality to work.</p>
+<h6 id="pynetbox.core.api.Api.activate_branch--parameters">Parameters</h6>
+<ul>
+<li><strong>branch</strong> (Record): The NetBox branch to activate</li>
+</ul>
+<h6 id="pynetbox.core.api.Api.activate_branch--raises">Raises</h6>
+<p><code>ValueError</code>: If the branch is not a valid NetBox branch.</p>
+<h6 id="pynetbox.core.api.Api.activate_branch--example">Example</h6>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pynetbox</span>
+<span class="n">nb</span> <span class="o">=</span> <span class="n">pynetbox</span><span class="o">.</span><span class="n">api</span><span class="p">(</span><span class="s2">&quot;https://netbox-server&quot;</span><span class="p">)</span>
+<span class="n">branch</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">branching</span><span class="o">.</span><span class="n">branches</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testbranch&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">nb</span><span class="o">.</span><span class="n">activate_branch</span><span class="p">(</span><span class="n">branch</span><span class="p">):</span>
+    <span class="n">sites</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">sites</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="c1"># All operations within this block will use the branch&#39;s schema</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/api.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">activate_branch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">branch</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager to activate the branch by setting the schema ID in the headers.</span>
+
+<span class="sd">    **Note**: The NetBox branching plugin must be installed and enabled in your NetBox instance for this functionality to work.</span>
+
+<span class="sd">    ## Parameters</span>
+<span class="sd">    * **branch** (Record): The NetBox branch to activate</span>
+
+<span class="sd">    ## Raises</span>
+<span class="sd">    `ValueError`: If the branch is not a valid NetBox branch.</span>
+
+<span class="sd">    ## Example</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    import pynetbox</span>
+<span class="sd">    nb = pynetbox.api(&quot;https://netbox-server&quot;)</span>
+<span class="sd">    branch = nb.plugins.branching.branches.create(name=&quot;testbranch&quot;)</span>
+<span class="sd">    with nb.activate_branch(branch):</span>
+<span class="sd">        sites = nb.dcim.sites.all()</span>
+<span class="sd">        # All operations within this block will use the branch&#39;s schema</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">branch</span><span class="p">,</span> <span class="n">Record</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;schema_id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">branch</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;The specified branch is not a valid NetBox branch: </span><span class="si">{</span><span class="n">branch</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-NetBox-Branch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">branch</span><span class="o">.</span><span class="n">schema_id</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;X-NetBox-Branch&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="pynetbox.core.api.Api.create_token" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates an API token using a valid NetBox username and password.
+Saves the created token automatically in the API object.</p>
+<h6 id="pynetbox.core.api.Api.create_token--parameters">Parameters</h6>
+<ul>
+<li><strong>username</strong> (str): NetBox username</li>
+<li><strong>password</strong> (str): NetBox password</li>
+</ul>
+<h6 id="pynetbox.core.api.Api.create_token--returns">Returns</h6>
+<p><code>Record</code>: The token as a Record object.</p>
+<h6 id="pynetbox.core.api.Api.create_token--raises">Raises</h6>
+<p><code>RequestError</code>: If the request is not successful.</p>
+<h6 id="pynetbox.core.api.Api.create_token--notes">Notes</h6>
+<p>NetBox 4.5 introduced v2 tokens. For v2 tokens, <code>nb.token</code> is set to
+<code>nbt_&lt;key&gt;.&lt;token&gt;</code> (the full auth value required in the Authorization
+header), which differs from <code>token.key</code>. For v1 tokens (pre-4.5),
+<code>nb.token</code> is the plaintext token value.</p>
+<h6 id="pynetbox.core.api.Api.create_token--example">Example</h6>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pynetbox</span>
+<span class="n">nb</span> <span class="o">=</span> <span class="n">pynetbox</span><span class="o">.</span><span class="n">api</span><span class="p">(</span><span class="s2">&quot;https://netbox-server&quot;</span><span class="p">)</span>
+<span class="n">token</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">create_token</span><span class="p">(</span><span class="s2">&quot;admin&quot;</span><span class="p">,</span> <span class="s2">&quot;netboxpassword&quot;</span><span class="p">)</span>
+
+<span class="c1"># NetBox 4.5+ v2 token: nb.token differs from token.key</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">token</span>
+<span class="c1"># &#39;nbt_shortkey1234567.plaintexttoken7890abcdef1234567890abcdef&#39;</span>
+<span class="n">token</span><span class="o">.</span><span class="n">key</span>
+<span class="c1"># &#39;shortkey1234567&#39;</span>
+
+<span class="c1"># Pre-4.5 / v1 token: nb.token matches token.key (or token.token)</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">token</span>
+<span class="c1"># &#39;96d02e13e3f1fdcd8b4c089094c0191dcb045bef&#39;</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/api.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an API token using a valid NetBox username and password.</span>
+<span class="sd">    Saves the created token automatically in the API object.</span>
+
+<span class="sd">    ## Parameters</span>
+<span class="sd">    * **username** (str): NetBox username</span>
+<span class="sd">    * **password** (str): NetBox password</span>
+
+<span class="sd">    ## Returns</span>
+<span class="sd">    `Record`: The token as a Record object.</span>
+
+<span class="sd">    ## Raises</span>
+<span class="sd">    `RequestError`: If the request is not successful.</span>
+
+<span class="sd">    ## Notes</span>
+
+<span class="sd">    NetBox 4.5 introduced v2 tokens. For v2 tokens, `nb.token` is set to</span>
+<span class="sd">    `nbt_&lt;key&gt;.&lt;token&gt;` (the full auth value required in the Authorization</span>
+<span class="sd">    header), which differs from `token.key`. For v1 tokens (pre-4.5),</span>
+<span class="sd">    `nb.token` is the plaintext token value.</span>
+
+<span class="sd">    ## Example</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    import pynetbox</span>
+<span class="sd">    nb = pynetbox.api(&quot;https://netbox-server&quot;)</span>
+<span class="sd">    token = nb.create_token(&quot;admin&quot;, &quot;netboxpassword&quot;)</span>
+
+<span class="sd">    # NetBox 4.5+ v2 token: nb.token differs from token.key</span>
+<span class="sd">    nb.token</span>
+<span class="sd">    # &#39;nbt_shortkey1234567.plaintexttoken7890abcdef1234567890abcdef&#39;</span>
+<span class="sd">    token.key</span>
+<span class="sd">    # &#39;shortkey1234567&#39;</span>
+
+<span class="sd">    # Pre-4.5 / v1 token: nb.token matches token.key (or token.token)</span>
+<span class="sd">    nb.token</span>
+<span class="sd">    # &#39;96d02e13e3f1fdcd8b4c089094c0191dcb045bef&#39;</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+        <span class="n">base</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/users/tokens/provision/&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">),</span>
+        <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">password</span><span class="p">})</span>
+    <span class="c1"># v2 tokens (NetBox 4.5+): construct auth value as nbt_&lt;key&gt;.&lt;token&gt;</span>
+    <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">TOKEN_PREFIX</span><span class="p">,</span> <span class="n">resp</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">],</span> <span class="n">resp</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">resp</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Record</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="pynetbox.core.api.Api.openapi" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">openapi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Returns the OpenAPI spec.</p>
+<p>Quick helper function to pull down the entire OpenAPI spec.
+It is stored in memory to avoid repeated calls on NetBox API.</p>
+<h6 id="pynetbox.core.api.Api.openapi--returns">Returns</h6>
+<p>dict: The OpenAPI specification as a dictionary.</p>
+<h6 id="pynetbox.core.api.Api.openapi--example">Example</h6>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pynetbox</span>
+<span class="n">nb</span> <span class="o">=</span> <span class="n">pynetbox</span><span class="o">.</span><span class="n">api</span><span class="p">(</span>
+    <span class="s1">&#39;http://localhost:8000&#39;</span><span class="p">,</span>
+    <span class="n">token</span><span class="o">=</span><span class="s1">&#39;d6f4e314a5b5fefd164995169f28ae32d987704f&#39;</span>
+<span class="p">)</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">openapi</span><span class="p">()</span>
+<span class="c1"># {...}</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/api.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">openapi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the OpenAPI spec.</span>
+
+<span class="sd">    Quick helper function to pull down the entire OpenAPI spec.</span>
+<span class="sd">    It is stored in memory to avoid repeated calls on NetBox API.</span>
+
+<span class="sd">    ## Returns</span>
+<span class="sd">    dict: The OpenAPI specification as a dictionary.</span>
+
+<span class="sd">    ## Example</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    import pynetbox</span>
+<span class="sd">    nb = pynetbox.api(</span>
+<span class="sd">        &#39;http://localhost:8000&#39;,</span>
+<span class="sd">        token=&#39;d6f4e314a5b5fefd164995169f28ae32d987704f&#39;</span>
+<span class="sd">    )</span>
+<span class="sd">    nb.openapi()</span>
+<span class="sd">    # {...}</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">openapi</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_openapi&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+        <span class="n">openapi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_openapi</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+            <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span>
+            <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">get_openapi</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">openapi</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="pynetbox.core.api.Api.status" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Gets the status information from NetBox.</p>
+<h6 id="pynetbox.core.api.Api.status--returns">Returns</h6>
+<p>Dictionary containing NetBox status information.</p>
+<h6 id="pynetbox.core.api.Api.status--raises">Raises</h6>
+<p><code>RequestError</code>: If the request is not successful.</p>
+<h6 id="pynetbox.core.api.Api.status--example">Example</h6>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">status</span><span class="p">())</span>
+<span class="p">{</span>
+    <span class="s1">&#39;django-version&#39;</span><span class="p">:</span> <span class="s1">&#39;3.1.3&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;installed-apps&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;cacheops&#39;</span><span class="p">:</span> <span class="s1">&#39;5.0.1&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;debug_toolbar&#39;</span><span class="p">:</span> <span class="s1">&#39;3.1.1&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;django_filters&#39;</span><span class="p">:</span> <span class="s1">&#39;2.4.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;django_prometheus&#39;</span><span class="p">:</span> <span class="s1">&#39;2.1.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;django_rq&#39;</span><span class="p">:</span> <span class="s1">&#39;2.4.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;django_tables2&#39;</span><span class="p">:</span> <span class="s1">&#39;2.3.3&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;drf_yasg&#39;</span><span class="p">:</span> <span class="s1">&#39;1.20.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mptt&#39;</span><span class="p">:</span> <span class="s1">&#39;0.11.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;rest_framework&#39;</span><span class="p">:</span> <span class="s1">&#39;3.12.2&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;taggit&#39;</span><span class="p">:</span> <span class="s1">&#39;1.3.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;timezone_field&#39;</span><span class="p">:</span> <span class="s1">&#39;4.0&#39;</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;netbox-version&#39;</span><span class="p">:</span> <span class="s1">&#39;2.10.2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;plugins&#39;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s1">&#39;python-version&#39;</span><span class="p">:</span> <span class="s1">&#39;3.7.3&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rq-workers-running&#39;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/api.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the status information from NetBox.</span>
+
+<span class="sd">    ## Returns</span>
+<span class="sd">    Dictionary containing NetBox status information.</span>
+
+<span class="sd">    ## Raises</span>
+<span class="sd">    `RequestError`: If the request is not successful.</span>
+
+<span class="sd">    ## Example</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    from pprint import pprint</span>
+<span class="sd">    pprint(nb.status())</span>
+<span class="sd">    {</span>
+<span class="sd">        &#39;django-version&#39;: &#39;3.1.3&#39;,</span>
+<span class="sd">        &#39;installed-apps&#39;: {</span>
+<span class="sd">            &#39;cacheops&#39;: &#39;5.0.1&#39;,</span>
+<span class="sd">            &#39;debug_toolbar&#39;: &#39;3.1.1&#39;,</span>
+<span class="sd">            &#39;django_filters&#39;: &#39;2.4.0&#39;,</span>
+<span class="sd">            &#39;django_prometheus&#39;: &#39;2.1.0&#39;,</span>
+<span class="sd">            &#39;django_rq&#39;: &#39;2.4.0&#39;,</span>
+<span class="sd">            &#39;django_tables2&#39;: &#39;2.3.3&#39;,</span>
+<span class="sd">            &#39;drf_yasg&#39;: &#39;1.20.0&#39;,</span>
+<span class="sd">            &#39;mptt&#39;: &#39;0.11.0&#39;,</span>
+<span class="sd">            &#39;rest_framework&#39;: &#39;3.12.2&#39;,</span>
+<span class="sd">            &#39;taggit&#39;: &#39;1.3.0&#39;,</span>
+<span class="sd">            &#39;timezone_field&#39;: &#39;4.0&#39;</span>
+<span class="sd">        },</span>
+<span class="sd">        &#39;netbox-version&#39;: &#39;2.10.2&#39;,</span>
+<span class="sd">        &#39;plugins&#39;: {},</span>
+<span class="sd">        &#39;python-version&#39;: &#39;3.7.3&#39;,</span>
+<span class="sd">        &#39;rq-workers-running&#39;: 1</span>
+<span class="sd">    }</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+        <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span>
+        <span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+        <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">status</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+<h2 id="app">App</h2>
+<p>The <code>App</code> class represents a NetBox application (such as <code>dcim</code>, <code>ipam</code>, or <code>circuits</code>). Accessing an attribute on the <code>Api</code> instance returns an <code>App</code>; accessing an attribute on an <code>App</code> returns an <code>Endpoint</code>.</p>
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="pynetbox.core.app.App" class="doc doc-heading">
+        <code>
+pynetbox.core.app.App        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents first">
+
+      <p>Represents apps in NetBox.</p>
+<p>Calls to attributes are returned as Endpoint objects.</p>
+<h5 id="pynetbox.core.app.App--returns">Returns</h5>
+<p>Endpoint matching requested attribute.</p>
+<h5 id="pynetbox.core.app.App--raises">Raises</h5>
+<p>RequestError if requested endpoint doesn't exist.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/app.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">App</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents apps in NetBox.</span>
+
+<span class="sd">    Calls to attributes are returned as Endpoint objects.</span>
+
+<span class="sd">    ## Returns</span>
+<span class="sd">    Endpoint matching requested attribute.</span>
+
+<span class="sd">    ## Raises</span>
+<span class="sd">    RequestError if requested endpoint doesn&#39;t exist.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="n">api</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setmodel</span><span class="p">()</span>
+
+    <span class="n">models</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;circuits&quot;</span><span class="p">:</span> <span class="n">circuits</span><span class="p">,</span>
+        <span class="s2">&quot;core&quot;</span><span class="p">:</span> <span class="n">core</span><span class="p">,</span>
+        <span class="s2">&quot;dcim&quot;</span><span class="p">:</span> <span class="n">dcim</span><span class="p">,</span>
+        <span class="s2">&quot;extras&quot;</span><span class="p">:</span> <span class="n">extras</span><span class="p">,</span>
+        <span class="s2">&quot;ipam&quot;</span><span class="p">:</span> <span class="n">ipam</span><span class="p">,</span>
+        <span class="s2">&quot;users&quot;</span><span class="p">:</span> <span class="n">users</span><span class="p">,</span>
+        <span class="s2">&quot;virtualization&quot;</span><span class="p">:</span> <span class="n">virtualization</span><span class="p">,</span>
+        <span class="s2">&quot;wireless&quot;</span><span class="p">:</span> <span class="n">wireless</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">_PLUGINS_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;plugins/&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setmodel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_PLUGINS_PREFIX</span><span class="p">):</span>
+            <span class="c1"># Plugin apps may carry a custom models namespace registered</span>
+            <span class="c1"># via an Extension. The plugin attribute uses underscores while</span>
+            <span class="c1"># the URL slug uses dashes (PluginsApp.__getattr__), so convert</span>
+            <span class="c1"># back when looking up the registry.</span>
+            <span class="n">plugin_slug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_PLUGINS_PREFIX</span><span class="p">)</span> <span class="p">:]</span>
+            <span class="n">plugin_name</span> <span class="o">=</span> <span class="n">plugin_slug</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="n">extensions</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="p">,</span> <span class="s2">&quot;_extensions&quot;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">ext</span> <span class="o">=</span> <span class="n">extensions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s2">&quot;models&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">ext</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">App</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;api&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setmodel</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Endpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an Endpoint using ``name`` as the literal URL slug.</span>
+
+<span class="sd">        Attribute access (``app.ip_addresses``) converts underscores to</span>
+<span class="sd">        dashes, which is correct for the vast majority of NetBox endpoints.</span>
+<span class="sd">        This method skips that conversion so endpoints whose slug genuinely</span>
+<span class="sd">        contains underscores can be reached.</span>
+
+<span class="sd">        ## Parameters</span>
+
+<span class="sd">        * **name** (str): The endpoint slug, used verbatim (no ``_`` → ``-``).</span>
+
+<span class="sd">        ## Returns</span>
+<span class="sd">        Endpoint matching the given slug.</span>
+
+<span class="sd">        ## Examples</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        nb.plugins.custom_objects.endpoint(&quot;my_custom_object&quot;).all()</span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Endpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">literal_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns config response from app.</span>
+
+<span class="sd">        ## Returns</span>
+<span class="sd">        Raw response from NetBox&#39;s config endpoint.</span>
+
+<span class="sd">        ## Raises</span>
+<span class="sd">        RequestError if called for an invalid endpoint.</span>
+
+<span class="sd">        ## Examples</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        pprint.pprint(nb.users.config())</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;tables&#39;: {</span>
+<span class="sd">                &#39;DeviceTable&#39;: {</span>
+<span class="sd">                    &#39;columns&#39;: [</span>
+<span class="sd">                        &#39;name&#39;,</span>
+<span class="sd">                        &#39;status&#39;,</span>
+<span class="sd">                        &#39;tenant&#39;,</span>
+<span class="sd">                        &#39;role&#39;,</span>
+<span class="sd">                        &#39;site&#39;,</span>
+<span class="sd">                        &#39;primary_ip&#39;,</span>
+<span class="sd">                        &#39;tags&#39;</span>
+<span class="sd">                    ]</span>
+<span class="sd">                }</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+            <span class="n">base</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">/config/&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+            <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">config</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="pynetbox.core.app.App.config" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Returns config response from app.</p>
+<h6 id="pynetbox.core.app.App.config--returns">Returns</h6>
+<p>Raw response from NetBox's config endpoint.</p>
+<h6 id="pynetbox.core.app.App.config--raises">Raises</h6>
+<p>RequestError if called for an invalid endpoint.</p>
+<h6 id="pynetbox.core.app.App.config--examples">Examples</h6>
+<div class="highlight"><pre><span></span><code><span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">config</span><span class="p">())</span>
+<span class="p">{</span>
+    <span class="s1">&#39;tables&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;DeviceTable&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;status&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;tenant&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;role&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;site&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;primary_ip&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;tags&#39;</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/app.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns config response from app.</span>
+
+<span class="sd">    ## Returns</span>
+<span class="sd">    Raw response from NetBox&#39;s config endpoint.</span>
+
+<span class="sd">    ## Raises</span>
+<span class="sd">    RequestError if called for an invalid endpoint.</span>
+
+<span class="sd">    ## Examples</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    pprint.pprint(nb.users.config())</span>
+<span class="sd">    {</span>
+<span class="sd">        &#39;tables&#39;: {</span>
+<span class="sd">            &#39;DeviceTable&#39;: {</span>
+<span class="sd">                &#39;columns&#39;: [</span>
+<span class="sd">                    &#39;name&#39;,</span>
+<span class="sd">                    &#39;status&#39;,</span>
+<span class="sd">                    &#39;tenant&#39;,</span>
+<span class="sd">                    &#39;role&#39;,</span>
+<span class="sd">                    &#39;site&#39;,</span>
+<span class="sd">                    &#39;primary_ip&#39;,</span>
+<span class="sd">                    &#39;tags&#39;</span>
+<span class="sd">                ]</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+<span class="sd">    }</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+        <span class="n">base</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">/config/&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+        <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">config</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="pynetbox.core.app.App.endpoint" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Return an Endpoint using <code>name</code> as the literal URL slug.</p>
+<p>Attribute access (<code>app.ip_addresses</code>) converts underscores to
+dashes, which is correct for the vast majority of NetBox endpoints.
+This method skips that conversion so endpoints whose slug genuinely
+contains underscores can be reached.</p>
+<h6 id="pynetbox.core.app.App.endpoint--parameters">Parameters</h6>
+<ul>
+<li><strong>name</strong> (str): The endpoint slug, used verbatim (no <code>_</code> → <code>-</code>).</li>
+</ul>
+<h6 id="pynetbox.core.app.App.endpoint--returns">Returns</h6>
+<p>Endpoint matching the given slug.</p>
+<h6 id="pynetbox.core.app.App.endpoint--examples">Examples</h6>
+<div class="highlight"><pre><span></span><code><span class="n">nb</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">custom_objects</span><span class="o">.</span><span class="n">endpoint</span><span class="p">(</span><span class="s2">&quot;my_custom_object&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/app.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an Endpoint using ``name`` as the literal URL slug.</span>
+
+<span class="sd">    Attribute access (``app.ip_addresses``) converts underscores to</span>
+<span class="sd">    dashes, which is correct for the vast majority of NetBox endpoints.</span>
+<span class="sd">    This method skips that conversion so endpoints whose slug genuinely</span>
+<span class="sd">    contains underscores can be reached.</span>
+
+<span class="sd">    ## Parameters</span>
+
+<span class="sd">    * **name** (str): The endpoint slug, used verbatim (no ``_`` → ``-``).</span>
+
+<span class="sd">    ## Returns</span>
+<span class="sd">    Endpoint matching the given slug.</span>
+
+<span class="sd">    ## Examples</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    nb.plugins.custom_objects.endpoint(&quot;my_custom_object&quot;).all()</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Endpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">literal_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+<h2 id="pluginsapp">PluginsApp</h2>
+<p>The <code>PluginsApp</code> class exposes plugin endpoints under <code>nb.plugins</code>. Plugin and endpoint names containing dashes are accessed using underscores (e.g. <code>/api/plugins/my-plugin/objects/</code> becomes <code>nb.plugins.my_plugin.objects</code>).</p>
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="pynetbox.core.app.PluginsApp" class="doc doc-heading">
+        <code>
+pynetbox.core.app.PluginsApp        </code>
+
+
+
+</h3>
+
+    <div class="doc doc-contents first">
+
+      <p>Basically valid plugins api could be handled by same App class,
+but you need to add plugins to request url path.</p>
+<h5 id="pynetbox.core.app.PluginsApp--returns">Returns</h5>
+<p>App with added plugins into path.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/app.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">PluginsApp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Basically valid plugins api could be handled by same App class,</span>
+<span class="sd">    but you need to add plugins to request url path.</span>
+
+<span class="sd">    ## Returns</span>
+<span class="sd">    App with added plugins into path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="n">api</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">App</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="p">,</span> <span class="s2">&quot;plugins/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">installed_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns raw response with installed plugins.</span>
+
+<span class="sd">        ## Returns</span>
+<span class="sd">        Raw response NetBox&#39;s installed plugins.</span>
+
+<span class="sd">        ## Examples</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        nb.plugins.installed_plugins()</span>
+<span class="sd">        [</span>
+<span class="sd">            {</span>
+<span class="sd">                &#39;name&#39;: &#39;test_plugin&#39;,</span>
+<span class="sd">                &#39;package&#39;: &#39;test_plugin&#39;,</span>
+<span class="sd">                &#39;author&#39;: &#39;Dmitry&#39;,</span>
+<span class="sd">                &#39;description&#39;: &#39;Netbox test plugin&#39;,</span>
+<span class="sd">                &#39;verison&#39;: &#39;0.10&#39;</span>
+<span class="sd">            }</span>
+<span class="sd">        ]</span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">installed_plugins</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+            <span class="n">base</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/plugins/installed-plugins&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+            <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">installed_plugins</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="pynetbox.core.app.PluginsApp.installed_plugins" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">installed_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Returns raw response with installed plugins.</p>
+<h6 id="pynetbox.core.app.PluginsApp.installed_plugins--returns">Returns</h6>
+<p>Raw response NetBox's installed plugins.</p>
+<h6 id="pynetbox.core.app.PluginsApp.installed_plugins--examples">Examples</h6>
+<div class="highlight"><pre><span></span><code><span class="n">nb</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">installed_plugins</span><span class="p">()</span>
+<span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;test_plugin&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;package&#39;</span><span class="p">:</span> <span class="s1">&#39;test_plugin&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;author&#39;</span><span class="p">:</span> <span class="s1">&#39;Dmitry&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Netbox test plugin&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;verison&#39;</span><span class="p">:</span> <span class="s1">&#39;0.10&#39;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>pynetbox/core/app.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">installed_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns raw response with installed plugins.</span>
+
+<span class="sd">    ## Returns</span>
+<span class="sd">    Raw response NetBox&#39;s installed plugins.</span>
+
+<span class="sd">    ## Examples</span>
+
+<span class="sd">    ```python</span>
+<span class="sd">    nb.plugins.installed_plugins()</span>
+<span class="sd">    [</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;name&#39;: &#39;test_plugin&#39;,</span>
+<span class="sd">            &#39;package&#39;: &#39;test_plugin&#39;,</span>
+<span class="sd">            &#39;author&#39;: &#39;Dmitry&#39;,</span>
+<span class="sd">            &#39;description&#39;: &#39;Netbox test plugin&#39;,</span>
+<span class="sd">            &#39;verison&#39;: &#39;0.10&#39;</span>
+<span class="sd">        }</span>
+<span class="sd">    ]</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">installed_plugins</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
+        <span class="n">base</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/plugins/installed-plugins&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+        <span class="n">http_session</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">http_session</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">installed_plugins</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+<h2 id="relationship-to-endpoints">Relationship to Endpoints</h2>
+<p>Attribute access on an <code>App</code> returns an <a href="../endpoint/"><code>Endpoint</code></a> instance:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># nb.dcim is an App</span>
+<span class="c1"># nb.dcim.devices is an Endpoint</span>
+<span class="n">devices_endpoint</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">dcim</span><span class="o">.</span><span class="n">devices</span>
+
+<span class="c1"># Endpoint provides CRUD methods</span>
+<span class="n">all_devices</span> <span class="o">=</span> <span class="n">devices_endpoint</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">devices_endpoint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">new_device</span> <span class="o">=</span> <span class="n">devices_endpoint</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">device_type</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p>See the <a href="../endpoint/">Endpoint reference</a> for the full method list.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../getting-started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Quick Start">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Quick Start
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../endpoint/" class="md-footer__link md-footer__link--next" aria-label="Next: Endpoint">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Endpoint
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.footer"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
