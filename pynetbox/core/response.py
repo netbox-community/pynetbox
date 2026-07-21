@@ -22,7 +22,30 @@ from pynetbox.core.query import Request
 from pynetbox.core.util import Hashabledict
 
 # List of fields that are lists but should be treated as sets.
-LIST_AS_SET = ("tags", "tagged_vlans")
+LIST_AS_SET = (
+    "tags",
+    "object_types",
+    "tagged_vlans",
+    # netbox_users (permissions / groups / tokens)
+    "permissions",
+    "groups",
+    "actions",
+    # netbox_config_context assignment scopes
+    "regions",
+    "site_groups",
+    "sites",
+    "device_types",
+    "roles",
+    "platforms",
+    "cluster_types",
+    "cluster_groups",
+    "clusters",
+    "tenant_groups",
+    "tenants",
+    # route targets (netbox_vrf / netbox_l2vpn)
+    "import_targets",
+    "export_targets"
+)
 
 # List fields whose item type is announced via a sibling "<field>_type"
 # content-type string (NetBox's CableTerminationModelSerializerMixin pattern).
