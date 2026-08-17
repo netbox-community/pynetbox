@@ -679,7 +679,22 @@ class RecordTestCase(unittest.TestCase):
             "_full_cache",
         ]:
             self.assertNotIn(attr, serialized)
-
+    
+    def test_field_named_endpoint_does_not_corrupt_internal_endpoint(self):
+        """Regression test for #170: A NetBox field literally named
+        'endpoint' collides with Record's internal endpoint attribute.
+        Since 'endpoint' is now a read only property backed by self._endpoint,
+        attempting to setattr() it raises cleanly instead of silently overwriting
+        the internal endpoint."""
+        endpoint = Mock()
+        test_values = {
+            "id": 123,
+            "name": "test",
+            "endpoint": "walluigi",
+        }
+        with self.assertRaises(AttributeError):
+            Record(test_values, None, endpoint)
+    
     def test_link_peers_typed_by_sibling_content_type(self):
         """Regression for issue #519: link_peers items should be cast to the
         Record subclass identified by the sibling link_peers_type field."""

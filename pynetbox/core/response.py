@@ -332,28 +332,44 @@ class Record:
     # These are object bookkeeping attributes, not NetBox API fields.
     _INTERNAL_ATTRS = frozenset(
         [
-            "api",  # API client instance
-            "endpoint",  # Endpoint object reference
+            "_api",  # API client instance
+            "_endpoint",  # Endpoint object reference
             "url",  # Object URL (read-only field provided by API)
-            "has_details",  # Flag for lazy-loading full details
-            "default_ret",  # Default Record class for nested objects
+            "_has_details",  # Flag for lazy-loading full details
+            "_default_ret",  # Default Record class for nested objects
         ]
     )
 
     def __init__(self, values, api, endpoint):
-        self.has_details = False
+        self._has_details = False
         self._full_cache = []
         self._init_cache = []
-        self.api = api
-        self.default_ret = Record
-        self.endpoint = (
+        self._api = api
+        self._default_ret = Record
+        self._endpoint = (
             self._endpoint_from_url(values["url"])
             if values and "url" in values and values["url"]
             else endpoint
         )
         if values:
             self._parse_values(values)
-
+    
+    @property
+    def api(self):
+        return self._api
+        
+    @property
+    def endpoint(self):
+        return self._endpoint
+        
+    @property
+    def has_details(self):
+        return self._has_details
+    
+    @property
+    def default_ret(self):
+        return self._default_ret
+    
     def __getattr__(self, k):
         """Default behavior for missing attrs.
 
@@ -373,7 +389,7 @@ class Record:
             raise AttributeError('object has no attribute "{}"'.format(k))
 
         if self.url:
-            if self.has_details is False and k != "keys":
+            if self._has_details is False and k != "keys":
                 if self.full_details():
                     ret = getattr(self, k, None)
                     if ret or hasattr(self, k):
@@ -415,9 +431,9 @@ class Record:
 
     def __key__(self):
         if hasattr(self, "id"):
-            return (self.endpoint.name, self.id)
+            return (self._endpoint.name, self.id)
         else:
-            return self.endpoint.name
+            return self._endpoint.name
 
     def __hash__(self):
         return hash(self.__key__())
@@ -436,7 +452,7 @@ class Record:
             String like "dcim/rear-ports"
         """
         app_endpoint = "/".join(
-            urlsplit(url).path[len(urlsplit(self.api.base_url).path) :].split("/")[1:3]
+            urlsplit(url).path[len(urlsplit(self._api.base_url).path) :].split("/")[1:3]
         )
         return app_endpoint
 
@@ -491,7 +507,7 @@ class Record:
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
             content_type_mapper = getattr(
-                self.api, "_content_type_mapper", CONTENT_TYPE_MAPPER
+                self._api, "_content_type_mapper", CONTENT_TYPE_MAPPER
             )
 
             if (
@@ -501,7 +517,7 @@ class Record:
             ):
                 lookup = list_item["object_type"]
                 if model := content_type_mapper.get(lookup, None):
-                    record = model(list_item["object"], self.api, self.endpoint)
+                    record = model(list_item["object"], self._api, self._endpoint)
                     return GenericListObject(record)
 
             return list_item
@@ -512,10 +528,10 @@ class Record:
                 if not isinstance(lookup, list):
                     # This is *list_parser*, so if the custom model field is not
                     # a list (or is not defined), just return the default model
-                    return self.default_ret(list_item, self.api, self.endpoint)
+                    return self._default_ret(list_item, self._api, self._endpoint)
                 else:
                     model = lookup[0]
-                    return model(list_item, self.api, self.endpoint)
+                    return model(list_item, self._api, self._endpoint)
 
             return list_item
 
@@ -523,13 +539,13 @@ class Record:
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
             content_type_mapper = getattr(
-                self.api, "_content_type_mapper", CONTENT_TYPE_MAPPER
+                self._api, "_content_type_mapper", CONTENT_TYPE_MAPPER
             )
 
             if isinstance(list_item, dict):
                 if model := content_type_mapper.get(content_type, None):
-                    return model(list_item, self.api, self.endpoint)
-                return self.default_ret(list_item, self.api, self.endpoint)
+                    return model(list_item, self._api, self._endpoint)
+                return self._default_ret(list_item, self._api, self._endpoint)
             return list_item
 
         for k, v in values.items():
@@ -542,9 +558,9 @@ class Record:
                     setattr(self, k, v)
                     continue
                 if isinstance(lookup, type) and issubclass(lookup, Record):
-                    v = lookup(v, self.api, self.endpoint)
+                    v = lookup(v, self._api, self._endpoint)
                 else:
-                    v = self.default_ret(v, self.api, self.endpoint)
+                    v = self._default_ret(v, self._api, self._endpoint)
                 self._add_cache((k, v))
 
             elif isinstance(v, list):
@@ -594,7 +610,7 @@ class Record:
 
     def _endpoint_from_url(self, url):
         url_path = urlsplit(url).path
-        base_url_path_parts = urlsplit(self.api.base_url).path.split("/")
+        base_url_path_parts = urlsplit(self._api.base_url).path.split("/")
         if len(base_url_path_parts) > 2:
             # There are some extra directories in the path, remove them from url
             extra_path = "/".join(base_url_path_parts[:-1])
@@ -605,7 +621,7 @@ class Record:
             name = split_url_path[4]
         else:
             app, name = split_url_path[2:4]
-        return getattr(pynetbox.core.app.App(self.api, app), name)
+        return getattr(pynetbox.core.app.App(self._api, app), name)
 
     def full_details(self):
         """Queries the hyperlinked endpoint if 'url' is defined.
@@ -620,11 +636,11 @@ class Record:
         if self.url:
             req = Request(
                 base=self.url,
-                token=self.api.token,
-                http_session=self.api.http_session,
+                token=self._api.token,
+                http_session=self._api.http_session,
             )
             self._parse_values(next(req.get()))
-            self.has_details = True
+            self._has_details = True
             return True
         return False
 
@@ -795,9 +811,9 @@ class Record:
         if updates:
             req = Request(
                 key=self.id,
-                base=self.endpoint.url,
-                token=self.api.token,
-                http_session=self.api.http_session,
+                base=self._endpoint.url,
+                token=self._api.token,
+                http_session=self._api.http_session,
             )
             result = req.patch(updates)
             if result:
@@ -844,9 +860,9 @@ class Record:
         """
         req = Request(
             key=self.id,
-            base=self.endpoint.url,
-            token=self.api.token,
-            http_session=self.api.http_session,
+            base=self._endpoint.url,
+            token=self._api.token,
+            http_session=self._api.http_session,
         )
         return True if req.delete() else False
 
@@ -863,7 +879,7 @@ class PathableRecord(Record):
             return None
 
         return_obj_class = self._get_obj_class(endpoint_data["url"])
-        return return_obj_class(endpoint_data, self.endpoint.api, self.endpoint)
+        return return_obj_class(endpoint_data, self._endpoint.api, self._endpoint)
 
     def paths(self):
         """Return all cable paths traversing this pass-through port.
@@ -876,9 +892,9 @@ class PathableRecord(Record):
         """
         req = Request(
             key=str(self.id) + "/paths",
-            base=self.endpoint.url,
-            token=self.api.token,
-            http_session=self.api.http_session,
+            base=self._endpoint.url,
+            token=self._api.token,
+            http_session=self._api.http_session,
         ).get()
 
         ret = []
