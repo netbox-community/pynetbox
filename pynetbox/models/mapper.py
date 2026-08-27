@@ -24,7 +24,7 @@ from .dcim import (
     VirtualChassis,
 )
 from .ipam import Aggregates, IpAddresses, Prefixes, VlanGroups, Vlans
-from .virtualization import VirtualMachineTypes, VirtualMachines
+from .virtualization import VirtualMachines, VirtualMachineTypes
 from .wireless import WirelessLans
 
 CONTENT_TYPE_MAPPER = {

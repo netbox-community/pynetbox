@@ -4,8 +4,8 @@ import io
 import unittest
 from unittest.mock import Mock, patch
 
-from pynetbox.core.query import Request, _extract_files, _is_file_like
 from pynetbox.core.endpoint import Endpoint
+from pynetbox.core.query import Request, _extract_files, _is_file_like
 
 
 class TestIsFileLike(unittest.TestCase):

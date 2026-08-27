@@ -12,9 +12,7 @@ This guide walks through setting up a pynetbox development environment and runni
 python3 -m venv venv
 source venv/bin/activate   # On Windows: venv\Scripts\activate
 
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-pip install -e .
+pip install -e ".[dev]"
 ```
 
 ## Running Tests
@@ -46,7 +44,7 @@ pytest tests/integration
 You can choose which NetBox versions to test against with `--netbox-versions` (comma-separated):
 
 ```bash
-pytest tests/integration --netbox-versions 4.3,4.4,4.5
+pytest tests/integration --netbox-versions 4.4,4.5,4.6
 ```
 
 To leave the containers running after the tests finish (useful for debugging):

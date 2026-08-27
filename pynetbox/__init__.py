@@ -3,8 +3,8 @@ from pynetbox.core.extension import Extension
 from pynetbox.core.query import (
     AllocationError,
     ContentError,
-    RequestError,
     ParameterValidationError,
+    RequestError,
 )
 from pynetbox.core.response import JsonField
 
@@ -14,13 +14,13 @@ __version__ = "7.8.0"
 api = Api
 
 __all__ = (
-    "Api",
     "AllocationError",
+    "Api",
     "ContentError",
     "Extension",
     "JsonField",
-    "RequestError",
     "ParameterValidationError",
-    "api",
+    "RequestError",
     "__version__",
+    "api",
 )

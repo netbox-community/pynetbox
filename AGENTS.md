@@ -6,14 +6,14 @@
 
 ## Tech Stack
 
-- Python 3.10+ (tested on 3.12, 3.13, 3.14 in CI)
-- `requests` + `urllib3` for HTTP (pins in `requirements.txt`)
+- Python 3.12+ (tested on 3.12, 3.13, 3.14 in CI)
+- `requests` + `urllib3` for HTTP (pins in `pyproject.toml`)
 - `packaging` for version comparisons
 - `pytest` + `pytest-docker` for the test suite (unit and integration)
-- `ruff` for linting (no `ruff.toml`; configured inline or with defaults)
+- `ruff` for linting (pinned and configured in `pyproject.toml`)
 - `mkdocs-material` + `mkdocstrings` for user-facing docs
 
-Defer all version pins to `requirements.txt` and `requirements-dev.txt`. Package metadata lives in `setup.py` (uses `setuptools_scm` for version from git tags).
+Defer all version pins to `pyproject.toml`: runtime constraints in `[project].dependencies`, dev/test/docs tooling in the `dev` extra. Package metadata and tool configuration live there too (uses `setuptools_scm` for version from git tags).
 
 ## Repository Map
 
@@ -75,9 +75,7 @@ Defer all version pins to `requirements.txt` and `requirements-dev.txt`. Package
 ├── CLAUDE.md                    — Shim that pulls in this file.
 ├── CHANGELOG.md                 — Release history.
 ├── mkdocs.yml                   — Docs site config.
-├── requirements.txt             — Runtime dependencies.
-├── requirements-dev.txt         — Dev/test dependencies.
-└── setup.py                     — Package metadata; version from setuptools_scm.
+└── pyproject.toml               — Package metadata, dependencies, `dev` extra, ruff config.
 ```
 
 ## Architecture
@@ -145,10 +143,10 @@ Custom `Record` subclasses in `pynetbox/models/` add endpoint-specific behaviour
 
 | Command | What it does |
 |---|---|
-| `pip install -r requirements.txt && pip install -r requirements-dev.txt && pip install -e .` | Install all dependencies in editable mode |
+| `pip install -e ".[dev]"` | Install the package plus all dev dependencies in editable mode |
 | `pytest tests/unit` | Run unit tests only (no Docker required) |
 | `pytest tests/integration --netbox-versions 4.5` | Run integration tests against NetBox 4.5 (requires Docker) |
-| `pytest --netbox-versions 4.3,4.4,4.5` | Run against multiple NetBox versions |
+| `pytest --netbox-versions 4.4,4.5,4.6` | Run against multiple NetBox versions |
 | `pytest --no-cleanup` | Leave Docker containers running after tests |
 | `pytest -p no:docker --url-override http://localhost:8000` | Run integration tests against an existing NetBox instance |
 | `ruff check pynetbox/ tests/` | Run linter |
@@ -162,7 +160,7 @@ Custom `Record` subclasses in `pynetbox/models/` add endpoint-specific behaviour
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt -r requirements-dev.txt -e .
+pip install -e ".[dev]"
 ```
 
 Integration tests require Docker. The `tests/integration/conftest.py` uses `pytest-docker` to pull and start `netbox-docker` containers, wait for NetBox to be ready, run the tests, and tear down (unless `--no-cleanup`).
@@ -201,7 +199,7 @@ Integration tests require Docker. The `tests/integration/conftest.py` uses `pyte
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **`py3.yml`** — Runs on every push/PR. Matrix: Python × {3.12, 3.13, 3.14} and NetBox × {4.3, 4.4, 4.5}. Enables Docker IPv6, runs `ruff check`, then `pytest --netbox-versions=${{ matrix.netbox }}` (integration + unit).
+- **`py3.yml`** — Runs on every push/PR. Matrix: Python × {3.12, 3.13, 3.14} and NetBox × {4.4, 4.5, 4.6}. Enables Docker IPv6, runs `ruff check`, then `pytest --netbox-versions=${{ matrix.netbox }}` (integration + unit).
 - **`publish.yml`** — Runs on published GitHub releases. Builds sdist + wheel with `python -m build`, then publishes to PyPI using a token secret (`PYPI_API_TOKEN`).
 - **`build-mkdocs.yml`** — Runs on push to `master`/`main`. Deploys docs to GitHub Pages with `mkdocs gh-deploy --force`.
 

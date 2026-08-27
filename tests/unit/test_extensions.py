@@ -6,7 +6,6 @@ from pynetbox.core.endpoint import DetailEndpoint, Endpoint
 from pynetbox.core.extension import Extension
 from pynetbox.core.response import JsonField, Record
 
-
 # Models used by the extensions defined below. Modeled after the shapes
 # called out in netbox-community/pynetbox#710 and #745 #751.
 

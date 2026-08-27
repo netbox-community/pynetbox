@@ -2,8 +2,8 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.1
+    rev: v0.15.20
     hooks:
-      - id: ruff
+      - id: ruff-check
         name: "Ruff linter"
         args: [ pynetbox/, tests/ ]

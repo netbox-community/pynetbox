@@ -72,18 +72,16 @@ def get_return(lookup, return_fields=None):
     for i in return_fields or ["id", "value", "nested_return"]:
         if isinstance(lookup, dict) and lookup.get(i):
             return lookup[i]
-        else:
-            if hasattr(lookup, i):
-                # check if this is a "choices" field record
-                # from a NetBox 2.7 server.
-                if sorted(dict(lookup)) == sorted(["id", "value", "label"]):
-                    return getattr(lookup, "value")
-                return getattr(lookup, i)
+        if hasattr(lookup, i):
+            # check if this is a "choices" field record
+            # from a NetBox 2.7 server.
+            if sorted(dict(lookup)) == sorted(["id", "value", "label"]):
+                return getattr(lookup, "value")
+            return getattr(lookup, i)
 
     if isinstance(lookup, Record):
         return str(lookup)
-    else:
-        return lookup
+    return lookup
 
 
 def flatten_custom(custom_dict):
@@ -200,8 +198,7 @@ class RecordSet:
                 updates.append(record_updates)
         if updates:
             return self.endpoint.update(updates)
-        else:
-            return None
+        return None
 
     def delete(self):
         """Bulk deletes objects in a RecordSet.
@@ -416,8 +413,7 @@ class Record:
     def __key__(self):
         if hasattr(self, "id"):
             return (self.endpoint.name, self.id)
-        else:
-            return self.endpoint.name
+        return self.endpoint.name
 
     def __hash__(self):
         return hash(self.__key__())
@@ -513,9 +509,8 @@ class Record:
                     # This is *list_parser*, so if the custom model field is not
                     # a list (or is not defined), just return the default model
                     return self.default_ret(list_item, self.api, self.endpoint)
-                else:
-                    model = lookup[0]
-                    return model(list_item, self.api, self.endpoint)
+                model = lookup[0]
+                return model(list_item, self.api, self.endpoint)
 
             return list_item
 
