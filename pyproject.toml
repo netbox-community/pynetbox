@@ -18,7 +18,6 @@ authors = [
 ]
 maintainers = [
     { name = "NetBox Labs", email = "support@netboxlabs.com" },
-    { name = "Arthur Hanson", email = "ahanson@netboxlabs.com" },
 ]
 keywords = [
     "api",
