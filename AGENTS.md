@@ -6,7 +6,7 @@
 
 ## Tech Stack
 
-- Python 3.10+ (tested on 3.12, 3.13, 3.14 in CI)
+- Python 3.12+ (tested on 3.12, 3.13, 3.14 in CI)
 - `requests` + `urllib3` for HTTP (pins in `requirements.txt`)
 - `packaging` for version comparisons
 - `pytest` + `pytest-docker` for the test suite (unit and integration)

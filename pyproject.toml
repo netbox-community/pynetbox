@@ -10,7 +10,7 @@ name = "pynetbox"
 dynamic = ["version"]
 description = "NetBox API client library"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 authors = [
@@ -21,9 +21,7 @@ keywords = ["netbox"]
 classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 5 - Production/Stable",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -67,8 +65,8 @@ indent-width = 4
 # Ignores anything in .gitignore
 respect-gitignore = true
 
-# Always generate Python 3.10-compatible code
-target-version = "py310"
+# Always generate Python 3.12-compatible code
+target-version = "py312"
 
 [tool.ruff.lint]
 # Pin the effective default rule set used with `preview = true`. Ruff's built-in
