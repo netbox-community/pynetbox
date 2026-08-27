@@ -1,6 +1,6 @@
 # Release Checklist
 
-This page outlines the steps to prepare and publish a new pynetbox release. The package version is derived from the git tag at release time by [setuptools_scm](https://github.com/pypa/setuptools_scm), so the source tree does not carry a hardcoded version in `setup.py`.
+This page outlines the steps to prepare and publish a new pynetbox release. The package version is derived from the git tag at release time by [setuptools_scm](https://github.com/pypa/setuptools_scm), so the source tree does not carry a hardcoded version in `pyproject.toml`.
 
 ## Pre-Release Tasks
 

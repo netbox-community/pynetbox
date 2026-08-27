@@ -10,10 +10,10 @@
 - `requests` + `urllib3` for HTTP (pins in `requirements.txt`)
 - `packaging` for version comparisons
 - `pytest` + `pytest-docker` for the test suite (unit and integration)
-- `ruff` for linting (no `ruff.toml`; configured inline or with defaults)
+- `ruff` for linting (pinned in `requirements-dev.txt`; configured in `pyproject.toml`)
 - `mkdocs-material` + `mkdocstrings` for user-facing docs
 
-Defer all version pins to `requirements.txt` and `requirements-dev.txt`. Package metadata lives in `setup.py` (uses `setuptools_scm` for version from git tags).
+Defer all version pins to `requirements.txt` and `requirements-dev.txt`. Package metadata and tool configuration live in `pyproject.toml` (uses `setuptools_scm` for version from git tags).
 
 ## Repository Map
 
@@ -77,7 +77,7 @@ Defer all version pins to `requirements.txt` and `requirements-dev.txt`. Package
 ├── mkdocs.yml                   — Docs site config.
 ├── requirements.txt             — Runtime dependencies.
 ├── requirements-dev.txt         — Dev/test dependencies.
-└── setup.py                     — Package metadata; version from setuptools_scm.
+└── pyproject.toml               — Package metadata (version from setuptools_scm) and ruff config.
 ```
 
 ## Architecture

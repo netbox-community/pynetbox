@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from pynetbox.core.query import Request, RequestError, ParameterValidationError
+from pynetbox.core.query import ParameterValidationError, Request, RequestError
 from pynetbox.core.response import Record, RecordSet
 
 RESERVED_KWARGS = ()
@@ -231,7 +231,8 @@ class Endpoint:
         # test1-edge1
         ```
 
-        Using multiple named arguments. For example, retrieving the location when the location name is not unique and used in multiple sites:
+        Using multiple named arguments. For example, retrieving the location when the location name is not unique and
+        used in multiple sites:
 
         ```python
         nb.locations.get(site='site-1', name='Row 1')
@@ -269,8 +270,7 @@ class Endpoint:
         except RequestError as e:
             if e.req.status_code == 404:
                 return None
-            else:
-                raise e
+            raise e
 
     def filter(self, *args, **kwargs):
         """Queries the 'ListView' of a given endpoint.
@@ -321,9 +321,10 @@ class Endpoint:
 
         ## Note
 
-        If a keyword argument is incorrect a `TypeError` will not be returned by pynetbox.
-        Instead, pynetbox will return all records filtered up to the last correct keyword argument. For example, if we used `site="Site 1"` instead of `site=site-1` when using filter on
-        the devices endpoint, then pynetbox will return **all** devices across all sites instead of devices at Site 1.
+        If a keyword argument is incorrect a `TypeError` will not be returned by pynetbox. Instead, pynetbox will return
+        all records filtered up to the last correct keyword argument. For example, if we used `site="Site 1"` instead of
+        `site=site-1` when using filter on the devices endpoint, then pynetbox will return **all** devices across all
+        sites instead of devices at Site 1.
 
         Using a freeform query along with a named argument:
 
@@ -688,10 +689,9 @@ class DetailEndpoint:
                     )
                     for req_item in req
                 ]
-            else:
-                return self.custom_return(
-                    req, self.parent_obj.endpoint.api, self.parent_obj.endpoint
-                )
+            return self.custom_return(
+                req, self.parent_obj.endpoint.api, self.parent_obj.endpoint
+            )
         return req
 
 

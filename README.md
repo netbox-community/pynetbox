@@ -28,7 +28,7 @@ Each pyNetBox Version listed below has been tested with its corresponding NetBox
 
 To install run `pip install pynetbox`.
 
-Alternatively, you can clone the repo and run `python setup.py install`.
+Alternatively, you can clone the repo and run `pip install .`.
 
 
 ## Quick Start

@@ -16,8 +16,8 @@ limitations under the License.
 
 import concurrent.futures as cf
 import io
-import os
 import json
+import os
 import warnings
 
 from packaging import version
@@ -297,8 +297,7 @@ class Request:
 
         if req.ok:
             return req.json()
-        else:
-            raise RequestError(req)
+        raise RequestError(req)
 
     def get_version(self):
         """Gets the API version of NetBox.
@@ -321,8 +320,7 @@ class Request:
         )
         if req.ok or req.status_code == 403:
             return req.headers.get("API-Version", "")
-        else:
-            raise RequestError(req)
+        raise RequestError(req)
 
     def get_status(self):
         """Gets the status from /api/status/ endpoint in NetBox.
@@ -341,8 +339,7 @@ class Request:
         )
         if req.ok:
             return req.json()
-        else:
-            raise RequestError(req)
+        raise RequestError(req)
 
     def normalize_url(self, url):
         """Builds a url for POST actions."""
@@ -415,9 +412,8 @@ class Request:
         if verb == "delete":
             if req.ok:
                 return True
-            else:
-                raise RequestError(req)
-        elif req.ok:
+            raise RequestError(req)
+        if req.ok:
             # Parse response based on expected type
             if self.expect_json:
                 try:

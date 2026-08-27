@@ -38,7 +38,7 @@ def get_netbox_docker_version_tag(netbox_version):
         tag = "5.0.1"
     else:
         raise NotImplementedError(
-            "Version %s is not currently supported" % netbox_version
+            "Version {} is not currently supported".format(netbox_version)
         )
 
     return tag
@@ -86,7 +86,7 @@ def netbox_docker_repo_dirpaths(pytestconfig, git_toplevel):
         repo_version_tag = get_netbox_docker_version_tag(netbox_version=netbox_version)
         print("top: ", git_toplevel)
         repo_fpath = os.path.join(
-            git_toplevel, ".netbox-docker-%s" % str(repo_version_tag)
+            git_toplevel, ".netbox-docker-{}".format(str(repo_version_tag))
         )
         if os.path.isdir(repo_fpath):
             subp.check_call(
@@ -139,7 +139,7 @@ def docker_compose_project_name(pytestconfig):
     This will return a consistently generated project name so we can kill stale
     containers after the test run is finished.
     """
-    return "%s_%s" % (DOCKER_PROJECT_PREFIX, int(time.time()))
+    return "{}_{}".format(DOCKER_PROJECT_PREFIX, int(time.time()))
 
 
 def clean_netbox_docker_tmpfiles():
@@ -218,17 +218,17 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
         for netbox_version in netbox_versions:
             # check for updates to the local netbox images
             subp.check_call(
-                ["docker", "pull", "netboxcommunity/netbox:v%s" % (netbox_version)],
+                ["docker", "pull", "netboxcommunity/netbox:v{}".format(netbox_version)],
                 stdout=subp.PIPE,
                 stderr=subp.PIPE,
             )
 
             docker_netbox_version = str(netbox_version).replace(".", "_")
             # load the compose file yaml
-            compose_data = yaml.safe_load(open(compose_source_fpath, "r").read())
+            compose_data = yaml.safe_load(open(compose_source_fpath).read())
 
             # add the custom network for this version
-            docker_network_name = "%s_v%s" % (
+            docker_network_name = "{}_v{}".format(
                 DOCKER_PROJECT_PREFIX,
                 docker_netbox_version,
             )
@@ -243,7 +243,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
             # needed to make the continers unique to the netbox version
             new_services = {}
             for service_name in compose_data["services"].keys():
-                new_service_name = "netbox_v%s_%s" % (
+                new_service_name = "netbox_v{}_{}".format(
                     docker_netbox_version,
                     service_name,
                 )
@@ -252,7 +252,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                 if service_name in ["netbox", "netbox-worker"]:
                     # set the netbox image version
                     new_services[new_service_name]["image"] = (
-                        "netboxcommunity/netbox:v%s" % netbox_version
+                        "netboxcommunity/netbox:v{}".format(netbox_version)
                     )
 
                     new_services[new_service_name]["environment"] = {
@@ -293,12 +293,12 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                     if isinstance(depends_on, dict):
                         # Dict form: {service: {condition: service_healthy}} — preserve conditions
                         new_services[new_service_name]["depends_on"] = {
-                            "netbox_v%s_%s" % (docker_netbox_version, dep): cfg
+                            "netbox_v{}_{}".format(docker_netbox_version, dep): cfg
                             for dep, cfg in depends_on.items()
                         }
                     else:
                         new_services[new_service_name]["depends_on"] = [
-                            "netbox_v%s_%s" % (docker_netbox_version, dep)
+                            "netbox_v{}_{}".format(docker_netbox_version, dep)
                             for dep in depends_on
                         ]
 
@@ -325,8 +325,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
                                 new_volumes.append(volume_config)
                         else:
                             new_volumes.append(
-                                "%s_v%s_%s"
-                                % (
+                                "{}_v{}_{}".format(
                                     DOCKER_PROJECT_PREFIX,
                                     docker_netbox_version,
                                     volume_config,
@@ -341,8 +340,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
             new_volumes = {}
             for volume_name, volume_config in compose_data["volumes"].items():
                 new_volumes[
-                    "%s_v%s_%s"
-                    % (
+                    "{}_v{}_{}".format(
                         DOCKER_PROJECT_PREFIX,
                         docker_netbox_version,
                         volume_name,
@@ -352,7 +350,7 @@ def docker_compose_file(pytestconfig, netbox_docker_repo_dirpaths):
 
             compose_output_fpath = os.path.join(
                 netbox_docker_repo_dirpath,
-                "docker-compose-v%s.yml" % netbox_version,
+                "docker-compose-v{}.yml".format(netbox_version),
             )
             with open(compose_output_fpath, "w") as fdesc:
                 fdesc.write(yaml.dump(compose_data))
@@ -389,7 +387,7 @@ def id_netbox_service(fixture_value):
         str: Identifiable representation of the service, as best we can
 
     """
-    return "netbox v%s" % fixture_value
+    return "netbox v{}".format(fixture_value)
 
 
 @pytest.fixture(scope="session")
@@ -407,9 +405,9 @@ def docker_netbox_service(
     """
     netbox_integration_version = request.param
 
-    netbox_service_name = "netbox_v%s_netbox" % str(netbox_integration_version).replace(
+    netbox_service_name = "netbox_v{}_netbox".format(str(netbox_integration_version).replace(
         ".", "_"
-    )
+    ))
 
     netbox_service_port = 8080
     try:
@@ -422,8 +420,7 @@ def docker_netbox_service(
             if "Exited" in line:
                 container_id = line.split()[0]
                 exited_container_logs.append(
-                    "\nContainer %s logs:\n%s"
-                    % (
+                    "\nContainer {} logs:\n{}".format(
                         container_id,
                         subp.check_output(["docker", "logs", container_id]).decode(
                             "utf-8"
@@ -431,9 +428,8 @@ def docker_netbox_service(
                     )
                 )
         raise KeyError(
-            "Unable to find a docker service matching the name %s on port %s. Running"
-            " containers: %s. Original error: %s. Logs:\n%s"
-            % (
+            "Unable to find a docker service matching the name {} on port {}. Running"
+            " containers: {}. Original error: {}. Logs:\n{}".format(
                 netbox_service_name,
                 netbox_service_port,
                 docker_ps_stdout,
@@ -526,13 +522,12 @@ def create_device(api, site, device_type, role, name):
             device_type=device_type.id,
             site=site.id,
         )
-    else:
-        return api.dcim.devices.create(
-            name=name,
-            device_role=role.id,
-            device_type=device_type.id,
-            site=site.id,
-        )
+    return api.dcim.devices.create(
+        name=name,
+        device_role=role.id,
+        device_type=device_type.id,
+        site=site.id,
+    )
 
 
 def pytest_generate_tests(metafunc):
