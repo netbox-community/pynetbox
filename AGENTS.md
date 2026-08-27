@@ -146,7 +146,7 @@ Custom `Record` subclasses in `pynetbox/models/` add endpoint-specific behaviour
 | `pip install -e ".[dev]"` | Install the package plus all dev dependencies in editable mode |
 | `pytest tests/unit` | Run unit tests only (no Docker required) |
 | `pytest tests/integration --netbox-versions 4.5` | Run integration tests against NetBox 4.5 (requires Docker) |
-| `pytest --netbox-versions 4.3,4.4,4.5` | Run against multiple NetBox versions |
+| `pytest --netbox-versions 4.4,4.5,4.6` | Run against multiple NetBox versions |
 | `pytest --no-cleanup` | Leave Docker containers running after tests |
 | `pytest -p no:docker --url-override http://localhost:8000` | Run integration tests against an existing NetBox instance |
 | `ruff check pynetbox/ tests/` | Run linter |
@@ -199,7 +199,7 @@ Integration tests require Docker. The `tests/integration/conftest.py` uses `pyte
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **`py3.yml`** — Runs on every push/PR. Matrix: Python × {3.12, 3.13, 3.14} and NetBox × {4.3, 4.4, 4.5}. Enables Docker IPv6, runs `ruff check`, then `pytest --netbox-versions=${{ matrix.netbox }}` (integration + unit).
+- **`py3.yml`** — Runs on every push/PR. Matrix: Python × {3.12, 3.13, 3.14} and NetBox × {4.4, 4.5, 4.6}. Enables Docker IPv6, runs `ruff check`, then `pytest --netbox-versions=${{ matrix.netbox }}` (integration + unit).
 - **`publish.yml`** — Runs on published GitHub releases. Builds sdist + wheel with `python -m build`, then publishes to PyPI using a token secret (`PYPI_API_TOKEN`).
 - **`build-mkdocs.yml`** — Runs on push to `master`/`main`. Deploys docs to GitHub Pages with `mkdocs gh-deploy --force`.
 

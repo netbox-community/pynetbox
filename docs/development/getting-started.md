@@ -44,7 +44,7 @@ pytest tests/integration
 You can choose which NetBox versions to test against with `--netbox-versions` (comma-separated):
 
 ```bash
-pytest tests/integration --netbox-versions 4.3,4.4,4.5
+pytest tests/integration --netbox-versions 4.4,4.5,4.6
 ```
 
 To leave the containers running after the tests finish (useful for debugging):

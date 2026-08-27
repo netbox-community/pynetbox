@@ -2,11 +2,12 @@
 
 ## Requirements
 
-- **Python**: 3.10 or higher
+- **Python**: 3.12 or higher
 - **NetBox**: 3.3 or higher (for pynetbox 6.7+)
 - **Dependencies**:
-    - `requests>=2.20.0,<3.0`
     - `packaging`
+    - `requests>=2.32.3,<3.0`
+    - `urllib3>=2.2.3,<3`
 
 ## Installation Methods
 
