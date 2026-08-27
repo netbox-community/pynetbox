@@ -97,12 +97,8 @@ cd pynetbox
 python3 -m venv venv
 source venv/bin/activate
 
-# Install runtime and development dependencies
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-
-# Install pynetbox in editable mode
-pip install -e .
+# Install pynetbox in editable mode with its development dependencies
+pip install -e ".[dev]"
 ```
 
 The integration test suite uses [pytest-docker](https://pypi.org/project/pytest-docker/) to spin up NetBox in containers, so Docker must be installed and running to execute integration tests. Unit tests have no such requirement.

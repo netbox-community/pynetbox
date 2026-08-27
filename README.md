@@ -112,11 +112,10 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-Install both requirements files:
+Install pynetbox with its development dependencies:
 
 ```python
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+pip install -e ".[dev]"
 ```
 
 The test suite requires Docker to be installed and running, as it will download and launch netbox-docker containers during test execution.

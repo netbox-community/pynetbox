@@ -25,7 +25,7 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install dev requirements
-        run: pip install -r requirements-dev.txt .
+        run: pip install ".[dev]"
 
       - name: Enable Docker IPv6
         run: |

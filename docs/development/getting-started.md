@@ -12,9 +12,7 @@ This guide walks through setting up a pynetbox development environment and runni
 python3 -m venv venv
 source venv/bin/activate   # On Windows: venv\Scripts\activate
 
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-pip install -e .
+pip install -e ".[dev]"
 ```
 
 ## Running Tests

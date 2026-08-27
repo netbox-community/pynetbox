@@ -26,9 +26,25 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
 ]
+# Constraints carried over from the former requirements.txt, which pinned tighter
+# floors than setup.py's install_requires did. urllib3 is not imported directly; it
+# is constrained as a transitive dependency of requests.
 dependencies = [
-    "requests>=2.20.0,<3.0",
+    "requests>=2.32.3,<3.0",
+    "urllib3>=2.2.3,<3",
     "packaging",
+]
+
+[project.optional-dependencies]
+# Ported from the former requirements-dev.txt. Install with `pip install ".[dev]"`.
+dev = [
+    "mkdocs-material==9.6.14",
+    "mkdocstrings[python]==0.29.1",
+    "pymdown-extensions>=10.0",
+    "pytest",
+    "pytest-docker",
+    "PyYAML",
+    "ruff==0.15.20",
 ]
 
 [project.urls]
