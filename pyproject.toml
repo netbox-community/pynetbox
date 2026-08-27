@@ -15,7 +15,6 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 authors = [
     { name = "Zach Moody" },
-    { name = "Arthur Hanson", email = "ahanson@netboxlabs.com" },
 ]
 maintainers = [
     { name = "NetBox Labs", email = "support@netboxlabs.com" },
