@@ -4,4 +4,4 @@ pymdown-extensions>=10.0
 pytest
 pytest-docker
 PyYAML
-ruff
+ruff==0.15.20
