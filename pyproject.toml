@@ -57,6 +57,7 @@ dependencies = [
 
 [project.optional-dependencies]
 # Ported from the former requirements-dev.txt. Install with `pip install ".[dev]"`.
+# The docs theme ships with zensical, so mkdocs-material is not required.
 dev = [
     "mkdocstrings[python]==1.0.6",
     "pymdown-extensions>=10.0",
