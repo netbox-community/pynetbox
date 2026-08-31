@@ -58,13 +58,13 @@ dependencies = [
 [project.optional-dependencies]
 # Ported from the former requirements-dev.txt. Install with `pip install ".[dev]"`.
 dev = [
-    "mkdocs-material==9.6.14",
-    "mkdocstrings[python]==0.29.1",
+    "mkdocstrings[python]==1.0.6",
     "pymdown-extensions>=10.0",
     "pytest",
     "pytest-docker",
     "PyYAML",
     "ruff==0.15.20",
+    "zensical==0.0.57",
 ]
 
 [project.urls]

@@ -4,17 +4,12 @@ build:
   os: ubuntu-24.04
   tools:
     python: "3.12"
-
-# Build the mkdocs-material site; this project does not use Sphinx.
-mkdocs:
-  configuration: mkdocs.yml
-
-# Install pynetbox plus its docs tooling (mkdocs-material, mkdocstrings) from the
-# `dev` extra. mkdocstrings imports the package to generate the API reference, so
-# the package itself has to be installed, not just the docs dependencies.
-python:
-  install:
-    - method: pip
-      path: .
-      extra_requirements:
-        - dev
+  # Zensical is not one of the builders Read the Docs supports natively, so the site
+  # is built explicitly and copied into the expected output directory. mkdocstrings
+  # imports the package to generate the API reference, so pynetbox itself has to be
+  # installed, not just the docs dependencies from the `dev` extra.
+  commands:
+    - pip install ".[dev]"
+    - python -m zensical build --clean
+    - mkdir -p $READTHEDOCS_OUTPUT/html/
+    - cp -r site/* $READTHEDOCS_OUTPUT/html/
