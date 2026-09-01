@@ -11,7 +11,7 @@
 - `packaging` for version comparisons
 - `pytest` + `pytest-docker` for the test suite (unit and integration)
 - `ruff` for linting (pinned and configured in `pyproject.toml`)
-- `mkdocs-material` + `mkdocstrings` for user-facing docs
+- [`zensical`](https://zensical.org/) + `mkdocstrings` for user-facing docs (Zensical succeeds mkdocs; it reads the same `mkdocs.yml`)
 
 Defer all version pins to `pyproject.toml`: runtime constraints in `[project].dependencies`, dev/test/docs tooling in the `dev` extra. Package metadata and tool configuration live there too (uses `setuptools_scm` for version from git tags).
 
@@ -66,15 +66,15 @@ Defer all version pins to `pyproject.toml`: runtime constraints in `[project].de
 │       ├── test_circuits.py
 │       ├── test_dcim.py
 │       └── test_ipam.py
-├── docs/                        — mkdocs site (API reference + guides).
+├── docs/                        — documentation site (API reference + guides).
 ├── .github/workflows/
 │   ├── py3.yml                  — Lint + tests on every push/PR (matrix: Python × NetBox).
 │   ├── publish.yml              — PyPI publish on GitHub release.
-│   └── build-mkdocs.yml         — Deploy docs to GitHub Pages on push to master.
+│   └── docs.yml                 — Build with Zensical and deploy to GitHub Pages on push to master.
 ├── AGENTS.md                    — This file.
 ├── CLAUDE.md                    — Shim that pulls in this file.
 ├── CHANGELOG.md                 — Release history.
-├── mkdocs.yml                   — Docs site config.
+├── mkdocs.yml                   — Docs site config (consumed by Zensical).
 └── pyproject.toml               — Package metadata, dependencies, `dev` extra, ruff config.
 ```
 
@@ -151,8 +151,8 @@ Custom `Record` subclasses in `pynetbox/models/` add endpoint-specific behaviour
 | `pytest -p no:docker --url-override http://localhost:8000` | Run integration tests against an existing NetBox instance |
 | `ruff check pynetbox/ tests/` | Run linter |
 | `ruff check --fix pynetbox/ tests/` | Fix auto-fixable lint issues |
-| `mkdocs serve` | Preview docs locally |
-| `mkdocs gh-deploy` | Deploy docs to GitHub Pages |
+| `zensical serve` | Preview docs locally |
+| `zensical build --clean --strict` | Build the docs site into `site/` (as CI does) |
 | `python -m build` | Build sdist + wheel (matches the release workflow) |
 
 ## Development
@@ -201,7 +201,7 @@ GitHub Actions workflows in `.github/workflows/`:
 
 - **`py3.yml`** — Runs on every push/PR. Matrix: Python × {3.12, 3.13, 3.14} and NetBox × {4.4, 4.5, 4.6}. Enables Docker IPv6, runs `ruff check`, then `pytest --netbox-versions=${{ matrix.netbox }}` (integration + unit).
 - **`publish.yml`** — Runs on published GitHub releases. Builds sdist + wheel with `python -m build`, then publishes to PyPI using a token secret (`PYPI_API_TOKEN`).
-- **`build-mkdocs.yml`** — Runs on push to `master`/`main`. Deploys docs to GitHub Pages with `mkdocs gh-deploy --force`.
+- **`docs.yml`** — Runs on push to `master`/`main`. Builds the docs with `zensical build` and deploys them to GitHub Pages via `actions/deploy-pages` (the repository's Pages source must be set to GitHub Actions).
 
 ## Common Tasks
 
@@ -264,6 +264,6 @@ NetBox version compatibility is strict. Defer to `CHANGELOG.md` for the full his
 
 - GitHub repository: <https://github.com/netbox-community/pynetbox>
 - PyPI package: <https://pypi.org/project/pynetbox/>
-- User docs (mkdocs): [`docs/`](./docs/)
+- User docs (Zensical): [`docs/`](./docs/)
 - NetBox REST API docs: <https://demo.netbox.dev/api/docs/>
 - Release history: [`CHANGELOG.md`](./CHANGELOG.md)

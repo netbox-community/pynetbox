@@ -40,7 +40,7 @@ class VirtualMachines(Record):
         Returns a DetailEndpoint object that is the interface for
         viewing response from the render-config endpoint.
 
-        :returns: :py:class:`.DetailEndpoint`
+        :returns: ``DetailEndpoint``
 
         :Examples:
 
