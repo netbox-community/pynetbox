@@ -107,21 +107,31 @@ nb.dcim.devices.filter(non_existing_filter="aaaa", strict_filters=True)
 
 First, create and activate a Python virtual environment in the pynetbox directory to isolate the project dependencies:
 
-```python
+```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
 Install pynetbox with its development dependencies:
 
-```python
+```bash
 pip install -e ".[dev]"
 ```
 
-The test suite requires Docker to be installed and running, as it will download and launch netbox-docker containers during test execution.
+Unit tests mock every HTTP response and need no external services:
 
-With Docker installed and running, execute the following command to run the test suite:
+```bash
+pytest tests --ignore=tests/integration
+```
 
-```python
-pytest
+Integration tests run against real NetBox instances. They require Docker to be installed and running, as they download and launch netbox-docker containers during the run:
+
+```bash
+pytest tests/integration --netbox-versions 4.6
+```
+
+Before opening a pull request, run the lint gate the same way CI does:
+
+```bash
+pre-commit run --all-files
 ```

@@ -4,26 +4,27 @@ This page outlines the steps to prepare and publish a new pynetbox release. The 
 
 ## Pre-Release Tasks
 
-1. Ensure all tests pass:
+1. Ensure all tests pass (the integration run needs Docker):
    ```bash
-   ruff check pynetbox/ tests/
-   pytest
+   pre-commit run --all-files
+   pytest tests --ignore=tests/integration
+   pytest tests/integration --netbox-versions 4.4,4.5,4.6
    ```
 
 2. Update `__version__` in `pynetbox/__init__.py` to the new version.
 
-3. Update [`CHANGELOG.md`](https://github.com/netbox-community/pynetbox/blob/master/CHANGELOG.md) and `docs/release-notes.md` with a summary of changes, referencing the relevant issue and PR numbers.
+3. Update [`CHANGELOG.md`](https://github.com/netbox-community/pynetbox/blob/main/CHANGELOG.md) and `docs/release-notes.md` with a summary of changes, referencing the relevant issue and PR numbers.
 
 4. Check supported NetBox versions:
     - Review the latest [netbox-docker releases](https://github.com/netbox-community/netbox-docker/releases).
-    - Update `DEFAULT_NETBOX_VERSIONS` and the `get_netbox_docker_version_tag` function in `tests/integration/conftest.py` if there are new NetBox versions or new netbox-docker tag mappings.
-    - Widen the `netbox` matrix in `.github/workflows/py3.yml` to cover the supported range.
+    - Update `DEFAULT_NETBOX_VERSIONS` in `tests/conftest.py` and the `get_netbox_docker_version_tag` function in `tests/integration/conftest.py` if there are new NetBox versions or new netbox-docker tag mappings.
+    - Update the `include` legs of the `integration` job in `.github/workflows/ci.yml` so each supported NetBox version is covered by one leg.
 
 ## Release Tasks
 
-1. Create a release branch from `master`:
+1. Create a release branch from `main`:
    ```bash
-   git checkout master
+   git checkout main
    git pull
    git checkout -b release/vX.Y.Z
    ```
@@ -33,17 +34,17 @@ This page outlines the steps to prepare and publish a new pynetbox release. The 
    git commit -m "Prepare release vX.Y.Z"
    ```
 
-3. Open a pull request to merge the release branch into `master`.
+3. Open a pull request to merge the release branch into `main`.
 
 4. Once the PR is merged, publish a GitHub release:
     1. Go to the [Releases page](https://github.com/netbox-community/pynetbox/releases) on GitHub.
     2. Click **Draft a new release**.
-    3. Create a new tag named `vX.Y.Z` against `master`.
+    3. Create a new tag named `vX.Y.Z` against `main`.
     4. Paste the relevant changelog section into the release notes.
     5. Publish the release.
 
-   Publishing triggers the [`publish.yml`](https://github.com/netbox-community/pynetbox/blob/master/.github/workflows/publish.yml) workflow, which builds the sdist and wheel and uploads them to PyPI.
+   Publishing triggers the [`publish.yml`](https://github.com/netbox-community/pynetbox/blob/main/.github/workflows/publish.yml) workflow, which builds the sdist and wheel and uploads them to PyPI.
 
 ## Supported NetBox Versions
 
-pynetbox aims to support the current and previous two minor versions of NetBox. The supported versions are defined in `tests/integration/conftest.py` and should be reviewed and updated each release cycle.
+pynetbox aims to support the current and previous two minor versions of NetBox. The supported versions are defined by `DEFAULT_NETBOX_VERSIONS` in `tests/conftest.py` and the `get_netbox_docker_version_tag` function in `tests/integration/conftest.py`, and should be reviewed and updated each release cycle.

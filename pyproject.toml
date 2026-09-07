@@ -59,12 +59,15 @@ dependencies = [
 # Ported from the former requirements-dev.txt. Install with `pip install ".[dev]"`.
 # The docs theme ships with zensical, so mkdocs-material is not required.
 dev = [
+    "build",
     "mkdocstrings[python]==1.0.6",
+    "pre-commit",
     "pymdown-extensions>=10.0",
     "pytest",
     "pytest-docker",
     "PyYAML",
     "ruff==0.15.20",
+    "twine",
     "zensical==0.0.57",
 ]
 
