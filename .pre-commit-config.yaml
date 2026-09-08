@@ -1,9 +1,9 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
+# Keep `rev` in step with the ruff pin in the `dev` extra of pyproject.toml.
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.20
     hooks:
       - id: ruff-check
         name: "Ruff linter"
-        args: [ pynetbox/, tests/ ]

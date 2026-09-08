@@ -8,7 +8,7 @@ pynetbox is maintained on [GitHub](https://github.com/netbox-community/pynetbox)
 
 There are two permanent branches:
 
-- **`master`** — Active development for the next patch release. Pull requests should target this branch unless they introduce breaking changes that must wait for the next major release.
+- **`main`** — Active development for the next patch release. Pull requests should target this branch unless they introduce breaking changes that must wait for the next major release.
 - **`feature`** — New feature work staged for the next major release.
 
 The source tree is organized into the following directories:

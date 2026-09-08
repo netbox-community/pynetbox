@@ -1,0 +1,147 @@
+---
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  # Keyed by SHA outside pull requests, so every merge to main keeps its own run.
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+
+  lint:
+    name: Lint (pre-commit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pynetbox
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      # pre-commit builds its own ruff environment, so the dev extra is not needed.
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run pre-commit hooks
+        run: pre-commit run --all-files --show-diff-on-failure
+
+  unit:
+    name: Unit tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13", "3.14"]
+    steps:
+      - name: Checkout pynetbox
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dev dependencies
+        run: pip install -e ".[dev]"
+
+      # No Docker: everything outside tests/integration mocks its HTTP calls.
+      - name: Run unit tests
+        run: pytest tests --ignore=tests/integration
+
+  integration:
+    name: Integration tests (Python ${{ matrix.python }}, NetBox ${{ matrix.netbox }})
+    needs:
+      - lint
+      - unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python: "3.12"
+            netbox: "4.4"
+          - python: "3.13"
+            netbox: "4.5"
+          - python: "3.14"
+            netbox: "4.6"
+    steps:
+      - name: Checkout pynetbox
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dev dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Enable Docker IPv6
+        run: |
+          echo '{"ipv6": true, "fixed-cidr-v6": "fd00::/80"}' | sudo tee /etc/docker/daemon.json
+          sudo systemctl reload docker
+
+      - name: Free up Docker resources
+        run: |
+          docker system prune -af --volumes
+          docker network prune -f
+
+      - name: Run integration tests
+        run: pytest tests/integration --netbox-versions=${{ matrix.netbox }}
+
+  package:
+    name: Build and verify package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pynetbox
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # setuptools_scm needs the tags a shallow checkout omits.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      # python -m build is isolated, so the package itself is not installed here.
+      - name: Install build tooling
+        run: pip install build twine
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Check package metadata
+        run: twine check --strict dist/*
+
+      # pip is the build frontend users install sdists with, unlike python -m build.
+      - name: Rebuild the wheel from the sdist
+        run: |
+          python -m pip wheel --no-deps --wheel-dir sdist-wheel dist/*.tar.gz
+          ls -1 sdist-wheel
+
+      - name: Install the wheel into a clean environment and import it
+        run: |
+          python -m venv /tmp/wheel-check
+          /tmp/wheel-check/bin/pip install dist/*.whl
+          /tmp/wheel-check/bin/python -I -c $'import pynetbox, importlib.metadata as m\nprint("pynetbox.__version__:", pynetbox.__version__)\nprint("installed distribution version:", m.version("pynetbox"))'

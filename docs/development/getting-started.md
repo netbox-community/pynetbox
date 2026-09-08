@@ -17,20 +17,26 @@ pip install -e ".[dev]"
 
 ## Running Tests
 
-pynetbox uses [pytest](https://docs.pytest.org/) for both unit tests and integration tests. Linting is handled with [ruff](https://docs.astral.sh/ruff/).
+pynetbox uses [pytest](https://docs.pytest.org/) for both unit tests and integration tests. Linting is handled with [ruff](https://docs.astral.sh/ruff/), driven by [pre-commit](https://pre-commit.com/).
 
-Before submitting changes, make sure `ruff check` passes:
+Install the hooks once, so lint runs on every commit:
 
 ```bash
-ruff check pynetbox/ tests/
+pre-commit install
+```
+
+CI runs the same gate across the whole tree. Run it yourself before opening a pull request:
+
+```bash
+pre-commit run --all-files
 ```
 
 ### Unit Tests
 
-Unit tests mock HTTP responses with JSON fixtures from `tests/fixtures/` and have no external dependencies:
+Unit tests mock HTTP responses with JSON fixtures from `tests/fixtures/` and have no external dependencies. This covers both `tests/unit/` and the older top-level `tests/test_*.py` modules:
 
 ```bash
-pytest tests/unit
+pytest tests --ignore=tests/integration
 ```
 
 ### Integration Tests
