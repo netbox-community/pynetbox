@@ -91,9 +91,10 @@ def flatten_custom(custom_dict):
         current_val = val
 
         if isinstance(val, dict):
-            current_val = val.get("id", val)
-            if set(val) == {"value", "label"}:
+            if val.keys() == {"value", "label"}:
                 current_val = val.get("value", val)
+            else:
+                current_val = val.get("id", val)
 
         if isinstance(val, list):
             current_val = [v.get("id", v) if isinstance(v, dict) else v for v in val]
