@@ -88,7 +88,7 @@ def __flatten_custom_dict_value(val: dict):
     """
     Flatten a dict custom field value to only the ID, or the "value" for NetNox 4.7+ choice fields
     """
-    if set(val) == {"value", "label"}:
+    if val.keys() == {"value", "label"}:
         current_val = val.get("value", val)
     else:
         current_val = val.get("id", val)
