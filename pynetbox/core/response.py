@@ -84,6 +84,17 @@ def get_return(lookup, return_fields=None):
     return lookup
 
 
+def __flatten_custom_dict_value(val: dict):
+    """
+    Flatten a dict custom field value to only the ID, or the "value" for NetNox 4.7+ choice fields
+    """
+    current_val = val.get("id", val)
+    if set(val) == {"value", "label"}:
+        current_val = val.get("value", val)
+
+    return current_val
+
+
 def flatten_custom(custom_dict):
     ret = {}
 
@@ -91,13 +102,10 @@ def flatten_custom(custom_dict):
         current_val = val
 
         if isinstance(val, dict):
-            if val.keys() == {"value", "label"}:
-                current_val = val.get("value", val)
-            else:
-                current_val = val.get("id", val)
+            current_val = __flatten_custom_dict_value(val)
 
         if isinstance(val, list):
-            current_val = [v.get("id", v) if isinstance(v, dict) else v for v in val]
+            current_val = [__flatten_custom_dict_value(v) if isinstance(v, dict) else v for v in val]
 
         ret[k] = current_val
     return ret
