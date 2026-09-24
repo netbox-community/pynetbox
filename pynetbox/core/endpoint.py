@@ -459,7 +459,7 @@ class Endpoint:
         ## Examples
 
         ```python
-        devices = nb.dcim.devices.filter(site='test1')
+        devices = list(nb.dcim.devices.filter(site='test1'))
         for device in devices:
             device.status = 'active'
         nb.dcim.devices.update(devices, changelog_message='Site go-live')

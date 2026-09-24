@@ -235,7 +235,7 @@ device.update({
 To update multiple records in a single request, call `.update()` on the endpoint with a list of records or dicts. Each dict must include an `id`:
 
 ```python
-devices = nb.dcim.devices.filter(site='test1')
+devices = list(nb.dcim.devices.filter(site='test1'))
 for device in devices:
     device.status = 'active'
 nb.dcim.devices.update(devices)
