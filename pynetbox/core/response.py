@@ -170,11 +170,18 @@ class RecordSet:
             count = self.request.get_count()
         return count
 
-    def update(self, **kwargs):
+    def update(self, changelog_message=None, **kwargs):
         """Updates kwargs onto all Records in the RecordSet and saves these.
 
         Updates are only sent to the API if a value were changed, and only for
         the Records which were changed.
+
+        ## Parameters
+
+        * **changelog_message** (str, optional): Message to record in the
+            NetBox changelog entry of each updated object (requires
+            NetBox 4.4+).
+        * **kwargs**: Fields and values to set on every Record.
 
         ## Returns
         True if the update succeeded, None if no update were required.
@@ -182,7 +189,9 @@ class RecordSet:
         ## Examples
 
         ```python
-        result = nb.dcim.devices.filter(site_id=1).update(status='active')
+        result = nb.dcim.devices.filter(site_id=1).update(
+            status='active', changelog_message='Site go-live'
+        )
         # True
         ```
         """
@@ -197,13 +206,19 @@ class RecordSet:
                 record_updates["id"] = record.id
                 updates.append(record_updates)
         if updates:
-            return self.endpoint.update(updates)
+            return self.endpoint.update(updates, changelog_message=changelog_message)
         return None
 
-    def delete(self):
+    def delete(self, changelog_message=None):
         """Bulk deletes objects in a RecordSet.
 
         Allows for batch deletion of multiple objects in a RecordSet.
+
+        ## Parameters
+
+        * **changelog_message** (str, optional): Message to record in the
+            NetBox changelog entry of each deleted object (requires
+            NetBox 4.4+).
 
         ## Returns
         True if bulk DELETE operation was successful.
@@ -213,10 +228,12 @@ class RecordSet:
         Deleting offline `devices` on site 1:
 
         ```python
-        netbox.dcim.devices.filter(site_id=1, status="offline").delete()
+        netbox.dcim.devices.filter(site_id=1, status="offline").delete(
+            changelog_message="Removing offline devices"
+        )
         ```
         """
-        return self.endpoint.delete(self)
+        return self.endpoint.delete(self, changelog_message=changelog_message)
 
 
 class Record:
@@ -769,12 +786,15 @@ class Record:
                 return {i: serialized[i] for i in diff}
         return {}
 
-    def save(self):
+    def save(self, changelog_message=None):
         """Saves changes to an existing object.
 
         Takes a diff between the objects current state and its state at init
         and sends them as a dictionary to Request.patch().
 
+        :arg str changelog_message: Optional message to record in the
+            resulting NetBox changelog entry (requires NetBox 4.4+). Nothing
+            is sent if there are no changes to save.
         :returns: True if PATCH request was successful.
         :example:
 
@@ -782,12 +802,14 @@ class Record:
         >>> x.serial
         ''
         >>> x.serial = '1234'
-        >>> x.save()
+        >>> x.save(changelog_message="Set serial from asset audit")
         True
         >>>
         """
         updates = self.updates()
         if updates:
+            if changelog_message is not None:
+                updates["changelog_message"] = changelog_message
             req = Request(
                 key=self.id,
                 base=self.endpoint.url,
@@ -796,12 +818,16 @@ class Record:
             )
             result = req.patch(updates)
             if result:
+                # changelog_message is write-only, so NetBox never echoes it
+                # back. Drop one set as an attribute so it isn't re-sent (and
+                # seen as a pending change) on every later save().
+                self.__dict__.pop("changelog_message", None)
                 # Update object state with response from PATCH to keep cache in sync
                 self._parse_values(result)
                 return True
         return False
 
-    def update(self, data):
+    def update(self, data, changelog_message=None):
         """Update an object with a dictionary.
 
         Accepts a dict and uses it to update the record and call save().
@@ -810,6 +836,8 @@ class Record:
 
         :arg dict data: Dictionary containing the k/v to update the
             record object with.
+        :arg str changelog_message: Optional message to record in the
+            resulting NetBox changelog entry (requires NetBox 4.4+).
         :returns: True if PATCH request was successful.
         :example:
 
@@ -817,23 +845,25 @@ class Record:
         >>> x.update({
         ...   "name": "test-switch2",
         ...   "serial": "ABC321",
-        ... })
+        ... }, changelog_message="Renamed per ticket #4137")
         True
 
         """
 
         for k, v in data.items():
             setattr(self, k, v)
-        return self.save()
+        return self.save(changelog_message=changelog_message)
 
-    def delete(self):
+    def delete(self, changelog_message=None):
         """Deletes an existing object.
 
+        :arg str changelog_message: Optional message to record in the
+            resulting NetBox changelog entry (requires NetBox 4.4+).
         :returns: True if DELETE operation was successful.
         :example:
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
-        >>> x.delete()
+        >>> x.delete(changelog_message="Decommissioned")
         True
         >>>
         """
@@ -843,7 +873,10 @@ class Record:
             token=self.api.token,
             http_session=self.api.http_session,
         )
-        return True if req.delete() else False
+        data = None
+        if changelog_message is not None:
+            data = {"changelog_message": changelog_message}
+        return True if req.delete(data=data) else False
 
 
 class PathableRecord(Record):
