@@ -265,6 +265,31 @@ nb.dcim.devices.delete([1, 2, 3])
 nb.dcim.devices.filter(status='offline').delete()
 ```
 
+## Changelog Messages
+
+NetBox 4.4+ can attach a message to the changelog entry created by a write. Pass `changelog_message` to any create, update, or delete call:
+
+```python
+# Create
+nb.dcim.sites.create(name='Site A', slug='site-a', changelog_message='Ticket #4137')
+
+# Update a single record
+device.serial = 'ABC123'
+device.save(changelog_message='Serial from asset audit')
+device.update({'status': 'offline'}, changelog_message='Failed PSU')
+
+# Bulk update
+nb.dcim.devices.update(devices, changelog_message='Site go-live')
+nb.dcim.devices.filter(site_id=1).update(status='active', changelog_message='Site go-live')
+
+# Delete a single record, or in bulk
+device.delete(changelog_message='Decommissioned')
+nb.dcim.devices.delete([1, 2, 3], changelog_message='Site decommissioned')
+nb.dcim.devices.filter(status='offline').delete(changelog_message='Cleanup')
+```
+
+For a bulk create, include `changelog_message` in each dict of the list. A message is sent only with a request: `save()` makes no request, and so records no message, when nothing has changed.
+
 ## Working with Choices
 
 Use `.choices()` to retrieve the valid values for each choice field on an endpoint. The return value is a dict keyed by field name, with each value being a list of `{value, label}` entries:

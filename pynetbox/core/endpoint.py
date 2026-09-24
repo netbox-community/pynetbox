@@ -417,6 +417,17 @@ class Endpoint:
             site={'id': 1}
         )
         ```
+
+        Recording a changelog message (NetBox 4.4+). When bulk creating from
+        a list, include `changelog_message` in each dict:
+
+        ```python
+        new_site = nb.dcim.sites.create(
+            name='Site A',
+            slug='site-a',
+            changelog_message='Adding a site for ticket #4137'
+        )
+        ```
         """
 
         req = Request(
@@ -429,7 +440,7 @@ class Endpoint:
             return [self.return_obj(i, self.api, self) for i in req]
         return self.return_obj(req, self.api, self)
 
-    def update(self, objects):
+    def update(self, objects, changelog_message=None):
         """Updates objects in NetBox.
 
         Takes a list of objects and updates them in NetBox.
@@ -437,6 +448,10 @@ class Endpoint:
         ## Parameters
 
         * **objects** (list): A list of Record objects to update.
+        * **changelog_message** (str, optional): Message to record in the
+            NetBox changelog entry of each updated object (requires
+            NetBox 4.4+). An object that already carries its own
+            `changelog_message` keeps it.
 
         ## Returns
         A list of Record objects.
@@ -447,7 +462,7 @@ class Endpoint:
         devices = nb.dcim.devices.filter(site='test1')
         for device in devices:
             device.status = 'active'
-        nb.dcim.devices.update(devices)
+        nb.dcim.devices.update(devices, changelog_message='Site go-live')
         ```
         """
         series = []
@@ -471,6 +486,9 @@ class Endpoint:
                 raise ValueError(
                     "Object passed must be dict|Record - was {}".format(type(objects))
                 )
+        if changelog_message is not None:
+            # Copy rather than mutate dicts the caller passed in
+            series = [{"changelog_message": changelog_message, **s} for s in series]
         req = Request(
             base=self.url,
             token=self.token,
@@ -481,7 +499,7 @@ class Endpoint:
             return [self.return_obj(i, self.api, self) for i in req]
         return self.return_obj(req, self.api, self)
 
-    def delete(self, objects):
+    def delete(self, objects, changelog_message=None):
         """Deletes objects from NetBox.
 
         Takes a list of objects and deletes them from NetBox.
@@ -489,6 +507,9 @@ class Endpoint:
         ## Parameters
 
         * **objects** (list): A list of Record objects to delete.
+        * **changelog_message** (str, optional): Message to record in the
+            NetBox changelog entry of each deleted object (requires
+            NetBox 4.4+).
 
         ## Returns
         True if the delete operation was successful.
@@ -497,7 +518,7 @@ class Endpoint:
 
         ```python
         devices = nb.dcim.devices.filter(site='test1')
-        nb.dcim.devices.delete(devices)
+        nb.dcim.devices.delete(devices, changelog_message='Site decommissioned')
         ```
         """
         cleaned_ids = []
@@ -529,7 +550,11 @@ class Endpoint:
             token=self.token,
             http_session=self.api.http_session,
         )
-        return True if req.delete(data=[{"id": i} for i in cleaned_ids]) else False
+        data = [{"id": i} for i in cleaned_ids]
+        if changelog_message is not None:
+            for d in data:
+                d["changelog_message"] = changelog_message
+        return True if req.delete(data=data) else False
 
     def choices(self):
         """Returns all choices from the endpoint if it has them.
