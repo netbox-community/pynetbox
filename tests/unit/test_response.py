@@ -1,3 +1,4 @@
+import copy
 import unittest
 from unittest.mock import Mock, patch
 
@@ -63,6 +64,98 @@ class RecordTestCase(unittest.TestCase):
         # Local modification is preserved: the dunder guard short-circuited
         # before full_details could run and clobber it.
         self.assertEqual(test_obj.name, "modified")
+
+    def test_full_details_preserves_local_edits(self):
+        """Re-fetching a record must not discard pending local changes.
+
+        Reading a missing attribute (here via str(), which looks for
+        `label`) hydrates the record. That used to refresh the diff
+        baseline, so the edit below looked already-saved and save()
+        sent nothing. See issue #808.
+        """
+        server_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "display": "DEVICE_TYPE (123)",
+            "custom_fields": {"my_field": "old"},
+        }
+        test_obj = Record(
+            copy.deepcopy(server_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+        test_obj.custom_fields["my_field"] = "new"
+
+        # str() misses on `label` and hydrates. Deep-copy the payload: a
+        # shallow one shares the nested custom_fields dict with the record.
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(server_values)]),
+        ):
+            self.assertEqual(str(test_obj), "DEVICE_TYPE (123)")
+
+        self.assertEqual(test_obj.custom_fields, {"my_field": "new"})
+        self.assertEqual(
+            test_obj.updates(), {"custom_fields": {"my_field": "new"}}
+        )
+
+    def test_full_details_refreshes_untouched_fields(self):
+        """Preserving local edits must not stop untouched fields from
+        picking up fresh server state. See issue #808.
+        """
+        init_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "OLD",
+            "custom_fields": {"my_field": "old"},
+        }
+        test_obj = Record(
+            copy.deepcopy(init_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+        test_obj.custom_fields["my_field"] = "new"
+
+        # The server has moved `serial` on, a field nobody edited locally.
+        server_values = dict(copy.deepcopy(init_values), serial="SERVER")
+        with patch(
+            "pynetbox.core.query.Request.get", return_value=iter([server_values])
+        ):
+            test_obj.full_details()
+
+        self.assertEqual(test_obj.serial, "SERVER")
+        # Only the locally-edited field is pending; `serial` matches the
+        # server, so it must not show up as a change to send back.
+        self.assertEqual(
+            test_obj.updates(), {"custom_fields": {"my_field": "new"}}
+        )
+
+    def test_full_details_clean_record_stays_clean(self):
+        """Hydrating a record with no local edits produces no diff.
+        See issue #808.
+        """
+        server_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "OLD",
+            "custom_fields": {"my_field": "old"},
+        }
+        test_obj = Record(
+            copy.deepcopy(server_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(server_values)]),
+        ):
+            test_obj.full_details()
+
+        self.assertEqual(test_obj.updates(), {})
 
     def test_dict_access(self):
         test_values = {

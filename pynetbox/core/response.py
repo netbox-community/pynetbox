@@ -635,7 +635,23 @@ class Record:
                 token=self.api.token,
                 http_session=self.api.http_session,
             )
+            # Fields the caller has modified since the last sync. Hydrating
+            # must not disturb these: _parse_values() would overwrite both the
+            # attribute and its _init_cache baseline, silently discarding the
+            # pending change so a later save() sends nothing. See issue #808.
+            dirty = self._diff()
+            dirty_values = {k: getattr(self, k) for k in dirty}
+            dirty_baseline = {
+                k: v for k, v in dict(self._init_cache).items() if k in dirty
+            }
+
             self._parse_values(next(req.get()))
+
+            for k, v in dirty_values.items():
+                setattr(self, k, v)
+            for k, v in dirty_baseline.items():
+                self._add_cache((k, v))
+
             self.has_details = True
             return True
         return False
