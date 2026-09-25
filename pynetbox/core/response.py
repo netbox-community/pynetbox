@@ -639,6 +639,11 @@ class Record:
             # must not disturb these: _parse_values() would overwrite both the
             # attribute and its _init_cache baseline, silently discarding the
             # pending change so a later save() sends nothing. See issue #808.
+            # These hold references, not copies, which keeps object identity
+            # for a caller holding e.g. device.custom_fields. That relies on
+            # _parse_values() assigning attributes with setattr() rather than
+            # mutating them in place; were it to mutate, the restore below
+            # would put back an already-overwritten value.
             dirty = self._diff()
             dirty_values = {k: getattr(self, k) for k in dirty}
             dirty_baseline = {

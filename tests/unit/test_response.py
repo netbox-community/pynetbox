@@ -100,6 +100,33 @@ class RecordTestCase(unittest.TestCase):
             test_obj.updates(), {"custom_fields": {"my_field": "new"}}
         )
 
+    def test_full_details_preserves_local_scalar_edit(self):
+        """The custom_fields case above goes through the JsonField path.
+        A plain scalar takes a different branch of _parse_values, so cover
+        it too. See issue #808.
+        """
+        server_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "OLD",
+        }
+        test_obj = Record(
+            copy.deepcopy(server_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+        test_obj.serial = "NEW"
+
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(server_values)]),
+        ):
+            test_obj.full_details()
+
+        self.assertEqual(test_obj.serial, "NEW")
+        self.assertEqual(test_obj.updates(), {"serial": "NEW"})
+
     def test_full_details_refreshes_untouched_fields(self):
         """Preserving local edits must not stop untouched fields from
         picking up fresh server state. See issue #808.
@@ -121,7 +148,8 @@ class RecordTestCase(unittest.TestCase):
         # The server has moved `serial` on, a field nobody edited locally.
         server_values = dict(copy.deepcopy(init_values), serial="SERVER")
         with patch(
-            "pynetbox.core.query.Request.get", return_value=iter([server_values])
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(server_values)]),
         ):
             test_obj.full_details()
 
