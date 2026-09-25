@@ -44,7 +44,7 @@ LIST_AS_SET = (
     "tenants",
     # route targets (netbox_vrf / netbox_l2vpn)
     "import_targets",
-    "export_targets"
+    "export_targets",
 )
 
 # List fields whose item type is announced via a sibling "<field>_type"
@@ -84,6 +84,18 @@ def get_return(lookup, return_fields=None):
     return lookup
 
 
+def __flatten_custom_dict_value(val: dict):
+    """
+    Flatten a dict custom field value to only the ID, or the "value" for NetNox 4.7+ choice fields
+    """
+    if val.keys() == {"value", "label"}:
+        current_val = val.get("value", val)
+    else:
+        current_val = val.get("id", val)
+
+    return current_val
+
+
 def flatten_custom(custom_dict):
     ret = {}
 
@@ -91,10 +103,10 @@ def flatten_custom(custom_dict):
         current_val = val
 
         if isinstance(val, dict):
-            current_val = val.get("id", val)
+            current_val = __flatten_custom_dict_value(val)
 
         if isinstance(val, list):
-            current_val = [v.get("id", v) if isinstance(v, dict) else v for v in val]
+            current_val = [__flatten_custom_dict_value(v) if isinstance(v, dict) else v for v in val]
 
         ret[k] = current_val
     return ret
@@ -148,12 +160,8 @@ class RecordSet:
 
     def __next__(self):
         if self._response_cache:
-            return self.endpoint.return_obj(
-                self._response_cache.pop(), self.endpoint.api, self.endpoint
-            )
-        return self.endpoint.return_obj(
-            next(self.response), self.endpoint.api, self.endpoint
-        )
+            return self.endpoint.return_obj(self._response_cache.pop(), self.endpoint.api, self.endpoint)
+        return self.endpoint.return_obj(next(self.response), self.endpoint.api, self.endpoint)
 
     def __len__(self):
         try:
@@ -361,9 +369,7 @@ class Record:
         self.api = api
         self.default_ret = Record
         self.endpoint = (
-            self._endpoint_from_url(values["url"])
-            if values and "url" in values and values["url"]
-            else endpoint
+            self._endpoint_from_url(values["url"]) if values and "url" in values and values["url"] else endpoint
         )
         if values:
             self._parse_values(values)
@@ -400,9 +406,7 @@ class Record:
             cur_attr = getattr(self, i)
             if isinstance(cur_attr, Record):
                 yield i, dict(cur_attr)
-            elif isinstance(cur_attr, list) and all(
-                isinstance(i, (Record, GenericListObject)) for i in cur_attr
-            ):
+            elif isinstance(cur_attr, list) and all(isinstance(i, (Record, GenericListObject)) for i in cur_attr):
                 yield i, [dict(x) for x in cur_attr]
             else:
                 yield i, cur_attr
@@ -411,12 +415,7 @@ class Record:
         return dict(self)[k]
 
     def __str__(self):
-        return (
-            getattr(self, "name", None)
-            or getattr(self, "label", None)
-            or getattr(self, "display", None)
-            or ""
-        )
+        return getattr(self, "name", None) or getattr(self, "label", None) or getattr(self, "display", None) or ""
 
     def __repr__(self):
         return str(self)
@@ -448,9 +447,7 @@ class Record:
         Returns:
             String like "dcim/rear-ports"
         """
-        app_endpoint = "/".join(
-            urlsplit(url).path[len(urlsplit(self.api.base_url).path) :].split("/")[1:3]
-        )
+        app_endpoint = "/".join(urlsplit(url).path[len(urlsplit(self.api.base_url).path) :].split("/")[1:3])
         return app_endpoint
 
     def _get_obj_class(self, url):
@@ -503,15 +500,9 @@ class Record:
         def generic_list_parser(key_name, list_item):
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
-            content_type_mapper = getattr(
-                self.api, "_content_type_mapper", CONTENT_TYPE_MAPPER
-            )
+            content_type_mapper = getattr(self.api, "_content_type_mapper", CONTENT_TYPE_MAPPER)
 
-            if (
-                isinstance(list_item, dict)
-                and "object_type" in list_item
-                and "object" in list_item
-            ):
+            if isinstance(list_item, dict) and "object_type" in list_item and "object" in list_item:
                 lookup = list_item["object_type"]
                 if model := content_type_mapper.get(lookup, None):
                     record = model(list_item["object"], self.api, self.endpoint)
@@ -534,9 +525,7 @@ class Record:
         def sibling_typed_list_parser(list_item, content_type):
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
-            content_type_mapper = getattr(
-                self.api, "_content_type_mapper", CONTENT_TYPE_MAPPER
-            )
+            content_type_mapper = getattr(self.api, "_content_type_mapper", CONTENT_TYPE_MAPPER)
 
             if isinstance(list_item, dict):
                 if model := content_type_mapper.get(content_type, None):
@@ -547,9 +536,7 @@ class Record:
         for k, v in values.items():
             if isinstance(v, dict):
                 lookup = getattr(self.__class__, k, None)
-                if k in ["custom_fields", "local_context_data"] or hasattr(
-                    lookup, "_json_field"
-                ):
+                if k in ["custom_fields", "local_context_data"] or hasattr(lookup, "_json_field"):
                     self._add_cache((k, copy.deepcopy(v)))
                     setattr(self, k, v)
                     continue
@@ -575,10 +562,7 @@ class Record:
                     # An unmapped object_type (e.g. a plugin whose extension
                     # hasn't been registered) falls through as the raw dict,
                     # so cache it directly instead of assuming .serialize().
-                    to_cache = [
-                        i.serialize() if hasattr(i, "serialize") else copy.deepcopy(i)
-                        for i in v
-                    ]
+                    to_cache = [i.serialize() if hasattr(i, "serialize") else copy.deepcopy(i) for i in v]
                 elif k == "constraints":
                     # Permissions constraints can be either dict or list
                     to_cache = copy.deepcopy(v)
@@ -687,9 +671,7 @@ class Record:
             extra_keys = [
                 k
                 for k in self.__dict__.keys()
-                if not k.startswith("_")
-                and k not in self._INTERNAL_ATTRS
-                and k not in init_cache_key_set
+                if not k.startswith("_") and k not in self._INTERNAL_ATTRS and k not in init_cache_key_set
             ]
 
             fields_to_serialize = init_cache_keys + extra_keys
@@ -720,8 +702,7 @@ class Record:
                         serialized_list.append(v)
                     current_val = serialized_list
                     if i in LIST_AS_SET and (
-                        all([isinstance(v, str) for v in current_val])
-                        or all([isinstance(v, int) for v in current_val])
+                        all([isinstance(v, str) for v in current_val]) or all([isinstance(v, int) for v in current_val])
                     ):
                         current_val = list(dict.fromkeys(current_val))
                 ret[i] = current_val
@@ -751,15 +732,11 @@ class Record:
         if isinstance(current_cf, dict) and isinstance(init_cf, dict):
             init_serialized = {
                 **init_serialized,
-                "custom_fields": {
-                    k: v for k, v in init_cf.items() if k in current_cf
-                },
+                "custom_fields": {k: v for k, v in init_cf.items() if k in current_cf},
             }
 
         current = Hashabledict({fmt_dict(k, v) for k, v in current_serialized.items()})
-        init = Hashabledict(
-            {fmt_dict(k, v) for k, v in init_serialized.items()}
-        )
+        init = Hashabledict({fmt_dict(k, v) for k, v in init_serialized.items()})
         return set([i[0] for i in set(current.items()) ^ set(init.items())])
 
     def updates(self):
@@ -928,11 +905,13 @@ class PathableRecord(Record):
             origin = self._build_endpoint_object(path_data.get("origin"))
             destination = self._build_endpoint_object(path_data.get("destination"))
 
-            ret.append({
-                "origin": origin,
-                "destination": destination,
-                "path": path_segments,
-            })
+            ret.append(
+                {
+                    "origin": origin,
+                    "destination": destination,
+                    "path": path_segments,
+                }
+            )
 
         return ret
 
@@ -941,9 +920,7 @@ class GenericListObject:
     def __init__(self, record):
         from pynetbox.models.mapper import TYPE_CONTENT_MAPPER
 
-        type_content_mapper = getattr(
-            record.api, "_type_content_mapper", TYPE_CONTENT_MAPPER
-        )
+        type_content_mapper = getattr(record.api, "_type_content_mapper", TYPE_CONTENT_MAPPER)
 
         self.object = record
         self.object_id = record.id
