@@ -18,13 +18,6 @@ This is a minor version bump primarily because pynetbox now requires Python 3.12
 - Supports NetBox 4.7
 - Python 3.12 or later is now required ([#797](https://github.com/netbox-community/pynetbox/issues/797))
 
-#### Housekeeping
-- [#797](https://github.com/netbox-community/pynetbox/issues/797) - Move package metadata and dependencies to `pyproject.toml`
-- [#798](https://github.com/netbox-community/pynetbox/issues/798) - Adopt an explicit, pinned Ruff configuration
-- [#799](https://github.com/netbox-community/pynetbox/issues/799) - Modernize the GitHub Actions workflows
-- [#804](https://github.com/netbox-community/pynetbox/issues/804) - Migrate the documentation site from MkDocs to Zensical
-- [#814](https://github.com/netbox-community/pynetbox/issues/814) - Add NetBox 4.7 to the integration test matrix
-
 ---
 
 ## Version 7.8.0 (June 18, 2026)
