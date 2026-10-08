@@ -8,7 +8,7 @@ This page outlines the steps to prepare and publish a new pynetbox release. The 
    ```bash
    pre-commit run --all-files
    pytest tests --ignore=tests/integration
-   pytest tests/integration --netbox-versions 4.4,4.5,4.6,4.7
+   pytest tests/integration --netbox-versions 4.5,4.6,4.7
    ```
 
 2. Update `__version__` in `pynetbox/__init__.py` to the new version.

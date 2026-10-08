@@ -13,9 +13,9 @@ Run the pynetbox test suite. Choose the scope that fits your situation.
 | Goal | Command |
 |---|---|
 | All tests that do not need Docker | `pytest tests --ignore=tests/integration` |
-| Integration tests — default NetBox version (4.4) | `pytest tests/integration --netbox-versions 4.4` |
+| Integration tests — default NetBox version (4.7) | `pytest tests/integration --netbox-versions 4.7` |
 | Integration tests — specific version | `pytest tests/integration --netbox-versions 4.6` |
-| Integration tests — multiple versions | `pytest tests/integration --netbox-versions 4.4,4.5,4.6` |
+| Integration tests — multiple versions | `pytest tests/integration --netbox-versions 4.5,4.6,4.7` |
 | Against an existing NetBox instance | `pytest tests/integration -p no:docker --url-override http://localhost:8000` |
 | Leave Docker containers running after tests | `pytest tests/integration --netbox-versions 4.5 --no-cleanup` |
 | Lint exactly as CI does | `pre-commit run --all-files` |
@@ -54,8 +54,8 @@ Integration tests spin up a `netbox-docker` container, wait for NetBox to be rea
 pytest tests/integration --netbox-versions 4.5
 ```
 
-- `--netbox-versions` accepts a comma-separated list (`4.4,4.5,4.6`).
-- Default version when the flag is omitted: **4.4**.
+- `--netbox-versions` accepts a comma-separated list (`4.5,4.6,4.7`).
+- Default version when the flag is omitted: **4.7**.
 - `--no-cleanup` leaves the container running — useful for inspecting state after a failure.
 - `-p no:docker --url-override http://localhost:8000` skips Docker and targets an existing instance.
 
@@ -75,13 +75,13 @@ Run `pre-commit run --all-files` before committing. CI will reject lint failures
 The GitHub Actions workflow (`ci.yml`) runs two separate matrices:
 
 - Unit tests run on Python 3.12, 3.13 and 3.14, with no NetBox pairing.
-- Integration tests run three legs: Python 3.12 with NetBox 4.4, Python 3.13 with NetBox 4.5, and Python 3.14 with NetBox 4.6.
+- Integration tests run three legs: Python 3.12 with NetBox 4.5, Python 3.13 with NetBox 4.6, and Python 3.14 with NetBox 4.7.
 
 Reproducing a specific cell locally:
 
 ```bash
-# Example: Python 3.12 + NetBox 4.4
-python3.12 -m pytest tests/integration --netbox-versions 4.4
+# Example: Python 3.12 + NetBox 4.5
+python3.12 -m pytest tests/integration --netbox-versions 4.5
 ```
 
 ## Common failure modes

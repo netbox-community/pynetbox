@@ -15,7 +15,7 @@ This is a minor version bump primarily because pynetbox now requires Python 3.12
 - [#808](https://github.com/netbox-community/pynetbox/issues/808) - Preserve unsaved local changes when a record is re-fetched, such as by `print()` or reading an attribute that is not yet loaded
 
 #### Compatibility
-- Supports NetBox 4.7
+- Supports NetBox 4.5, 4.6 and 4.7. NetBox 4.4 is no longer supported.
 - Python 3.12 or later is now required ([#797](https://github.com/netbox-community/pynetbox/issues/797))
 
 ---
