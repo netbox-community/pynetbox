@@ -757,11 +757,25 @@ class Record:
         )
         return set([i[0] for i in set(current.items()) ^ set(init.items())])
 
+    def _changed_custom_fields(self):
+        """Return the custom fields whose raw value differs from the last sync.
+
+        NetBox merges PATCHed custom fields, so unchanged ones are left out.
+        Sending them back would round-trip read-only shapes such as the
+        {value, label} objects NetBox 4.7 returns for selection fields (#806).
+        """
+        current = getattr(self, "custom_fields", None) or {}
+        init = dict(self._init_cache).get("custom_fields")
+        if not isinstance(init, dict):
+            init = {}
+        return {k: v for k, v in current.items() if k not in init or init[k] != v}
+
     def updates(self):
         """Compiles changes for an existing object into a dict.
 
         Takes a diff between the objects current state and its state at init
         and returns them as a dictionary, which will be empty if no changes.
+        ``custom_fields`` includes only the custom fields that changed.
 
         :returns: dict.
         :example:
@@ -778,7 +792,10 @@ class Record:
             diff = self._diff()
             if diff:
                 serialized = self.serialize()
-                return {i: serialized[i] for i in diff}
+                ret = {i: serialized[i] for i in diff}
+                if "custom_fields" in ret:
+                    ret["custom_fields"] = flatten_custom(self._changed_custom_fields())
+                return ret
         return {}
 
     def save(self):
