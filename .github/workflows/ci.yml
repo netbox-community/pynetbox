@@ -75,10 +75,8 @@ jobs:
       matrix:
         include:
           - python: "3.12"
-            netbox: "4.4"
-          - python: "3.13"
             netbox: "4.5"
-          - python: "3.14"
+          - python: "3.13"
             netbox: "4.6"
           - python: "3.14"
             netbox: "4.7"

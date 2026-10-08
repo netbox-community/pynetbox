@@ -2,7 +2,7 @@
 
 ## Repository Overview
 
-`pynetbox` is a Python API client library for NetBox. It provides a Pythonic interface to interact with NetBox's REST API and supports NetBox 3.3+ (pynetbox 6.7+). It is a standalone library — not a Django app or NetBox plugin — published to PyPI and used by automation tooling, scripts, and other Python projects to read and write NetBox data. Current version: `7.7.0` (see `pynetbox/__init__.py`).
+`pynetbox` is a Python API client library for NetBox. It provides a Pythonic interface to interact with NetBox's REST API and supports NetBox 3.3+ (pynetbox 6.7+). It is a standalone library — not a Django app or NetBox plugin — published to PyPI and used by automation tooling, scripts, and other Python projects to read and write NetBox data. Current version: `7.9.0` (see `pynetbox/__init__.py`).
 
 ## Tech Stack
 
@@ -150,7 +150,7 @@ Custom `Record` subclasses in `pynetbox/models/` add endpoint-specific behaviour
 | `pytest tests --ignore=tests/integration` | Run every test that does not need Docker |
 | `python -m build && twine check --strict dist/*` | Build and validate the sdist and wheel (as CI does) |
 | `pytest tests/integration --netbox-versions 4.5` | Run integration tests against NetBox 4.5 (requires Docker) |
-| `pytest tests/integration --netbox-versions 4.4,4.5,4.6,4.7` | Run against multiple NetBox versions |
+| `pytest tests/integration --netbox-versions 4.5,4.6,4.7` | Run against multiple NetBox versions |
 | `pytest tests/integration --no-cleanup` | Leave Docker containers running after tests |
 | `pytest tests/integration -p no:docker --url-override http://localhost:8000` | Run integration tests against an existing NetBox instance |
 | `zensical serve` | Preview docs locally |
@@ -200,7 +200,7 @@ Integration tests require Docker. The `tests/integration/conftest.py` uses `pyte
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **`ci.yml`** — Runs on every pull request and on push to `main`. Four jobs: `lint` runs `pre-commit run --all-files` once, `unit` runs `pytest tests --ignore=tests/integration` on Python 3.12, 3.13 and 3.14 with no Docker, `integration` runs four Docker legs (3.12 with NetBox 4.4, 3.13 with 4.5, 3.14 with 4.6, 3.14 with 4.7) after `lint` and `unit` pass, and `package` builds the sdist and wheel, runs `twine check`, rebuilds the wheel from the sdist and installs it into a clean environment.
+- **`ci.yml`** — Runs on every pull request and on push to `main`. Four jobs: `lint` runs `pre-commit run --all-files` once, `unit` runs `pytest tests --ignore=tests/integration` on Python 3.12, 3.13 and 3.14 with no Docker, `integration` runs three Docker legs (3.12 with NetBox 4.5, 3.13 with 4.6, 3.14 with 4.7) after `lint` and `unit` pass, and `package` builds the sdist and wheel, runs `twine check`, rebuilds the wheel from the sdist and installs it into a clean environment.
 - **`publish.yml`** — Runs on published GitHub releases. Builds sdist + wheel with `python -m build`, then publishes to PyPI using a token secret (`PYPI_API_TOKEN`).
 - **`docs.yml`** — Builds the docs with Zensical on every pull request and on push to `main`. A separate `deploy` job holds the only `pages: write` grant and runs only on push to `main`.
 
@@ -255,6 +255,8 @@ NetBox version compatibility is strict. Defer to `CHANGELOG.md` for the full his
 
 | pynetbox | NetBox |
 |---|---|
+| 7.9.0 | 4.5, 4.6, 4.7 |
+| 7.8.0 | 4.4, 4.5, 4.6 |
 | 7.7.0 | 4.3, 4.4, 4.5 |
 | 7.6.1 | 4.5.0 |
 | 7.5.0 | 4.1, 4.2, 4.3 |

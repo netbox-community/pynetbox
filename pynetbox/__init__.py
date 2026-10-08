@@ -8,7 +8,7 @@ from pynetbox.core.query import (
 )
 from pynetbox.core.response import JsonField
 
-__version__ = "7.8.0"
+__version__ = "7.9.0"
 
 # Lowercase alias for backward compatibility
 api = Api
