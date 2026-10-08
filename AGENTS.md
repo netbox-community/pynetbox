@@ -150,7 +150,7 @@ Custom `Record` subclasses in `pynetbox/models/` add endpoint-specific behaviour
 | `pytest tests --ignore=tests/integration` | Run every test that does not need Docker |
 | `python -m build && twine check --strict dist/*` | Build and validate the sdist and wheel (as CI does) |
 | `pytest tests/integration --netbox-versions 4.5` | Run integration tests against NetBox 4.5 (requires Docker) |
-| `pytest tests/integration --netbox-versions 4.4,4.5,4.6` | Run against multiple NetBox versions |
+| `pytest tests/integration --netbox-versions 4.4,4.5,4.6,4.7` | Run against multiple NetBox versions |
 | `pytest tests/integration --no-cleanup` | Leave Docker containers running after tests |
 | `pytest tests/integration -p no:docker --url-override http://localhost:8000` | Run integration tests against an existing NetBox instance |
 | `zensical serve` | Preview docs locally |
@@ -170,7 +170,7 @@ Integration tests require Docker. The `tests/integration/conftest.py` uses `pyte
 
 - **Unit tests** (`tests/unit/` and `tests/test_*.py`) mock HTTP responses with JSON fixtures from `tests/fixtures/`. No Docker required.
 - **Integration tests** (`tests/integration/`) run against a real NetBox instance in Docker. They test end-to-end CRUD operations across dcim, ipam, and circuits.
-- `tests/conftest.py` defines three pytest options: `--netbox-versions` (comma-separated, default `4.4`), `--no-cleanup`, and `--url-override`.
+- `tests/conftest.py` defines three pytest options: `--netbox-versions` (comma-separated, default `4.7`), `--no-cleanup`, and `--url-override`.
 
 | Test module | Coverage area |
 |---|---|
@@ -200,7 +200,7 @@ Integration tests require Docker. The `tests/integration/conftest.py` uses `pyte
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **`ci.yml`** — Runs on every pull request and on push to `main`. Four jobs: `lint` runs `pre-commit run --all-files` once, `unit` runs `pytest tests --ignore=tests/integration` on Python 3.12, 3.13 and 3.14 with no Docker, `integration` runs three Docker legs (3.12 with NetBox 4.4, 3.13 with 4.5, 3.14 with 4.6) after `lint` and `unit` pass, and `package` builds the sdist and wheel, runs `twine check`, rebuilds the wheel from the sdist and installs it into a clean environment.
+- **`ci.yml`** — Runs on every pull request and on push to `main`. Four jobs: `lint` runs `pre-commit run --all-files` once, `unit` runs `pytest tests --ignore=tests/integration` on Python 3.12, 3.13 and 3.14 with no Docker, `integration` runs four Docker legs (3.12 with NetBox 4.4, 3.13 with 4.5, 3.14 with 4.6, 3.14 with 4.7) after `lint` and `unit` pass, and `package` builds the sdist and wheel, runs `twine check`, rebuilds the wheel from the sdist and installs it into a clean environment.
 - **`publish.yml`** — Runs on published GitHub releases. Builds sdist + wheel with `python -m build`, then publishes to PyPI using a token secret (`PYPI_API_TOKEN`).
 - **`docs.yml`** — Builds the docs with Zensical on every pull request and on push to `main`. A separate `deploy` job holds the only `pages: write` grant and runs only on push to `main`.
 
