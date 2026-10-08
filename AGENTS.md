@@ -2,7 +2,7 @@
 
 ## Repository Overview
 
-`pynetbox` is a Python API client library for NetBox. It provides a Pythonic interface to interact with NetBox's REST API and supports NetBox 3.3+ (pynetbox 6.7+). It is a standalone library — not a Django app or NetBox plugin — published to PyPI and used by automation tooling, scripts, and other Python projects to read and write NetBox data. Current version: `7.7.0` (see `pynetbox/__init__.py`).
+`pynetbox` is a Python API client library for NetBox. It provides a Pythonic interface to interact with NetBox's REST API and supports NetBox 3.3+ (pynetbox 6.7+). It is a standalone library — not a Django app or NetBox plugin — published to PyPI and used by automation tooling, scripts, and other Python projects to read and write NetBox data. Current version: `7.9.0` (see `pynetbox/__init__.py`).
 
 ## Tech Stack
 
@@ -255,6 +255,8 @@ NetBox version compatibility is strict. Defer to `CHANGELOG.md` for the full his
 
 | pynetbox | NetBox |
 |---|---|
+| 7.9.0 | 4.4, 4.5, 4.6, 4.7 |
+| 7.8.0 | 4.4, 4.5, 4.6 |
 | 7.7.0 | 4.3, 4.4, 4.5 |
 | 7.6.1 | 4.5.0 |
 | 7.5.0 | 4.1, 4.2, 4.3 |

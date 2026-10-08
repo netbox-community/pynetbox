@@ -1,5 +1,32 @@
 # Release Notes
 
+## Version 7.9.0 (October 8, 2026)
+
+This is a minor version bump primarily because pynetbox now requires Python 3.12 or later. Support for Python 3.10 and 3.11 has been dropped. The remaining changes are a small feature addition, enhancements, and bug fixes.
+
+#### New Features
+- [#793](https://github.com/netbox-community/pynetbox/issues/793) - Support `changelog_message` on create, `save()`, `update()` and `delete()`, including bulk update and delete
+
+#### Enhancements
+- [#806](https://github.com/netbox-community/pynetbox/issues/806) - Support NetBox 4.7 choice set custom fields: flatten `{value, label}` selection values on write and send only the custom fields that changed
+- [#711](https://github.com/netbox-community/pynetbox/issues/711) - Treat more list fields as sets when detecting changes (`object_types`, `permissions`, `groups`, `actions`, config context assignment scopes, and VRF/L2VPN route targets), so reordering no longer triggers an update
+
+#### Bug Fixes
+- [#808](https://github.com/netbox-community/pynetbox/issues/808) - Preserve unsaved local changes when a record is re-fetched, such as by `print()` or reading an attribute that is not yet loaded
+
+#### Compatibility
+- Supports NetBox 4.7
+- Python 3.12 or later is now required ([#797](https://github.com/netbox-community/pynetbox/issues/797))
+
+#### Housekeeping
+- [#797](https://github.com/netbox-community/pynetbox/issues/797) - Move package metadata and dependencies to `pyproject.toml`
+- [#798](https://github.com/netbox-community/pynetbox/issues/798) - Adopt an explicit, pinned Ruff configuration
+- [#799](https://github.com/netbox-community/pynetbox/issues/799) - Modernize the GitHub Actions workflows
+- [#804](https://github.com/netbox-community/pynetbox/issues/804) - Migrate the documentation site from MkDocs to Zensical
+- [#814](https://github.com/netbox-community/pynetbox/issues/814) - Add NetBox 4.7 to the integration test matrix
+
+---
+
 ## Version 7.8.0 (June 18, 2026)
 
 #### Plugin Extension Framework ([#774](https://github.com/netbox-community/pynetbox/issues/774))

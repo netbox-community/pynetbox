@@ -82,7 +82,7 @@ pip install --upgrade pynetbox
 To install a specific version:
 
 ```bash
-pip install pynetbox==7.7.0
+pip install pynetbox==7.9.0
 ```
 
 ## Development Installation

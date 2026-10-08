@@ -25,6 +25,8 @@ Each pynetbox version has been tested against the corresponding NetBox versions:
 
 | pynetbox Version |   NetBox Version   |
 |:----------------:|:------------------:|
+|      7.9.0       | 4.4, 4.5, 4.6, 4.7 |
+|      7.8.0       |   4.4, 4.5, 4.6    |
 |      7.7.0       | 4.3, 4.4, 4.5, 4.6 |
 |      7.6.1       |        4.5         |
 |      7.6.0       |        4.5         |
