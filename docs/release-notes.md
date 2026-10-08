@@ -7,11 +7,9 @@ This release adds support for NetBox 4.7.
 #### New Features
 - [#793](https://github.com/netbox-community/pynetbox/issues/793) - Support `changelog_message` on create, `save()`, `update()` and `delete()`, including bulk update and delete
 
-#### Enhancements
-- [#806](https://github.com/netbox-community/pynetbox/issues/806) - Support NetBox 4.7 choice set custom fields: flatten `{value, label}` selection values on write and send only the custom fields that changed
-- [#711](https://github.com/netbox-community/pynetbox/issues/711) - Treat more list fields as sets when detecting changes (`object_types`, `permissions`, `groups`, `actions`, config context assignment scopes, and VRF/L2VPN route targets), so reordering no longer triggers an update
-
 #### Bug Fixes
+- [#711](https://github.com/netbox-community/pynetbox/issues/711) - Treat more list fields as sets when detecting changes (`object_types`, `permissions`, `groups`, `actions`, config context assignment scopes, and VRF/L2VPN route targets), so reordering no longer triggers an update
+- [#806](https://github.com/netbox-community/pynetbox/issues/806) - Fix updates to objects with multiple selection custom fields on NetBox 4.7 by flattening `{value, label}` values and sending only the custom fields that changed
 - [#808](https://github.com/netbox-community/pynetbox/issues/808) - Preserve unsaved local changes when a record is re-fetched, such as by `print()` or reading an attribute that is not yet loaded
 
 ---
