@@ -2,7 +2,7 @@
 
 ## Version 7.9.0 (October 8, 2026)
 
-This is a minor version bump primarily because pynetbox now requires Python 3.12 or later. Support for Python 3.10 and 3.11 has been dropped. The remaining changes are a small feature addition, enhancements, and bug fixes.
+This release adds support for NetBox 4.7.
 
 #### New Features
 - [#793](https://github.com/netbox-community/pynetbox/issues/793) - Support `changelog_message` on create, `save()`, `update()` and `delete()`, including bulk update and delete
@@ -13,10 +13,6 @@ This is a minor version bump primarily because pynetbox now requires Python 3.12
 
 #### Bug Fixes
 - [#808](https://github.com/netbox-community/pynetbox/issues/808) - Preserve unsaved local changes when a record is re-fetched, such as by `print()` or reading an attribute that is not yet loaded
-
-#### Compatibility
-- Supports NetBox 4.5, 4.6 and 4.7. NetBox 4.4 is no longer supported.
-- Python 3.12 or later is now required ([#797](https://github.com/netbox-community/pynetbox/issues/797))
 
 ---
 
