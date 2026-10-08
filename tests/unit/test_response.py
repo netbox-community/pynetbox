@@ -21,6 +21,34 @@ class FlattenCustomTest(unittest.TestCase):
             ret = flatten_custom(test_dict)
             assert ret == test_dict
 
+    def test_flatten_custom_selection_values(self):
+        """NetBox 4.7+ returns selection values as {value, label} (#806)."""
+        ret = flatten_custom(
+            {
+                "select": {"value": "a", "label": "A"},
+                "multiselect": [
+                    {"value": "a", "label": "A"},
+                    {"value": "b", "label": "B"},
+                ],
+                "mixed": [{"value": "a", "label": "A"}, "b"],
+            }
+        )
+        self.assertEqual(ret, {"select": "a", "multiselect": ["a", "b"], "mixed": ["a", "b"]})
+
+    def test_flatten_custom_raw_selection_values(self):
+        """Selection values from NetBox < 4.7 are raw and pass through."""
+        test_dict = {"select": "a", "multiselect": ["a", "b"]}
+        self.assertEqual(flatten_custom(test_dict), test_dict)
+
+    def test_flatten_custom_object_values(self):
+        ret = flatten_custom(
+            {
+                "object": {"id": 3, "url": "http://localhost:8000/api/dcim/sites/3/"},
+                "multiobject": [{"id": 3}, {"id": 4}],
+            }
+        )
+        self.assertEqual(ret, {"object": 3, "multiobject": [3, 4]})
+
 
 class RecordTestCase(unittest.TestCase):
     def test_attribute_access(self):
@@ -784,6 +812,50 @@ class RecordTestCase(unittest.TestCase):
         )
         test_obj.custom_fields = {"testfield": None}
         self.assertEqual(test_obj._diff(), {"custom_fields"})
+
+    def _selection_cf_record(self):
+        return Record(
+            {
+                "id": 123,
+                "name": "testsite",
+                "custom_fields": {
+                    "select": {"value": "a", "label": "A"},
+                    "multiselect": [
+                        {"value": "a", "label": "A"},
+                        {"value": "b", "label": "B"},
+                    ],
+                    "json": {"value": 5, "label": "five"},
+                    "text": "foo",
+                },
+            },
+            None,
+            None,
+        )
+
+    def test_updates_omits_unchanged_custom_fields(self):
+        """Regression test for issue #806: editing one custom field in place must
+        not send the others back in the shape NetBox returned them."""
+        test_obj = self._selection_cf_record()
+        test_obj.custom_fields["text"] = "bar"
+        self.assertEqual(test_obj.updates(), {"custom_fields": {"text": "bar"}})
+
+    def test_updates_flattens_changed_selection_values(self):
+        """A {value, label} copied into a changed custom field is sent raw."""
+        test_obj = self._selection_cf_record()
+        test_obj.custom_fields["select"] = {"value": "c", "label": "C"}
+        self.assertEqual(test_obj.updates(), {"custom_fields": {"select": "c"}})
+
+    def test_updates_flattens_in_place_multiselect_edit(self):
+        test_obj = self._selection_cf_record()
+        test_obj.custom_fields["multiselect"].append("c")
+        self.assertEqual(
+            test_obj.updates(), {"custom_fields": {"multiselect": ["a", "b", "c"]}}
+        )
+
+    def test_updates_same_selection_value_is_no_change(self):
+        test_obj = self._selection_cf_record()
+        test_obj.custom_fields["select"] = "a"
+        self.assertEqual(test_obj.updates(), {})
 
     def test_serialize_excludes_internal_attributes(self):
         """Ensure serialize() filters out internal Record metadata."""

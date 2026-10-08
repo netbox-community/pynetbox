@@ -36,6 +36,8 @@ def get_netbox_docker_version_tag(netbox_version):
         tag = "4.0.2"
     elif (major, minor) == (4, 6):
         tag = "5.0.1"
+    elif (major, minor) == (4, 7):
+        tag = "5.1.1"
     else:
         raise NotImplementedError(
             "Version {} is not currently supported".format(netbox_version)
