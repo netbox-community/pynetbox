@@ -2,7 +2,7 @@
 
 ## Version 7.9.0 (October 8, 2026)
 
-This release adds support for NetBox 4.7.
+This release adds support for NetBox 4.7. Python 3.12 or later is now required.
 
 #### New Features
 - [#793](https://github.com/netbox-community/pynetbox/issues/793) - Support `changelog_message` on create, `save()`, `update()` and `delete()`, including bulk update and delete
