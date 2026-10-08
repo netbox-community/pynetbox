@@ -170,7 +170,7 @@ Integration tests require Docker. The `tests/integration/conftest.py` uses `pyte
 
 - **Unit tests** (`tests/unit/` and `tests/test_*.py`) mock HTTP responses with JSON fixtures from `tests/fixtures/`. No Docker required.
 - **Integration tests** (`tests/integration/`) run against a real NetBox instance in Docker. They test end-to-end CRUD operations across dcim, ipam, and circuits.
-- `tests/conftest.py` defines three pytest options: `--netbox-versions` (comma-separated, default `4.4`), `--no-cleanup`, and `--url-override`.
+- `tests/conftest.py` defines three pytest options: `--netbox-versions` (comma-separated, default `4.7`), `--no-cleanup`, and `--url-override`.
 
 | Test module | Coverage area |
 |---|---|
