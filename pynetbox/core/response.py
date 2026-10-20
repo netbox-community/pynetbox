@@ -707,7 +707,7 @@ class Record:
         # Determine which fields to serialize
         if init:
             # For initial state, use only _init_cache
-            fields_to_serialize = self._init_cache.keys()
+            fields_to_serialize = list(self._init_cache)
             init_vals = self._init_cache
         else:
             # For current state, include all fields (original + modified).

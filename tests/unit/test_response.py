@@ -217,7 +217,7 @@ class RecordTestCase(unittest.TestCase):
         # Compare counts first. A growing cache then fails with a short count
         # mismatch, not a long list diff.
         self.assertEqual(len(record._init_cache), len(payload))
-        self.assertEqual(list(dict(record._init_cache)), list(payload))
+        self.assertEqual(list(record._init_cache), list(payload))
 
     def test_full_details_repeated_keeps_one_baseline_entry_per_field(self):
         """full_details() re-parses the record. Each re-parse must replace
