@@ -213,6 +213,187 @@ class RecordTestCase(unittest.TestCase):
 
         self.assertEqual(test_obj.updates(), {})
 
+    def assertOneBaselineEntryPerField(self, record, payload):
+        # Compare counts first. A growing cache then fails with a short count
+        # mismatch, not a long list diff.
+        self.assertEqual(len(record._init_cache), len(payload))
+        self.assertEqual(list(record._init_cache), list(payload))
+
+    def test_full_details_repeated_keeps_one_baseline_entry_per_field(self):
+        """full_details() re-parses the record. Each re-parse must replace
+        change baseline entries, not add new ones (#813).
+        """
+        server_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "OLD",
+            "custom_fields": {"my_field": "old"},
+        }
+        test_obj = Record(
+            copy.deepcopy(server_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+
+        with patch(
+            "pynetbox.core.query.Request.get",
+            side_effect=lambda *a, **k: iter([copy.deepcopy(server_values)]),
+        ):
+            for _ in range(3):
+                test_obj.full_details()
+
+        self.assertOneBaselineEntryPerField(test_obj, server_values)
+
+    def test_save_repeated_keeps_one_baseline_entry_per_field(self):
+        """save() re-parses the PATCH response (#731). Each re-parse must
+        replace change baseline entries, not add new ones (#813).
+        """
+        api = Mock(token="abc123", base_url="http://localhost:8000/api")
+        server_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "0",
+        }
+        test_obj = Record(copy.deepcopy(server_values), api, None)
+        api.http_session.patch.return_value.ok = True
+
+        for i in range(1, 4):
+            test_obj.serial = str(i)
+            server_values["serial"] = str(i)
+            api.http_session.patch.return_value.json.return_value = copy.deepcopy(
+                server_values
+            )
+            self.assertTrue(test_obj.save())
+
+        self.assertOneBaselineEntryPerField(test_obj, server_values)
+        self.assertEqual(test_obj._init_cache["serial"], "3")
+
+    def test_full_details_dirty_field_keeps_old_baseline_single_entry(self):
+        """full_details() puts back the old change baseline of an edited
+        field (#808). That write must replace the server value, not add a
+        second entry (#813).
+        """
+        init_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "OLD",
+        }
+        test_obj = Record(
+            copy.deepcopy(init_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+        test_obj.serial = "NEW"
+
+        server_values = dict(init_values, serial="SERVER")
+        with patch(
+            "pynetbox.core.query.Request.get",
+            side_effect=lambda *a, **k: iter([copy.deepcopy(server_values)]),
+        ):
+            test_obj.full_details()
+
+        self.assertOneBaselineEntryPerField(test_obj, init_values)
+        self.assertEqual(test_obj._init_cache["serial"], "OLD")
+        self.assertEqual(test_obj.updates(), {"serial": "NEW"})
+
+    def test_refetch_preserves_serialize_key_order(self):
+        """serialize() must keep the original key order when a re-fetch
+        returns fields in a different order (#813).
+        """
+        init_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": "dev1",
+            "serial": "OLD",
+            "asset_tag": None,
+        }
+        test_obj = Record(
+            copy.deepcopy(init_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+
+        server_values = {
+            "asset_tag": None,
+            "serial": "SERVER",
+            "name": "dev1",
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "id": 123,
+        }
+        with patch(
+            "pynetbox.core.query.Request.get",
+            side_effect=lambda *a, **k: iter([copy.deepcopy(server_values)]),
+        ):
+            test_obj.full_details()
+
+        self.assertEqual(list(test_obj.serialize()), list(init_values))
+        self.assertEqual(list(test_obj.serialize(init=True)), list(init_values))
+        self.assertEqual(test_obj._diff(), set())
+
+    def test_iter_survives_hydration_mid_loop(self):
+        """Hydration inside a loop over the record adds keys to the change
+        baseline. A loop over the live dict then raises RuntimeError (#813).
+        """
+        brief_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": "dev1",
+        }
+        full_values = dict(brief_values, serial="ABC", asset_tag=None)
+        test_obj = Record(
+            copy.deepcopy(brief_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+
+        with patch(
+            "pynetbox.core.query.Request.get",
+            side_effect=lambda *a, **k: iter([copy.deepcopy(full_values)]),
+        ):
+            keys = []
+            for k, _ in test_obj:
+                keys.append(k)
+                test_obj.full_details()
+
+        self.assertEqual(keys, list(brief_values))
+        self.assertEqual(dict(test_obj)["serial"], "ABC")
+
+    def test_pickle_round_trip_preserves_change_baseline(self):
+        """Callers pickle records for multiprocessing (#152, #459). The
+        change baseline must survive pickling, or pending edits disappear.
+        """
+        import pickle
+
+        import pynetbox
+
+        nb = pynetbox.api("http://localhost:8000", token="abc")
+        test_obj = Record(
+            {
+                "id": 123,
+                "url": "http://localhost:8000/api/dcim/devices/123/",
+                "name": "dev1",
+                "serial": "OLD",
+                "site": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/sites/1/",
+                    "name": "site1",
+                },
+            },
+            nb,
+            None,
+        )
+        test_obj.serial = "NEW"
+
+        round_tripped = pickle.loads(pickle.dumps(test_obj))
+
+        self.assertEqual(round_tripped.updates(), {"serial": "NEW"})
+        self.assertEqual(round_tripped.updates(), test_obj.updates())
+        self.assertEqual(round_tripped.serialize(), test_obj.serialize())
+        self.assertEqual(dict(round_tripped), dict(test_obj))
+
     def test_dict_access(self):
         test_values = {
             "id": 123,
@@ -869,7 +1050,6 @@ class RecordTestCase(unittest.TestCase):
             "has_details",
             "default_ret",
             "_init_cache",
-            "_full_cache",
         ]:
             self.assertNotIn(attr, serialized)
 
