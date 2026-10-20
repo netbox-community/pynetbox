@@ -368,8 +368,9 @@ class Record:
 
     def __init__(self, values, api, endpoint):
         self.has_details = False
-        self._full_cache = []
-        self._init_cache = []
+        # Every re-parse refreshes this, not only __init__. _diff() compares
+        # current values to it (#813).
+        self._init_cache = {}
         self.api = api
         self.default_ret = Record
         self.endpoint = (
@@ -408,7 +409,9 @@ class Record:
         raise AttributeError('object has no attribute "{}"'.format(k))
 
     def __iter__(self):
-        for i in dict(self._init_cache):
+        # The caller's loop body can hydrate the record, which adds keys to
+        # _init_cache (#813).
+        for i in list(self._init_cache):
             cur_attr = getattr(self, i)
             if isinstance(cur_attr, Record):
                 yield i, dict(cur_attr)
@@ -503,7 +506,7 @@ class Record:
 
     def _add_cache(self, item):
         key, value = item
-        self._init_cache.append((key, get_return(value)))
+        self._init_cache[key] = get_return(value)
 
     def _parse_values(self, values):
         """Parses values init arg.
@@ -659,15 +662,14 @@ class Record:
             dirty = self._diff()
             dirty_values = {k: getattr(self, k) for k in dirty}
             dirty_baseline = {
-                k: v for k, v in dict(self._init_cache).items() if k in dirty
+                k: v for k, v in self._init_cache.items() if k in dirty
             }
 
             self._parse_values(next(req.get()))
 
             for k, v in dirty_values.items():
                 setattr(self, k, v)
-            for k, v in dirty_baseline.items():
-                self._add_cache((k, v))
+            self._init_cache.update(dirty_baseline)
 
             self.has_details = True
             return True
@@ -705,24 +707,22 @@ class Record:
         # Determine which fields to serialize
         if init:
             # For initial state, use only _init_cache
-            init_cache_dict = dict(self._init_cache)
-            fields_to_serialize = init_cache_dict.keys()
-            init_vals = init_cache_dict
+            fields_to_serialize = self._init_cache.keys()
+            init_vals = self._init_cache
         else:
             # For current state, include all fields (original + modified).
             # Preserve init_cache insertion order, then append any new
             # attributes set after init, so the serialized dict has a
             # deterministic key order across init=True/False calls (the
             # str-based list comparison in _diff() depends on it).
-            init_cache_keys = [k for k, _ in self._init_cache]
-            init_cache_key_set = set(init_cache_keys)
+            init_cache_keys = list(self._init_cache)
 
             extra_keys = [
                 k
                 for k in self.__dict__.keys()
                 if not k.startswith("_")
                 and k not in self._INTERNAL_ATTRS
-                and k not in init_cache_key_set
+                and k not in self._init_cache
             ]
 
             fields_to_serialize = init_cache_keys + extra_keys
@@ -803,7 +803,7 @@ class Record:
         {value, label} objects NetBox 4.7 returns for selection fields (#806).
         """
         current = getattr(self, "custom_fields", None) or {}
-        init = dict(self._init_cache).get("custom_fields")
+        init = self._init_cache.get("custom_fields")
         if not isinstance(init, dict):
             init = {}
         return {k: v for k, v in current.items() if k not in init or init[k] != v}
