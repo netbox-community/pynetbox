@@ -1,9 +1,14 @@
 import copy
+import pickle
 import unittest
 from unittest.mock import Mock, patch
 
 from pynetbox.core.endpoint import Endpoint
-from pynetbox.core.response import Record, RecordSet, flatten_custom
+from pynetbox.core.response import JsonField, Record, RecordSet, flatten_custom
+from pynetbox.extensions.custom_objects import CustomObject
+from pynetbox.models.dcim import Devices, DeviceTypes, FrontPorts
+from pynetbox.models.ipam import IpAddresses
+from pynetbox.models.users import Permissions, Users
 
 
 class FlattenCustomTest(unittest.TestCase):
@@ -974,6 +979,172 @@ class RecordTestCase(unittest.TestCase):
         self.assertEqual(len(record.link_peers), 1)
         self.assertIsInstance(record.link_peers[0], Record)
         self.assertEqual(record.link_peers[0].id, 99)
+
+
+class FieldTypeMarkerTestCase(unittest.TestCase):
+    """An omitted field type marker field (e.g. `Devices.device_type`)
+    must not return the marker class (#812)."""
+
+    def test_missing_marker_field_raises(self):
+        device = Devices({"id": 1, "name": "test"}, None, None)
+        with self.assertRaises(AttributeError):
+            device.device_type
+        self.assertFalse(hasattr(device, "device_type"))
+
+    def test_class_access_returns_marked_type(self):
+        self.assertIs(Devices.device_type, DeviceTypes)
+        self.assertEqual(Permissions.users, [Users])
+        self.assertIs(Devices.config_context, JsonField)
+
+    def test_missing_list_marker_field_raises(self):
+        permission = Permissions({"id": 1, "name": "test"}, None, None)
+        with self.assertRaises(AttributeError):
+            permission.users
+
+    def test_present_list_marker_field_builds_records(self):
+        permission = Permissions(
+            {"id": 1, "name": "test", "users": [{"id": 2, "username": "u"}]},
+            None,
+            None,
+        )
+        self.assertIsInstance(permission.users[0], Users)
+
+    def test_missing_json_field_marker_raises(self):
+        device = Devices({"id": 1, "name": "test"}, None, None)
+        with self.assertRaises(AttributeError):
+            device.config_context
+
+    def test_present_json_field_marker_kept_raw(self):
+        device = Devices(
+            {"id": 1, "name": "test", "config_context": {"a": {"id": 1}}},
+            None,
+            None,
+        )
+        self.assertEqual(device.config_context, {"a": {"id": 1}})
+
+    def test_missing_single_underscore_marker_raises(self):
+        obj = CustomObject({"id": 1}, None, None)
+        with self.assertRaises(AttributeError):
+            obj._context
+
+    def test_subclass_inherited_and_redeclared_markers(self):
+        class InheritingDevice(Devices):
+            pass
+
+        class RedeclaringDevice(Devices):
+            device_type = DeviceTypes
+
+        for cls in (InheritingDevice, RedeclaringDevice):
+            with self.subTest(cls=cls.__name__):
+                self.assertIs(cls.device_type, DeviceTypes)
+                with self.assertRaises(AttributeError):
+                    cls({"id": 1}, None, None).device_type
+                device = cls({"id": 1, "device_type": {"id": 2}}, None, None)
+                self.assertIsInstance(device.device_type, DeviceTypes)
+
+    def test_subclass_created_with_type_is_wrapped(self):
+        Dynamic = type("Dynamic", (Record,), {"device_type": DeviceTypes})
+        with self.assertRaises(AttributeError):
+            Dynamic({"id": 1}, None, None).device_type
+        device = Dynamic({"id": 1, "device_type": {"id": 2}}, None, None)
+        self.assertIsInstance(device.device_type, DeviceTypes)
+
+    def test_pickle_round_trip(self):
+        device = Devices(
+            {"id": 1, "name": "test", "primary_ip": {"id": 3, "address": "x"}},
+            None,
+            None,
+        )
+        # The test unpickles its own record, not untrusted data.
+        restored = pickle.loads(pickle.dumps(device))
+        self.assertIsInstance(restored.primary_ip, IpAddresses)
+        self.assertEqual(restored.primary_ip.id, 3)
+        with self.assertRaises(AttributeError):
+            restored.device_type
+
+    api = Mock(base_url="http://localhost:8000/api")
+    brief = {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/devices/1/",
+        "name": "test",
+    }
+
+    def test_missing_marker_field_lazy_loads(self):
+        device = Devices(copy.deepcopy(self.brief), self.api, None)
+        full = dict(copy.deepcopy(self.brief), device_type={"id": 2})
+        with patch(
+            "pynetbox.core.query.Request.get", return_value=iter([full])
+        ) as get:
+            device_type = device.device_type
+        self.assertEqual(get.call_count, 1)
+        self.assertIsInstance(device_type, DeviceTypes)
+        self.assertEqual(device_type.id, 2)
+
+    def test_marker_field_omitted_by_server_raises_after_fetch(self):
+        device = Devices(copy.deepcopy(self.brief), self.api, None)
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(self.brief)]),
+        ) as get:
+            with self.assertRaises(AttributeError) as ctx:
+                device.device_type
+        self.assertEqual(get.call_count, 1)
+        self.assertEqual(
+            str(ctx.exception), 'object has no attribute "device_type"'
+        )
+
+    def test_hasattr_on_missing_marker_fetches_once(self):
+        device = Devices(copy.deepcopy(self.brief), self.api, None)
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(self.brief)]),
+        ) as get:
+            self.assertFalse(hasattr(device, "device_type"))
+            self.assertFalse(hasattr(device, "device_type"))
+        self.assertEqual(get.call_count, 1)
+
+    def test_nested_brief_record_lazy_loads_marker_field(self):
+        # FrontPorts declares `device = Devices`. Interfaces does not, so
+        # its nested device is a plain Record and the test passes on main.
+        port = FrontPorts(
+            {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/front-ports/5/",
+                "name": "fp1",
+                "device": copy.deepcopy(self.brief),
+            },
+            self.api,
+            None,
+        )
+        full = dict(copy.deepcopy(self.brief), primary_ip={"id": 3})
+        with patch(
+            "pynetbox.core.query.Request.get", return_value=iter([full])
+        ) as get:
+            primary_ip = port.device.primary_ip
+        self.assertEqual(get.call_count, 1)
+        self.assertIsInstance(primary_ip, IpAddresses)
+
+    def test_hydrated_falsy_value_returned(self):
+        device = Devices(copy.deepcopy(self.brief), self.api, None)
+        full = dict(copy.deepcopy(self.brief), serial="", asset_tag=None)
+        with patch("pynetbox.core.query.Request.get", return_value=iter([full])):
+            self.assertIsNone(device.asset_tag)
+        self.assertEqual(device.serial, "")
+
+    def test_property_reruns_after_hydration(self):
+        class PropertyDevice(Devices):
+            @property
+            def serial_upper(self):
+                # Raise before hydration so the lookup reaches
+                # Record.__getattr__.
+                if "serial" not in self.__dict__:
+                    raise AttributeError("serial_upper")
+                return self.serial.upper()
+
+        device = PropertyDevice(copy.deepcopy(self.brief), self.api, None)
+        full = dict(copy.deepcopy(self.brief), serial="abc")
+        with patch("pynetbox.core.query.Request.get", return_value=iter([full])):
+            self.assertEqual(device.serial_upper, "ABC")
 
 
 class RecordSetTestCase(unittest.TestCase):
