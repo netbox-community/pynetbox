@@ -76,7 +76,8 @@ A namespace — a module, a class, or any object — from which `Record` subclas
 Common things to put on a Record subclass:
 
 - **`JsonField` markers** for columns that are JSON dicts/lists. Without this, pynetbox tries to coerce a dict-typed field into a nested `Record` and the data is lost. (See `Changes` in `pynetbox/extensions/branching.py` for an example.)
-- **Field type markers** must be declared in the class body (`metadata = JsonField`, `owner = Users`, `members = [Users]`). pynetbox wraps them when the class is created, so a record whose payload omits the field lazy-loads it or raises `AttributeError` rather than returning the marker class. Markers assigned to the class later are not wrapped. Any class attribute holding a `Record` subclass, a `JsonField`-style class, or a one-element list of a `Record` subclass is treated as a marker, so read such an attribute through the class (`type(self).result_model`), not the instance.
+- **Field type markers** go in the class body (`metadata = JsonField`, `owner = Users`, `members = [Users]`). pynetbox wraps them when it creates the class, so a missing field lazy-loads or raises `AttributeError` instead of returning the marker class. Markers assigned to the class later are not wrapped.
+- **Marker-shaped attributes:** pynetbox treats any class attribute holding a `Record` subclass, a `JsonField`-style class, or `[RecordSubclass]` as a marker. Read a non-field attribute like that through the class (`type(self).result_model`), not the instance.
 - **`DetailEndpoint` properties** for per-object sub-routes like `/foo/{id}/run/` or `/foo/{id}/render/`.
 - **Custom methods** for plugin-specific actions, returning whatever record type the response represents.
 
