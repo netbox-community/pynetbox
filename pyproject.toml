@@ -60,9 +60,9 @@ dependencies = [
 # The docs theme ships with zensical, so mkdocs-material is not required.
 dev = [
     "build",
-    "mkdocstrings[python]==1.0.6",
+    "mkdocstrings[python]==1.0.7",
     "pre-commit",
-    "pymdown-extensions>=10.0",
+    "pymdown-extensions==12.3",
     "pytest",
     "pytest-docker",
     "PyYAML",
