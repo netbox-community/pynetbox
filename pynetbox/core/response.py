@@ -119,6 +119,50 @@ class JsonField:
     _json_field = True
 
 
+class _FieldTypeMarker:
+    """Wraps a field type marker declared on a Record subclass.
+
+    Class access returns the marked type for _parse_values(). Instance
+    access raises AttributeError, so Record.__getattr__ loads an omitted
+    field (#812).
+    """
+
+    def __init__(self, name, target):
+        self.name = name
+        self.target = target
+
+    def __get__(self, instance, owner=None):
+        if instance is None:
+            return self.target
+        raise AttributeError(self.name)
+
+    def __repr__(self):
+        if isinstance(self.target, list):
+            target = "[{}]".format(self.target[0].__name__)
+        else:
+            target = self.target.__name__
+        return "<_FieldTypeMarker {} -> {}>".format(self.name, target)
+
+
+def _is_field_type_marker(value):
+    """Return True if a class attribute has the shape of a field type
+    marker: a Record subclass, a JsonField-style class, or a one-element
+    list that holds a Record subclass.
+
+    Mocks and _Models namespaces answer any attribute name, so the type
+    checks must come before hasattr().
+    """
+    if isinstance(value, list):
+        return (
+            len(value) == 1
+            and isinstance(value[0], type)
+            and issubclass(value[0], Record)
+        )
+    return isinstance(value, type) and (
+        issubclass(value, Record) or hasattr(value, "_json_field")
+    )
+
+
 class RecordSet:
     """Iterator containing Record objects.
 
@@ -259,6 +303,13 @@ class Record:
     a Record made from a nested response) then pynetbox will make a
     request for the full object and return the requested value.
 
+    A subclass declares field type markers as class attributes (e.g.
+    `device_type = DeviceTypes`, `users = [Users]`,
+    `config_context = JsonField`) to set how each field is parsed.
+    Record.__init_subclass__ wraps the markers, so declare them in the
+    class body. If the payload omits a marker field, Record loads it
+    like any other missing field.
+
     ## Examples
 
     Default representation of the object is usually its name:
@@ -366,6 +417,20 @@ class Record:
         ]
     )
 
+    def __init_subclass__(cls, **kwargs):
+        """Wrap each field type marker in the class body in a _FieldTypeMarker.
+
+        The parent class already wraps inherited markers. This method does
+        not see a marker set after class creation or declared on a
+        non-Record mixin, and does not run if a subclass skips super().
+        """
+        super().__init_subclass__(**kwargs)
+        for name, value in list(vars(cls).items()):
+            if name.startswith("__") and name.endswith("__"):
+                continue
+            if _is_field_type_marker(value):
+                setattr(cls, name, _FieldTypeMarker(name, value))
+
     def __init__(self, values, api, endpoint):
         self.has_details = False
         # Every re-parse refreshes this, not only __init__. _diff() compares
@@ -402,9 +467,12 @@ class Record:
         if self.url:
             if self.has_details is False and k != "keys":
                 if self.full_details():
-                    ret = getattr(self, k, None)
-                    if ret or hasattr(self, k):
-                        return ret
+                    # Unlike self.__dict__, this re-runs properties that raised
+                    # before hydration. Unlike getattr(), it skips __getattr__.
+                    try:
+                        return object.__getattribute__(self, k)
+                    except AttributeError:
+                        pass
 
         raise AttributeError('object has no attribute "{}"'.format(k))
 
