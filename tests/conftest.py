@@ -3,7 +3,7 @@ from urllib import parse
 import pytest
 from packaging import version
 
-DEFAULT_NETBOX_VERSIONS = "4.4"
+DEFAULT_NETBOX_VERSIONS = "4.7"
 
 
 def pytest_addoption(parser):
@@ -17,7 +17,7 @@ def pytest_addoption(parser):
         default=DEFAULT_NETBOX_VERSIONS,
         help=(
             "The versions of netbox to run integration tests against, as a"
-            " comma-separated list. Default: %s" % DEFAULT_NETBOX_VERSIONS
+            " comma-separated list. Default: {}".format(DEFAULT_NETBOX_VERSIONS)
         ),
     )
 

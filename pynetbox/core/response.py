@@ -72,18 +72,28 @@ def get_return(lookup, return_fields=None):
     for i in return_fields or ["id", "value", "nested_return"]:
         if isinstance(lookup, dict) and lookup.get(i):
             return lookup[i]
-        else:
-            if hasattr(lookup, i):
-                # check if this is a "choices" field record
-                # from a NetBox 2.7 server.
-                if sorted(dict(lookup)) == sorted(["id", "value", "label"]):
-                    return getattr(lookup, "value")
-                return getattr(lookup, i)
+        if hasattr(lookup, i):
+            # check if this is a "choices" field record
+            # from a NetBox 2.7 server.
+            if sorted(dict(lookup)) == sorted(["id", "value", "label"]):
+                return getattr(lookup, "value")
+            return getattr(lookup, i)
 
     if isinstance(lookup, Record):
         return str(lookup)
+    return lookup
+
+
+def _flatten_custom_dict_value(val: dict):
+    """
+    Flatten a dict custom field value to only the ID, or the "value" for NetBox 4.7+ choice fields
+    """
+    if val.keys() == {"value", "label"}:
+        current_val = val.get("value", val)
     else:
-        return lookup
+        current_val = val.get("id", val)
+
+    return current_val
 
 
 def flatten_custom(custom_dict):
@@ -93,10 +103,10 @@ def flatten_custom(custom_dict):
         current_val = val
 
         if isinstance(val, dict):
-            current_val = val.get("id", val)
+            current_val = _flatten_custom_dict_value(val)
 
         if isinstance(val, list):
-            current_val = [v.get("id", v) if isinstance(v, dict) else v for v in val]
+            current_val = [_flatten_custom_dict_value(v) if isinstance(v, dict) else v for v in val]
 
         ret[k] = current_val
     return ret
@@ -107,6 +117,50 @@ class JsonField:
     to a Record object."""
 
     _json_field = True
+
+
+class _FieldTypeMarker:
+    """Wraps a field type marker declared on a Record subclass.
+
+    Class access returns the marked type for _parse_values(). Instance
+    access raises AttributeError, so Record.__getattr__ loads an omitted
+    field (#812).
+    """
+
+    def __init__(self, name, target):
+        self.name = name
+        self.target = target
+
+    def __get__(self, instance, owner=None):
+        if instance is None:
+            return self.target
+        raise AttributeError(self.name)
+
+    def __repr__(self):
+        if isinstance(self.target, list):
+            target = "[{}]".format(self.target[0].__name__)
+        else:
+            target = self.target.__name__
+        return "<_FieldTypeMarker {} -> {}>".format(self.name, target)
+
+
+def _is_field_type_marker(value):
+    """Return True if a class attribute has the shape of a field type
+    marker: a Record subclass, a JsonField-style class, or a one-element
+    list that holds a Record subclass.
+
+    Mocks and _Models namespaces answer any attribute name, so the type
+    checks must come before hasattr().
+    """
+    if isinstance(value, list):
+        return (
+            len(value) == 1
+            and isinstance(value[0], type)
+            and issubclass(value[0], Record)
+        )
+    return isinstance(value, type) and (
+        issubclass(value, Record) or hasattr(value, "_json_field")
+    )
 
 
 class RecordSet:
@@ -172,11 +226,18 @@ class RecordSet:
             count = self.request.get_count()
         return count
 
-    def update(self, **kwargs):
+    def update(self, changelog_message=None, **kwargs):
         """Updates kwargs onto all Records in the RecordSet and saves these.
 
         Updates are only sent to the API if a value were changed, and only for
         the Records which were changed.
+
+        ## Parameters
+
+        * **changelog_message** (str, optional): Message to record in the
+            NetBox changelog entry of each updated object (requires
+            NetBox 4.4+).
+        * **kwargs**: Fields and values to set on every Record.
 
         ## Returns
         True if the update succeeded, None if no update were required.
@@ -184,7 +245,9 @@ class RecordSet:
         ## Examples
 
         ```python
-        result = nb.dcim.devices.filter(site_id=1).update(status='active')
+        result = nb.dcim.devices.filter(site_id=1).update(
+            status='active', changelog_message='Site go-live'
+        )
         # True
         ```
         """
@@ -199,14 +262,19 @@ class RecordSet:
                 record_updates["id"] = record.id
                 updates.append(record_updates)
         if updates:
-            return self.endpoint.update(updates)
-        else:
-            return None
+            return self.endpoint.update(updates, changelog_message=changelog_message)
+        return None
 
-    def delete(self):
+    def delete(self, changelog_message=None):
         """Bulk deletes objects in a RecordSet.
 
         Allows for batch deletion of multiple objects in a RecordSet.
+
+        ## Parameters
+
+        * **changelog_message** (str, optional): Message to record in the
+            NetBox changelog entry of each deleted object (requires
+            NetBox 4.4+).
 
         ## Returns
         True if bulk DELETE operation was successful.
@@ -216,10 +284,12 @@ class RecordSet:
         Deleting offline `devices` on site 1:
 
         ```python
-        netbox.dcim.devices.filter(site_id=1, status="offline").delete()
+        netbox.dcim.devices.filter(site_id=1, status="offline").delete(
+            changelog_message="Removing offline devices"
+        )
         ```
         """
-        return self.endpoint.delete(self)
+        return self.endpoint.delete(self, changelog_message=changelog_message)
 
 
 class Record:
@@ -232,6 +302,13 @@ class Record:
     (e.g. requesting a field that's only present on a full response on
     a Record made from a nested response) then pynetbox will make a
     request for the full object and return the requested value.
+
+    A subclass declares field type markers as class attributes (e.g.
+    `device_type = DeviceTypes`, `users = [Users]`,
+    `config_context = JsonField`) to set how each field is parsed.
+    Record.__init_subclass__ wraps the markers, so declare them in the
+    class body. If the payload omits a marker field, Record loads it
+    like any other missing field.
 
     ## Examples
 
@@ -340,10 +417,25 @@ class Record:
         ]
     )
 
+    def __init_subclass__(cls, **kwargs):
+        """Wrap each field type marker in the class body in a _FieldTypeMarker.
+
+        The parent class already wraps inherited markers. This method does
+        not see a marker set after class creation or declared on a
+        non-Record mixin, and does not run if a subclass skips super().
+        """
+        super().__init_subclass__(**kwargs)
+        for name, value in list(vars(cls).items()):
+            if name.startswith("__") and name.endswith("__"):
+                continue
+            if _is_field_type_marker(value):
+                setattr(cls, name, _FieldTypeMarker(name, value))
+
     def __init__(self, values, api, endpoint):
         self._has_details = False
-        self._full_cache = []
-        self._init_cache = []
+        # Every re-parse refreshes this, not only __init__. _diff() compares
+        # current values to it (#813).
+        self._init_cache = {}
         self._api = api
         self._default_ret = Record
         self._endpoint = (
@@ -353,23 +445,23 @@ class Record:
         )
         if values:
             self._parse_values(values)
-    
+
     @property
     def api(self):
         return self._api
-        
+
     @property
     def endpoint(self):
         return self._endpoint
-        
+
     @property
     def has_details(self):
         return self._has_details
-    
+
     @property
     def default_ret(self):
         return self._default_ret
-    
+
     def __getattr__(self, k):
         """Default behavior for missing attrs.
 
@@ -391,14 +483,19 @@ class Record:
         if self.url:
             if self._has_details is False and k != "keys":
                 if self.full_details():
-                    ret = getattr(self, k, None)
-                    if ret or hasattr(self, k):
-                        return ret
+                    # Unlike self.__dict__, this re-runs properties that raised
+                    # before hydration. Unlike getattr(), it skips __getattr__.
+                    try:
+                        return object.__getattribute__(self, k)
+                    except AttributeError:
+                        pass
 
         raise AttributeError('object has no attribute "{}"'.format(k))
 
     def __iter__(self):
-        for i in dict(self._init_cache):
+        # The caller's loop body can hydrate the record, which adds keys to
+        # _init_cache (#813).
+        for i in list(self._init_cache):
             cur_attr = getattr(self, i)
             if isinstance(cur_attr, Record):
                 yield i, dict(cur_attr)
@@ -432,8 +529,7 @@ class Record:
     def __key__(self):
         if hasattr(self, "id"):
             return (self._endpoint.name, self.id)
-        else:
-            return self._endpoint.name
+        return self._endpoint.name
 
     def __hash__(self):
         return hash(self.__key__())
@@ -494,7 +590,7 @@ class Record:
 
     def _add_cache(self, item):
         key, value = item
-        self._init_cache.append((key, get_return(value)))
+        self._init_cache[key] = get_return(value)
 
     def _parse_values(self, values):
         """Parses values init arg.
@@ -529,9 +625,8 @@ class Record:
                     # This is *list_parser*, so if the custom model field is not
                     # a list (or is not defined), just return the default model
                     return self._default_ret(list_item, self._api, self._endpoint)
-                else:
-                    model = lookup[0]
-                    return model(list_item, self._api, self._endpoint)
+                model = lookup[0]
+                return model(list_item, self._api, self._endpoint)
 
             return list_item
 
@@ -639,7 +734,27 @@ class Record:
                 token=self._api.token,
                 http_session=self._api.http_session,
             )
+            # Fields the caller has modified since the last sync. Hydrating
+            # must not disturb these: _parse_values() would overwrite both the
+            # attribute and its _init_cache baseline, silently discarding the
+            # pending change so a later save() sends nothing. See issue #808.
+            # These hold references, not copies, which keeps object identity
+            # for a caller holding e.g. device.custom_fields. That relies on
+            # _parse_values() assigning attributes with setattr() rather than
+            # mutating them in place; were it to mutate, the restore below
+            # would put back an already-overwritten value.
+            dirty = self._diff()
+            dirty_values = {k: getattr(self, k) for k in dirty}
+            dirty_baseline = {
+                k: v for k, v in self._init_cache.items() if k in dirty
+            }
+
             self._parse_values(next(req.get()))
+
+            for k, v in dirty_values.items():
+                setattr(self, k, v)
+            self._init_cache.update(dirty_baseline)
+
             self._has_details = True
             return True
         return False
@@ -676,24 +791,22 @@ class Record:
         # Determine which fields to serialize
         if init:
             # For initial state, use only _init_cache
-            init_cache_dict = dict(self._init_cache)
-            fields_to_serialize = init_cache_dict.keys()
-            init_vals = init_cache_dict
+            fields_to_serialize = list(self._init_cache)
+            init_vals = self._init_cache
         else:
             # For current state, include all fields (original + modified).
             # Preserve init_cache insertion order, then append any new
             # attributes set after init, so the serialized dict has a
             # deterministic key order across init=True/False calls (the
             # str-based list comparison in _diff() depends on it).
-            init_cache_keys = [k for k, _ in self._init_cache]
-            init_cache_key_set = set(init_cache_keys)
+            init_cache_keys = list(self._init_cache)
 
             extra_keys = [
                 k
                 for k in self.__dict__.keys()
                 if not k.startswith("_")
                 and k not in self._INTERNAL_ATTRS
-                and k not in init_cache_key_set
+                and k not in self._init_cache
             ]
 
             fields_to_serialize = init_cache_keys + extra_keys
@@ -766,11 +879,25 @@ class Record:
         )
         return set([i[0] for i in set(current.items()) ^ set(init.items())])
 
+    def _changed_custom_fields(self):
+        """Return the custom fields whose raw value differs from the last sync.
+
+        NetBox merges PATCHed custom fields, so unchanged ones are left out.
+        Sending them back would round-trip read-only shapes such as the
+        {value, label} objects NetBox 4.7 returns for selection fields (#806).
+        """
+        current = getattr(self, "custom_fields", None) or {}
+        init = self._init_cache.get("custom_fields")
+        if not isinstance(init, dict):
+            init = {}
+        return {k: v for k, v in current.items() if k not in init or init[k] != v}
+
     def updates(self):
         """Compiles changes for an existing object into a dict.
 
         Takes a diff between the objects current state and its state at init
         and returns them as a dictionary, which will be empty if no changes.
+        ``custom_fields`` includes only the custom fields that changed.
 
         :returns: dict.
         :example:
@@ -787,15 +914,21 @@ class Record:
             diff = self._diff()
             if diff:
                 serialized = self.serialize()
-                return {i: serialized[i] for i in diff}
+                ret = {i: serialized[i] for i in diff}
+                if "custom_fields" in ret:
+                    ret["custom_fields"] = flatten_custom(self._changed_custom_fields())
+                return ret
         return {}
 
-    def save(self):
+    def save(self, changelog_message=None):
         """Saves changes to an existing object.
 
         Takes a diff between the objects current state and its state at init
         and sends them as a dictionary to Request.patch().
 
+        :arg str changelog_message: Optional message to record in the
+            resulting NetBox changelog entry (requires NetBox 4.4+). Nothing
+            is sent if there are no changes to save.
         :returns: True if PATCH request was successful.
         :example:
 
@@ -803,12 +936,14 @@ class Record:
         >>> x.serial
         ''
         >>> x.serial = '1234'
-        >>> x.save()
+        >>> x.save(changelog_message="Set serial from asset audit")
         True
         >>>
         """
         updates = self.updates()
         if updates:
+            if changelog_message is not None:
+                updates["changelog_message"] = changelog_message
             req = Request(
                 key=self.id,
                 base=self._endpoint.url,
@@ -817,12 +952,16 @@ class Record:
             )
             result = req.patch(updates)
             if result:
+                # changelog_message is write-only, so NetBox never echoes it
+                # back. Drop one set as an attribute so it isn't re-sent (and
+                # seen as a pending change) on every later save().
+                self.__dict__.pop("changelog_message", None)
                 # Update object state with response from PATCH to keep cache in sync
                 self._parse_values(result)
                 return True
         return False
 
-    def update(self, data):
+    def update(self, data, changelog_message=None):
         """Update an object with a dictionary.
 
         Accepts a dict and uses it to update the record and call save().
@@ -831,6 +970,8 @@ class Record:
 
         :arg dict data: Dictionary containing the k/v to update the
             record object with.
+        :arg str changelog_message: Optional message to record in the
+            resulting NetBox changelog entry (requires NetBox 4.4+).
         :returns: True if PATCH request was successful.
         :example:
 
@@ -838,23 +979,25 @@ class Record:
         >>> x.update({
         ...   "name": "test-switch2",
         ...   "serial": "ABC321",
-        ... })
+        ... }, changelog_message="Renamed per ticket #4137")
         True
 
         """
 
         for k, v in data.items():
             setattr(self, k, v)
-        return self.save()
+        return self.save(changelog_message=changelog_message)
 
-    def delete(self):
+    def delete(self, changelog_message=None):
         """Deletes an existing object.
 
+        :arg str changelog_message: Optional message to record in the
+            resulting NetBox changelog entry (requires NetBox 4.4+).
         :returns: True if DELETE operation was successful.
         :example:
 
         >>> x = nb.dcim.devices.get(name='test1-a3-tor1b')
-        >>> x.delete()
+        >>> x.delete(changelog_message="Decommissioned")
         True
         >>>
         """
@@ -864,7 +1007,10 @@ class Record:
             token=self._api.token,
             http_session=self._api.http_session,
         )
-        return True if req.delete() else False
+        data = None
+        if changelog_message is not None:
+            data = {"changelog_message": changelog_message}
+        return True if req.delete(data=data) else False
 
 
 class PathableRecord(Record):

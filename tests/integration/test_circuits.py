@@ -1,7 +1,6 @@
 import pytest
 
 
-
 @pytest.fixture(scope="module")
 def provider(api):
     provider = api.circuits.providers.create(name="test-provider", slug="test-provider")

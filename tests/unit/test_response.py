@@ -1,8 +1,14 @@
+import copy
+import pickle
 import unittest
 from unittest.mock import Mock, patch
 
 from pynetbox.core.endpoint import Endpoint
-from pynetbox.core.response import Record, RecordSet, flatten_custom
+from pynetbox.core.response import JsonField, Record, RecordSet, flatten_custom
+from pynetbox.extensions.custom_objects import CustomObject
+from pynetbox.models.dcim import Devices, DeviceTypes, FrontPorts
+from pynetbox.models.ipam import IpAddresses
+from pynetbox.models.users import Permissions, Users
 
 
 class FlattenCustomTest(unittest.TestCase):
@@ -19,6 +25,34 @@ class FlattenCustomTest(unittest.TestCase):
         for test_dict in test_dicts:
             ret = flatten_custom(test_dict)
             assert ret == test_dict
+
+    def test_flatten_custom_selection_values(self):
+        """NetBox 4.7+ returns selection values as {value, label} (#806)."""
+        ret = flatten_custom(
+            {
+                "select": {"value": "a", "label": "A"},
+                "multiselect": [
+                    {"value": "a", "label": "A"},
+                    {"value": "b", "label": "B"},
+                ],
+                "mixed": [{"value": "a", "label": "A"}, "b"],
+            }
+        )
+        self.assertEqual(ret, {"select": "a", "multiselect": ["a", "b"], "mixed": ["a", "b"]})
+
+    def test_flatten_custom_raw_selection_values(self):
+        """Selection values from NetBox < 4.7 are raw and pass through."""
+        test_dict = {"select": "a", "multiselect": ["a", "b"]}
+        self.assertEqual(flatten_custom(test_dict), test_dict)
+
+    def test_flatten_custom_object_values(self):
+        ret = flatten_custom(
+            {
+                "object": {"id": 3, "url": "http://localhost:8000/api/dcim/sites/3/"},
+                "multiobject": [{"id": 3}, {"id": 4}],
+            }
+        )
+        self.assertEqual(ret, {"object": 3, "multiobject": [3, 4]})
 
 
 class RecordTestCase(unittest.TestCase):
@@ -63,6 +97,307 @@ class RecordTestCase(unittest.TestCase):
         # Local modification is preserved: the dunder guard short-circuited
         # before full_details could run and clobber it.
         self.assertEqual(test_obj.name, "modified")
+
+    def test_full_details_preserves_local_edits(self):
+        """Re-fetching a record must not discard pending local changes.
+
+        Reading a missing attribute (here via str(), which looks for
+        `label`) hydrates the record. That used to refresh the diff
+        baseline, so the edit below looked already-saved and save()
+        sent nothing. See issue #808.
+        """
+        server_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "display": "DEVICE_TYPE (123)",
+            "custom_fields": {"my_field": "old"},
+        }
+        test_obj = Record(
+            copy.deepcopy(server_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+        test_obj.custom_fields["my_field"] = "new"
+
+        # str() misses on `label` and hydrates. Deep-copy the payload: a
+        # shallow one shares the nested custom_fields dict with the record.
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(server_values)]),
+        ):
+            self.assertEqual(str(test_obj), "DEVICE_TYPE (123)")
+
+        self.assertEqual(test_obj.custom_fields, {"my_field": "new"})
+        self.assertEqual(
+            test_obj.updates(), {"custom_fields": {"my_field": "new"}}
+        )
+
+    def test_full_details_preserves_local_scalar_edit(self):
+        """The custom_fields case above goes through the JsonField path.
+        A plain scalar takes a different branch of _parse_values, so cover
+        it too. See issue #808.
+        """
+        server_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "OLD",
+        }
+        test_obj = Record(
+            copy.deepcopy(server_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+        test_obj.serial = "NEW"
+
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(server_values)]),
+        ):
+            test_obj.full_details()
+
+        self.assertEqual(test_obj.serial, "NEW")
+        self.assertEqual(test_obj.updates(), {"serial": "NEW"})
+
+    def test_full_details_refreshes_untouched_fields(self):
+        """Preserving local edits must not stop untouched fields from
+        picking up fresh server state. See issue #808.
+        """
+        init_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "OLD",
+            "custom_fields": {"my_field": "old"},
+        }
+        test_obj = Record(
+            copy.deepcopy(init_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+        test_obj.custom_fields["my_field"] = "new"
+
+        # The server has moved `serial` on, a field nobody edited locally.
+        server_values = dict(copy.deepcopy(init_values), serial="SERVER")
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(server_values)]),
+        ):
+            test_obj.full_details()
+
+        self.assertEqual(test_obj.serial, "SERVER")
+        # Only the locally-edited field is pending; `serial` matches the
+        # server, so it must not show up as a change to send back.
+        self.assertEqual(
+            test_obj.updates(), {"custom_fields": {"my_field": "new"}}
+        )
+
+    def test_full_details_clean_record_stays_clean(self):
+        """Hydrating a record with no local edits produces no diff.
+        See issue #808.
+        """
+        server_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "OLD",
+            "custom_fields": {"my_field": "old"},
+        }
+        test_obj = Record(
+            copy.deepcopy(server_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(server_values)]),
+        ):
+            test_obj.full_details()
+
+        self.assertEqual(test_obj.updates(), {})
+
+    def assertOneBaselineEntryPerField(self, record, payload):
+        # Compare counts first. A growing cache then fails with a short count
+        # mismatch, not a long list diff.
+        self.assertEqual(len(record._init_cache), len(payload))
+        self.assertEqual(list(record._init_cache), list(payload))
+
+    def test_full_details_repeated_keeps_one_baseline_entry_per_field(self):
+        """full_details() re-parses the record. Each re-parse must replace
+        change baseline entries, not add new ones (#813).
+        """
+        server_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "OLD",
+            "custom_fields": {"my_field": "old"},
+        }
+        test_obj = Record(
+            copy.deepcopy(server_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+
+        with patch(
+            "pynetbox.core.query.Request.get",
+            side_effect=lambda *a, **k: iter([copy.deepcopy(server_values)]),
+        ):
+            for _ in range(3):
+                test_obj.full_details()
+
+        self.assertOneBaselineEntryPerField(test_obj, server_values)
+
+    def test_save_repeated_keeps_one_baseline_entry_per_field(self):
+        """save() re-parses the PATCH response (#731). Each re-parse must
+        replace change baseline entries, not add new ones (#813).
+        """
+        api = Mock(token="abc123", base_url="http://localhost:8000/api")
+        server_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "0",
+        }
+        test_obj = Record(copy.deepcopy(server_values), api, None)
+        api.http_session.patch.return_value.ok = True
+
+        for i in range(1, 4):
+            test_obj.serial = str(i)
+            server_values["serial"] = str(i)
+            api.http_session.patch.return_value.json.return_value = copy.deepcopy(
+                server_values
+            )
+            self.assertTrue(test_obj.save())
+
+        self.assertOneBaselineEntryPerField(test_obj, server_values)
+        self.assertEqual(test_obj._init_cache["serial"], "3")
+
+    def test_full_details_dirty_field_keeps_old_baseline_single_entry(self):
+        """full_details() puts back the old change baseline of an edited
+        field (#808). That write must replace the server value, not add a
+        second entry (#813).
+        """
+        init_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": None,
+            "serial": "OLD",
+        }
+        test_obj = Record(
+            copy.deepcopy(init_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+        test_obj.serial = "NEW"
+
+        server_values = dict(init_values, serial="SERVER")
+        with patch(
+            "pynetbox.core.query.Request.get",
+            side_effect=lambda *a, **k: iter([copy.deepcopy(server_values)]),
+        ):
+            test_obj.full_details()
+
+        self.assertOneBaselineEntryPerField(test_obj, init_values)
+        self.assertEqual(test_obj._init_cache["serial"], "OLD")
+        self.assertEqual(test_obj.updates(), {"serial": "NEW"})
+
+    def test_refetch_preserves_serialize_key_order(self):
+        """serialize() must keep the original key order when a re-fetch
+        returns fields in a different order (#813).
+        """
+        init_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": "dev1",
+            "serial": "OLD",
+            "asset_tag": None,
+        }
+        test_obj = Record(
+            copy.deepcopy(init_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+
+        server_values = {
+            "asset_tag": None,
+            "serial": "SERVER",
+            "name": "dev1",
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "id": 123,
+        }
+        with patch(
+            "pynetbox.core.query.Request.get",
+            side_effect=lambda *a, **k: iter([copy.deepcopy(server_values)]),
+        ):
+            test_obj.full_details()
+
+        self.assertEqual(list(test_obj.serialize()), list(init_values))
+        self.assertEqual(list(test_obj.serialize(init=True)), list(init_values))
+        self.assertEqual(test_obj._diff(), set())
+
+    def test_iter_survives_hydration_mid_loop(self):
+        """Hydration inside a loop over the record adds keys to the change
+        baseline. A loop over the live dict then raises RuntimeError (#813).
+        """
+        brief_values = {
+            "id": 123,
+            "url": "http://localhost:8000/api/dcim/devices/123/",
+            "name": "dev1",
+        }
+        full_values = dict(brief_values, serial="ABC", asset_tag=None)
+        test_obj = Record(
+            copy.deepcopy(brief_values),
+            Mock(base_url="http://localhost:8000/api"),
+            None,
+        )
+
+        with patch(
+            "pynetbox.core.query.Request.get",
+            side_effect=lambda *a, **k: iter([copy.deepcopy(full_values)]),
+        ):
+            keys = []
+            for k, _ in test_obj:
+                keys.append(k)
+                test_obj.full_details()
+
+        self.assertEqual(keys, list(brief_values))
+        self.assertEqual(dict(test_obj)["serial"], "ABC")
+
+    def test_pickle_round_trip_preserves_change_baseline(self):
+        """Callers pickle records for multiprocessing (#152, #459). The
+        change baseline must survive pickling, or pending edits disappear.
+        """
+        import pickle
+
+        import pynetbox
+
+        nb = pynetbox.api("http://localhost:8000", token="abc")
+        test_obj = Record(
+            {
+                "id": 123,
+                "url": "http://localhost:8000/api/dcim/devices/123/",
+                "name": "dev1",
+                "serial": "OLD",
+                "site": {
+                    "id": 1,
+                    "url": "http://localhost:8000/api/dcim/sites/1/",
+                    "name": "site1",
+                },
+            },
+            nb,
+            None,
+        )
+        test_obj.serial = "NEW"
+
+        round_tripped = pickle.loads(pickle.dumps(test_obj))
+
+        self.assertEqual(round_tripped.updates(), {"serial": "NEW"})
+        self.assertEqual(round_tripped.updates(), test_obj.updates())
+        self.assertEqual(round_tripped.serialize(), test_obj.serialize())
+        self.assertEqual(dict(round_tripped), dict(test_obj))
 
     def test_dict_access(self):
         test_values = {
@@ -664,6 +999,50 @@ class RecordTestCase(unittest.TestCase):
         test_obj.custom_fields = {"testfield": None}
         self.assertEqual(test_obj._diff(), {"custom_fields"})
 
+    def _selection_cf_record(self):
+        return Record(
+            {
+                "id": 123,
+                "name": "testsite",
+                "custom_fields": {
+                    "select": {"value": "a", "label": "A"},
+                    "multiselect": [
+                        {"value": "a", "label": "A"},
+                        {"value": "b", "label": "B"},
+                    ],
+                    "json": {"value": 5, "label": "five"},
+                    "text": "foo",
+                },
+            },
+            None,
+            None,
+        )
+
+    def test_updates_omits_unchanged_custom_fields(self):
+        """Regression test for issue #806: editing one custom field in place must
+        not send the others back in the shape NetBox returned them."""
+        test_obj = self._selection_cf_record()
+        test_obj.custom_fields["text"] = "bar"
+        self.assertEqual(test_obj.updates(), {"custom_fields": {"text": "bar"}})
+
+    def test_updates_flattens_changed_selection_values(self):
+        """A {value, label} copied into a changed custom field is sent raw."""
+        test_obj = self._selection_cf_record()
+        test_obj.custom_fields["select"] = {"value": "c", "label": "C"}
+        self.assertEqual(test_obj.updates(), {"custom_fields": {"select": "c"}})
+
+    def test_updates_flattens_in_place_multiselect_edit(self):
+        test_obj = self._selection_cf_record()
+        test_obj.custom_fields["multiselect"].append("c")
+        self.assertEqual(
+            test_obj.updates(), {"custom_fields": {"multiselect": ["a", "b", "c"]}}
+        )
+
+    def test_updates_same_selection_value_is_no_change(self):
+        test_obj = self._selection_cf_record()
+        test_obj.custom_fields["select"] = "a"
+        self.assertEqual(test_obj.updates(), {})
+
     def test_serialize_excludes_internal_attributes(self):
         """Ensure serialize() filters out internal Record metadata."""
         test_obj = Record({"id": 123, "name": "test"}, None, None)
@@ -676,10 +1055,9 @@ class RecordTestCase(unittest.TestCase):
             "has_details",
             "default_ret",
             "_init_cache",
-            "_full_cache",
         ]:
             self.assertNotIn(attr, serialized)
-    
+
     def test_field_named_endpoint_does_not_corrupt_internal_endpoint(self):
         """Regression test for #170: A NetBox field literally named
         'endpoint' collides with Record's internal endpoint attribute.
@@ -694,7 +1072,7 @@ class RecordTestCase(unittest.TestCase):
         }
         with self.assertRaises(AttributeError):
             Record(test_values, None, endpoint)
-    
+
     def test_link_peers_typed_by_sibling_content_type(self):
         """Regression for issue #519: link_peers items should be cast to the
         Record subclass identified by the sibling link_peers_type field."""
@@ -796,6 +1174,172 @@ class RecordTestCase(unittest.TestCase):
         self.assertEqual(len(record.link_peers), 1)
         self.assertIsInstance(record.link_peers[0], Record)
         self.assertEqual(record.link_peers[0].id, 99)
+
+
+class FieldTypeMarkerTestCase(unittest.TestCase):
+    """An omitted field type marker field (e.g. `Devices.device_type`)
+    must not return the marker class (#812)."""
+
+    def test_missing_marker_field_raises(self):
+        device = Devices({"id": 1, "name": "test"}, None, None)
+        with self.assertRaises(AttributeError):
+            device.device_type
+        self.assertFalse(hasattr(device, "device_type"))
+
+    def test_class_access_returns_marked_type(self):
+        self.assertIs(Devices.device_type, DeviceTypes)
+        self.assertEqual(Permissions.users, [Users])
+        self.assertIs(Devices.config_context, JsonField)
+
+    def test_missing_list_marker_field_raises(self):
+        permission = Permissions({"id": 1, "name": "test"}, None, None)
+        with self.assertRaises(AttributeError):
+            permission.users
+
+    def test_present_list_marker_field_builds_records(self):
+        permission = Permissions(
+            {"id": 1, "name": "test", "users": [{"id": 2, "username": "u"}]},
+            None,
+            None,
+        )
+        self.assertIsInstance(permission.users[0], Users)
+
+    def test_missing_json_field_marker_raises(self):
+        device = Devices({"id": 1, "name": "test"}, None, None)
+        with self.assertRaises(AttributeError):
+            device.config_context
+
+    def test_present_json_field_marker_kept_raw(self):
+        device = Devices(
+            {"id": 1, "name": "test", "config_context": {"a": {"id": 1}}},
+            None,
+            None,
+        )
+        self.assertEqual(device.config_context, {"a": {"id": 1}})
+
+    def test_missing_single_underscore_marker_raises(self):
+        obj = CustomObject({"id": 1}, None, None)
+        with self.assertRaises(AttributeError):
+            obj._context
+
+    def test_subclass_inherited_and_redeclared_markers(self):
+        class InheritingDevice(Devices):
+            pass
+
+        class RedeclaringDevice(Devices):
+            device_type = DeviceTypes
+
+        for cls in (InheritingDevice, RedeclaringDevice):
+            with self.subTest(cls=cls.__name__):
+                self.assertIs(cls.device_type, DeviceTypes)
+                with self.assertRaises(AttributeError):
+                    cls({"id": 1}, None, None).device_type
+                device = cls({"id": 1, "device_type": {"id": 2}}, None, None)
+                self.assertIsInstance(device.device_type, DeviceTypes)
+
+    def test_subclass_created_with_type_is_wrapped(self):
+        Dynamic = type("Dynamic", (Record,), {"device_type": DeviceTypes})
+        with self.assertRaises(AttributeError):
+            Dynamic({"id": 1}, None, None).device_type
+        device = Dynamic({"id": 1, "device_type": {"id": 2}}, None, None)
+        self.assertIsInstance(device.device_type, DeviceTypes)
+
+    def test_pickle_round_trip(self):
+        device = Devices(
+            {"id": 1, "name": "test", "primary_ip": {"id": 3, "address": "x"}},
+            None,
+            None,
+        )
+        # The test unpickles its own record, not untrusted data.
+        restored = pickle.loads(pickle.dumps(device))
+        self.assertIsInstance(restored.primary_ip, IpAddresses)
+        self.assertEqual(restored.primary_ip.id, 3)
+        with self.assertRaises(AttributeError):
+            restored.device_type
+
+    api = Mock(base_url="http://localhost:8000/api")
+    brief = {
+        "id": 1,
+        "url": "http://localhost:8000/api/dcim/devices/1/",
+        "name": "test",
+    }
+
+    def test_missing_marker_field_lazy_loads(self):
+        device = Devices(copy.deepcopy(self.brief), self.api, None)
+        full = dict(copy.deepcopy(self.brief), device_type={"id": 2})
+        with patch(
+            "pynetbox.core.query.Request.get", return_value=iter([full])
+        ) as get:
+            device_type = device.device_type
+        self.assertEqual(get.call_count, 1)
+        self.assertIsInstance(device_type, DeviceTypes)
+        self.assertEqual(device_type.id, 2)
+
+    def test_marker_field_omitted_by_server_raises_after_fetch(self):
+        device = Devices(copy.deepcopy(self.brief), self.api, None)
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(self.brief)]),
+        ) as get:
+            with self.assertRaises(AttributeError) as ctx:
+                device.device_type
+        self.assertEqual(get.call_count, 1)
+        self.assertEqual(
+            str(ctx.exception), 'object has no attribute "device_type"'
+        )
+
+    def test_hasattr_on_missing_marker_fetches_once(self):
+        device = Devices(copy.deepcopy(self.brief), self.api, None)
+        with patch(
+            "pynetbox.core.query.Request.get",
+            return_value=iter([copy.deepcopy(self.brief)]),
+        ) as get:
+            self.assertFalse(hasattr(device, "device_type"))
+            self.assertFalse(hasattr(device, "device_type"))
+        self.assertEqual(get.call_count, 1)
+
+    def test_nested_brief_record_lazy_loads_marker_field(self):
+        # FrontPorts declares `device = Devices`. Interfaces does not, so
+        # its nested device is a plain Record and the test passes on main.
+        port = FrontPorts(
+            {
+                "id": 5,
+                "url": "http://localhost:8000/api/dcim/front-ports/5/",
+                "name": "fp1",
+                "device": copy.deepcopy(self.brief),
+            },
+            self.api,
+            None,
+        )
+        full = dict(copy.deepcopy(self.brief), primary_ip={"id": 3})
+        with patch(
+            "pynetbox.core.query.Request.get", return_value=iter([full])
+        ) as get:
+            primary_ip = port.device.primary_ip
+        self.assertEqual(get.call_count, 1)
+        self.assertIsInstance(primary_ip, IpAddresses)
+
+    def test_hydrated_falsy_value_returned(self):
+        device = Devices(copy.deepcopy(self.brief), self.api, None)
+        full = dict(copy.deepcopy(self.brief), serial="", asset_tag=None)
+        with patch("pynetbox.core.query.Request.get", return_value=iter([full])):
+            self.assertIsNone(device.asset_tag)
+        self.assertEqual(device.serial, "")
+
+    def test_property_reruns_after_hydration(self):
+        class PropertyDevice(Devices):
+            @property
+            def serial_upper(self):
+                # Raise before hydration so the lookup reaches
+                # Record.__getattr__.
+                if "serial" not in self.__dict__:
+                    raise AttributeError("serial_upper")
+                return self.serial.upper()
+
+        device = PropertyDevice(copy.deepcopy(self.brief), self.api, None)
+        full = dict(copy.deepcopy(self.brief), serial="abc")
+        with patch("pynetbox.core.query.Request.get", return_value=iter([full])):
+            self.assertEqual(device.serial_upper, "ABC")
 
 
 class RecordSetTestCase(unittest.TestCase):

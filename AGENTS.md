@@ -2,18 +2,18 @@
 
 ## Repository Overview
 
-`pynetbox` is a Python API client library for NetBox. It provides a Pythonic interface to interact with NetBox's REST API and supports NetBox 3.3+ (pynetbox 6.7+). It is a standalone library — not a Django app or NetBox plugin — published to PyPI and used by automation tooling, scripts, and other Python projects to read and write NetBox data. Current version: `7.7.0` (see `pynetbox/__init__.py`).
+`pynetbox` is a Python API client library for NetBox. It provides a Pythonic interface to interact with NetBox's REST API and supports NetBox 3.3+ (pynetbox 6.7+). It is a standalone library — not a Django app or NetBox plugin — published to PyPI and used by automation tooling, scripts, and other Python projects to read and write NetBox data. Current version: `7.9.0` (see `pynetbox/__init__.py`).
 
 ## Tech Stack
 
-- Python 3.10+ (tested on 3.12, 3.13, 3.14 in CI)
-- `requests` + `urllib3` for HTTP (pins in `requirements.txt`)
+- Python 3.12+ (tested on 3.12, 3.13, 3.14 in CI)
+- `requests` + `urllib3` for HTTP (pins in `pyproject.toml`)
 - `packaging` for version comparisons
 - `pytest` + `pytest-docker` for the test suite (unit and integration)
-- `ruff` for linting (no `ruff.toml`; configured inline or with defaults)
-- `mkdocs-material` + `mkdocstrings` for user-facing docs
+- `ruff` for linting (pinned and configured in `pyproject.toml`)
+- [`zensical`](https://zensical.org/) + `mkdocstrings` for user-facing docs (Zensical succeeds mkdocs; it reads the same `mkdocs.yml`)
 
-Defer all version pins to `requirements.txt` and `requirements-dev.txt`. Package metadata lives in `setup.py` (uses `setuptools_scm` for version from git tags).
+Defer all version pins to `pyproject.toml`: runtime constraints in `[project].dependencies`, dev/test/docs tooling in the `dev` extra. Package metadata and tool configuration live there too (uses `setuptools_scm` for version from git tags).
 
 ## Repository Map
 
@@ -66,18 +66,16 @@ Defer all version pins to `requirements.txt` and `requirements-dev.txt`. Package
 │       ├── test_circuits.py
 │       ├── test_dcim.py
 │       └── test_ipam.py
-├── docs/                        — mkdocs site (API reference + guides).
+├── docs/                        — documentation site (API reference + guides).
 ├── .github/workflows/
-│   ├── py3.yml                  — Lint + tests on every push/PR (matrix: Python × NetBox).
+│   ├── ci.yml                   — Lint, unit tests, integration tests and package build.
 │   ├── publish.yml              — PyPI publish on GitHub release.
-│   └── build-mkdocs.yml         — Deploy docs to GitHub Pages on push to master.
+│   └── docs.yml                 — Build with Zensical on PRs, deploy to Pages on push to main.
 ├── AGENTS.md                    — This file.
 ├── CLAUDE.md                    — Shim that pulls in this file.
 ├── CHANGELOG.md                 — Release history.
-├── mkdocs.yml                   — Docs site config.
-├── requirements.txt             — Runtime dependencies.
-├── requirements-dev.txt         — Dev/test dependencies.
-└── setup.py                     — Package metadata; version from setuptools_scm.
+├── mkdocs.yml                   — Docs site config (consumed by Zensical).
+└── pyproject.toml               — Package metadata, dependencies, `dev` extra, ruff config.
 ```
 
 ## Architecture
@@ -145,24 +143,25 @@ Custom `Record` subclasses in `pynetbox/models/` add endpoint-specific behaviour
 
 | Command | What it does |
 |---|---|
-| `pip install -r requirements.txt && pip install -r requirements-dev.txt && pip install -e .` | Install all dependencies in editable mode |
-| `pytest tests/unit` | Run unit tests only (no Docker required) |
-| `pytest tests/integration --netbox-versions 4.5` | Run integration tests against NetBox 4.5 (requires Docker) |
-| `pytest --netbox-versions 4.3,4.4,4.5` | Run against multiple NetBox versions |
-| `pytest --no-cleanup` | Leave Docker containers running after tests |
-| `pytest -p no:docker --url-override http://localhost:8000` | Run integration tests against an existing NetBox instance |
-| `ruff check pynetbox/ tests/` | Run linter |
+| `pip install -e ".[dev]"` | Install the package plus all dev dependencies in editable mode |
+| `pre-commit run --all-files` | Run the lint gate exactly as CI does |
+| `ruff check pynetbox/ tests/` | Run the linter directly |
 | `ruff check --fix pynetbox/ tests/` | Fix auto-fixable lint issues |
-| `mkdocs serve` | Preview docs locally |
-| `mkdocs gh-deploy` | Deploy docs to GitHub Pages |
-| `python -m build` | Build sdist + wheel (matches the release workflow) |
+| `pytest tests --ignore=tests/integration` | Run every test that does not need Docker |
+| `python -m build && twine check --strict dist/*` | Build and validate the sdist and wheel (as CI does) |
+| `pytest tests/integration --netbox-versions 4.5` | Run integration tests against NetBox 4.5 (requires Docker) |
+| `pytest tests/integration --netbox-versions 4.5,4.6,4.7` | Run against multiple NetBox versions |
+| `pytest tests/integration --no-cleanup` | Leave Docker containers running after tests |
+| `pytest tests/integration -p no:docker --url-override http://localhost:8000` | Run integration tests against an existing NetBox instance |
+| `zensical serve` | Preview docs locally |
+| `zensical build --clean --strict` | Build the docs site into `site/` (as CI does) |
 
 ## Development
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt -r requirements-dev.txt -e .
+pip install -e ".[dev]"
 ```
 
 Integration tests require Docker. The `tests/integration/conftest.py` uses `pytest-docker` to pull and start `netbox-docker` containers, wait for NetBox to be ready, run the tests, and tear down (unless `--no-cleanup`).
@@ -171,7 +170,7 @@ Integration tests require Docker. The `tests/integration/conftest.py` uses `pyte
 
 - **Unit tests** (`tests/unit/` and `tests/test_*.py`) mock HTTP responses with JSON fixtures from `tests/fixtures/`. No Docker required.
 - **Integration tests** (`tests/integration/`) run against a real NetBox instance in Docker. They test end-to-end CRUD operations across dcim, ipam, and circuits.
-- `tests/conftest.py` defines three pytest options: `--netbox-versions` (comma-separated, default `4.4`), `--no-cleanup`, and `--url-override`.
+- `tests/conftest.py` defines three pytest options: `--netbox-versions` (comma-separated, default `4.7`), `--no-cleanup`, and `--url-override`.
 
 | Test module | Coverage area |
 |---|---|
@@ -201,9 +200,9 @@ Integration tests require Docker. The `tests/integration/conftest.py` uses `pyte
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **`py3.yml`** — Runs on every push/PR. Matrix: Python × {3.12, 3.13, 3.14} and NetBox × {4.3, 4.4, 4.5}. Enables Docker IPv6, runs `ruff check`, then `pytest --netbox-versions=${{ matrix.netbox }}` (integration + unit).
+- **`ci.yml`** — Runs on every pull request and on push to `main`. Four jobs: `lint` runs `pre-commit run --all-files` once, `unit` runs `pytest tests --ignore=tests/integration` on Python 3.12, 3.13 and 3.14 with no Docker, `integration` runs three Docker legs (3.12 with NetBox 4.5, 3.13 with 4.6, 3.14 with 4.7) after `lint` and `unit` pass, and `package` builds the sdist and wheel, runs `twine check`, rebuilds the wheel from the sdist and installs it into a clean environment.
 - **`publish.yml`** — Runs on published GitHub releases. Builds sdist + wheel with `python -m build`, then publishes to PyPI using a token secret (`PYPI_API_TOKEN`).
-- **`build-mkdocs.yml`** — Runs on push to `master`/`main`. Deploys docs to GitHub Pages with `mkdocs gh-deploy --force`.
+- **`docs.yml`** — Builds the docs with Zensical on every pull request and on push to `main`. A separate `deploy` job holds the only `pages: write` grant and runs only on push to `main`.
 
 ## Common Tasks
 
@@ -221,14 +220,14 @@ Serialization for PATCH/PUT/POST is handled in `Record.serialize()` (`pynetbox/c
 ### Bump the supported NetBox version
 
 1. Update `DEFAULT_NETBOX_VERSIONS` in `tests/conftest.py` if changing the default test target.
-2. Widen the `netbox` matrix in `.github/workflows/py3.yml`.
+2. Widen the `netbox` matrix in `.github/workflows/ci.yml`.
 3. Update the version compatibility table in this file and in `CHANGELOG.md`.
 4. Run integration tests locally against the new version.
 
 ### Cut a release
 
-1. Ensure all changes are merged to `master`.
-2. Tag the commit with the new version (e.g. `git tag v7.8.0`). `setuptools_scm` derives `__version__` from the tag.
+1. Ensure all changes are merged to `main`.
+2. Bump `__version__` in `pynetbox/__init__.py` by hand, then tag the commit with the same version (e.g. `git tag v7.8.0`). `setuptools_scm` derives the package's distribution version from the tag, separately from `__version__`.
 3. Publish a GitHub release. `publish.yml` builds and pushes to PyPI automatically.
 4. Update `CHANGELOG.md`.
 
@@ -256,6 +255,8 @@ NetBox version compatibility is strict. Defer to `CHANGELOG.md` for the full his
 
 | pynetbox | NetBox |
 |---|---|
+| 7.9.0 | 4.5, 4.6, 4.7 |
+| 7.8.0 | 4.4, 4.5, 4.6 |
 | 7.7.0 | 4.3, 4.4, 4.5 |
 | 7.6.1 | 4.5.0 |
 | 7.5.0 | 4.1, 4.2, 4.3 |
@@ -266,6 +267,6 @@ NetBox version compatibility is strict. Defer to `CHANGELOG.md` for the full his
 
 - GitHub repository: <https://github.com/netbox-community/pynetbox>
 - PyPI package: <https://pypi.org/project/pynetbox/>
-- User docs (mkdocs): [`docs/`](./docs/)
+- User docs (Zensical): [`docs/`](./docs/)
 - NetBox REST API docs: <https://demo.netbox.dev/api/docs/>
 - Release history: [`CHANGELOG.md`](./CHANGELOG.md)

@@ -10,7 +10,7 @@ class Response:
     def load_fixture(self, path):
         if not path:
             return "{}"
-        with open("tests/fixtures/{}".format(path), "r") as f:
+        with open("tests/fixtures/{}".format(path)) as f:
             return f.read()
 
     def json(self):

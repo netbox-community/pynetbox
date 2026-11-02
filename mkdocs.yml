@@ -1,3 +1,4 @@
+# Note: pynetbox has migrated from MkDocs to Zensical
 site_name: pynetbox
 site_description: Python API client library for NetBox
 repo_name: netbox-community/pynetbox

@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import Mock
-from tests.util import openapi_mock
 
-from pynetbox.core.endpoint import Endpoint
 from pynetbox import ParameterValidationError
+from pynetbox.core.endpoint import Endpoint
+from tests.util import openapi_mock
 
 
 class StrictFilterTestCase(unittest.TestCase):

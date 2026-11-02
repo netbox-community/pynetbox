@@ -50,6 +50,7 @@ from pynetbox.core.extension import Extension
 from pynetbox.core.query import Request
 from pynetbox.core.response import JsonField, Record
 
+
 def _plugin_request(api, path):
     """Build a `Request` bound to a plugin sub-path under custom-objects.
 

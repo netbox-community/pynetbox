@@ -235,7 +235,7 @@ device.update({
 To update multiple records in a single request, call `.update()` on the endpoint with a list of records or dicts. Each dict must include an `id`:
 
 ```python
-devices = nb.dcim.devices.filter(site='test1')
+devices = list(nb.dcim.devices.filter(site='test1'))
 for device in devices:
     device.status = 'active'
 nb.dcim.devices.update(devices)
@@ -264,6 +264,31 @@ nb.dcim.devices.delete([1, 2, 3])
 # Or, delete every record matching a filter:
 nb.dcim.devices.filter(status='offline').delete()
 ```
+
+## Changelog Messages
+
+NetBox 4.4+ can attach a message to the changelog entry created by a write. Pass `changelog_message` to any create, update, or delete call:
+
+```python
+# Create
+nb.dcim.sites.create(name='Site A', slug='site-a', changelog_message='Ticket #4137')
+
+# Update a single record
+device.serial = 'ABC123'
+device.save(changelog_message='Serial from asset audit')
+device.update({'status': 'offline'}, changelog_message='Failed PSU')
+
+# Bulk update
+nb.dcim.devices.update(devices, changelog_message='Site go-live')
+nb.dcim.devices.filter(site_id=1).update(status='active', changelog_message='Site go-live')
+
+# Delete a single record, or in bulk
+device.delete(changelog_message='Decommissioned')
+nb.dcim.devices.delete([1, 2, 3], changelog_message='Site decommissioned')
+nb.dcim.devices.filter(status='offline').delete(changelog_message='Cleanup')
+```
+
+For a bulk create, include `changelog_message` in each dict of the list. A message is sent only with a request: `save()` makes no request, and so records no message, when nothing has changed.
 
 ## Working with Choices
 
