@@ -80,15 +80,15 @@ def _post_detail(parent, action_name, data=None, return_cls=None, api=None):
     class than the parent endpoint's, and (b) keep the call sites as
     simple method invocations rather than `.create()` chains.
     """
-    url = "{}/{}/{}/".format(parent.endpoint.url, parent.id, action_name)
+    url = "{}/{}/{}/".format(parent._endpoint.url, parent.id, action_name)
     resp = Request(
         base=url,
-        token=parent.api.token,
-        http_session=parent.api.http_session,
+        token=parent._api.token,
+        http_session=parent._api.http_session,
     ).post(data or {})
     if return_cls is None:
         return resp
-    return return_cls(resp, api or parent.api, parent.endpoint)
+    return return_cls(resp, api or parent._api, parent._endpoint)
 
 
 class Branches(Record):
@@ -191,7 +191,7 @@ class Branches(Record):
         on the branching plugin, so this delegates there with the
         branch filter applied. Each item is a `Changes` record.
         """
-        return self.api.plugins.branching.changes.filter(branch_id=self.id)
+        return self._api.plugins.branching.changes.filter(branch_id=self.id)
 
 
 class BranchEvents(Record):

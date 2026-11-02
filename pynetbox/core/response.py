@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 import copy
+import warnings
 from urllib.parse import urlsplit
 
 import pynetbox.core.app
@@ -417,6 +418,16 @@ class Record:
         ]
     )
 
+    # Old public names of the internal attributes above, kept as deprecated
+    # aliases (#170). Resolved in __getattr__ so a NetBox field of the same
+    # name still wins.
+    _LEGACY_ALIASES = {
+        "api": "_api",
+        "endpoint": "_endpoint",
+        "has_details": "_has_details",
+        "default_ret": "_default_ret",
+    }
+
     def __init_subclass__(cls, **kwargs):
         """Wrap each field type marker in the class body in a _FieldTypeMarker.
 
@@ -446,22 +457,6 @@ class Record:
         if values:
             self._parse_values(values)
 
-    @property
-    def api(self):
-        return self._api
-
-    @property
-    def endpoint(self):
-        return self._endpoint
-
-    @property
-    def has_details(self):
-        return self._has_details
-
-    @property
-    def default_ret(self):
-        return self._default_ret
-
     def __getattr__(self, k):
         """Default behavior for missing attrs.
 
@@ -476,9 +471,24 @@ class Record:
         calling `hasattr(obj, '__pydantic_decorators__')`, or copy and
         pickle machinery) must not trigger a network fetch that would
         also clobber local modifications.
+
+        The pre-#170 names of the internal attributes (`api`, `endpoint`,
+        `has_details`, `default_ret`) resolve here, with a
+        DeprecationWarning. Because __getattr__ only runs when normal
+        lookup fails, a NetBox field with one of those names takes
+        precedence over the alias.
         """
         if k.startswith("__") and k.endswith("__"):
             raise AttributeError('object has no attribute "{}"'.format(k))
+
+        if k in self._LEGACY_ALIASES:
+            new_name = self._LEGACY_ALIASES[k]
+            warnings.warn(
+                "Record.{} is deprecated; use Record.{} instead.".format(k, new_name),
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return object.__getattribute__(self, new_name)
 
         if self.url:
             if self._has_details is False and k != "keys":
@@ -722,9 +732,8 @@ class Record:
         """Queries the hyperlinked endpoint if 'url' is defined.
 
         This method will populate the attributes from the detail
-        endpoint when it's called. Sets the class-level `has_details`
-        attribute when it's called to prevent being called more
-        than once.
+        endpoint when it's called. Sets `_has_details` so that
+        attribute lookups don't call it more than once.
 
         :returns: True
         """
@@ -1076,7 +1085,7 @@ class GenericListObject:
         from pynetbox.models.mapper import TYPE_CONTENT_MAPPER
 
         type_content_mapper = getattr(
-            record.api, "_type_content_mapper", TYPE_CONTENT_MAPPER
+            record._api, "_type_content_mapper", TYPE_CONTENT_MAPPER
         )
 
         self.object = record

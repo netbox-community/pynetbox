@@ -1058,20 +1058,44 @@ class RecordTestCase(unittest.TestCase):
         ]:
             self.assertNotIn(attr, serialized)
 
-    def test_field_named_endpoint_does_not_corrupt_internal_endpoint(self):
-        """Regression test for #170: A NetBox field literally named
-        'endpoint' collides with Record's internal endpoint attribute.
-        Since 'endpoint' is now a read only property backed by self._endpoint,
-        attempting to setattr() it raises cleanly instead of silently overwriting
-        the internal endpoint."""
+    def test_fields_named_like_internal_attrs_do_not_corrupt_record(self):
+        """Regression for #170: fields named after Record's old internal
+        attributes load as normal fields and leave the internals intact."""
+        api = Mock()
         endpoint = Mock()
         test_values = {
             "id": 123,
-            "name": "test",
             "endpoint": "walluigi",
+            "api": "a",
+            "has_details": "h",
+            "default_ret": "d",
         }
-        with self.assertRaises(AttributeError):
-            Record(test_values, None, endpoint)
+        test_obj = Record(test_values, api, endpoint)
+
+        self.assertEqual(test_obj.endpoint, "walluigi")
+        self.assertEqual(test_obj.api, "a")
+        self.assertEqual(test_obj.has_details, "h")
+        self.assertEqual(test_obj.default_ret, "d")
+        self.assertIs(test_obj._endpoint, endpoint)
+        self.assertIs(test_obj._api, api)
+        self.assertIs(test_obj._has_details, False)
+        self.assertIs(test_obj._default_ret, Record)
+        self.assertEqual(test_obj.serialize(), test_values)
+
+    def test_legacy_internal_attr_names_are_deprecated_aliases(self):
+        """The pre-#170 names still resolve to the internals, with a warning."""
+        api = Mock()
+        endpoint = Mock()
+        test_obj = Record({"id": 123}, api, endpoint)
+
+        for old, expected in [
+            ("api", api),
+            ("endpoint", endpoint),
+            ("has_details", False),
+            ("default_ret", Record),
+        ]:
+            with self.assertWarns(DeprecationWarning):
+                self.assertIs(getattr(test_obj, old), expected)
 
     def test_link_peers_typed_by_sibling_content_type(self):
         """Regression for issue #519: link_peers items should be cast to the
