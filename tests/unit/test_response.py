@@ -218,6 +218,32 @@ class RecordTestCase(unittest.TestCase):
 
         self.assertEqual(test_obj.updates(), {})
 
+    def test_deleted_attribute_lazy_loads(self):
+        """Reading a deleted field must fetch it from the detail endpoint
+        once, not recurse through _diff() and full_details(). See #822.
+        """
+        server_values = {
+            "id": 1,
+            "url": "http://localhost:8000/api/dcim/devices/1/",
+            "name": "sw1",
+            "serial": "X",
+        }
+        test_obj = Record(
+            copy.deepcopy(server_values),
+            Mock(token="abc123", base_url="http://localhost:8000/api"),
+            None,
+        )
+        del test_obj.serial
+
+        with patch(
+            "pynetbox.core.query.Request.get",
+            side_effect=lambda *a, **k: iter([copy.deepcopy(server_values)]),
+        ) as get:
+            self.assertEqual(test_obj.serial, "X")
+            self.assertEqual(get.call_count, 1)
+
+        self.assertEqual(test_obj.updates(), {})
+
     def assertOneBaselineEntryPerField(self, record, payload):
         # Compare counts first. A growing cache then fails with a short count
         # mismatch, not a long list diff.
