@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 import copy
+import warnings
 from urllib.parse import urlsplit
 
 import pynetbox.core.app
@@ -409,13 +410,23 @@ class Record:
     # These are object bookkeeping attributes, not NetBox API fields.
     _INTERNAL_ATTRS = frozenset(
         [
-            "api",  # API client instance
-            "endpoint",  # Endpoint object reference
+            "_api",  # API client instance
+            "_endpoint",  # Endpoint object reference
             "url",  # Object URL (read-only field provided by API)
-            "has_details",  # Flag for lazy-loading full details
-            "default_ret",  # Default Record class for nested objects
+            "_has_details",  # Flag for lazy-loading full details
+            "_default_ret",  # Default Record class for nested objects
         ]
     )
+
+    # Old public names of the internal attributes above, kept as deprecated
+    # aliases (#170). Resolved in __getattr__ so a NetBox field of the same
+    # name still wins.
+    _LEGACY_ALIASES = {
+        "api": "_api",
+        "endpoint": "_endpoint",
+        "has_details": "_has_details",
+        "default_ret": "_default_ret",
+    }
 
     def __init_subclass__(cls, **kwargs):
         """Wrap each field type marker in the class body in a _FieldTypeMarker.
@@ -432,13 +443,13 @@ class Record:
                 setattr(cls, name, _FieldTypeMarker(name, value))
 
     def __init__(self, values, api, endpoint):
-        self.has_details = False
+        self._has_details = False
         # Every re-parse refreshes this, not only __init__. _diff() compares
         # current values to it (#813).
         self._init_cache = {}
-        self.api = api
-        self.default_ret = Record
-        self.endpoint = (
+        self._api = api
+        self._default_ret = Record
+        self._endpoint = (
             self._endpoint_from_url(values["url"])
             if values and "url" in values and values["url"]
             else endpoint
@@ -460,12 +471,27 @@ class Record:
         calling `hasattr(obj, '__pydantic_decorators__')`, or copy and
         pickle machinery) must not trigger a network fetch that would
         also clobber local modifications.
+
+        The pre-#170 names of the internal attributes (`api`, `endpoint`,
+        `has_details`, `default_ret`) resolve here, with a
+        DeprecationWarning. Because __getattr__ only runs when normal
+        lookup fails, a NetBox field with one of those names takes
+        precedence over the alias.
         """
         if k.startswith("__") and k.endswith("__"):
             raise AttributeError('object has no attribute "{}"'.format(k))
 
+        if k in self._LEGACY_ALIASES:
+            new_name = self._LEGACY_ALIASES[k]
+            warnings.warn(
+                "Record.{} is deprecated; use Record.{} instead.".format(k, new_name),
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return object.__getattribute__(self, new_name)
+
         if self.url:
-            if self.has_details is False and k != "keys":
+            if self._has_details is False and k != "keys":
                 if self.full_details():
                     # Unlike self.__dict__, this re-runs properties that raised
                     # before hydration. Unlike getattr(), it skips __getattr__.
@@ -512,8 +538,8 @@ class Record:
 
     def __key__(self):
         if hasattr(self, "id"):
-            return (self.endpoint.name, self.id)
-        return self.endpoint.name
+            return (self._endpoint.name, self.id)
+        return self._endpoint.name
 
     def __hash__(self):
         return hash(self.__key__())
@@ -532,7 +558,7 @@ class Record:
             String like "dcim/rear-ports"
         """
         app_endpoint = "/".join(
-            urlsplit(url).path[len(urlsplit(self.api.base_url).path) :].split("/")[1:3]
+            urlsplit(url).path[len(urlsplit(self._api.base_url).path) :].split("/")[1:3]
         )
         return app_endpoint
 
@@ -587,7 +613,7 @@ class Record:
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
             content_type_mapper = getattr(
-                self.api, "_content_type_mapper", CONTENT_TYPE_MAPPER
+                self._api, "_content_type_mapper", CONTENT_TYPE_MAPPER
             )
 
             if (
@@ -597,7 +623,7 @@ class Record:
             ):
                 lookup = list_item["object_type"]
                 if model := content_type_mapper.get(lookup, None):
-                    record = model(list_item["object"], self.api, self.endpoint)
+                    record = model(list_item["object"], self._api, self._endpoint)
                     return GenericListObject(record)
 
             return list_item
@@ -608,9 +634,9 @@ class Record:
                 if not isinstance(lookup, list):
                     # This is *list_parser*, so if the custom model field is not
                     # a list (or is not defined), just return the default model
-                    return self.default_ret(list_item, self.api, self.endpoint)
+                    return self._default_ret(list_item, self._api, self._endpoint)
                 model = lookup[0]
-                return model(list_item, self.api, self.endpoint)
+                return model(list_item, self._api, self._endpoint)
 
             return list_item
 
@@ -618,13 +644,13 @@ class Record:
             from pynetbox.models.mapper import CONTENT_TYPE_MAPPER
 
             content_type_mapper = getattr(
-                self.api, "_content_type_mapper", CONTENT_TYPE_MAPPER
+                self._api, "_content_type_mapper", CONTENT_TYPE_MAPPER
             )
 
             if isinstance(list_item, dict):
                 if model := content_type_mapper.get(content_type, None):
-                    return model(list_item, self.api, self.endpoint)
-                return self.default_ret(list_item, self.api, self.endpoint)
+                    return model(list_item, self._api, self._endpoint)
+                return self._default_ret(list_item, self._api, self._endpoint)
             return list_item
 
         for k, v in values.items():
@@ -637,9 +663,9 @@ class Record:
                     setattr(self, k, v)
                     continue
                 if isinstance(lookup, type) and issubclass(lookup, Record):
-                    v = lookup(v, self.api, self.endpoint)
+                    v = lookup(v, self._api, self._endpoint)
                 else:
-                    v = self.default_ret(v, self.api, self.endpoint)
+                    v = self._default_ret(v, self._api, self._endpoint)
                 self._add_cache((k, v))
 
             elif isinstance(v, list):
@@ -689,7 +715,7 @@ class Record:
 
     def _endpoint_from_url(self, url):
         url_path = urlsplit(url).path
-        base_url_path_parts = urlsplit(self.api.base_url).path.split("/")
+        base_url_path_parts = urlsplit(self._api.base_url).path.split("/")
         if len(base_url_path_parts) > 2:
             # There are some extra directories in the path, remove them from url
             extra_path = "/".join(base_url_path_parts[:-1])
@@ -700,23 +726,22 @@ class Record:
             name = split_url_path[4]
         else:
             app, name = split_url_path[2:4]
-        return getattr(pynetbox.core.app.App(self.api, app), name)
+        return getattr(pynetbox.core.app.App(self._api, app), name)
 
     def full_details(self):
         """Queries the hyperlinked endpoint if 'url' is defined.
 
         This method will populate the attributes from the detail
-        endpoint when it's called. Sets the class-level `has_details`
-        attribute when it's called to prevent being called more
-        than once.
+        endpoint when it's called. Sets `_has_details` so that
+        attribute lookups don't call it more than once.
 
         :returns: True
         """
         if self.url:
             req = Request(
                 base=self.url,
-                token=self.api.token,
-                http_session=self.api.http_session,
+                token=self._api.token,
+                http_session=self._api.http_session,
             )
             # Fields the caller has modified since the last sync. Hydrating
             # must not disturb these: _parse_values() would overwrite both the
@@ -739,7 +764,7 @@ class Record:
                 setattr(self, k, v)
             self._init_cache.update(dirty_baseline)
 
-            self.has_details = True
+            self._has_details = True
             return True
         return False
 
@@ -930,9 +955,9 @@ class Record:
                 updates["changelog_message"] = changelog_message
             req = Request(
                 key=self.id,
-                base=self.endpoint.url,
-                token=self.api.token,
-                http_session=self.api.http_session,
+                base=self._endpoint.url,
+                token=self._api.token,
+                http_session=self._api.http_session,
             )
             result = req.patch(updates)
             if result:
@@ -987,9 +1012,9 @@ class Record:
         """
         req = Request(
             key=self.id,
-            base=self.endpoint.url,
-            token=self.api.token,
-            http_session=self.api.http_session,
+            base=self._endpoint.url,
+            token=self._api.token,
+            http_session=self._api.http_session,
         )
         data = None
         if changelog_message is not None:
@@ -1009,7 +1034,7 @@ class PathableRecord(Record):
             return None
 
         return_obj_class = self._get_obj_class(endpoint_data["url"])
-        return return_obj_class(endpoint_data, self.endpoint.api, self.endpoint)
+        return return_obj_class(endpoint_data, self._endpoint.api, self._endpoint)
 
     def paths(self):
         """Return all cable paths traversing this pass-through port.
@@ -1022,9 +1047,9 @@ class PathableRecord(Record):
         """
         req = Request(
             key=str(self.id) + "/paths",
-            base=self.endpoint.url,
-            token=self.api.token,
-            http_session=self.api.http_session,
+            base=self._endpoint.url,
+            token=self._api.token,
+            http_session=self._api.http_session,
         ).get()
 
         ret = []
@@ -1060,7 +1085,7 @@ class GenericListObject:
         from pynetbox.models.mapper import TYPE_CONTENT_MAPPER
 
         type_content_mapper = getattr(
-            record.api, "_type_content_mapper", TYPE_CONTENT_MAPPER
+            record._api, "_type_content_mapper", TYPE_CONTENT_MAPPER
         )
 
         self.object = record

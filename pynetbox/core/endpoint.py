@@ -649,11 +649,11 @@ class DetailEndpoint:
     def __init__(self, parent_obj, name, custom_return=None):
         self.parent_obj = parent_obj
         self.custom_return = custom_return
-        self.url = "{}/{}/{}/".format(parent_obj.endpoint.url, parent_obj.id, name)
+        self.url = "{}/{}/{}/".format(parent_obj._endpoint.url, parent_obj.id, name)
         self.request_kwargs = dict(
             base=self.url,
-            token=parent_obj.api.token,
-            http_session=parent_obj.api.http_session,
+            token=parent_obj._api.token,
+            http_session=parent_obj._api.http_session,
         )
 
     def list(self, **kwargs):
@@ -677,7 +677,7 @@ class DetailEndpoint:
         if self.custom_return:
             return [
                 self.custom_return(
-                    i, self.parent_obj.endpoint.api, self.parent_obj.endpoint
+                    i, self.parent_obj._endpoint.api, self.parent_obj._endpoint
                 )
                 for i in req
             ]
@@ -710,12 +710,12 @@ class DetailEndpoint:
             if isinstance(req, list):
                 return [
                     self.custom_return(
-                        req_item, self.parent_obj.endpoint.api, self.parent_obj.endpoint
+                        req_item, self.parent_obj._endpoint.api, self.parent_obj._endpoint
                     )
                     for req_item in req
                 ]
             return self.custom_return(
-                req, self.parent_obj.endpoint.api, self.parent_obj.endpoint
+                req, self.parent_obj._endpoint.api, self.parent_obj._endpoint
             )
         return req
 

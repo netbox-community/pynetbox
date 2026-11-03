@@ -31,7 +31,7 @@ class TraceableRecord(Record):
         for hop_item_data in termination_list:
             return_obj_class = self._get_obj_class(hop_item_data["url"])
             terminations_data.append(
-                return_obj_class(hop_item_data, self.endpoint.api, self.endpoint)
+                return_obj_class(hop_item_data, self._endpoint.api, self._endpoint)
             )
 
         return terminations_data
@@ -39,9 +39,9 @@ class TraceableRecord(Record):
     def trace(self):
         req = Request(
             key=str(self.id) + "/trace",
-            base=self.endpoint.url,
-            token=self.api.token,
-            http_session=self.api.http_session,
+            base=self._endpoint.url,
+            token=self._api.token,
+            http_session=self._api.http_session,
         ).get()
 
         ret = []
@@ -52,7 +52,7 @@ class TraceableRecord(Record):
             else:
                 return_obj_class = self._get_obj_class(cable_data["url"])
                 ret.append(
-                    return_obj_class(cable_data, self.endpoint.api, self.endpoint)
+                    return_obj_class(cable_data, self._endpoint.api, self._endpoint)
                 )
             ret.append(self._build_termination_data(b_terminations_data))
 
@@ -79,7 +79,6 @@ class Devices(Record):
         return an initialized DeviceType object
     """
 
-    has_details = True
     device_type = DeviceTypes
     primary_ip = IpAddresses
     primary_ip4 = IpAddresses
