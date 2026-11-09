@@ -752,7 +752,14 @@ class Record:
             # _parse_values() assigning attributes with setattr() rather than
             # mutating them in place; were it to mutate, the restore below
             # would put back an already-overwritten value.
-            dirty = self._diff()
+            # has_details is set while diffing so that serialize() reading a
+            # deleted field does not re-enter full_details() (#822). A deleted
+            # field is not kept as dirty; the fetch below reloads it.
+            self.has_details = True
+            try:
+                dirty = {k for k in self._diff() if k in self.__dict__}
+            finally:
+                self.has_details = False
             dirty_values = {k: getattr(self, k) for k in dirty}
             dirty_baseline = {
                 k: v for k, v in self._init_cache.items() if k in dirty
