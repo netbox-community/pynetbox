@@ -19,6 +19,7 @@ import io
 import json
 import os
 import warnings
+from urllib.parse import quote
 
 from packaging import version
 
@@ -222,6 +223,7 @@ class Request:
         limit=None,
         offset=None,
         key=None,
+        suffix=None,
         token=None,
         threading=False,
         thread_pool_executor=None,
@@ -239,6 +241,10 @@ class Request:
             In (e.g. /api/dcim/devices/?name='test') 'name': 'test'
             would be in the filters dict.
         * **key** (int, optional): Database id of the item being queried.
+            It is URL-encoded so it always addresses a single object.
+        * **suffix** (str, optional): Detail route appended after the key
+            (e.g. ``"trace"``). It is not encoded, so it must not come from
+            user input.
         * **expect_json** (bool, optional): If True, expects JSON response
             and sets appropriate Accept header. If False, expects raw content
             (e.g., SVG, XML) and returns text. Defaults to True.
@@ -263,7 +269,16 @@ class Request:
         self.key = key
         self.token = token
         self.http_session = http_session
-        self.url = self.base if not key else "{}{}/".format(self.base, key)
+        if key is None:
+            if suffix:
+                raise ValueError("A suffix requires an object key.")
+            self.url = self.base
+        elif str(key) == "":
+            raise ValueError("Object key must not be empty.")
+        else:
+            self.url = "{}{}/".format(self.base, quote(str(key), safe=""))
+        if suffix:
+            self.url = "{}{}/".format(self.url, suffix)
         self.threading = threading
         self.thread_pool_executor = (
             thread_pool_executor

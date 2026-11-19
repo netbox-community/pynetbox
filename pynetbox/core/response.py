@@ -752,14 +752,14 @@ class Record:
             # _parse_values() assigning attributes with setattr() rather than
             # mutating them in place; were it to mutate, the restore below
             # would put back an already-overwritten value.
-            # has_details is set while diffing so that serialize() reading a
+            # _has_details is set while diffing so that serialize() reading a
             # deleted field does not re-enter full_details() (#822). A deleted
             # field is not kept as dirty; the fetch below reloads it.
-            self.has_details = True
+            self._has_details = True
             try:
                 dirty = {k for k in self._diff() if k in self.__dict__}
             finally:
-                self.has_details = False
+                self._has_details = False
             dirty_values = {k: getattr(self, k) for k in dirty}
             dirty_baseline = {
                 k: v for k, v in self._init_cache.items() if k in dirty
@@ -1017,6 +1017,8 @@ class Record:
         True
         >>>
         """
+        if self.id is None:
+            raise ValueError("Cannot delete a record without an id.")
         req = Request(
             key=self.id,
             base=self._endpoint.url,
@@ -1053,7 +1055,8 @@ class PathableRecord(Record):
                 (similar to the trace() endpoint structure)
         """
         req = Request(
-            key=str(self.id) + "/paths",
+            key=self.id,
+            suffix="paths",
             base=self._endpoint.url,
             token=self._api.token,
             http_session=self._api.http_session,
