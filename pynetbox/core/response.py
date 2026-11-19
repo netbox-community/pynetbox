@@ -1017,6 +1017,8 @@ class Record:
         True
         >>>
         """
+        if self.id is None or self.id == "":
+            raise ValueError("Cannot delete a record without an id.")
         req = Request(
             key=self.id,
             base=self._endpoint.url,
@@ -1053,7 +1055,8 @@ class PathableRecord(Record):
                 (similar to the trace() endpoint structure)
         """
         req = Request(
-            key=str(self.id) + "/paths",
+            key=self.id,
+            suffix="paths",
             base=self._endpoint.url,
             token=self._api.token,
             http_session=self._api.http_session,

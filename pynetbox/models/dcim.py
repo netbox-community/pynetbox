@@ -38,7 +38,8 @@ class TraceableRecord(Record):
 
     def trace(self):
         req = Request(
-            key=str(self.id) + "/trace",
+            key=self.id,
+            suffix="trace",
             base=self._endpoint.url,
             token=self._api.token,
             http_session=self._api.http_session,
