@@ -1017,7 +1017,7 @@ class Record:
         True
         >>>
         """
-        if self.id is None or self.id == "":
+        if self.id is None:
             raise ValueError("Cannot delete a record without an id.")
         req = Request(
             key=self.id,

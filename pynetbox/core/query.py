@@ -270,6 +270,8 @@ class Request:
         self.token = token
         self.http_session = http_session
         if key is None:
+            if suffix:
+                raise ValueError("A suffix requires an object key.")
             self.url = self.base
         elif str(key) == "":
             raise ValueError("Object key must not be empty.")

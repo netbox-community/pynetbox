@@ -3,9 +3,10 @@
 import unittest
 from unittest.mock import Mock
 
-from pynetbox.core.endpoint import Endpoint
+from pynetbox.core.endpoint import DetailEndpoint, Endpoint
 from pynetbox.core.query import Request
 from pynetbox.core.response import PathableRecord, Record
+from pynetbox.extensions.branching import Branches
 from pynetbox.models.dcim import TraceableRecord
 
 BASE = "http://localhost:8000/api/dcim/devices/"
@@ -71,19 +72,40 @@ class RequestUrlTestCase(unittest.TestCase):
             BASE + "..%2F1/trace/",
         )
 
+    def test_suffix_without_key_raises(self):
+        with self.assertRaises(ValueError):
+            Request(BASE, Mock(), suffix="trace")
+
 
 class EndpointGetTestCase(unittest.TestCase):
+    def make_endpoint(self, api):
+        app = Mock()
+        app.name = "dcim"
+        return Endpoint(api, app, "devices")
+
     def test_get_encodes_key(self):
         api = make_api()
         api.http_session.get.return_value.json.return_value = {"id": 1}
-        app = Mock()
-        app.name = "dcim"
-        endpoint = Endpoint(api, app, "devices")
-        endpoint.get("../sites/1")
+        self.make_endpoint(api).get("../sites/1")
         self.assertEqual(
             called_url(api.http_session.get),
             "http://localhost:8000/api/dcim/devices/..%2Fsites%2F1/",
         )
+
+    def test_get_zero_requests_detail_url(self):
+        api = make_api()
+        api.http_session.get.return_value.json.return_value = {"id": 0}
+        self.make_endpoint(api).get(0)
+        self.assertEqual(
+            called_url(api.http_session.get),
+            "http://localhost:8000/api/dcim/devices/0/",
+        )
+
+    def test_get_empty_key_raises(self):
+        api = make_api()
+        with self.assertRaises(ValueError):
+            self.make_endpoint(api).get("")
+        api.http_session.get.assert_not_called()
 
 
 class RecordKeyTestCase(unittest.TestCase):
@@ -144,4 +166,35 @@ class RecordKeyTestCase(unittest.TestCase):
         record.paths()
         self.assertEqual(
             called_url(api.http_session.get), BASE + "..%2Fsites%2F1/paths/"
+        )
+
+
+class DetailUrlTestCase(unittest.TestCase):
+    def test_detail_endpoint_url(self):
+        api = make_api()
+        detail = DetailEndpoint(make_record(api), "available-ips")
+        self.assertEqual(detail.url, BASE + "1/available-ips/")
+        list(detail.list())
+        self.assertEqual(called_url(api.http_session.get), BASE + "1/available-ips/")
+
+    def test_detail_endpoint_encodes_id(self):
+        api = make_api()
+        record = make_record(api)
+        record.id = "../sites/1"
+        DetailEndpoint(record, "available-ips").create({})
+        self.assertEqual(
+            called_url(api.http_session.post), BASE + "..%2Fsites%2F1/available-ips/"
+        )
+
+    def test_branch_action_encodes_id(self):
+        api = make_api()
+        api.http_session.post.return_value.ok = True
+        api.http_session.post.return_value.status_code = 200
+        api.http_session.post.return_value.json.return_value = {}
+        branch = make_record(api, Branches)
+        branch.id = "../../dcim/devices/1"
+        branch.sync()
+        self.assertEqual(
+            called_url(api.http_session.post),
+            BASE + "..%2F..%2Fdcim%2Fdevices%2F1/sync/",
         )
