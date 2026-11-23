@@ -63,6 +63,12 @@ class RequestUrlTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             Request(BASE, Mock(), key="")
 
+    def test_dot_segment_key_raises(self):
+        for key in (".", ".."):
+            with self.subTest(key=key):
+                with self.assertRaises(ValueError):
+                    Request(BASE, Mock(), key=key)
+
     def test_suffix(self):
         self.assertEqual(
             Request(BASE, Mock(), key=1, suffix="trace").url, BASE + "1/trace/"
@@ -107,6 +113,14 @@ class EndpointGetTestCase(unittest.TestCase):
             self.make_endpoint(api).get("")
         api.http_session.get.assert_not_called()
 
+    def test_get_dot_segment_key_raises(self):
+        for key in (".", ".."):
+            with self.subTest(key=key):
+                api = make_api()
+                with self.assertRaises(ValueError):
+                    self.make_endpoint(api).get(key)
+                api.http_session.get.assert_not_called()
+
 
 class RecordKeyTestCase(unittest.TestCase):
     def test_save_encodes_id(self):
@@ -131,7 +145,7 @@ class RecordKeyTestCase(unittest.TestCase):
         )
 
     def test_delete_without_id_raises(self):
-        for value in (None, ""):
+        for value in (None, "", ".", ".."):
             with self.subTest(id=value):
                 api = make_api()
                 record = make_record(api)

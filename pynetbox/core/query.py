@@ -273,8 +273,10 @@ class Request:
             if suffix:
                 raise ValueError("A suffix requires an object key.")
             self.url = self.base
-        elif str(key) == "":
-            raise ValueError("Object key must not be empty.")
+        elif str(key) in ("", ".", ".."):
+            raise ValueError(
+                "Object key must not be empty or a dot segment: {!r}".format(key)
+            )
         else:
             self.url = "{}{}/".format(self.base, quote(str(key), safe=""))
         if suffix:
