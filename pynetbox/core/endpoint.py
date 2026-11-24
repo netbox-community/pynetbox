@@ -244,7 +244,7 @@ class Endpoint:
         except IndexError:
             key = None
 
-        if not key:
+        if key is None:
             resp = self.filter(**kwargs)
             ret = next(resp, None)
             if not ret:
@@ -649,12 +649,14 @@ class DetailEndpoint:
     def __init__(self, parent_obj, name, custom_return=None):
         self.parent_obj = parent_obj
         self.custom_return = custom_return
-        self.url = "{}/{}/{}/".format(parent_obj._endpoint.url, parent_obj.id, name)
         self.request_kwargs = dict(
-            base=self.url,
+            base=parent_obj._endpoint.url,
+            key=parent_obj.id,
+            suffix=name,
             token=parent_obj._api.token,
             http_session=parent_obj._api.http_session,
         )
+        self.url = Request(**self.request_kwargs).url
 
     def list(self, **kwargs):
         """The view operation for a detail endpoint.

@@ -80,9 +80,10 @@ def _post_detail(parent, action_name, data=None, return_cls=None, api=None):
     class than the parent endpoint's, and (b) keep the call sites as
     simple method invocations rather than `.create()` chains.
     """
-    url = "{}/{}/{}/".format(parent._endpoint.url, parent.id, action_name)
     resp = Request(
-        base=url,
+        base=parent._endpoint.url,
+        key=parent.id,
+        suffix=action_name,
         token=parent._api.token,
         http_session=parent._api.http_session,
     ).post(data or {})
