@@ -629,8 +629,10 @@ class Endpoint:
                 "try again.".format(RESERVED_KWARGS)
             )
 
+        filters = {x: y if y is not None else "null" for x, y in kwargs.items()}
+
         ret = Request(
-            filters=kwargs,
+            filters=filters,
             base=self.url,
             token=self.token,
             http_session=self.api.http_session,
