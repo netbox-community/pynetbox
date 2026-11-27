@@ -31,6 +31,17 @@ class EndPointTestCase(unittest.TestCase):
 
         self.assertEqual(test.request.filters, {"name": "null", "id": 0})
 
+    @patch("pynetbox.core.endpoint.Request")
+    def test_count_replace_none_with_null(self, request_mock):
+        api = Mock(base_url="http://localhost:8000/api", strict_filters=False)
+        app = Mock(name="test")
+        test_obj = Endpoint(api, app, "test")
+
+        test_obj.count(name=None, id=0)
+
+        _, kwargs = request_mock.call_args
+        self.assertEqual(kwargs["filters"], {"name": "null", "id": 0})
+
     def test_all_invalid_pagination_args(self):
         api = Mock(base_url="http://localhost:8000/api")
         app = Mock(name="test")
